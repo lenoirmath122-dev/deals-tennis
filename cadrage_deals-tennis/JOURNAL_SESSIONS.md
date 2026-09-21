@@ -33,3 +33,16 @@
 - `tasks.md` : T001, T002, T003 cochées, avec précision sur le choix Tailwind v4 pour T001.
 - **Une seule étape de build traitée dans cette conversation** (Phase 1 uniquement, conforme au protocole) — pas d'enchaînement sur la Phase 2 (fondations DB).
 - Prochaine étape : Phase 2 de `tasks.md` (T004-T008, fondations DB), à traiter dans une conversation dédiée. Nécessitera une instance Neon réelle pour la vérification avec données réelles.
+
+## 2026-09-21 (suite 3) — Phase 2 : fondations DB (T004-T008)
+
+- Reprise de session, protocole de reprise appliqué (ETAT_ACTUEL → GAPS_OUVERTS → dernière entrée du journal).
+- Décision structurante soumise et actée : instance Neon provisionnée via le compte Neon existant de l'utilisateur (pas via Marketplace Vercel), création du projet `deals-tennis` (id `floral-mountain-74046188`, région `aws-eu-central-1`) faite par Claude avec le CLI `neonctl` déjà authentifié sur le compte de l'utilisateur.
+- T004 : migration SQL écrite (`scripts/migrations/001_init_schema.sql`) conforme à `data-model.md`, appliquée sur l'instance réelle via un script `scripts/migrate.ts` (exécution Node 24 native TypeScript, `npm run db:migrate`). Un bug de découpage des instructions SQL (un commentaire d'en-tête fusionné avec le premier `CREATE TABLE` faisait perdre toute la table `merchants`) a été détecté à la première exécution échouée, corrigé, puis la migration a été rejouée avec succès. Vérification directe en base (tables, index, contraintes CHECK) conforme.
+- T005 : seed (`scripts/seed.ts`, `npm run db:seed`) : 3 marchands, 10 offres couvrant les 5 catégories avec mélange actif/expiré. Donnée conservée en base sur décision explicite de l'utilisateur (ce n'est pas une donnée éphémère de test mais le jeu de données de développement prévu par la tâche).
+- T006 : types TypeScript (`types/database.ts`) alignés champ à champ sur `data-model.md`.
+- T007 : `lib/db.ts` utilisant `neon()` (mode one-shot fetch) après vérification du README/CONFIG.md réellement installés du package `@neondatabase/serverless` (v1.1.0) — cohérent avec le socle Node.js/Fluid Compute (pas besoin du runtime edge).
+- T008 : `app/layout.tsx` mis à jour (`lang="fr"`, métadonnées SEO dédiées) ; `app/globals.css` laissé tel quel (pas de charte graphique définie).
+- Vérification : `npm run lint` et `npm run build` passent sans erreur.
+- **Une seule étape de build traitée dans cette conversation** (Phase 2 uniquement, conforme au protocole) — pas d'enchaînement sur la Phase 3.
+- Prochaine étape : Phase 3 de `tasks.md` (T009-T015, User Story 1 / MVP : catalogue paginé), à traiter dans une conversation dédiée.

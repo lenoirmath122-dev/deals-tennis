@@ -21,11 +21,11 @@
 
 **⚠️ CRITICAL**: Les User Stories ne peuvent pas démarrer tant que cette phase n'est pas achevée.
 
-- [ ] T004 Setup PostgreSQL schema migration in scripts/migrations/001_init_schema.sql creating tables merchants, deals with check constraints category IN ('raquettes', 'cordages', 'chaussures', 'textile', 'accessoires'), status IN ('active', 'expired', 'invalid'), original_price > 0 AND discounted_price > 0 AND discounted_price <= original_price, discount_percentage >= 0 AND discount_percentage <= 100, table click_events, and indexes idx_deals_active_status, idx_deals_created_at_desc, idx_deals_discount_desc, idx_deals_category_created, idx_deals_category_discount, idx_deals_fts, idx_click_events_deal_date
-- [ ] T005 [P] Create database seeding script in scripts/seed.ts inserting sample merchants and active/expired tennis deals across all 5 categories for local development
-- [ ] T006 [P] Define TypeScript database entity types and interfaces (Merchant, Deal, ClickEvent, CatalogResponse) in types/database.ts
-- [ ] T007 Implement Neon Serverless PostgreSQL connection client and SQL helper using @neondatabase/serverless in lib/db.ts
-- [ ] T008 [P] Setup base application layout with SEO metadata and global CSS in app/layout.tsx and app/globals.css
+- [x] T004 Setup PostgreSQL schema migration in scripts/migrations/001_init_schema.sql creating tables merchants, deals with check constraints category IN ('raquettes', 'cordages', 'chaussures', 'textile', 'accessoires'), status IN ('active', 'expired', 'invalid'), original_price > 0 AND discounted_price > 0 AND discounted_price <= original_price, discount_percentage >= 0 AND discount_percentage <= 100, table click_events, and indexes idx_deals_active_status, idx_deals_created_at_desc, idx_deals_discount_desc, idx_deals_category_created, idx_deals_category_discount, idx_deals_fts, idx_click_events_deal_date (appliquée via `npm run db:migrate`, vérifiée sur l'instance Neon réelle : tables, index et contraintes CHECK confirmés)
+- [x] T005 [P] Create database seeding script in scripts/seed.ts inserting sample merchants and active/expired tennis deals across all 5 categories for local development (exécuté via `npm run db:seed` : 3 marchands, 10 offres couvrant les 5 catégories avec un mélange actif/expiré, conservé en base comme jeu de données de développement)
+- [x] T006 [P] Define TypeScript database entity types and interfaces (Merchant, Deal, ClickEvent, CatalogResponse) in types/database.ts
+- [x] T007 Implement Neon Serverless PostgreSQL connection client and SQL helper using @neondatabase/serverless in lib/db.ts (fonction `neon()` en mode one-shot fetch, adaptée aux Server Components et Route Handlers Node.js — voir CONFIG.md du package installé)
+- [x] T008 [P] Setup base application layout with SEO metadata and global CSS in app/layout.tsx and app/globals.css (lang="fr", title/description dédiés au catalogue tennis ; globals.css laissé au thème Tailwind v4 par défaut, aucune charte graphique encore définie)
 
 **Checkpoint**: Socle de base de données et configuration serveur prêts - implémentation des User Stories débloquée.
 
