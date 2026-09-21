@@ -210,3 +210,15 @@
 - **GAP-2026-09-21-03 ouvert** : datafeed non vérifiable tant que le compte Awin n'est pas créé et les candidatures acceptées — action utilisateur requise (création de compte, informations d'entreprise/paiement, candidature).
 - **Aucune étape de build n'a été démarrée** dans cette conversation (cadrage uniquement, recherche + constat de blocage).
 - Prochaine étape : une fois le compte Awin créé et les candidatures avancées par l'utilisateur, reprendre la vérification du datafeed réel (format, champs) pour définir la méthode d'ingestion vers `deals`/`merchants`.
+
+## 2026-09-21 (suite 16) — Création du compte Awin publisher et candidatures (pas de build)
+
+- Reprise de session, protocole de reprise appliqué (ETAT_ACTUEL → GAPS_OUVERTS → dernière entrée du journal).
+- L'utilisateur a créé son compte Awin publisher et soumis sa candidature. Assistance apportée sur le choix des réponses du formulaire d'inscription, sans y avoir accès direct (formulaire externe, hors périmètre outillage) :
+  - Canal publicitaire : **Code de réduction** (catégorie Content), défini comme canal principal — correspond exactement au fonctionnement du site (liste de réductions/promotions). **Moteur de comparaison** suggéré en complément (le catalogue permet de comparer les offres par prix/réduction entre marchands). Display/E-mail/Search et les autres sous-catégories de Content (Cashback, Contenu éditorial, Fidélisation, etc.) écartés comme non représentatifs.
+  - Adresse URL de l'espace publicitaire : `https://deals-tennis.vercel.app` (seul domaine existant, déploiement de production réel).
+  - Description de l'activité : texte proposé décrivant le catalogue de bons plans tennis/padel (catégories, filtrage/recherche/tri, redirection trackée vers marchand partenaire), sans chiffres d'audience (site tout juste déployé).
+  - Secteur d'activité : **Sport & Loisirs** (les catégories textile/chaussures restant de l'équipement sportif tennis/padel, pas un secteur mode séparé).
+- Candidature soumise par l'utilisateur (confirmation reçue). En attente de l'acceptation des programmes Tennis Point FR (#13266) et Padel-Point FR (#25160) — GAP-2026-09-21-03 toujours ouvert, aucun changement de statut à ce stade.
+- **Aucune étape de build n'a été démarrée** dans cette conversation (assistance à une démarche externe uniquement).
+- Prochaine étape : une fois l'acceptation reçue sur un ou les deux programmes, consulter le datafeed réel (format, champs, fréquence) pour définir la méthode d'ingestion vers `deals`/`merchants` — voir GAP-2026-09-21-03.
