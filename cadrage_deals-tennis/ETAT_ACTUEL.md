@@ -108,4 +108,16 @@ Recherche effectuée sur la méthode de récupération pour Tennis Point FR / Pa
 
 **Mise à jour 2026-09-21 (suite 2)** : les deux candidatures marchand (Tennis Point FR, Padel-Point FR) ont été soumises par l'utilisateur, avec un message de présentation rédigé avec assistance (positionnement du site, mention du datafeed comme méthode d'ingestion souhaitée). Toujours en attente d'acceptation — aucun changement de statut sur GAP-2026-09-21-03. Question de fond posée par l'utilisateur (vaut-il le coup de viser l'affiliation vs. construire sans, en récupération de données directe) : recommandation donnée de poursuivre l'affiliation (monétisation + cadre légal plus solide que du scraping non autorisé), sans revenir sur la décision déjà actée (D-2026-09-21-12) de démarrer avec les marchands confirmés.
 
-**Prochaine étape (à traiter dans la prochaine conversation, une fois l'acceptation reçue sur un ou les deux programmes)** : consulter le datafeed réel (format, champs, fréquence de mise à jour) pour confirmer la méthode d'ingestion vers `deals`/`merchants`. Voir GAP-2026-09-21-03. Rappel : toute contribution à `master` doit désormais passer par une PR (plus de push direct possible, y compris pour l'utilisateur). Aucune étape de build n'a été démarrée dans cette conversation (cadrage uniquement).
+**Prochaine étape (à traiter dans une prochaine conversation, une fois l'acceptation reçue sur un ou les deux programmes)** : consulter le datafeed réel (format, champs, fréquence de mise à jour) pour confirmer la méthode d'ingestion vers `deals`/`merchants`. Voir GAP-2026-09-21-03. Rappel : toute contribution à `master` doit désormais passer par une PR (plus de push direct possible, y compris pour l'utilisateur).
+
+## Chantier « Charte graphique / design system » (cadrage démarré)
+
+Automatisation n8n étant bloqué en attente Awin (GAP-2026-09-21-03), l'utilisateur a choisi d'avancer sur le chantier « Charte graphique / design system » (n°8 de la liste D-2026-09-21-09) entre-temps.
+
+- Cadrage démarré et **direction actée (D-2026-09-21-13)** : fond hero en photo de terrain (gazon/terre battue, à fournir par l'utilisateur — voir GAP-2026-09-21-04), design épuré « qui ne fasse pas IA » avec inspiration Aceternity, cartes blanches/grises, bords peu arrondis (6px cartes/boutons, 4px badges).
+- Trois propositions de typographie présentées visuellement (artefact Design canvas avec maquette de carte de deal) : Fraunces+Inter, Space Grotesk, Libre Franklin+Newsreader. **Typographie retenue : Space Grotesk** (famille unique, poids 400/500/700).
+- **Palette à deux accents actée** : vert gazon foncé `#1b4332` (prix/CTA) et terre cuite `#c1440e` (badge réduction), indépendants de la photo de fond réelle.
+- Détail complet : voir D-2026-09-21-13 dans `DECISIONS_FONCTIONNELLES.md`.
+- **Aucun code appliqué** — cadrage uniquement dans cette conversation, conforme au protocole (une étape de build par conversation).
+
+**Prochaine étape de ce chantier** : soit poursuivre le cadrage (spacing/layout, style des boutons/pills, traitement de la barre de navigation — inspiration `resizable-navbar`/`hero-highlight` d'Aceternity à creuser), soit démarrer l'application des tokens à `app/globals.css` et aux composants existants comme étape de build à part entière (à soumettre explicitement en début de prochaine conversation dédiée à ce chantier). Voir aussi GAP-2026-09-21-04 (photo de terrain à recevoir).

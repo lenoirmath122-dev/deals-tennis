@@ -232,3 +232,13 @@
 - Les deux candidatures ont été soumises par l'utilisateur en fin de conversation.
 - **Aucune étape de build n'a été démarrée** dans cette conversation (assistance à une démarche externe + question stratégique).
 - Prochaine étape : inchangée — attendre l'acceptation d'un ou des deux programmes, puis consulter le datafeed réel pour définir la méthode d'ingestion. Voir GAP-2026-09-21-03.
+
+## 2026-09-21 (suite 18) — Cadrage du chantier « Charte graphique / design system » (pas de build)
+
+- Reprise de session, protocole de reprise appliqué. Statut Awin vérifié : toujours en attente sur les deux programmes, GAP-2026-09-21-03 inchangé.
+- Automatisation n8n restant bloqué, l'utilisateur a choisi d'avancer sur un autre chantier de la liste D-2026-09-21-09 : « Charte graphique / design system » (n°8).
+- Direction visuelle donnée d'emblée par l'utilisateur : fond de section hero en photo de terrain (gazon/terre battue, à fournir — GAP-2026-09-21-04 ouvert), design épuré ne devant pas « faire IA », inspiration Aceternity (MCP `aceternityui` consulté pour la liste de composants disponibles), pas de bords trop arrondis, cartes blanches/grises.
+- Trois propositions de typographie présentées visuellement via un artefact Design (canvas avec maquette de carte de deal reprenant palette/radius envisagés) : A (Fraunces+Inter), B (Space Grotesk), C (Libre Franklin+Newsreader italique). L'utilisateur a choisi **B (Space Grotesk) « de très loin »**.
+- Décision structurante actée (D-2026-09-21-13) : typographie Space Grotesk, palette à deux accents (vert gazon `#1b4332` pour prix/CTA, terre cuite `#c1440e` pour badge réduction), cartes blanches/bordure gris clair, radius léger (6px cartes/boutons, 4px badges).
+- **Aucune étape de build n'a été démarrée** dans cette conversation (cadrage uniquement, conforme au protocole — l'utilisateur avait explicitement choisi ce périmètre en début de conversation).
+- Prochaine étape : soit poursuivre le cadrage du chantier (spacing/layout, style des composants de nav/filtres), soit démarrer l'application des tokens à `app/globals.css` comme étape de build à part entière — à soumettre explicitement en début de prochaine conversation dédiée. Voir aussi GAP-2026-09-21-04 (photo de terrain à recevoir).
