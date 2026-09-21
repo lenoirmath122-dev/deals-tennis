@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-21
+**Dernière mise à jour** : 2026-09-21 (Phase 3)
 
 ## Où en est le projet
 
@@ -15,7 +15,17 @@
   - `types/database.ts` (Merchant, Deal, ClickEvent, CatalogResponse), `lib/db.ts` (client `neon()` one-shot pour Server Components/Route Handlers) créés.
   - `app/layout.tsx` mis à jour : `lang="fr"`, métadonnées SEO dédiées au catalogue tennis. `app/globals.css` laissé au thème Tailwind v4 par défaut (aucune charte graphique définie à ce stade).
   - `npm run lint` et `npm run build` passent.
-- `tasks.md` : T001-T008 cochées.
+- **Phase 3 de `tasks.md` (User Story 1 — MVP catalogue) terminée** (T009-T015) :
+  - `lib/deals.ts` : `getCatalogDeals` conforme au contrat `catalog-query-api.md` (filtre actif/non expiré, tri `created_at DESC` par défaut, pagination 24/page), via `sql.query()` du driver `@neondatabase/serverless`.
+  - `types/database.ts` complété avec `MerchantSummary`, `DealCardData`, `CatalogPagination` et `CatalogResponse` alignés sur le contrat (le `CatalogResponse` posé en Phase 2 ne correspondait pas au contrat — corrigé sans impact, rien ne le consommait encore).
+  - `lib/format.ts` : helpers `formatPrice` (EUR, `Intl.NumberFormat('fr-FR')`), `formatDiscountBadge`, `formatDate`, `formatFreshnessLabel`.
+  - `components/deal-card.tsx`, `components/deal-grid.tsx` (avec état vide), `components/pagination.tsx` (numérotée avec ellipses, liens `?page=X`).
+  - `app/(catalog)/page.tsx` : page catalogue Server Component (remplace le placeholder `create-next-app` `app/page.tsx`, supprimé).
+  - Carte d'offre sans bouton d'action cliquable pour l'instant (volontaire : `/go/[dealId]` n'existe pas encore côté US3/Phase 5, et `DealCardData` n'expose pas `affiliate_url` — conforme à FR-006).
+  - Tests ajoutés : `tests/unit/deals.test.ts` (helpers de formatage, 6 tests) et `tests/contract/catalog-query.test.ts` (contre l'instance Neon réelle : pagination 24/page, tri décroissant, exclusion des offres expirées du seed). `vitest.config.mts` créé, script `npm test` ajouté.
+  - Vérification manuelle bout en bout : serveur `next dev` lancé, page `/` inspectée via `curl` — 7 offres actives affichées avec prix/réduction/fraîcheur/marchand corrects, les 3 offres expirées du seed absentes, pagination masquée à raison (1 seule page avec 7 offres), état vide correct sur `/?page=2`. Serveur arrêté après vérification.
+  - `npm run lint`, `npm run build` et `npm test` passent tous les trois.
+- `tasks.md` : T001-T015 cochées.
 
 ## Contenu fonctionnel déjà spécifié (à valider/confirmer, pas encore construit)
 
@@ -26,4 +36,4 @@
 
 ## Prochaine étape
 
-Démarrer la **Phase 3 de `tasks.md`** (User Story 1 — MVP : `getCatalogDeals`, `DealCard`, `DealGrid`, `Pagination`, page catalogue) — T009 à T015, dans une conversation dédiée.
+Démarrer la **Phase 4 de `tasks.md`** (User Story 2 : filtrage par catégorie, recherche par mot-clé, tri) — T016 à T021, dans une conversation dédiée.

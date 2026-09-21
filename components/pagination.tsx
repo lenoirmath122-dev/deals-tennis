@@ -1,0 +1,80 @@
+import Link from "next/link";
+
+function buildPageNumbers(currentPage: number, totalPages: number): (number | "ellipsis")[] {
+  const pages = new Set<number>([1, totalPages, currentPage, currentPage - 1, currentPage + 1]);
+  const sorted = [...pages].filter((page) => page >= 1 && page <= totalPages).sort((a, b) => a - b);
+
+  const result: (number | "ellipsis")[] = [];
+  let previous: number | null = null;
+  for (const page of sorted) {
+    if (previous !== null && page - previous > 1) {
+      result.push("ellipsis");
+    }
+    result.push(page);
+    previous = page;
+  }
+  return result;
+}
+
+export function Pagination({
+  currentPage,
+  totalPages,
+}: {
+  currentPage: number;
+  totalPages: number;
+}) {
+  if (totalPages <= 1) {
+    return null;
+  }
+
+  const pageNumbers = buildPageNumbers(currentPage, totalPages);
+
+  return (
+    <nav aria-label="Pagination" className="flex items-center justify-center gap-2 py-8">
+      <Link
+        href={`/?page=${currentPage - 1}`}
+        aria-disabled={currentPage <= 1}
+        className={`rounded px-3 py-1.5 text-sm ${
+          currentPage <= 1
+            ? "pointer-events-none text-zinc-300 dark:text-zinc-700"
+            : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+        }`}
+      >
+        Précédent
+      </Link>
+
+      {pageNumbers.map((page, index) =>
+        page === "ellipsis" ? (
+          <span key={`ellipsis-${index}`} className="px-1 text-sm text-zinc-400">
+            …
+          </span>
+        ) : (
+          <Link
+            key={page}
+            href={`/?page=${page}`}
+            aria-current={page === currentPage ? "page" : undefined}
+            className={`rounded px-3 py-1.5 text-sm ${
+              page === currentPage
+                ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900"
+                : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            }`}
+          >
+            {page}
+          </Link>
+        )
+      )}
+
+      <Link
+        href={`/?page=${currentPage + 1}`}
+        aria-disabled={currentPage >= totalPages}
+        className={`rounded px-3 py-1.5 text-sm ${
+          currentPage >= totalPages
+            ? "pointer-events-none text-zinc-300 dark:text-zinc-700"
+            : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+        }`}
+      >
+        Suivant
+      </Link>
+    </nav>
+  );
+}

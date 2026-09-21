@@ -38,15 +38,15 @@
 **Independent Test**: Ouvrir la page d'accueil `http://localhost:3000` et vérifier l'affichage des cartes d'offres complètes (image, nom, marque, prix barré, prix remisé, badge %, marchand, date) et le sélecteur de page.
 
 ### Tests for User Story 1
-- [ ] T009 [P] [US1] Create unit tests for price calculation, currency formatting, and card helper utilities in tests/unit/deals.test.ts
-- [ ] T010 [P] [US1] Create contract test for getCatalogDeals verifying 24 items pagination and created_at DESC default ordering in tests/contract/catalog-query.test.ts
+- [x] T009 [P] [US1] Create unit tests for price calculation, currency formatting, and card helper utilities in tests/unit/deals.test.ts (formatPrice, formatDiscountBadge, formatFreshnessLabel — 6 tests, `npm test`)
+- [x] T010 [P] [US1] Create contract test for getCatalogDeals verifying 24 items pagination and created_at DESC default ordering in tests/contract/catalog-query.test.ts (exécuté contre l'instance Neon réelle avec les données de seed : per_page=24, tri décroissant vérifié, offres expirées absentes)
 
 ### Implementation for User Story 1
-- [ ] T011 [US1] Implement catalog data query function getCatalogDeals with default sort created_at DESC, active unexpired filter status = 'active' AND is_active = true AND (expires_at IS NULL OR expires_at > NOW()), and 24 items pagination in lib/deals.ts
-- [ ] T012 [P] [US1] Create deal card component displaying image, title, brand, strikethrough original price, discounted price, percentage discount badge, merchant name, and date badge in components/deal-card.tsx
-- [ ] T013 [P] [US1] Create responsive deal grid component (1 column mobile, 2 columns tablet, 3-4 columns desktop) with empty state in components/deal-grid.tsx
-- [ ] T014 [P] [US1] Create numbered pagination component with previous/next controls and page number links (?page=X) in components/pagination.tsx
-- [ ] T015 [US1] Implement main catalog page Server Component in app/(catalog)/page.tsx integrating getCatalogDeals, DealGrid, and Pagination
+- [x] T011 [US1] Implement catalog data query function getCatalogDeals with default sort created_at DESC, active unexpired filter status = 'active' AND is_active = true AND (expires_at IS NULL OR expires_at > NOW()), and 24 items pagination in lib/deals.ts (via sql.query() du driver @neondatabase/serverless, conforme au contrat catalog-query-api.md)
+- [x] T012 [P] [US1] Create deal card component displaying image, title, brand, strikethrough original price, discounted price, percentage discount badge, merchant name, and date badge in components/deal-card.tsx (image via <img> natif plutôt que next/image — domaines d'images marchandes arbitraires non préconfigurables, fallback visuel reporté à T032/Phase 7)
+- [x] T013 [P] [US1] Create responsive deal grid component (1 column mobile, 2 columns tablet, 3-4 columns desktop) with empty state in components/deal-grid.tsx
+- [x] T014 [P] [US1] Create numbered pagination component with previous/next controls and page number links (?page=X) in components/pagination.tsx
+- [x] T015 [US1] Implement main catalog page Server Component in app/(catalog)/page.tsx integrating getCatalogDeals, DealGrid, and Pagination (remplace le placeholder create-next-app app/page.tsx)
 
 **Checkpoint**: User Story 1 (MVP) fonctionnelle et testable de manière autonome.
 

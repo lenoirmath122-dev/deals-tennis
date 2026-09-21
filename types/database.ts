@@ -44,9 +44,37 @@ export interface ClickEvent {
   clicked_at: string;
 }
 
+export interface MerchantSummary {
+  id: string;
+  name: string;
+  slug: string;
+  logo_url: string | null;
+}
+
+export interface DealCardData {
+  id: string;
+  title: string;
+  brand: string;
+  category: DealCategory;
+  image_url: string;
+  original_price: number;
+  discounted_price: number;
+  discount_percentage: number;
+  merchant: MerchantSummary;
+  created_at: string;
+  expires_at: string | null;
+}
+
+export interface CatalogPagination {
+  current_page: number;
+  total_pages: number;
+  total_deals: number;
+  has_previous: boolean;
+  has_next: boolean;
+  per_page: number;
+}
+
 export interface CatalogResponse {
-  deals: Deal[];
-  total: number;
-  page: number;
-  pageSize: number;
+  deals: DealCardData[];
+  pagination: CatalogPagination;
 }

@@ -46,3 +46,21 @@
 - Vérification : `npm run lint` et `npm run build` passent sans erreur.
 - **Une seule étape de build traitée dans cette conversation** (Phase 2 uniquement, conforme au protocole) — pas d'enchaînement sur la Phase 3.
 - Prochaine étape : Phase 3 de `tasks.md` (T009-T015, User Story 1 / MVP : catalogue paginé), à traiter dans une conversation dédiée.
+
+## 2026-09-21 (suite 4) — Phase 3 : User Story 1 / MVP catalogue paginé (T009-T015)
+
+- Reprise de session, protocole de reprise appliqué (ETAT_ACTUEL → GAPS_OUVERTS → dernière entrée du journal). Étape soumise et confirmée par l'utilisateur avant de démarrer.
+- Vérification préalable de la doc réellement installée avant codage : `node_modules/next/dist/docs` (searchParams asynchrone en promesse dans Next 16) et `node_modules/@neondatabase/serverless/CONFIG.md` (`sql.query(text, params)` pour construire du SQL dynamique avec placeholders numérotés, distinct du tagged template `sql\`...\``).
+- T011 : `lib/deals.ts` implémente `getCatalogDeals` fidèlement au contrat `catalog-query-api.md`.
+- Correction mineure auto-décidée (documentée, pas de décision structurante) : `types/database.ts` avait un `CatalogResponse` posé en Phase 2 qui ne correspondait pas au contrat (`total`/`page`/`pageSize` au lieu de l'objet `pagination`) ; corrigé pour matcher le contrat normatif, sans impact car rien ne le consommait encore.
+- T012-T014 : composants `DealCard`, `DealGrid` (avec état vide), `Pagination` (numérotée avec ellipses). Choix technique auto-décidé : `<img>` natif plutôt que `next/image` pour les visuels produits, car les domaines d'images marchandes sont arbitraires (alimentés par des workflows n8n externes) et ne peuvent pas être préconfigurés dans `remotePatterns`.
+- Décision de périmètre notée (pas une décision structurante nouvelle, découle de la lecture stricte de `tasks.md`/du contrat) : la carte d'offre n'a pas de bouton d'action cliquable en Phase 3 — `/go/[dealId]` n'existe pas encore (US3/Phase 5) et `DealCardData` n'expose pas `affiliate_url`, conformément à FR-006 (ne jamais exposer de lien d'affiliation direct).
+- T015 : `app/(catalog)/page.tsx` créé, remplace le placeholder `create-next-app` (`app/page.tsx` supprimé, aucune route dupliquée).
+- T009 : `tests/unit/deals.test.ts` pour les helpers `lib/format.ts` (`formatPrice`, `formatDiscountBadge`, `formatFreshnessLabel`) — 6 tests. Un premier échec dû à l'espace insécable (U+00A0) inséré par `Intl.NumberFormat('fr-FR')` a été identifié et corrigé dans les assertions.
+- T010 : `tests/contract/catalog-query.test.ts` exécuté contre l'instance Neon réelle (pas de mock) : pagination `per_page=24`, tri `created_at DESC` vérifié, absence des 3 offres expirées du seed confirmée.
+- Mise en place de `vitest.config.mts` (config native ESM, alias `@/*`) et du script `npm test` (`node --env-file=.env.local node_modules/vitest/vitest.mjs run`, cohérent avec le pattern déjà utilisé par `db:migrate`/`db:seed`).
+- Vérification bout en bout avec données réelles (protocole point 3) : serveur `next dev` lancé (port 3000 déjà occupé par un processus tiers non lié au projet, serveur démarré sur le port 3001), page `/` inspectée via `curl` — 7 offres actives affichées avec prix/réduction/fraîcheur/marchand corrects, les 3 offres expirées absentes, pagination masquée à raison (1 seule page), état vide correct vérifié sur `/?page=2`. Serveur arrêté et fichiers temporaires de vérification nettoyés après contrôle.
+- `npm run lint`, `npm run build` et `npm test` passent tous les trois sans erreur ni warning.
+- `tasks.md` : T009-T015 cochées.
+- **Une seule étape de build traitée dans cette conversation** (Phase 3 uniquement, conforme au protocole) — pas d'enchaînement sur la Phase 4.
+- Prochaine étape : Phase 4 de `tasks.md` (T016-T021, User Story 2 : filtrage par catégorie, recherche par mot-clé, tri), à traiter dans une conversation dédiée.
