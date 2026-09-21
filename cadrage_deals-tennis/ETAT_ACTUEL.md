@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-21 (Phase 5)
+**Dernière mise à jour** : 2026-09-21 (Phase 7 — tasks.md terminé T001-T034)
 
 ## Où en est le projet
 
@@ -55,6 +55,15 @@
   - Vérification manuelle bout en bout : serveur `next dev` lancé (port 3001), `curl` sur `/?notification=deal-expired` et `/?notification=deal-not-found` — message correct affiché dans les deux cas ; `/` sans paramètre — aucun bandeau ; `/?notification=bogus` — aucun bandeau, page toujours 200 (pas de crash sur valeur inconnue). Serveur et processus `next dev` arrêtés après contrôle (vérifié par `curl` renvoyant code `000`).
   - `npm run lint`, `npm run build` et `npm test` (30 tests, 5 fichiers, inchangé) passent tous les trois sans erreur.
 - `tasks.md` : T001-T031 cochées.
+- **Phase 7 de `tasks.md` (Polish & Cross-Cutting Concerns) terminée** (T032-T034) :
+  - `public/placeholders/{raquettes,cordages,chaussures,textile,accessoires,default}.svg` : placeholders SVG neutres créés, un par catégorie + un générique.
+  - `components/deal-image.tsx` (nouveau Client Component, extrait de `deal-card.tsx` qui reste un Server Component) : gère `onError` sur `<img>`, bascule vers le placeholder de la catégorie de l'offre si l'image marchande casse.
+  - Playwright configuré (`playwright.config.ts`, serveur `next dev` sur le port 3100 dédié aux tests e2e, projet `chromium`), script `test:e2e` ajouté (`node --env-file=.env.local ...`, même pattern que `npm test`).
+  - `tests/e2e/catalog.spec.ts` (6 tests) : affichage du catalogue, filtrage par catégorie (pills `role="tab"`), recherche par mot-clé, tri par réduction, redirection `/go/[dealId]` + log de clic (vérifié directement contre l'instance Neon réelle via `lib/db.ts`, ligne de test supprimée après coup), bannière de notification pour offre expirée.
+  - Point technique découvert en cours de session : `next dev` lancé deux fois en parallèle sur des ports différents (serveur de test Playwright + un `npm run build` concurrent) a corrompu le fichier généré `.next/dev/types/routes.d.ts` (JS invalide), faisant échouer `npm run build` avec des erreurs TypeScript sans rapport avec le code applicatif. Résolu en supprimant `.next/` (dossier généré, jamais versionné) et en relançant le build — aucun code source affecté.
+  - T034 : scénarios de `quickstart.md` rejoués manuellement avec un serveur `next dev` dédié (port 3101) sur données réelles — catalogue par défaut (7 offres actives), filtre catégorie chaussures (2 résultats), recherche "Babolat" (2 résultats), tri par réduction (ordre décroissant confirmé : -35%, -33%, -31%, -31%, -30%), bannière `deal-expired`/`deal-not-found` (texte correct, apostrophe HTML-encodée `&#x27;` constatée en `curl` brut — normal, pas un bug). Serveur de vérification arrêté et confirmé injoignable (`curl` → `000`) après contrôle.
+  - `npm run lint`, `npm run build`, `npm test` (30 tests) et `npm run test:e2e` (6 tests) passent tous sans erreur.
+- `tasks.md` : T001-T034 cochées — **toutes les tâches de `tasks.md` sont maintenant terminées.**
 
 ## Contenu fonctionnel déjà spécifié (à valider/confirmer, pas encore construit)
 
@@ -65,4 +74,4 @@
 
 ## Prochaine étape
 
-`tasks.md` mentionne encore une **Phase 7 (Polish & Cross-Cutting Concerns)**. À soumettre explicitement à l'utilisateur en début de prochaine conversation avant de démarrer.
+`tasks.md` est intégralement terminé (T001-T034). Aucune phase suivante n'est définie dans le cadrage existant : le MVP décrit par `spec.md`/`plan.md` est fonctionnellement complet et vérifié de bout en bout (build/lint/tests/e2e), mais n'est pas encore déployé (pas de projet Vercel/Cloudflare Pages configuré). La suite (déploiement, ou autre chantier) doit être explicitement soumise et confirmée par l'utilisateur en début de prochaine conversation — ne pas la déduire seul.

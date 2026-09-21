@@ -1,5 +1,6 @@
 import type { DealCardData } from "@/types/database";
 import { formatDiscountBadge, formatFreshnessLabel, formatPrice } from "@/lib/format";
+import { DealImage } from "@/components/deal-image";
 
 export function DealCard({ deal }: { deal: DealCardData }) {
   return (
@@ -11,13 +12,7 @@ export function DealCard({ deal }: { deal: DealCardData }) {
         className="flex flex-1 flex-col"
       >
         <div className="relative aspect-square bg-zinc-100 dark:bg-zinc-800">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={deal.image_url}
-            alt={deal.title}
-            loading="lazy"
-            className="h-full w-full object-cover"
-          />
+          <DealImage src={deal.image_url} alt={deal.title} category={deal.category} />
           <span className="absolute left-2 top-2 rounded bg-red-600 px-2 py-1 text-xs font-semibold text-white">
             {formatDiscountBadge(deal.discount_percentage)}
           </span>

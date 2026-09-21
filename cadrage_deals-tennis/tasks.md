@@ -114,9 +114,9 @@
 
 **Purpose**: Améliorations transversales, gestion des cas limites et validation finale.
 
-- [ ] T032 [P] Add broken image fallback handling with category placeholder SVG in components/deal-card.tsx
-- [ ] T033 [P] Create end-to-end integration test suite verifying catalog browsing, search, filtering, and redirection in tests/e2e/catalog.spec.ts
-- [ ] T034 Execute quickstart validation scenarios from quickstart.md and verify all acceptance criteria
+- [x] T032 [P] Add broken image fallback handling with category placeholder SVG in components/deal-card.tsx
+- [x] T033 [P] Create end-to-end integration test suite verifying catalog browsing, search, filtering, and redirection in tests/e2e/catalog.spec.ts
+- [x] T034 Execute quickstart validation scenarios from quickstart.md and verify all acceptance criteria
 
 ---
 

@@ -9,7 +9,8 @@
     "lint": "eslint",
     "db:migrate": "node --env-file=.env.local scripts/migrate.ts",
     "db:seed": "node --env-file=.env.local scripts/seed.ts",
-    "test": "node --env-file=.env.local node_modules/vitest/vitest.mjs run"
+    "test": "node --env-file=.env.local node_modules/vitest/vitest.mjs run",
+    "test:e2e": "node --env-file=.env.local node_modules/@playwright/test/cli.js test"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

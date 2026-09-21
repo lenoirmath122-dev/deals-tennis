@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Raquettes">
+  <rect width="400" height="400" fill="#e4e4e7"/>
+  <g fill="none" stroke="#71717a" stroke-width="8">
+    <ellipse cx="200" cy="150" rx="70" ry="90"/>
+    <path d="M200 240 L200 320" stroke-width="14" stroke-linecap="round"/>
+    <path d="M160 90 L240 210 M240 90 L160 210 M175 75 L225 225 M225 75 L175 225" stroke-width="2" opacity="0.5"/>
+  </g>
+  <text x="200" y="360" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#71717a">Raquettes</text>
+</svg>

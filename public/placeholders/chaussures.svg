@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Chaussures">
+  <rect width="400" height="400" fill="#e4e4e7"/>
+  <path d="M100 240 Q100 200 150 195 L220 190 Q250 160 290 175 Q310 182 310 210 L310 240 Q310 255 295 255 L110 255 Q100 255 100 245 Z" fill="none" stroke="#71717a" stroke-width="8" stroke-linejoin="round"/>
+  <text x="200" y="360" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#71717a">Chaussures</text>
+</svg>
