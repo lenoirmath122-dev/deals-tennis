@@ -74,4 +74,9 @@
 
 ## Prochaine étape
 
-`tasks.md` est intégralement terminé (T001-T034). Aucune phase suivante n'est définie dans le cadrage existant : le MVP décrit par `spec.md`/`plan.md` est fonctionnellement complet et vérifié de bout en bout (build/lint/tests/e2e), mais n'est pas encore déployé (pas de projet Vercel/Cloudflare Pages configuré). La suite (déploiement, ou autre chantier) doit être explicitement soumise et confirmée par l'utilisateur en début de prochaine conversation — ne pas la déduire seul.
+`tasks.md` (MVP) est intégralement terminé (T001-T034) et vérifié de bout en bout. L'utilisateur a demandé l'ouverture d'un **nouveau cycle de cadrage (V2 post-MVP)**, en mode manuel, pas via spec-kit (D-2026-09-21-08) :
+
+1. **Étape immédiate** : identifier la liste complète des specs à construire pour la suite du projet (déploiement, automatisation n8n, autres chantiers non encore nommés) — pas encore faite, à traiter dans une prochaine conversation dédiée.
+2. **Étapes suivantes** : une fois cette liste validée par l'utilisateur, construire chaque spec une par une, une spec par conversation, sans enchaînement.
+
+Ne pas déduire seul le contenu de cette liste de specs avant que la conversation dédiée ne s'ouvre.

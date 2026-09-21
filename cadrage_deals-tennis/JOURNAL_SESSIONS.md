@@ -123,3 +123,12 @@
 - `tasks.md` : T032-T034 cochées — **T001-T034, toutes les tâches de `tasks.md`, sont maintenant terminées.**
 - **Une seule étape de build traitée dans cette conversation** (Phase 7 uniquement, conforme au protocole).
 - Prochaine étape : non tranchée — `tasks.md` est intégralement terminé, aucune phase suivante n'existe dans le cadrage actuel. Le sujet à traiter ensuite (déploiement en production, ou autre chantier) doit être explicitement soumis et confirmé par l'utilisateur en début de prochaine conversation.
+
+## 2026-09-21 (suite 9) — Ouverture du cycle de cadrage V2 (post-MVP)
+
+- Reprise de session, protocole de reprise appliqué (INDEX → ETAT_ACTUEL → GAPS_OUVERTS → dernière entrée du journal).
+- Question posée par l'utilisateur : basculer sur l'outil `specify` (GitHub spec-kit) pour ce nouveau cadrage ? Constat : `specify` est installé sur la machine (`C:\Users\lenoi\.local\bin\specify.exe`) mais jamais initialisé dans ce dépôt (pas de `.specify/`) ; la structure `cadrage_deals-tennis/` actuelle mime déjà les artefacts spec-kit mais a été importée/gérée à la main.
+- Décision structurante soumise et actée : D-2026-09-21-08 — on reste en mode manuel avec le protocole existant, pas de bascule vers spec-kit (l'enchaînement automatique des commandes spec-kit entrerait en tension avec la règle "aucune décision structurante déduite seule").
+- Méthode du nouveau cycle de cadrage V2 précisée par l'utilisateur : d'abord identifier la liste complète des specs à construire pour la suite du projet, puis les construire une par une, une spec par conversation.
+- **Aucune étape de build ni de rédaction de spec n'a été démarrée** dans cette conversation (juste le cadrage de la méthode).
+- Prochaine étape : identifier la liste complète des specs à construire pour la V2, dans une conversation dédiée.
