@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { buildCatalogHref } from "@/lib/catalog-url";
 
 function buildPageNumbers(currentPage: number, totalPages: number): (number | "ellipsis")[] {
   const pages = new Set<number>([1, totalPages, currentPage, currentPage - 1, currentPage + 1]);
@@ -19,9 +20,15 @@ function buildPageNumbers(currentPage: number, totalPages: number): (number | "e
 export function Pagination({
   currentPage,
   totalPages,
+  category,
+  sort,
+  q,
 }: {
   currentPage: number;
   totalPages: number;
+  category: string;
+  sort: "newest" | "discount";
+  q: string;
 }) {
   if (totalPages <= 1) {
     return null;
@@ -32,7 +39,7 @@ export function Pagination({
   return (
     <nav aria-label="Pagination" className="flex items-center justify-center gap-2 py-8">
       <Link
-        href={`/?page=${currentPage - 1}`}
+        href={buildCatalogHref({ category, sort, q, page: currentPage - 1 })}
         aria-disabled={currentPage <= 1}
         className={`rounded px-3 py-1.5 text-sm ${
           currentPage <= 1
@@ -51,7 +58,7 @@ export function Pagination({
         ) : (
           <Link
             key={page}
-            href={`/?page=${page}`}
+            href={buildCatalogHref({ category, sort, q, page })}
             aria-current={page === currentPage ? "page" : undefined}
             className={`rounded px-3 py-1.5 text-sm ${
               page === currentPage
@@ -65,7 +72,7 @@ export function Pagination({
       )}
 
       <Link
-        href={`/?page=${currentPage + 1}`}
+        href={buildCatalogHref({ category, sort, q, page: currentPage + 1 })}
         aria-disabled={currentPage >= totalPages}
         className={`rounded px-3 py-1.5 text-sm ${
           currentPage >= totalPages

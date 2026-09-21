@@ -59,14 +59,14 @@
 **Independent Test**: Cliquer sur le filtre "Chaussures", taper une marque dans la recherche et ordonner par "Plus forte réduction", puis vérifier la synchronisation des paramètres d'URL et des résultats.
 
 ### Tests for User Story 2
-- [ ] T016 [P] [US2] Create unit tests for search query sanitization and category filter matching in tests/unit/filters.test.ts
+- [x] T016 [P] [US2] Create unit tests for search query sanitization and category filter matching in tests/unit/filters.test.ts
 
 ### Implementation for User Story 2
-- [ ] T017 [US2] Update getCatalogDeals in lib/deals.ts to support category filtering, case-insensitive ILIKE search on title and brand, and sort selection (newest vs discount)
-- [ ] T018 [P] [US2] Create category filter component with horizontal scrolling pills and active state indicators in components/category-filter.tsx
-- [ ] T019 [P] [US2] Create debounced instant search bar component updating URL search parameter q in components/search-bar.tsx
-- [ ] T020 [P] [US2] Create sort dropdown selector component allowing toggle between Nouveautés and Plus forte réduction in components/sort-dropdown.tsx
-- [ ] T021 [US2] Integrate CategoryFilter, SearchBar, and SortDropdown into the catalog page header with URL search parameters synchronization in app/(catalog)/page.tsx
+- [x] T017 [US2] Update getCatalogDeals in lib/deals.ts to support category filtering, case-insensitive ILIKE search on title and brand, and sort selection (newest vs discount)
+- [x] T018 [P] [US2] Create category filter component with horizontal scrolling pills and active state indicators in components/category-filter.tsx
+- [x] T019 [P] [US2] Create debounced instant search bar component updating URL search parameter q in components/search-bar.tsx
+- [x] T020 [P] [US2] Create sort dropdown selector component allowing toggle between Nouveautés and Plus forte réduction in components/sort-dropdown.tsx
+- [x] T021 [US2] Integrate CategoryFilter, SearchBar, and SortDropdown into the catalog page header with URL search parameters synchronization in app/(catalog)/page.tsx
 
 **Checkpoint**: User Stories 1 et 2 complètement intégrées et testables de façon indépendante.
 

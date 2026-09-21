@@ -1,4 +1,5 @@
 import { sql } from "@/lib/db";
+import { isValidCategory, sanitizeSearchQuery } from "@/lib/filters";
 import type { CatalogResponse, DealCardData } from "@/types/database";
 
 const PER_PAGE = 24;
@@ -24,15 +25,16 @@ export async function getCatalogDeals(
   const queryParams: unknown[] = [];
   let paramIndex = 1;
 
-  if (params.category && params.category !== "all") {
+  if (params.category && isValidCategory(params.category) && params.category !== "all") {
     conditions.push(`d.category = $${paramIndex++}`);
     queryParams.push(params.category);
   }
 
-  if (params.q && params.q.trim().length > 0) {
+  const searchQuery = sanitizeSearchQuery(params.q);
+  if (searchQuery.length > 0) {
     conditions.push(`(d.title ILIKE $${paramIndex} OR d.brand ILIKE $${paramIndex})`);
     paramIndex++;
-    queryParams.push(`%${params.q.trim()}%`);
+    queryParams.push(`%${searchQuery}%`);
   }
 
   const whereClause = conditions.join(" AND ");

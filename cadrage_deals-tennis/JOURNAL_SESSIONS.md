@@ -64,3 +64,21 @@
 - `tasks.md` : T009-T015 cochées.
 - **Une seule étape de build traitée dans cette conversation** (Phase 3 uniquement, conforme au protocole) — pas d'enchaînement sur la Phase 4.
 - Prochaine étape : Phase 4 de `tasks.md` (T016-T021, User Story 2 : filtrage par catégorie, recherche par mot-clé, tri), à traiter dans une conversation dédiée.
+
+## 2026-09-21 (suite 5) — Phase 4 : User Story 2 / filtrage, recherche, tri (T016-T021)
+
+- Reprise de session, protocole de reprise appliqué (ETAT_ACTUEL → GAPS_OUVERTS → dernière entrée du journal). Étape soumise et confirmée par l'utilisateur avant de démarrer.
+- Constat : `lib/deals.ts` implémentait déjà category/sort/q depuis la Phase 3 (le contrat `catalog-query-api.md` fournissait l'implémentation complète dès le départ) ; le travail de T017 a consisté à extraire cette logique dans des fonctions pures testables plutôt qu'à la réécrire.
+- Décisions mineures auto-décidées (documentées, pas structurantes) :
+  - Catégorie invalide dans l'URL (`isValidCategory` false) traitée comme "aucun filtre" plutôt que transmise telle quelle au SQL (qui aurait renvoyé zéro résultat silencieusement).
+  - Debounce de la recherche fixé à 300 ms (non spécifié par le contrat/la spec).
+  - Synchronisation `SearchBar` avec l'URL via `key={q}` côté page plutôt qu'un `useEffect` de synchronisation (évite un warning ESLint `react-hooks/set-state-in-effect`).
+  - Ajout d'un état vide différencié dans `DealGrid` (message + lien de réinitialisation) pour l'edge case "Catégorie sans offre active" de `spec.md`, non explicitement demandé par `tasks.md` mais couvert par la spec normative.
+- Bug potentiel évité (pas une régression réelle, détecté avant livraison) : `components/pagination.tsx` construisait des liens `/?page=X` sans préserver `category`/`sort`/`q` — corrigé en même temps que l'intégration, sinon changer de page aurait silencieusement réinitialisé les filtres actifs.
+- Nouveaux fichiers : `lib/filters.ts`, `lib/catalog-url.ts`, `components/category-filter.tsx`, `components/search-bar.tsx`, `components/sort-dropdown.tsx`, `tests/unit/filters.test.ts`.
+- Fichiers modifiés : `lib/deals.ts`, `components/pagination.tsx`, `components/deal-grid.tsx`, `app/(catalog)/page.tsx`.
+- Vérification bout en bout avec données réelles (protocole point 3) : serveur `next dev` sur port 3001, contrôlé via `curl` — filtre catégorie, recherche insensible à la casse sur titre/marque, tri par réduction vs nouveauté (ordres différents confirmés), résistance à une catégorie invalide (`DROP TABLE` dans l'URL, pas de crash, 200), état vide avec réinitialisation. Serveur et processus arrêtés après contrôle, fichiers temporaires de vérification supprimés.
+- `npm run lint`, `npm run build` et `npm test` (17 tests, 3 fichiers) passent tous les trois sans erreur.
+- `tasks.md` : T016-T021 cochées.
+- **Une seule étape de build traitée dans cette conversation** (Phase 4 uniquement, conforme au protocole) — pas d'enchaînement sur la Phase 5.
+- Prochaine étape : Phase 5 de `tasks.md` (User Story 3 : redirection `/go/[dealId]` avec tracking de clic anonymisé RGPD), à traiter dans une conversation dédiée.
