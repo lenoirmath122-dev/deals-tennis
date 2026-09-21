@@ -79,13 +79,13 @@
 **Independent Test**: Cliquer sur "Voir le bon plan" d'une offre active, vérifier la réponse HTTP 307 vers l'URL marchande et contrôler l'insertion de l'enregistrement dans la table `click_events`.
 
 ### Tests for User Story 3
-- [ ] T022 [P] [US3] Create unit tests for device type resolution (mobile, desktop, tablet, unknown) from User-Agent in tests/unit/tracking.test.ts
-- [ ] T023 [P] [US3] Create contract tests for route handler /go/[dealId] verifying HTTP 307 status, Location header, no-store cache control, and click logging in tests/contract/redirection.test.ts
+- [x] T022 [P] [US3] Create unit tests for device type resolution (mobile, desktop, tablet, unknown) from User-Agent in tests/unit/tracking.test.ts
+- [x] T023 [P] [US3] Create contract tests for route handler /go/[dealId] verifying HTTP 307 status, Location header, no-store cache control, and click logging in tests/contract/redirection.test.ts
 
 ### Implementation for User Story 3
-- [ ] T024 [US3] Implement device resolution helper and click event insertion function recordClickEvent in lib/tracking.ts
-- [ ] T025 [US3] Implement internal redirection Route Handler GET /go/[dealId] looking up affiliate_url, logging click to click_events, and returning HTTP 307 Temporary Redirect in app/go/[dealId]/route.ts
-- [ ] T026 [US3] Update components/deal-card.tsx action button and links to target /go/[dealId] instead of direct external URLs
+- [x] T024 [US3] Implement device resolution helper and click event insertion function recordClickEvent in lib/tracking.ts
+- [x] T025 [US3] Implement internal redirection Route Handler GET /go/[dealId] looking up affiliate_url, logging click to click_events, and returning HTTP 307 Temporary Redirect in app/go/[dealId]/route.ts
+- [x] T026 [US3] Update components/deal-card.tsx action button and links to target /go/[dealId] instead of direct external URLs
 
 **Checkpoint**: Parcours complet de consultation, clic et redirection trackée opérationnel.
 

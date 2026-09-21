@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-21 (Phase 4)
+**Dernière mise à jour** : 2026-09-21 (Phase 5)
 
 ## Où en est le projet
 
@@ -39,6 +39,14 @@
   - Vérification manuelle bout en bout : serveur `next dev` lancé (port 3001), vérifié via `curl` — filtre catégorie (`?category=chaussures`, pill active correcte), recherche insensible à la casse (`?q=babolat` → 2 résultats titre+marque), tri par réduction (`?sort=discount` → 35/33/31/31/30/30/25%, ordre décroissant confirmé, différent du tri par défaut), catégorie invalide (`?category=DROP%20TABLE`) ne fait pas planter la page (200, traité comme "all"), état vide avec message de réinitialisation sur recherche sans résultat. Serveur arrêté et processus nettoyé après contrôle.
   - `npm run lint`, `npm run build` et `npm test` (17 tests, 3 fichiers) passent tous les trois sans erreur.
 - `tasks.md` : T001-T021 cochées.
+- **Phase 5 de `tasks.md` (User Story 3 — redirection trackée vers le marchand partenaire) terminée** (T022-T026) :
+  - `lib/tracking.ts` : `resolveDeviceType` (algorithme repris tel quel du contrat `redirection-api.md`), `cleanReferrerUrl` (ne garde le chemin+query du `Referer` que si même origine que la requête, sinon `null` — protège contre la fuite d'URL externe et le RGPD), `recordClickEvent` (insertion dans `click_events`).
+  - `app/go/[dealId]/route.ts` : Route Handler `GET` conforme au contrat `redirection-api.md` — valide le format UUID (sinon traité comme cas 3), recherche l'offre (`affiliate_url`, `status`, `is_active`, `expires_at`), branche sur les 3 cas (actif → 307 vers `affiliate_url` + log clic ; expiré/invalide → 307 vers `/?notification=deal-expired`, aucun clic loggé ; inexistant → 307 vers `/?notification=deal-not-found`), toutes les réponses avec `Cache-Control: no-store, no-cache, must-revalidate` (choix mineur auto-décidé d'uniformiser sur les 3 cas plutôt que de suivre littéralement le contrat qui ne précise pas d'en-tête pour le cas 3 — cohérent avec l'objectif de ne jamais mettre en cache une redirection).
+  - `components/deal-card.tsx` : toute la carte est désormais un lien `<a href="/go/[dealId]" target="_blank" rel="noopener noreferrer">` (choix mineur auto-décidé : ouverture dans un nouvel onglet pour ne pas faire perdre la position dans le catalogue, non spécifié par le contrat).
+  - Tests ajoutés : `tests/unit/tracking.test.ts` (10 tests : résolution du type d'appareil + nettoyage du referrer) et `tests/contract/redirection.test.ts` (contre l'instance Neon réelle, 3 tests : redirection + log de clic pour une offre active, redirection sans log pour une offre expirée/inactive, redirection pour un id inexistant). Le test de redirection active insère une vraie ligne dans `click_events` à chaque exécution et la supprime explicitement à la fin du test (nettoyage vérifié par double exécution de `npm test`, 0 ligne résiduelle).
+  - Vérification manuelle bout en bout avec données réelles : serveur `next dev` lancé (port 3001), `curl` sur une offre active (307 + `Location` = `affiliate_url` réel + clic inséré en base avec `device_type='mobile'` et `referrer_url` nettoyé), sur une offre expirée du seed (307 vers `/?notification=deal-expired`, aucun clic inséré), sur un UUID inexistant et une chaîne malformée (307 vers `/?notification=deal-not-found` dans les deux cas). Lignes de `click_events` créées pendant la vérification manuelle supprimées explicitement après contrôle, table revérifiée à 0 ligne. Serveur et processus arrêtés après contrôle.
+  - `npm run lint`, `npm run build` et `npm test` (30 tests, 5 fichiers) passent tous les trois sans erreur.
+- `tasks.md` : T001-T026 cochées.
 
 ## Contenu fonctionnel déjà spécifié (à valider/confirmer, pas encore construit)
 
@@ -49,4 +57,4 @@
 
 ## Prochaine étape
 
-Démarrer la **Phase 5 de `tasks.md`** (User Story 3 : redirection d'affiliation `/go/[dealId]` avec tracking de clic anonymisé RGPD), dans une conversation dédiée.
+`tasks.md` mentionne encore une **Phase 6 (User Story 4 : gestion des offres expirées / bannière de notification, T027-T031)**. À soumettre explicitement à l'utilisateur en début de prochaine conversation avant de démarrer.
