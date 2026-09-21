@@ -11,3 +11,12 @@
 - **Aucune étape de build n'a été démarrée** dans cette conversation (conforme au protocole : le cadrage n'est pas encore clos).
 - Prochaine étape : non tranchée, à soumettre explicitement à l'utilisateur (voir ETAT_ACTUEL.md).
 - Ajout ultérieur dans la même session : politique d'archivage des fichiers de suivi définie et actée (D-2026-09-21-04). Dossier `archive/` créé (vide). `INDEX.md` mis à jour pour la référencer.
+
+## 2026-09-21 (suite) — Clôture du cadrage fonctionnel
+
+- Reprise de session, protocole de reprise appliqué (INDEX → ETAT_ACTUEL → GAPS_OUVERTS → journal).
+- Deux décisions structurantes soumises et actées par l'utilisateur :
+  - D-2026-09-21-05 : `tasks.md` repris tel quel mais entièrement décoché, liens vers l'ancien emplacement corrigés. Ferme GAP-2026-09-21-01.
+  - D-2026-09-21-06 : cadrage fonctionnel considéré clos, pas de revue complète de `spec.md`/`plan.md`.
+- **Aucune étape de build n'a été démarrée** dans cette conversation (travail de cadrage/documentation uniquement).
+- Prochaine étape : Phase 1 de `tasks.md` (setup Next.js + TypeScript + Tailwind), à traiter dans une conversation dédiée.
