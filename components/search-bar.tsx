@@ -40,7 +40,7 @@ export function SearchBar({
       onChange={(event) => handleChange(event.target.value)}
       placeholder="Rechercher un modèle ou une marque…"
       aria-label="Rechercher un bon plan par modèle ou marque"
-      className="w-full rounded border border-black/10 bg-white px-3 py-1.5 text-sm text-zinc-900 dark:border-white/10 dark:bg-zinc-900 dark:text-zinc-50"
+      className="w-full rounded-md border border-card-border bg-white px-3 py-1.5 text-sm text-zinc-900"
     />
   );
 }

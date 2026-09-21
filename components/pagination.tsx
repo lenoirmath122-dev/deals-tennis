@@ -41,10 +41,10 @@ export function Pagination({
       <Link
         href={buildCatalogHref({ category, sort, q, page: currentPage - 1 })}
         aria-disabled={currentPage <= 1}
-        className={`rounded px-3 py-1.5 text-sm ${
+        className={`rounded-md px-3 py-1.5 text-sm ${
           currentPage <= 1
-            ? "pointer-events-none text-zinc-300 dark:text-zinc-700"
-            : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            ? "pointer-events-none text-zinc-300"
+            : "text-zinc-700 hover:bg-zinc-100"
         }`}
       >
         Précédent
@@ -60,10 +60,10 @@ export function Pagination({
             key={page}
             href={buildCatalogHref({ category, sort, q, page })}
             aria-current={page === currentPage ? "page" : undefined}
-            className={`rounded px-3 py-1.5 text-sm ${
+            className={`rounded-md px-3 py-1.5 text-sm ${
               page === currentPage
-                ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900"
-                : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                ? "bg-zinc-900 text-white"
+                : "text-zinc-700 hover:bg-zinc-100"
             }`}
           >
             {page}
@@ -74,10 +74,10 @@ export function Pagination({
       <Link
         href={buildCatalogHref({ category, sort, q, page: currentPage + 1 })}
         aria-disabled={currentPage >= totalPages}
-        className={`rounded px-3 py-1.5 text-sm ${
+        className={`rounded-md px-3 py-1.5 text-sm ${
           currentPage >= totalPages
-            ? "pointer-events-none text-zinc-300 dark:text-zinc-700"
-            : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            ? "pointer-events-none text-zinc-300"
+            : "text-zinc-700 hover:bg-zinc-100"
         }`}
       >
         Suivant

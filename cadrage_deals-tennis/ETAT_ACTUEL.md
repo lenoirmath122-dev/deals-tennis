@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-21 (Chantier V2 « CI + protection de branche » terminé)
+**Dernière mise à jour** : 2026-09-21 (Chantier « Charte graphique / design system » — tokens appliqués au code, non commités)
 
 ## Où en est le projet
 
@@ -108,7 +108,13 @@ Recherche effectuée sur la méthode de récupération pour Tennis Point FR / Pa
 
 **Mise à jour 2026-09-21 (suite 2)** : les deux candidatures marchand (Tennis Point FR, Padel-Point FR) ont été soumises par l'utilisateur, avec un message de présentation rédigé avec assistance (positionnement du site, mention du datafeed comme méthode d'ingestion souhaitée). Toujours en attente d'acceptation — aucun changement de statut sur GAP-2026-09-21-03. Question de fond posée par l'utilisateur (vaut-il le coup de viser l'affiliation vs. construire sans, en récupération de données directe) : recommandation donnée de poursuivre l'affiliation (monétisation + cadre légal plus solide que du scraping non autorisé), sans revenir sur la décision déjà actée (D-2026-09-21-12) de démarrer avec les marchands confirmés.
 
-**Prochaine étape (à traiter dans une prochaine conversation, une fois l'acceptation reçue sur un ou les deux programmes)** : consulter le datafeed réel (format, champs, fréquence de mise à jour) pour confirmer la méthode d'ingestion vers `deals`/`merchants`. Voir GAP-2026-09-21-03. Rappel : toute contribution à `master` doit désormais passer par une PR (plus de push direct possible, y compris pour l'utilisateur).
+**Mise à jour 2026-09-21 (suite 3)** : l'utilisateur a demandé si le chantier pouvait avancer sans attendre l'affiliation, via du scraping direct gratuit. **Décision actée (D-2026-09-21-14)** : scraping direct autorisé **en parallèle/à titre de test** pendant que les candidatures Awin sont en cours — pas en remplacement définitif ; dès qu'un programme est accepté pour un marchand, ce marchand repasse sur le datafeed/mécanisme d'affiliation officiel.
+
+**Prochaine étape (à traiter en tête de la prochaine conversation, avant tout code sur ce chantier)** : deux décisions structurantes restent ouvertes, soumises explicitement mais pas encore tranchées :
+1. Quels marchands scraper en premier pour ce canal d'appoint (candidats à évaluer : Tennispro.fr, Sport 2000, autres revendeurs FR sans programme d'affiliation confirmé).
+2. Comportement du lien de destination pour une offre scrapée sans affiliation, sachant que `deals.affiliate_url`/`/go/[dealId]` supposent un lien tracké/rémunéré : lien produit direct sans tracking, ou pas de lien cliquable tant qu'il n'y a pas d'affiliation pour ce marchand.
+
+Rester aussi à cadrer une fois ces deux points tranchés : méthode technique de scraping (n8n HTTP node / Playwright), fréquence, respect des CGU/robots.txt par marchand ciblé. Si entretemps une acceptation Awin arrive sur Tennis Point FR/Padel-Point FR, consulter le datafeed réel (format, champs, fréquence) pour confirmer la méthode d'ingestion — voir GAP-2026-09-21-03. Rappel : toute contribution à `master` doit désormais passer par une PR (plus de push direct possible, y compris pour l'utilisateur).
 
 ## Chantier « Charte graphique / design system » (cadrage démarré)
 
@@ -118,6 +124,14 @@ Automatisation n8n étant bloqué en attente Awin (GAP-2026-09-21-03), l'utilisa
 - Trois propositions de typographie présentées visuellement (artefact Design canvas avec maquette de carte de deal) : Fraunces+Inter, Space Grotesk, Libre Franklin+Newsreader. **Typographie retenue : Space Grotesk** (famille unique, poids 400/500/700).
 - **Palette à deux accents actée** : vert gazon foncé `#1b4332` (prix/CTA) et terre cuite `#c1440e` (badge réduction), indépendants de la photo de fond réelle.
 - Détail complet : voir D-2026-09-21-13 dans `DECISIONS_FONCTIONNELLES.md`.
-- **Aucun code appliqué** — cadrage uniquement dans cette conversation, conforme au protocole (une étape de build par conversation).
+- **Tokens appliqués au code** (étape de build, conforme au protocole — scope confirmé explicitement avec l'utilisateur avant de commencer, vu que la photo hero n'est pas encore disponible) :
+  - `app/layout.tsx` : police remplacée par `Space_Grotesk` (`next/font/google`, poids 400/500/700) à la place de Geist/Geist Mono.
+  - `app/globals.css` : tokens Tailwind v4 (`@theme inline`) ajoutés — `--color-accent` (`#1b4332`, vert gazon), `--color-accent-foreground`, `--color-discount` (`#c1440e`, terre cuite), `--color-discount-foreground`, `--color-card-border` (`#e2e4e1`) ; `--font-sans` pointe vers Space Grotesk ; `body` utilise désormais `var(--font-sans)` (auparavant codé en dur sur `Arial, Helvetica, sans-serif`, un reliquat du scaffold `create-next-app` qui ignorait la police chargée).
+  - Rayons d'angle appliqués via les classes Tailwind existantes (pas de token custom nécessaire, les valeurs par défaut correspondent exactement à la charte) : `rounded-md` (6px) sur cartes/boutons/inputs/pagination, `rounded` (4px, défaut) sur le badge de réduction.
+  - Composants mis à jour : `deal-card.tsx` (carte blanche/bordure `card-border`, badge réduction en `bg-discount`, prix en `text-accent`), `category-filter.tsx`, `search-bar.tsx`, `sort-dropdown.tsx`, `pagination.tsx`, `deal-grid.tsx`, `notification-banner.tsx`, page catalogue (`app/(catalog)/page.tsx`).
+  - **Décision mineure auto-décidée (à documenter, pas structurante)** : suppression de toutes les variantes Tailwind `dark:` du code (elles existaient depuis le MVP, thème sombre par défaut du scaffold `create-next-app`). Raison : la charte actée (D-2026-09-21-13) ne définit qu'une seule palette neutre (blanc/gris/noir chaud) et ne mentionne aucun mode sombre — les garder aurait mélangé l'ancien thème par défaut avec les nouveaux tokens de façon incohérente. Un vrai mode sombre pourrait être cadré comme chantier séparé si souhaité un jour.
+  - Pas de section hero (photo de terrain toujours absente, GAP-2026-09-21-04 inchangé) — décision confirmée par l'utilisateur avant de commencer cette étape.
+  - Vérification bout en bout : `npm run lint`, `npm run build`, `npm test` (30 tests, 5 fichiers, inchangé) passent tous sans erreur. Contrôle visuel réel : serveur `next dev` lancé (port 3200), capture d'écran du catalogue via Playwright — police Space Grotesk, badges terre cuite, prix en vert gazon, cartes blanches à bordure fine et rayons discrets confirmés visuellement conformes à la charte. Erreurs console `ERR_NAME_NOT_RESOLVED` sur les images du jeu de données seed (`images.example.com`, domaine factice) attendues et sans impact — le fallback placeholder par catégorie s'affiche correctement. Serveur de dev et capture d'écran temporaire supprimés après contrôle.
+  - **Changements non commités à ce jour** — l'utilisateur a choisi de relire le diff lui-même avant tout commit/branche/PR (aucune action git prise par Claude Code sur cette étape).
 
-**Prochaine étape de ce chantier** : soit poursuivre le cadrage (spacing/layout, style des boutons/pills, traitement de la barre de navigation — inspiration `resizable-navbar`/`hero-highlight` d'Aceternity à creuser), soit démarrer l'application des tokens à `app/globals.css` et aux composants existants comme étape de build à part entière (à soumettre explicitement en début de prochaine conversation dédiée à ce chantier). Voir aussi GAP-2026-09-21-04 (photo de terrain à recevoir).
+**Prochaine étape de ce chantier** : une fois la relecture faite par l'utilisateur, ouvrir une branche + PR pour cette étape (flux git habituel). Reste à cadrer/construire : spacing/layout plus poussé, style de la barre de navigation (inspiration `resizable-navbar`/`hero-highlight` d'Aceternity à creuser), et la section hero elle-même dès réception de la photo de terrain (voir GAP-2026-09-21-04).

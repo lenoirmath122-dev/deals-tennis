@@ -25,9 +25,7 @@ export default async function CatalogPage({
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-8">
-      <h1 className="mb-6 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
-        Bons plans tennis
-      </h1>
+      <h1 className="mb-6 text-2xl font-semibold text-zinc-900">Bons plans tennis</h1>
 
       <NotificationBanner type={notification} category={category} sort={sort} q={q} />
 
