@@ -242,3 +242,14 @@
 - Décision structurante actée (D-2026-09-21-13) : typographie Space Grotesk, palette à deux accents (vert gazon `#1b4332` pour prix/CTA, terre cuite `#c1440e` pour badge réduction), cartes blanches/bordure gris clair, radius léger (6px cartes/boutons, 4px badges).
 - **Aucune étape de build n'a été démarrée** dans cette conversation (cadrage uniquement, conforme au protocole — l'utilisateur avait explicitement choisi ce périmètre en début de conversation).
 - Prochaine étape : soit poursuivre le cadrage du chantier (spacing/layout, style des composants de nav/filtres), soit démarrer l'application des tokens à `app/globals.css` comme étape de build à part entière — à soumettre explicitement en début de prochaine conversation dédiée. Voir aussi GAP-2026-09-21-04 (photo de terrain à recevoir).
+
+## 2026-09-21 (suite 19) — Cadrage chantier « Automatisation n8n » : lien scraping + liste de marchands candidats (pas de build)
+
+- Reprise de session (`/clear`), protocole de reprise appliqué (ETAT_ACTUEL → GAPS_OUVERTS → dernière entrée du journal), l'utilisateur ayant demandé un point de situation général sur le scraping.
+- Constat rappelé : cadrage du chantier « Charte graphique » terminé et mergé (PR #3) entre-temps ; deux décisions structurantes restaient ouvertes sur le chantier « Automatisation n8n » depuis D-2026-09-21-14 (marchands à scraper en premier, comportement du lien de destination sans affiliation).
+- Les deux décisions ont été soumises explicitement via question structurée :
+  - **D-2026-09-21-15** : `affiliate_url` pointe vers l'URL produit directe pour une offre scrapée sans affiliation (pas de lien d'affiliation, puisqu'il n'y en a pas) ; `/go/[dealId]` continue de logger le clic (analytics interne RGPD) sans rémunération associée.
+  - **D-2026-09-21-16** : liste candidate actée en deux groupes — revendeurs multi-marques prioritaires (Tennispro.fr, Sport 2000, Decathlon, SportSystem, ProTennis, Tennis Pro), marques à évaluer séparément et non prioritaires pour ce canal (Wilson, Babolat, Yonex, Head), car un site de marque a rarement un mécanisme de promos comparable à un revendeur.
+- **GAP-2026-09-21-05 ouvert** : aucun premier marchand sélectionné pour une implémentation technique concrète, `robots.txt`/CGU non vérifiés, méthode technique (n8n HTTP node vs Playwright) et fréquence non tranchées.
+- **Aucune étape de build n'a été démarrée** dans cette conversation (cadrage uniquement — deux décisions structurantes actées, pas d'enchaînement sur la sélection technique du premier marchand).
+- Prochaine étape : sélectionner le premier marchand à implémenter parmi la liste de revendeurs (D-2026-09-21-16), vérifier son `robots.txt`/ses CGU, puis cadrer la méthode technique de scraping et la fréquence — à soumettre explicitement en début de prochaine conversation. Voir GAP-2026-09-21-05.
