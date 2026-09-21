@@ -119,3 +119,13 @@ L'ordre de traitement n'est pas encore arbitré — à décider en début de cha
 - Domaine : domaine par défaut `*.vercel.app`, pas de domaine personnalisé pour l'instant.
 
 **Statut** : Actée (confirmée explicitement par l'utilisateur).
+
+---
+
+### D-2026-09-21-11 — Ordre de traitement des chantiers V2 : « CI + protection de branche » retenu en premier
+
+**Contexte** : Chantier 1 (déploiement) terminé (D-2026-09-21-10). 11 chantiers V2 restent à arbitrer (D-2026-09-21-09).
+
+**Décision** : Le chantier « CI + protection de branche » (n°2 de la liste D-2026-09-21-09) est traité en premier parmi les 11 restants — débloque le flux branche → PR → CI → merge prévu par le protocole (point 4) et résout GAP-2026-09-21-02. L'ordre des chantiers suivants reste à arbitrer au fur et à mesure, pas figé d'avance.
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur).

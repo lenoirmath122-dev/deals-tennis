@@ -88,4 +88,6 @@
 
 Détail complet de chaque point : voir D-2026-09-21-09 dans `DECISIONS_FONCTIONNELLES.md`.
 
-**Étape suivante** : arbitrer l'ordre de traitement puis cadrer le prochain chantier retenu, une conversation dédiée à la fois — ne pas déduire seul ni l'ordre ni le contenu détaillé d'un chantier avant que la conversation correspondante ne s'ouvre.
+**Ordre retenu (D-2026-09-21-11)** : chantier « CI + protection de branche » traité en premier parmi les 11 restants. L'ordre des chantiers suivants reste à arbitrer au fur et à mesure.
+
+**Étape suivante** : cadrer le chantier « CI + protection de branche » (contenu détaillé : dépôt distant GitHub, workflow CI lint/build/test, règles de protection de la branche `master`/`main`, flux branche → PR → CI → merge) — à soumettre explicitement en conversation dédiée, ne pas déduire seul le contenu détaillé avant confirmation.

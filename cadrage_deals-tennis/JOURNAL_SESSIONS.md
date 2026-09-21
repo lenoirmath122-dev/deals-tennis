@@ -151,3 +151,13 @@
 - Liste validée telle quelle par l'utilisateur ("soit exhaustif" comme seule consigne) — actée en D-2026-09-21-09.
 - **Aucune étape de build ni de rédaction de spec détaillée n'a été démarrée** dans cette conversation (juste l'identification de la liste, conforme à l'étape prévue).
 - Prochaine étape : arbitrer l'ordre de traitement des 12 chantiers, puis cadrer le premier retenu — à soumettre explicitement en début de prochaine conversation, ne pas déduire seul.
+
+## 2026-09-21 (suite 11) — Chantier 1 : déploiement production Vercel (entrée rétroactive)
+
+- Session non journalisée au moment des faits — entrée ajoutée rétroactivement le 2026-09-21 à la demande de l'utilisateur pour combler l'écart de traçabilité, à partir du détail déjà présent dans `ETAT_ACTUEL.md`.
+- Décision actée : D-2026-09-21-10 — méthode de déploiement : CLI Vercel direct (pas de lien GitHub, réservé au chantier CI), réutilisation de l'instance Neon existante comme base de données prod, domaine par défaut `*.vercel.app`.
+- Projet Vercel créé et lié (`lenoir-nba/deals-tennis`, `.vercel/project.json` non versionné), `DATABASE_URL` configuré en variable d'environnement Production (Sensitive) sur Vercel.
+- Déploiement `vercel --prod` effectué, build réussi, état `READY`. URL de production : `https://deals-tennis.vercel.app`.
+- Vérification manuelle bout en bout sur l'URL de production réelle : catalogue 200 OK avec offres réelles, redirection `/go/[dealId]` testée sur une offre réelle (307 + `Location` correcte, clic loggé dans `click_events` — base prod = base dev, partagée). Ligne de clic de vérification supprimée après contrôle via un script temporaire (`scripts/tmp-verify-cleanup.mjs`), créé puis supprimé, table revérifiée.
+- Commit `dc6025d` (« chore: déploiement production Vercel (chantier V2 n°1) »).
+- Prochaine étape : arbitrer l'ordre des 11 chantiers restants — tranché en début de conversation suivante : Chantier « CI + protection de branche » retenu en premier.
