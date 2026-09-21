@@ -222,3 +222,13 @@
 - Candidature soumise par l'utilisateur (confirmation reçue). En attente de l'acceptation des programmes Tennis Point FR (#13266) et Padel-Point FR (#25160) — GAP-2026-09-21-03 toujours ouvert, aucun changement de statut à ce stade.
 - **Aucune étape de build n'a été démarrée** dans cette conversation (assistance à une démarche externe uniquement).
 - Prochaine étape : une fois l'acceptation reçue sur un ou les deux programmes, consulter le datafeed réel (format, champs, fréquence) pour définir la méthode d'ingestion vers `deals`/`merchants` — voir GAP-2026-09-21-03.
+
+## 2026-09-21 (suite 17) — Candidatures Tennis Point FR / Padel-Point FR soumises (pas de build)
+
+- Reprise de session, protocole de reprise appliqué (ETAT_ACTUEL → GAPS_OUVERTS → dernière entrée du journal). Statut Awin vérifié explicitement avec l'utilisateur : compte actif, mais aucune des deux candidatures marchand pas encore acceptée à ce stade.
+- Le champ « Message » du formulaire de candidature (1000 caractères max, par marchand) a été rédigé avec assistance : présentation du site, positionnement niche tennis/padel, mention explicite du souhait d'utiliser le datafeed pour l'ingestion automatique.
+- Question de fond posée par l'utilisateur : est-ce que l'affiliation vaut le coup, ou construire directement sans (récupération de données brute) ? Réponse donnée : l'affiliation reste recommandée (monétisation prévue par `/go/[dealId]`, cadre légal plus solide qu'une redirection/republication de prix sans accord) ; poursuivre les candidatures Awin en parallèle plutôt que d'abandonner l'approche, quitte à élargir la liste de marchands si ça n'aboutit pas. Pas de décision structurante nouvelle actée (juste une recommandation, la stratégie affiliation reste celle déjà actée).
+- Message de relance (pour un suivi ultérieur si besoin) également rédigé, à envoyer via la messagerie interne Awin, non utilisé dans cette conversation (les candidatures venaient d'être soumises, pas encore de relance nécessaire).
+- Les deux candidatures ont été soumises par l'utilisateur en fin de conversation.
+- **Aucune étape de build n'a été démarrée** dans cette conversation (assistance à une démarche externe + question stratégique).
+- Prochaine étape : inchangée — attendre l'acceptation d'un ou des deux programmes, puis consulter le datafeed réel pour définir la méthode d'ingestion. Voir GAP-2026-09-21-03.
