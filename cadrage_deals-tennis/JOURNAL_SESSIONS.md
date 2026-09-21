@@ -10,3 +10,4 @@
 - Point ouvert soulevé : `tasks.md` contient des cases cochées qui ne correspondent à aucun code réel (GAP-2026-09-21-01) — à trancher par l'utilisateur.
 - **Aucune étape de build n'a été démarrée** dans cette conversation (conforme au protocole : le cadrage n'est pas encore clos).
 - Prochaine étape : non tranchée, à soumettre explicitement à l'utilisateur (voir ETAT_ACTUEL.md).
+- Ajout ultérieur dans la même session : politique d'archivage des fichiers de suivi définie et actée (D-2026-09-21-04). Dossier `archive/` créé (vide). `INDEX.md` mis à jour pour la référencer.

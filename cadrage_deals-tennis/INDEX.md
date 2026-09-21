@@ -17,6 +17,7 @@ Point d'entrée et protocole de reprise du projet. À lire dans cet ordre en dé
 - [tasks.md](./tasks.md) — découpage en tâches (⚠️ voir GAPS_OUVERTS.md — les cases cochées ne reflètent pas de code réel existant).
 - [checklists/](./checklists/) — checklists de qualité des exigences.
 - [contracts/](./contracts/) — contrats d'API (catalogue, ingestion, redirection).
+- [archive/](./archive/) — versions détaillées intégrales des anciens fichiers de suivi (état/gaps/journal), déplacées ici quand la synthèse courante devient trop lourde. **Ne consulter que si la synthèse en cours ne suffit pas pour un point précis** — ce n'est jamais la source de vérité de l'état courant.
 
 ## Règles de travail (rappel)
 
