@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-21 (Chantier V2 n°1 — Déploiement production terminé)
+**Dernière mise à jour** : 2026-09-21 (Chantier V2 « CI + protection de branche » terminé)
 
 ## Où en est le projet
 
@@ -90,4 +90,14 @@ Détail complet de chaque point : voir D-2026-09-21-09 dans `DECISIONS_FONCTIONN
 
 **Ordre retenu (D-2026-09-21-11)** : chantier « CI + protection de branche » traité en premier parmi les 11 restants. L'ordre des chantiers suivants reste à arbitrer au fur et à mesure.
 
-**Étape suivante** : cadrer le chantier « CI + protection de branche » (contenu détaillé : dépôt distant GitHub, workflow CI lint/build/test, règles de protection de la branche `master`/`main`, flux branche → PR → CI → merge) — à soumettre explicitement en conversation dédiée, ne pas déduire seul le contenu détaillé avant confirmation.
+- **Chantier « CI + protection de branche » terminé** :
+  - Dépôt GitHub privé `lenoirmath122-dev/deals-tennis` créé et lié en `origin` (remote inexistant jusque-là).
+  - Script `test:unit` ajouté (`package.json`) : scope `vitest` à `tests/unit/` uniquement — décision actée : la CI n'exécute pas les tests de contrat/e2e (tapent la vraie base Neon partagée dev/prod), qui restent manuels en local avant merge comme pendant le build MVP.
+  - Workflow `.github/workflows/ci.yml` : lint + build + `test:unit` sur chaque push/PR vers `master`. `DATABASE_URL` requis comme secret repo même sans tests de contrat car `lib/db.ts` évalue la connexion Neon au chargement du module — `next build` échoue sans cette variable (vérifié en local avant de configurer la CI).
+  - Secret `DATABASE_URL` ajouté au repo GitHub. Un second secret (`VERCEL_OIDC_TOKEN`, présent dans `.env.local` suite à un `vercel env pull` antérieur) avait été envoyé par erreur avec la même commande — supprimé aussitôt, non utilisé par la CI.
+  - Réglages de merge du repo : squash uniquement (merge commit et rebase désactivés), suppression automatique de la branche source après merge (conforme au protocole point 4).
+  - Protection de branche `master` : check `build-and-test` obligatoire avant merge, force-push et suppression de branche interdits, `enforce_admins=true` (aucun bypass possible, y compris pour le propriétaire du repo — activé après qu'une première tentative de push direct avec `enforce_admins=false` a révélé que l'admin pouvait encore bypasser la règle).
+  - Vérification bout en bout avec de vraies actions GitHub (protocole point 3, pas de simulation) : PR #1 ouverte (clôture du GAP-2026-09-21-02), CI exécutée réellement et passée (`build-and-test`, 44s), mergée en squash avec suppression de branche automatique confirmée. Push direct sur `master` testé deux fois : une fois avant `enforce_admins=true` (accepté avec message de bypass, ce qui a motivé la correction), une fois après (rejeté par GitHub : `GH006: Protected branch update failed`). Le commit de test vide poussé lors du premier essai (`f9eff76`, aucun fichier modifié) reste dans l'historique de `master` — laissé tel quel plutôt que réécrit, conforme à l'interdiction de réécrire l'historique d'une branche déjà poussée.
+  - GAP-2026-09-21-02 clos dans `GAPS_OUVERTS.md`.
+
+**Étape suivante** : arbitrer lequel des 10 chantiers V2 restants traiter ensuite (validation à l'échelle, automatisation n8n, éviction n8n, mentions légales, disclosure affiliation, charte graphique, SEO, accessibilité, observabilité, gestion des marchands) — à soumettre explicitement en début de prochaine conversation, ne pas déduire seul. Rappel : toute contribution à `master` doit désormais passer par une PR (plus de push direct possible, y compris pour l'utilisateur).
