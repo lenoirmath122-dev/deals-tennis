@@ -98,13 +98,13 @@
 **Independent Test**: Tenter d'accéder à `/go/:expiredDealId` et vérifier la redirection automatique vers `/?notification=deal-expired` avec affichage d'un bandeau informatif non-bloquant.
 
 ### Tests for User Story 4
-- [ ] T027 [P] [US4] Create contract test for /go/[dealId] verifying redirection to /?notification=deal-expired for expired deals in tests/contract/expiration.test.ts
+- [x] T027 [P] [US4] Create contract test for /go/[dealId] verifying redirection to /?notification=deal-expired for expired deals in tests/contract/expiration.test.ts (couvert par tests/contract/redirection.test.ts, écrit en Phase 5 — voir ETAT_ACTUEL.md)
 
 ### Implementation for User Story 4
-- [ ] T028 [US4] Update /go/[dealId] Route Handler in app/go/[dealId]/route.ts to detect expired deals (expires_at <= NOW() or status != 'active') and redirect to /?notification=deal-expired
-- [ ] T029 [P] [US4] Create dismissible notification banner component displaying user-friendly alert when ?notification=deal-expired is present in components/notification-banner.tsx
-- [ ] T030 [US4] Integrate NotificationBanner into app/(catalog)/page.tsx
-- [ ] T031 [P] [US4] Document n8n hourly eviction SQL cron script and ingestion payload examples in scripts/automation/n8n-eviction-cron.sql
+- [x] T028 [US4] Update /go/[dealId] Route Handler in app/go/[dealId]/route.ts to detect expired deals (expires_at <= NOW() or status != 'active') and redirect to /?notification=deal-expired (déjà implémenté en Phase 5)
+- [x] T029 [P] [US4] Create dismissible notification banner component displaying user-friendly alert when ?notification=deal-expired is present in components/notification-banner.tsx
+- [x] T030 [US4] Integrate NotificationBanner into app/(catalog)/page.tsx
+- [x] T031 [P] [US4] Document n8n hourly eviction SQL cron script and ingestion payload examples in scripts/automation/n8n-eviction-cron.sql
 
 **Checkpoint**: Fiabilité et fraîcheur du catalogue 100% assurées sans intervention manuelle.
 

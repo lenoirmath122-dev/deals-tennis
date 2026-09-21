@@ -47,6 +47,14 @@
   - Vérification manuelle bout en bout avec données réelles : serveur `next dev` lancé (port 3001), `curl` sur une offre active (307 + `Location` = `affiliate_url` réel + clic inséré en base avec `device_type='mobile'` et `referrer_url` nettoyé), sur une offre expirée du seed (307 vers `/?notification=deal-expired`, aucun clic inséré), sur un UUID inexistant et une chaîne malformée (307 vers `/?notification=deal-not-found` dans les deux cas). Lignes de `click_events` créées pendant la vérification manuelle supprimées explicitement après contrôle, table revérifiée à 0 ligne. Serveur et processus arrêtés après contrôle.
   - `npm run lint`, `npm run build` et `npm test` (30 tests, 5 fichiers) passent tous les trois sans erreur.
 - `tasks.md` : T001-T026 cochées.
+- **Phase 6 de `tasks.md` (User Story 4 — éviction automatique des offres expirées) terminée** (T027-T031) :
+  - T027 (test de contrat pour la redirection d'une offre expirée) et T028 (détection d'expiration dans le Route Handler) étaient déjà couverts par le travail de Phase 5 : `app/go/[dealId]/route.ts` gère déjà les 3 cas (actif / expiré-invalide / introuvable) et `tests/contract/redirection.test.ts` teste déjà explicitement le cas expiré → `/?notification=deal-expired` sans log de clic. Décision mineure auto-décidée : pas de duplication dans un nouveau fichier `tests/contract/expiration.test.ts`, le contrat est déjà vérifié par un test réel contre l'instance Neon.
+  - `components/notification-banner.tsx` (Client Component, `T029`) : bandeau non-bloquant affiché quand `?notification=deal-expired` ou `?notification=deal-not-found` est présent dans l'URL, avec bouton de fermeture qui retire le paramètre via `router.replace` (préserve `category`/`sort`/`q` grâce à `buildCatalogHref`). Toute autre valeur de `notification` est ignorée silencieusement (pas de bandeau, pas d'erreur).
+  - `app/(catalog)/page.tsx` (`T030`) : lit `notification` depuis les search params et intègre `NotificationBanner` au-dessus du catalogue.
+  - `scripts/automation/n8n-eviction-cron.sql` (`T031`) : documente la requête SQL d'éviction horaire à coller dans le nœud Postgres n8n (reprise telle quelle du contrat `ingestion-contract.md`), avec un exemple de payload d'ingestion en commentaire pour référence rapide.
+  - Vérification manuelle bout en bout : serveur `next dev` lancé (port 3001), `curl` sur `/?notification=deal-expired` et `/?notification=deal-not-found` — message correct affiché dans les deux cas ; `/` sans paramètre — aucun bandeau ; `/?notification=bogus` — aucun bandeau, page toujours 200 (pas de crash sur valeur inconnue). Serveur et processus `next dev` arrêtés après contrôle (vérifié par `curl` renvoyant code `000`).
+  - `npm run lint`, `npm run build` et `npm test` (30 tests, 5 fichiers, inchangé) passent tous les trois sans erreur.
+- `tasks.md` : T001-T031 cochées.
 
 ## Contenu fonctionnel déjà spécifié (à valider/confirmer, pas encore construit)
 
@@ -57,4 +65,4 @@
 
 ## Prochaine étape
 
-`tasks.md` mentionne encore une **Phase 6 (User Story 4 : gestion des offres expirées / bannière de notification, T027-T031)**. À soumettre explicitement à l'utilisateur en début de prochaine conversation avant de démarrer.
+`tasks.md` mentionne encore une **Phase 7 (Polish & Cross-Cutting Concerns)**. À soumettre explicitement à l'utilisateur en début de prochaine conversation avant de démarrer.

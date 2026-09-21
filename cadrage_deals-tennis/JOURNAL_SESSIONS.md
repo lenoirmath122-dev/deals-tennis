@@ -98,3 +98,16 @@
 - `tasks.md` : T022-T026 cochées.
 - **Une seule étape de build traitée dans cette conversation** (Phase 5 uniquement, conforme au protocole) — pas d'enchaînement sur la Phase 6.
 - Prochaine étape : non tranchée — Phase 6 de `tasks.md` (User Story 4 : gestion des offres expirées / bannière de notification, T027-T031) existe mais doit être explicitement soumise et confirmée par l'utilisateur en début de prochaine conversation.
+
+## 2026-09-21 (suite 7) — Phase 6 : User Story 4 / éviction automatique des offres expirées (T027-T031)
+
+- Reprise de session, protocole de reprise appliqué (INDEX → ETAT_ACTUEL → GAPS_OUVERTS → dernière entrée du journal). Étape soumise et confirmée par l'utilisateur avant de démarrer.
+- Constat : T027 (test de contrat expiration) et T028 (détection d'expiration dans le Route Handler) étaient déjà entièrement couverts par le travail de Phase 5 (`app/go/[dealId]/route.ts` et `tests/contract/redirection.test.ts`), écrits en avance sur le découpage `tasks.md`. Décision mineure auto-décidée : ne pas dupliquer un `tests/contract/expiration.test.ts` redondant, le contrat est déjà vérifié par un test réel contre l'instance Neon.
+- T029 : `components/notification-banner.tsx` créé (Client Component, dismissible via `router.replace`, préserve `category`/`sort`/`q` via `buildCatalogHref`). Gère `deal-expired` et `deal-not-found` ; toute autre valeur ignorée silencieusement sans crash.
+- T030 : intégré dans `app/(catalog)/page.tsx` (lecture de `notification` depuis les search params, affiché au-dessus du catalogue).
+- T031 : `scripts/automation/n8n-eviction-cron.sql` créé, reprend telle quelle la requête d'éviction horaire et l'exemple de payload d'ingestion du contrat normatif `ingestion-contract.md`, avec commentaires explicatifs (script de documentation pour n8n, non exécuté par l'application).
+- Vérification bout en bout avec données réelles (protocole point 3) : serveur `next dev` lancé (port 3001), `curl` sur `/?notification=deal-expired` et `/?notification=deal-not-found` (message correct affiché dans les deux cas), sur `/` sans paramètre (aucun bandeau), sur `/?notification=bogus` (aucun bandeau, page toujours 200). Des processus `next dev` résiduels d'une session précédente ont été détectés en tentant d'arrêter le serveur (le port ne se libérait pas) — identifiés via leur ligne de commande et arrêtés explicitement ; port revérifié comme ne répondant plus (`curl` → code `000`) avant de conclure.
+- `npm run lint`, `npm run build` et `npm test` (30 tests, 5 fichiers, inchangé) passent tous les trois sans erreur.
+- `tasks.md` : T027-T031 cochées (T027/T028 annotées comme déjà couvertes par la Phase 5).
+- **Une seule étape de build traitée dans cette conversation** (Phase 6 uniquement, conforme au protocole) — pas d'enchaînement sur la Phase 7.
+- Prochaine étape : non tranchée — Phase 7 de `tasks.md` (Polish & Cross-Cutting Concerns : fallback image cassée T032, suite de tests e2e Playwright T033, validation `quickstart.md` T034) existe mais doit être explicitement soumise et confirmée par l'utilisateur en début de prochaine conversation.

@@ -5,6 +5,7 @@ import { Pagination } from "@/components/pagination";
 import { CategoryFilter } from "@/components/category-filter";
 import { SearchBar } from "@/components/search-bar";
 import { SortDropdown } from "@/components/sort-dropdown";
+import { NotificationBanner } from "@/components/notification-banner";
 
 export default async function CatalogPage({
   searchParams,
@@ -18,6 +19,7 @@ export default async function CatalogPage({
   const sort = params.sort === "discount" ? "discount" : "newest";
   const q = sanitizeSearchQuery(typeof params.q === "string" ? params.q : "");
   const page = Number(params.page) || 1;
+  const notification = typeof params.notification === "string" ? params.notification : null;
 
   const { deals, pagination } = await getCatalogDeals({ category, sort, q, page });
 
@@ -26,6 +28,8 @@ export default async function CatalogPage({
       <h1 className="mb-6 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
         Bons plans tennis
       </h1>
+
+      <NotificationBanner type={notification} category={category} sort={sort} q={q} />
 
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="sm:max-w-xs sm:flex-1">
