@@ -9,9 +9,9 @@
 
 **Purpose**: Initialisation du projet Next.js et de l'environnement de développement.
 
-- [ ] T001 Initialize Next.js 14+ project with TypeScript and Tailwind CSS configuration in package.json, tsconfig.json, and tailwind.config.ts
-- [ ] T002 [P] Install runtime dependencies (@neondatabase/serverless, lucide-react, clsx, tailwind-merge) and testing frameworks (vitest, @playwright/test) in package.json
-- [ ] T003 [P] Configure environment variable template with DATABASE_URL in .env.example
+- [x] T001 Initialize Next.js 14+ project with TypeScript and Tailwind CSS configuration in package.json, tsconfig.json (Next.js 16.3.5, Tailwind CSS v4 config CSS-first via app/globals.css, pas de tailwind.config.ts — voir D-2026-09-21-07)
+- [x] T002 [P] Install runtime dependencies (@neondatabase/serverless, lucide-react, clsx, tailwind-merge) and testing frameworks (vitest, @playwright/test) in package.json
+- [x] T003 [P] Configure environment variable template with DATABASE_URL in .env.example
 
 ---
 
