@@ -181,3 +181,13 @@
 - `GAPS_OUVERTS.md` : GAP-2026-09-21-02 clos.
 - **Une seule étape de build traitée dans cette conversation** (chantier « CI + protection de branche » uniquement).
 - Prochaine étape : arbitrer lequel des 10 chantiers V2 restants traiter ensuite — à soumettre explicitement en début de prochaine conversation, ne pas déduire seul. Toute contribution future à `master` doit désormais passer par une PR (plus de push direct, y compris pour l'utilisateur).
+
+## 2026-09-21 (suite 13) — Clarification chantier « Automatisation n8n » (pas de build)
+
+- Reprise de session, protocole de reprise appliqué (ETAT_ACTUEL → GAPS_OUVERTS → dernière entrée du journal).
+- Chantier « Automatisation n8n » proposé en premier parmi les 10 restants ; l'utilisateur a demandé une explication du fonctionnement avant de trancher (qui récupère les données, qui choisit les marchands, qui trie).
+- Explicité à partir du cadrage existant : le contrat `ingestion-contract.md` définit uniquement le *format d'arrivée* des données côté `deals` (payload JSON, règles de calcul, cron d'éviction) et interdit tout scraping/logique d'ingestion dans le code du site (FR-008, principe constitutionnel). Rien n'est défini sur *comment* les données sont obtenues (méthode de collecte par marchand), *qui* sont les marchands partenaires (liste vide au-delà des 3 fictifs du seed), ni les règles de tri/qualité en amont de l'insertion. Alimentation de `merchants` non couverte par le contrat actuel.
+- Malentendu de l'utilisateur clarifié : n8n est un outil d'orchestration (comme Zapier/Make), il ne sait pas de lui-même quels sites regarder ni quelles offres sont pertinentes — cela doit être configuré, ce qui constitue précisément le cadrage restant à faire pour ce chantier.
+- Décision de l'utilisateur : le cadrage du chantier « Automatisation n8n » (marchands ciblés, méthode de récupération par marchand, règles de qualité/tri) sera fait explicitement lors de la **prochaine conversation**, pas dans celle-ci.
+- **Aucune étape de build ni de cadrage détaillé n'a été démarrée** dans cette conversation (clarification conceptuelle uniquement).
+- Prochaine étape : démarrer le cadrage du chantier « Automatisation n8n » (identification des marchands partenaires visés, méthode de récupération envisageable par marchand, règles de tri/qualité) — à traiter dans la prochaine conversation.
