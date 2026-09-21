@@ -28,6 +28,16 @@
 - `create-next-app` refusant de scaffolder dans un dossier non vide (présence de `cadrage_deals-tennis/`), le projet a été généré dans un sous-dossier temporaire puis déplacé à la racine du dépôt (historique git non affecté, aucun commit du sous-dossier temporaire).
 - T001 : projet Next.js/TypeScript/Tailwind v4 initialisé, `package.json` renommé `deals-tennis`.
 - T002 : dépendances runtime (`@neondatabase/serverless`, `lucide-react`, `clsx`, `tailwind-merge`) et testing (`vitest`, `@playwright/test`) installées. Conflit de peer dependency résolu en montant `@types/node` de `^20` à `^24` (aligné sur Node 24 installé localement).
+
+## 2026-09-21 (suite N) — Chantier V2 n°1 : Déploiement production
+
+- Reprise de session, protocole de reprise appliqué. Utilisateur invité à choisir le prochain chantier V2 parmi la liste validée (D-2026-09-21-09) → « Déploiement production ».
+- Décision structurante soumise et actée : D-2026-09-21-10 — CLI Vercel direct (pas de lien GitHub, réservé au chantier 2 CI), réutilisation de l'instance Neon existante comme base prod, domaine par défaut `*.vercel.app`.
+- `vercel link --yes` : projet Vercel `lenoir-nba/deals-tennis` créé et lié. `DATABASE_URL` ajouté en variable d'environnement Production (Sensitive) sur Vercel.
+- `vercel --prod` : build réussi, déploiement `READY`, alias production `https://deals-tennis.vercel.app`.
+- Vérification manuelle bout en bout avec données réelles sur l'URL de production : catalogue affiché (offres réelles), redirection `/go/[dealId]` testée (307 + clic loggé dans `click_events`, base prod = base dev). Ligne de clic de vérification supprimée après contrôle, nettoyage vérifié (0 ligne résiduelle liée au test).
+- Chantier 1 terminé et clos.
+- Prochaine étape : non tranchée, à soumettre explicitement à l'utilisateur en début de prochaine conversation (chantiers 2 à 12 restants, voir D-2026-09-21-09).
 - T003 : `.env.example` créé avec `DATABASE_URL`. `.gitignore` corrigé (`.env*` excluait aussi `.env.example` par erreur — ajout d'une exception `!.env.example`).
 - Vérification : `npm run lint` et `npm run build` passent tous les deux sans erreur (un warning Next.js sans rapport, sur un `package.json` situé hors du dépôt dans `C:\dev`, non modifié).
 - `tasks.md` : T001, T002, T003 cochées, avec précision sur le choix Tailwind v4 pour T001.

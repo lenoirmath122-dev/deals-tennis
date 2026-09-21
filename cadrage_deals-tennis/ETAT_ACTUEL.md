@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-21 (Phase 7 — tasks.md terminé T001-T034)
+**Dernière mise à jour** : 2026-09-21 (Chantier V2 n°1 — Déploiement production terminé)
 
 ## Où en est le projet
 
@@ -72,12 +72,20 @@
 - Alimentation des données via workflows n8n externes, pas d'interface d'admin en V1.
 - Stack réelle : Next.js 16.3.5 (App Router), React 19, TypeScript, Tailwind CSS v4, PostgreSQL (Neon Serverless, provisionné), déploiement Vercel/Cloudflare Pages (pas encore configuré).
 
+- **Chantier 1 (Déploiement production) terminé** (D-2026-09-21-10) :
+  - Méthode actée : CLI Vercel direct (pas de lien GitHub, réservé au chantier 2), réutilisation de l'instance Neon existante comme base prod, domaine par défaut `*.vercel.app`.
+  - Projet Vercel créé et lié : `lenoir-nba/deals-tennis` (`.vercel/project.json`, non versionné).
+  - `DATABASE_URL` configuré comme variable d'environnement Production sur Vercel (type Sensitive), valeur reprise de `.env.local`.
+  - Déploiement production effectué : `vercel --prod`, build Next.js 16.3.5 réussi, état `READY`. URL de production : `https://deals-tennis.vercel.app`.
+  - Vérification manuelle bout en bout sur l'URL de production réelle : page catalogue 200 OK, offres réelles affichées (Babolat, Wilson…), redirection `/go/[dealId]` testée sur une offre réelle → 307 + `Location` correcte vers l'`affiliate_url`, clic loggé dans `click_events` (base prod = base dev, partagée). Ligne de clic de vérification supprimée après contrôle, table revérifiée (script temporaire `scripts/tmp-verify-cleanup.mjs` créé puis supprimé).
+  - `.gitignore` mis à jour par `vercel link` (ajout de `.vercel` et d'une entrée `.env*` redondante avec l'entrée existante, sans impact).
+
 ## Prochaine étape
 
-`tasks.md` (MVP) est intégralement terminé (T001-T034) et vérifié de bout en bout. La **liste des chantiers V2 post-MVP est validée** (D-2026-09-21-09), 12 chantiers identifiés :
+`tasks.md` (MVP) est intégralement terminé (T001-T034) et vérifié de bout en bout. Chantier 1 (Déploiement production) terminé. La **liste des chantiers V2 post-MVP est validée** (D-2026-09-21-09), 11 chantiers restants :
 
-1. Déploiement production · 2. Protection de branche + CI · 3. Validation à l'échelle · 4. Automatisation n8n (scraping/collecte) · 5. Workflow n8n d'éviction horaire · 6. Mentions légales / politique de confidentialité · 7. Disclosure liens d'affiliation · 8. Charte graphique / design system · 9. SEO · 10. Accessibilité · 11. Observabilité/monitoring · 12. Gestion des marchands (probablement absorbé par le chantier 4).
+2. Protection de branche + CI · 3. Validation à l'échelle · 4. Automatisation n8n (scraping/collecte) · 5. Workflow n8n d'éviction horaire · 6. Mentions légales / politique de confidentialité · 7. Disclosure liens d'affiliation · 8. Charte graphique / design system · 9. SEO · 10. Accessibilité · 11. Observabilité/monitoring · 12. Gestion des marchands (probablement absorbé par le chantier 4).
 
 Détail complet de chaque point : voir D-2026-09-21-09 dans `DECISIONS_FONCTIONNELLES.md`.
 
-**Étape suivante** : arbitrer l'ordre de traitement puis cadrer le premier chantier retenu, une conversation dédiée à la fois — ne pas déduire seul ni l'ordre ni le contenu détaillé d'un chantier avant que la conversation correspondante ne s'ouvre.
+**Étape suivante** : arbitrer l'ordre de traitement puis cadrer le prochain chantier retenu, une conversation dédiée à la fois — ne pas déduire seul ni l'ordre ni le contenu détaillé d'un chantier avant que la conversation correspondante ne s'ouvre.

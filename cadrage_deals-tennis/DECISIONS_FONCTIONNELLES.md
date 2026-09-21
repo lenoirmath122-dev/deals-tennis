@@ -106,3 +106,16 @@ Décisions structurantes numérotées `D-AAAA-MM-JJ-NN`, dans l'ordre chronologi
 L'ordre de traitement n'est pas encore arbitré — à décider en début de chaque prochaine conversation dédiée, jamais déduit seul.
 
 **Statut** : Actée (confirmée explicitement par l'utilisateur).
+
+---
+
+### D-2026-09-21-10 — Chantier 1 (Déploiement production) : méthode retenue
+
+**Contexte** : Ouverture de la conversation dédiée au chantier 1 (D-2026-09-21-09). Le remote GitHub + CI (chantier 2) n'est pas encore en place.
+
+**Décision** :
+- Déploiement via CLI Vercel direct (`vercel deploy`/`vercel --prod`), sans lier de repo GitHub pour l'instant — le lien GitHub/CI sera traité au chantier 2.
+- Base de données prod : réutilisation de l'instance Neon existante (projet `deals-tennis`, id `floral-mountain-74046188`), pas de séparation dev/prod à ce stade.
+- Domaine : domaine par défaut `*.vercel.app`, pas de domaine personnalisé pour l'instant.
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur).
