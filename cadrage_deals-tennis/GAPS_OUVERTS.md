@@ -10,6 +10,26 @@
 
 ---
 
+## GAP-2026-09-21-03 — Pas de compte Awin publisher, datafeed non vérifiable (OUVERT)
+
+Tennis Point FR (Awin #13266) et Padel-Point FR (Awin #25160) annoncent un flux de données produit (datafeed) dans les avantages de leur programme Awin, mais le format exact (CSV/XML, champs, fréquence) n'est visible qu'après création d'un compte affilié Awin et acceptation de la candidature sur chacun des deux programmes. Aucun compte Awin n'existe à ce jour.
+
+**Bloquant sur** : action de l'utilisateur, hors périmètre de Claude Code (création de compte, informations d'entreprise/paiement, candidature aux programmes).
+
+**Statut** : ouvert au 2026-09-21.
+
+---
+
+## GAP-2026-09-21-04 — Photo de terrain (fond hero) pas encore fournie (OUVERT)
+
+Le chantier « Charte graphique / design system » (D-2026-09-21-13) prévoit un fond de section hero en photo de terrain (gazon ou terre battue), à fournir par l'utilisateur. Aucun fichier reçu à ce jour — l'application des tokens de charte à `app/globals.css`/aux composants ne peut pas inclure le vrai fond tant que l'image n'est pas fournie (un placeholder devra être utilisé en attendant si le build démarre avant réception).
+
+**Bloquant sur** : action de l'utilisateur (fournir le fichier image).
+
+**Statut** : ouvert au 2026-09-21.
+
+---
+
 ## GAP-2026-09-21-02 — Pas de dossier `hooks`/CI configuré pour la protection de branche (RÉSOLU)
 
 Le protocole prévoit un flux branche → PR → CI → merge une fois une protection de branche en place, mais aucun remote GitHub/CI n'est encore configuré.

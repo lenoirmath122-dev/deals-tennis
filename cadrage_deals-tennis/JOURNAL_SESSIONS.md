@@ -181,3 +181,64 @@
 - `GAPS_OUVERTS.md` : GAP-2026-09-21-02 clos.
 - **Une seule étape de build traitée dans cette conversation** (chantier « CI + protection de branche » uniquement).
 - Prochaine étape : arbitrer lequel des 10 chantiers V2 restants traiter ensuite — à soumettre explicitement en début de prochaine conversation, ne pas déduire seul. Toute contribution future à `master` doit désormais passer par une PR (plus de push direct, y compris pour l'utilisateur).
+
+## 2026-09-21 (suite 13) — Clarification chantier « Automatisation n8n » (pas de build)
+
+- Reprise de session, protocole de reprise appliqué (ETAT_ACTUEL → GAPS_OUVERTS → dernière entrée du journal).
+- Chantier « Automatisation n8n » proposé en premier parmi les 10 restants ; l'utilisateur a demandé une explication du fonctionnement avant de trancher (qui récupère les données, qui choisit les marchands, qui trie).
+- Explicité à partir du cadrage existant : le contrat `ingestion-contract.md` définit uniquement le *format d'arrivée* des données côté `deals` (payload JSON, règles de calcul, cron d'éviction) et interdit tout scraping/logique d'ingestion dans le code du site (FR-008, principe constitutionnel). Rien n'est défini sur *comment* les données sont obtenues (méthode de collecte par marchand), *qui* sont les marchands partenaires (liste vide au-delà des 3 fictifs du seed), ni les règles de tri/qualité en amont de l'insertion. Alimentation de `merchants` non couverte par le contrat actuel.
+- Malentendu de l'utilisateur clarifié : n8n est un outil d'orchestration (comme Zapier/Make), il ne sait pas de lui-même quels sites regarder ni quelles offres sont pertinentes — cela doit être configuré, ce qui constitue précisément le cadrage restant à faire pour ce chantier.
+- Décision de l'utilisateur : le cadrage du chantier « Automatisation n8n » (marchands ciblés, méthode de récupération par marchand, règles de qualité/tri) sera fait explicitement lors de la **prochaine conversation**, pas dans celle-ci.
+- **Aucune étape de build ni de cadrage détaillé n'a été démarrée** dans cette conversation (clarification conceptuelle uniquement).
+- Prochaine étape : démarrer le cadrage du chantier « Automatisation n8n » (identification des marchands partenaires visés, méthode de récupération envisageable par marchand, règles de tri/qualité) — à traiter dans la prochaine conversation.
+
+## 2026-09-21 (suite 14) — Cadrage chantier « Automatisation n8n » : liste des marchands (pas de build)
+
+- Reprise de session, protocole de reprise appliqué. Commit local des mises à jour de suivi de la conversation précédente (`88cba24`), pas de push.
+- Cadrage démarré par la liste des marchands partenaires visés. L'utilisateur : rien n'est encore construit côté partenariats, cible aussi bien des marques que des revendeurs, demande si 10 marchands est réaliste.
+- Recherche web effectuée (grandes marques : Babolat, Wilson, Head, Dunlop, Yonex ; revendeurs FR : Tennispro.fr, Sport 2000, Tennis Point, Padel-Point). Seuls **Tennis Point FR** et **Padel-Point FR** (réseau Awin) ont un programme d'affiliation public confirmé, plus **adidas FR** (Awin, généraliste sport). Aucun programme confirmé pour Babolat, Head, Dunlop, Yonex, Tennispro.fr, Sport 2000 — pas d'impossibilité, juste pas de programme public trouvé par recherche web ; une démarche manuelle (contact direct) serait nécessaire, hors périmètre de cette session.
+- **Décision actée (D-2026-09-21-12)** : pas de liste figée à 10 marchands a priori. Démarrage avec les marchands confirmés (Tennis Point FR, Padel-Point FR — adidas FR à évaluer à part), liste enrichie au fil de l'eau à mesure que l'utilisateur obtient réellement l'acceptation d'un programme d'affiliation pour un nouveau marchand.
+- **Aucune étape de build n'a été démarrée** dans cette conversation (cadrage uniquement, un seul sous-point du chantier n8n traité — la liste des marchands).
+- Prochaine étape : méthode de récupération des offres pour Tennis Point FR / Padel-Point FR (vérifier si leur programme Awin fournit un flux produit/prix exploitable, ou s'il faut une autre méthode) — à traiter dans la prochaine conversation.
+
+## 2026-09-21 (suite 15) — Cadrage chantier « Automatisation n8n » : méthode de récupération Tennis Point FR / Padel-Point FR (pas de build)
+
+- Reprise de session, protocole de reprise appliqué (ETAT_ACTUEL → GAPS_OUVERTS → dernière entrée du journal).
+- Recherche web effectuée sur les fiches programme Awin de Tennis Point FR (merchant #13266) et Padel-Point FR (merchant #25160) : les deux annoncent un « flux de données produit détaillée » (datafeed) parmi les avantages du programme — mécanisme standard Awin (CSV/XML via MyAwin ou Awin Datafeed API).
+- Format exact du flux (champs, fréquence) non vérifiable sans compte affilié Awin réel avec candidature acceptée sur chacun des deux programmes — impossible à consulter de l'extérieur.
+- Question posée explicitement à l'utilisateur (point bloquant hors périmètre Claude Code) : pas de compte Awin publisher existant à ce jour, à créer.
+- **GAP-2026-09-21-03 ouvert** : datafeed non vérifiable tant que le compte Awin n'est pas créé et les candidatures acceptées — action utilisateur requise (création de compte, informations d'entreprise/paiement, candidature).
+- **Aucune étape de build n'a été démarrée** dans cette conversation (cadrage uniquement, recherche + constat de blocage).
+- Prochaine étape : une fois le compte Awin créé et les candidatures avancées par l'utilisateur, reprendre la vérification du datafeed réel (format, champs) pour définir la méthode d'ingestion vers `deals`/`merchants`.
+
+## 2026-09-21 (suite 16) — Création du compte Awin publisher et candidatures (pas de build)
+
+- Reprise de session, protocole de reprise appliqué (ETAT_ACTUEL → GAPS_OUVERTS → dernière entrée du journal).
+- L'utilisateur a créé son compte Awin publisher et soumis sa candidature. Assistance apportée sur le choix des réponses du formulaire d'inscription, sans y avoir accès direct (formulaire externe, hors périmètre outillage) :
+  - Canal publicitaire : **Code de réduction** (catégorie Content), défini comme canal principal — correspond exactement au fonctionnement du site (liste de réductions/promotions). **Moteur de comparaison** suggéré en complément (le catalogue permet de comparer les offres par prix/réduction entre marchands). Display/E-mail/Search et les autres sous-catégories de Content (Cashback, Contenu éditorial, Fidélisation, etc.) écartés comme non représentatifs.
+  - Adresse URL de l'espace publicitaire : `https://deals-tennis.vercel.app` (seul domaine existant, déploiement de production réel).
+  - Description de l'activité : texte proposé décrivant le catalogue de bons plans tennis/padel (catégories, filtrage/recherche/tri, redirection trackée vers marchand partenaire), sans chiffres d'audience (site tout juste déployé).
+  - Secteur d'activité : **Sport & Loisirs** (les catégories textile/chaussures restant de l'équipement sportif tennis/padel, pas un secteur mode séparé).
+- Candidature soumise par l'utilisateur (confirmation reçue). En attente de l'acceptation des programmes Tennis Point FR (#13266) et Padel-Point FR (#25160) — GAP-2026-09-21-03 toujours ouvert, aucun changement de statut à ce stade.
+- **Aucune étape de build n'a été démarrée** dans cette conversation (assistance à une démarche externe uniquement).
+- Prochaine étape : une fois l'acceptation reçue sur un ou les deux programmes, consulter le datafeed réel (format, champs, fréquence) pour définir la méthode d'ingestion vers `deals`/`merchants` — voir GAP-2026-09-21-03.
+
+## 2026-09-21 (suite 17) — Candidatures Tennis Point FR / Padel-Point FR soumises (pas de build)
+
+- Reprise de session, protocole de reprise appliqué (ETAT_ACTUEL → GAPS_OUVERTS → dernière entrée du journal). Statut Awin vérifié explicitement avec l'utilisateur : compte actif, mais aucune des deux candidatures marchand pas encore acceptée à ce stade.
+- Le champ « Message » du formulaire de candidature (1000 caractères max, par marchand) a été rédigé avec assistance : présentation du site, positionnement niche tennis/padel, mention explicite du souhait d'utiliser le datafeed pour l'ingestion automatique.
+- Question de fond posée par l'utilisateur : est-ce que l'affiliation vaut le coup, ou construire directement sans (récupération de données brute) ? Réponse donnée : l'affiliation reste recommandée (monétisation prévue par `/go/[dealId]`, cadre légal plus solide qu'une redirection/republication de prix sans accord) ; poursuivre les candidatures Awin en parallèle plutôt que d'abandonner l'approche, quitte à élargir la liste de marchands si ça n'aboutit pas. Pas de décision structurante nouvelle actée (juste une recommandation, la stratégie affiliation reste celle déjà actée).
+- Message de relance (pour un suivi ultérieur si besoin) également rédigé, à envoyer via la messagerie interne Awin, non utilisé dans cette conversation (les candidatures venaient d'être soumises, pas encore de relance nécessaire).
+- Les deux candidatures ont été soumises par l'utilisateur en fin de conversation.
+- **Aucune étape de build n'a été démarrée** dans cette conversation (assistance à une démarche externe + question stratégique).
+- Prochaine étape : inchangée — attendre l'acceptation d'un ou des deux programmes, puis consulter le datafeed réel pour définir la méthode d'ingestion. Voir GAP-2026-09-21-03.
+
+## 2026-09-21 (suite 18) — Cadrage du chantier « Charte graphique / design system » (pas de build)
+
+- Reprise de session, protocole de reprise appliqué. Statut Awin vérifié : toujours en attente sur les deux programmes, GAP-2026-09-21-03 inchangé.
+- Automatisation n8n restant bloqué, l'utilisateur a choisi d'avancer sur un autre chantier de la liste D-2026-09-21-09 : « Charte graphique / design system » (n°8).
+- Direction visuelle donnée d'emblée par l'utilisateur : fond de section hero en photo de terrain (gazon/terre battue, à fournir — GAP-2026-09-21-04 ouvert), design épuré ne devant pas « faire IA », inspiration Aceternity (MCP `aceternityui` consulté pour la liste de composants disponibles), pas de bords trop arrondis, cartes blanches/grises.
+- Trois propositions de typographie présentées visuellement via un artefact Design (canvas avec maquette de carte de deal reprenant palette/radius envisagés) : A (Fraunces+Inter), B (Space Grotesk), C (Libre Franklin+Newsreader italique). L'utilisateur a choisi **B (Space Grotesk) « de très loin »**.
+- Décision structurante actée (D-2026-09-21-13) : typographie Space Grotesk, palette à deux accents (vert gazon `#1b4332` pour prix/CTA, terre cuite `#c1440e` pour badge réduction), cartes blanches/bordure gris clair, radius léger (6px cartes/boutons, 4px badges).
+- **Aucune étape de build n'a été démarrée** dans cette conversation (cadrage uniquement, conforme au protocole — l'utilisateur avait explicitement choisi ce périmètre en début de conversation).
+- Prochaine étape : soit poursuivre le cadrage du chantier (spacing/layout, style des composants de nav/filtres), soit démarrer l'application des tokens à `app/globals.css` comme étape de build à part entière — à soumettre explicitement en début de prochaine conversation dédiée. Voir aussi GAP-2026-09-21-04 (photo de terrain à recevoir).

@@ -23,7 +23,7 @@ export function SortDropdown({
         )
       }
       aria-label="Trier les offres"
-      className="rounded border border-black/10 bg-white px-3 py-1.5 text-sm text-zinc-900 dark:border-white/10 dark:bg-zinc-900 dark:text-zinc-50"
+      className="rounded-md border border-card-border bg-white px-3 py-1.5 text-sm text-zinc-900"
     >
       <option value="newest">Nouveautés</option>
       <option value="discount">Plus forte réduction</option>
