@@ -191,3 +191,12 @@
 - Décision de l'utilisateur : le cadrage du chantier « Automatisation n8n » (marchands ciblés, méthode de récupération par marchand, règles de qualité/tri) sera fait explicitement lors de la **prochaine conversation**, pas dans celle-ci.
 - **Aucune étape de build ni de cadrage détaillé n'a été démarrée** dans cette conversation (clarification conceptuelle uniquement).
 - Prochaine étape : démarrer le cadrage du chantier « Automatisation n8n » (identification des marchands partenaires visés, méthode de récupération envisageable par marchand, règles de tri/qualité) — à traiter dans la prochaine conversation.
+
+## 2026-09-21 (suite 14) — Cadrage chantier « Automatisation n8n » : liste des marchands (pas de build)
+
+- Reprise de session, protocole de reprise appliqué. Commit local des mises à jour de suivi de la conversation précédente (`88cba24`), pas de push.
+- Cadrage démarré par la liste des marchands partenaires visés. L'utilisateur : rien n'est encore construit côté partenariats, cible aussi bien des marques que des revendeurs, demande si 10 marchands est réaliste.
+- Recherche web effectuée (grandes marques : Babolat, Wilson, Head, Dunlop, Yonex ; revendeurs FR : Tennispro.fr, Sport 2000, Tennis Point, Padel-Point). Seuls **Tennis Point FR** et **Padel-Point FR** (réseau Awin) ont un programme d'affiliation public confirmé, plus **adidas FR** (Awin, généraliste sport). Aucun programme confirmé pour Babolat, Head, Dunlop, Yonex, Tennispro.fr, Sport 2000 — pas d'impossibilité, juste pas de programme public trouvé par recherche web ; une démarche manuelle (contact direct) serait nécessaire, hors périmètre de cette session.
+- **Décision actée (D-2026-09-21-12)** : pas de liste figée à 10 marchands a priori. Démarrage avec les marchands confirmés (Tennis Point FR, Padel-Point FR — adidas FR à évaluer à part), liste enrichie au fil de l'eau à mesure que l'utilisateur obtient réellement l'acceptation d'un programme d'affiliation pour un nouveau marchand.
+- **Aucune étape de build n'a été démarrée** dans cette conversation (cadrage uniquement, un seul sous-point du chantier n8n traité — la liste des marchands).
+- Prochaine étape : méthode de récupération des offres pour Tennis Point FR / Padel-Point FR (vérifier si leur programme Awin fournit un flux produit/prix exploitable, ou s'il faut une autre méthode) — à traiter dans la prochaine conversation.
