@@ -200,3 +200,13 @@
 - **Décision actée (D-2026-09-21-12)** : pas de liste figée à 10 marchands a priori. Démarrage avec les marchands confirmés (Tennis Point FR, Padel-Point FR — adidas FR à évaluer à part), liste enrichie au fil de l'eau à mesure que l'utilisateur obtient réellement l'acceptation d'un programme d'affiliation pour un nouveau marchand.
 - **Aucune étape de build n'a été démarrée** dans cette conversation (cadrage uniquement, un seul sous-point du chantier n8n traité — la liste des marchands).
 - Prochaine étape : méthode de récupération des offres pour Tennis Point FR / Padel-Point FR (vérifier si leur programme Awin fournit un flux produit/prix exploitable, ou s'il faut une autre méthode) — à traiter dans la prochaine conversation.
+
+## 2026-09-21 (suite 15) — Cadrage chantier « Automatisation n8n » : méthode de récupération Tennis Point FR / Padel-Point FR (pas de build)
+
+- Reprise de session, protocole de reprise appliqué (ETAT_ACTUEL → GAPS_OUVERTS → dernière entrée du journal).
+- Recherche web effectuée sur les fiches programme Awin de Tennis Point FR (merchant #13266) et Padel-Point FR (merchant #25160) : les deux annoncent un « flux de données produit détaillée » (datafeed) parmi les avantages du programme — mécanisme standard Awin (CSV/XML via MyAwin ou Awin Datafeed API).
+- Format exact du flux (champs, fréquence) non vérifiable sans compte affilié Awin réel avec candidature acceptée sur chacun des deux programmes — impossible à consulter de l'extérieur.
+- Question posée explicitement à l'utilisateur (point bloquant hors périmètre Claude Code) : pas de compte Awin publisher existant à ce jour, à créer.
+- **GAP-2026-09-21-03 ouvert** : datafeed non vérifiable tant que le compte Awin n'est pas créé et les candidatures acceptées — action utilisateur requise (création de compte, informations d'entreprise/paiement, candidature).
+- **Aucune étape de build n'a été démarrée** dans cette conversation (cadrage uniquement, recherche + constat de blocage).
+- Prochaine étape : une fois le compte Awin créé et les candidatures avancées par l'utilisateur, reprendre la vérification du datafeed réel (format, champs) pour définir la méthode d'ingestion vers `deals`/`merchants`.
