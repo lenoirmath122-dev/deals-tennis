@@ -132,3 +132,12 @@
 - Méthode du nouveau cycle de cadrage V2 précisée par l'utilisateur : d'abord identifier la liste complète des specs à construire pour la suite du projet, puis les construire une par une, une spec par conversation.
 - **Aucune étape de build ni de rédaction de spec n'a été démarrée** dans cette conversation (juste le cadrage de la méthode).
 - Prochaine étape : identifier la liste complète des specs à construire pour la V2, dans une conversation dédiée.
+
+## 2026-09-21 (suite 10) — Liste des chantiers V2 identifiée et validée
+
+- Reprise de session, protocole de reprise appliqué.
+- Commit des fichiers de suivi laissés en attente (clôture Phase 7, documentée mais pas commitée précédemment).
+- Liste candidate de 12 chantiers V2 proposée à partir des zones hors-scope V1 explicites (`spec.md`/`plan.md`) et des points laissés ouverts pendant le build MVP (charte graphique jamais définie, SEO/a11y/observabilité non traités, RGPD/légal absent, GAP-2026-09-21-02 sur la CI).
+- Liste validée telle quelle par l'utilisateur ("soit exhaustif" comme seule consigne) — actée en D-2026-09-21-09.
+- **Aucune étape de build ni de rédaction de spec détaillée n'a été démarrée** dans cette conversation (juste l'identification de la liste, conforme à l'étape prévue).
+- Prochaine étape : arbitrer l'ordre de traitement des 12 chantiers, puis cadrer le premier retenu — à soumettre explicitement en début de prochaine conversation, ne pas déduire seul.

@@ -74,9 +74,10 @@
 
 ## Prochaine étape
 
-`tasks.md` (MVP) est intégralement terminé (T001-T034) et vérifié de bout en bout. L'utilisateur a demandé l'ouverture d'un **nouveau cycle de cadrage (V2 post-MVP)**, en mode manuel, pas via spec-kit (D-2026-09-21-08) :
+`tasks.md` (MVP) est intégralement terminé (T001-T034) et vérifié de bout en bout. La **liste des chantiers V2 post-MVP est validée** (D-2026-09-21-09), 12 chantiers identifiés :
 
-1. **Étape immédiate** : identifier la liste complète des specs à construire pour la suite du projet (déploiement, automatisation n8n, autres chantiers non encore nommés) — pas encore faite, à traiter dans une prochaine conversation dédiée.
-2. **Étapes suivantes** : une fois cette liste validée par l'utilisateur, construire chaque spec une par une, une spec par conversation, sans enchaînement.
+1. Déploiement production · 2. Protection de branche + CI · 3. Validation à l'échelle · 4. Automatisation n8n (scraping/collecte) · 5. Workflow n8n d'éviction horaire · 6. Mentions légales / politique de confidentialité · 7. Disclosure liens d'affiliation · 8. Charte graphique / design system · 9. SEO · 10. Accessibilité · 11. Observabilité/monitoring · 12. Gestion des marchands (probablement absorbé par le chantier 4).
 
-Ne pas déduire seul le contenu de cette liste de specs avant que la conversation dédiée ne s'ouvre.
+Détail complet de chaque point : voir D-2026-09-21-09 dans `DECISIONS_FONCTIONNELLES.md`.
+
+**Étape suivante** : arbitrer l'ordre de traitement puis cadrer le premier chantier retenu, une conversation dédiée à la fois — ne pas déduire seul ni l'ordre ni le contenu détaillé d'un chantier avant que la conversation correspondante ne s'ouvre.
