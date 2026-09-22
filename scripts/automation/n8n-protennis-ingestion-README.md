@@ -37,10 +37,19 @@ via `n8n execute` contre la vraie page ProTennis et la vraie base Neon de produc
    fixée à `raquettes` (portée de cette page ; d'autres catégories/pages ProTennis
    nécessiteraient une copie de ce workflow avec l'URL et la catégorie adaptées — pas
    fait dans cette étape, scope minimal validé avec l'utilisateur).
-4. **Postgres (upsert)** : `INSERT ... ON CONFLICT (merchant_id, affiliate_url) DO UPDATE`
-   — nécessite la contrainte ajoutée par la migration `002_deals_unique_merchant_url.sql`.
-   `affiliate_url` = URL produit ProTennis directe (pas de lien d'affiliation, ce
-   marchand n'a pas de programme d'affiliation actif — D-2026-09-21-15).
+4. **Postgres (upsert)** : requête en deux temps dans une seule instruction SQL (CTE) —
+   `WITH upserted_product AS (INSERT INTO products ... ON CONFLICT (LOWER(brand),
+   LOWER(model), category) DO UPDATE ... RETURNING id)` puis
+   `INSERT INTO deals (..., product_id) VALUES (..., (SELECT id FROM upserted_product))
+   ON CONFLICT (merchant_id, affiliate_url) DO UPDATE ...` — nécessite la contrainte
+   ajoutée par la migration `002_deals_unique_merchant_url.sql` et la table `products`
+   de la migration `003_products.sql`. Le modèle (`model`) utilisé pour le rapprochement
+   produit est calculé dans l'étape de parsing (miroir JS de `lib/product-matching.ts`,
+   `extractModel` — **à garder synchronisé manuellement**, ce workflow n8n ne peut pas
+   importer le code TypeScript du repo). `affiliate_url` = URL produit ProTennis directe
+   (pas de lien d'affiliation, ce marchand n'a pas de programme d'affiliation actif —
+   D-2026-09-21-15). Résout GAP-2026-09-22-11 : chaque offre insérée/mise à jour par ce
+   workflow est désormais rattachée à `product_id`, sans dépendre d'un backfill manuel.
 5. **Code (regroupement)** : collecte les `affiliate_url` vues dans le passage du jour.
    Si 0 offre parsée, retourne `[]` — le nœud d'éviction suivant ne s'exécute alors pas
    du tout, ce qui évite de désactiver en masse toutes les offres ProTennis en cas de
