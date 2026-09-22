@@ -245,3 +245,16 @@ L'ordre de traitement n'est pas encore arbitré — à décider en début de cha
 **Décision** : Hébergement sur une VM **Oracle Cloud Free Tier** (offre "Always Free", ARM Ampere, jusqu'à 4 OCPU/24 Go RAM, gratuite à durée indéterminée — pas un essai limité). n8n self-hosted via Docker sur cette VM. Setup et maintenance orchestrés conjointement (l'utilisateur n'a pas les compétences pour le faire seul) : les étapes nécessitant un compte/une identité/un paiement (création du compte Oracle Cloud, vérification carte bancaire pour le tier gratuit) restent à la charge de l'utilisateur — hors périmètre des outils de Claude Code — le reste (provisioning VM, installation Docker/n8n, import et activation du workflow ProTennis, vérification bout en bout) peut être fait avec Claude Code une fois l'accès à la VM disponible (SSH).
 
 **Statut** : Actée (confirmée explicitement par l'utilisateur).
+
+---
+
+### D-2026-09-22-05 — Chantier « Automatisation n8n » : élargissement du scraping ProTennis au-delà de la page déstockage
+
+**Contexte** : L'utilisateur a demandé d'élargir la couverture de scraping au-delà des pages "bons plans"/déstockage, certaines promos apparaissant sur des pages plus classiques (catégories standard). Vérification réelle effectuée sur le site ProTennis (pages `/973-raquette-de-tennis` sur plusieurs pages de pagination, `/990-grip-raquette-tennis`) : le badge de réduction (`has-discount`, prix barré) est présent sur **100% des produits observés**, toutes catégories confondues — ce n'est pas un signal distinctif du déstockage mais une pratique d'affichage permanente du site. Un seuil de réduction à 1% proposé initialement par l'utilisateur revenait donc de facto à scraper l'intégralité du catalogue ; l'utilisateur a été informé de cette implication (volume, fréquence, exposition juridique accrue — cf. D-2026-09-22-01) avant de trancher. Objectif clarifié par l'utilisateur : la valeur de deals-tennis est l'agrégation (éviter à l'utilisateur final de comparer les prix marchand par marchand), pas la découverte d'une promo cachée sur une page précise.
+
+**Décision** :
+- Le scraping ProTennis s'étend à **toutes les catégories du site** (raquettes, cordages, chaussures, textile, accessoires, padel, squash, badminton, etc.), pas seulement `/5624-destockage-raquettes`.
+- **Aucun seuil minimum de réduction appliqué pour l'instant.** Le volume réel sera observé une fois d'autres marchands ajoutés au périmètre de scraping ; un seuil de curation (ex. -20%) pourra être introduit plus tard sur la base de données réelles plutôt que d'une estimation a priori.
+- Le point sur l'affichage d'un même produit disponible chez plusieurs marchands à des réductions différentes est **hors périmètre de cette décision** — consigné comme point ouvert séparé (voir GAP-2026-09-22-08).
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur). Cadrage uniquement — le build (élargissement effectif du workflow n8n ProTennis) reste une étape séparée, non commencée dans cette conversation.

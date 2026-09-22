@@ -65,3 +65,15 @@ Le runner de migration (`scripts/migrate.ts`, `npm run db:migrate`) réapplique 
 **Bloquant sur** : rien dans l'immédiat — amélioration technique à planifier, pas une décision utilisateur.
 
 **Statut** : ouvert au 2026-09-22.
+
+---
+
+## GAP-2026-09-22-08 — Affichage d'un même produit disponible chez plusieurs marchands à des réductions différentes (OUVERT)
+
+Suite à D-2026-09-22-05 (élargissement du scraping ProTennis à toutes les catégories, sans seuil de réduction) : une fois plusieurs marchands actifs sur le catalogue, un même produit (même référence/modèle) pourra apparaître chez plusieurs marchands avec des prix/réductions différents. Le modèle de données actuel (`deals` avec `UNIQUE (merchant_id, affiliate_url)`) ne fait aucun rapprochement entre offres de marchands différents pour un même produit — chaque offre marchand est indépendante, aucune logique de dédoublonnage ou de comparaison n'existe.
+
+Questions à trancher lors d'un cadrage dédié : faut-il détecter ces doublons produit (et sur quel critère — titre, marque+modèle, référence fabricant ?), et si oui comment les afficher (fusionner en une seule carte avec le meilleur prix, afficher les deux séparément, afficher un badge "aussi disponible chez X moins cher/plus cher") ?
+
+**Bloquant sur** : décision utilisateur (structurante, fonctionnelle) — à traiter explicitement dans une future conversation, une fois plusieurs marchands réellement actifs (pas de doublon réel possible tant que ProTennis est le seul marchand scrapé).
+
+**Statut** : ouvert au 2026-09-22.
