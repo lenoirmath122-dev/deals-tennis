@@ -292,4 +292,3 @@ Vérification réelle effectuée avant de trancher : aucun marchand n'expose de 
 - **Remplacement de la page déstockage** : la page `5624-destockage-raquettes` (seule source actuelle) est un sous-ensemble de `973-raquette-de-tennis` (recoupement vérifié sur un échantillon réel) — elle est retirée du workflow au profit de la page catégorie complète, qui la couvre.
 
 **Statut** : Actée (confirmée explicitement par l'utilisateur). Build à suivre dans cette même conversation.
->>>>>>> Stashed changes
