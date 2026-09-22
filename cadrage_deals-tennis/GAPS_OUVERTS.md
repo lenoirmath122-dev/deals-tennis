@@ -48,13 +48,13 @@ Suite à D-2026-09-21-16, une liste candidate de revendeurs a été actée pour 
 
 ---
 
-## GAP-2026-09-22-06 — Pas d'hébergement permanent pour n8n (OUVERT)
+## GAP-2026-09-22-06 — Pas d'hébergement permanent pour n8n (RÉSOLU)
 
-Le workflow n8n ProTennis (`scripts/automation/n8n-protennis-ingestion-workflow.json`) a été construit et vérifié de bout en bout avec une instance n8n **locale et temporaire** (`npx n8n`, arrêtée après vérification). Aucune instance n8n ne tourne en continu — le déclencheur planifié quotidien (6h) ne s'exécutera donc pas tant qu'une solution d'hébergement permanent n'est pas choisie et mise en place (n8n Cloud, VPS, ou la machine de l'utilisateur qui resterait allumée avec n8n en arrière-plan).
+Le workflow n8n ProTennis (`scripts/automation/n8n-protennis-ingestion-workflow.json`) avait été construit et vérifié avec une instance n8n **locale et temporaire** (`npx n8n`, arrêtée après vérification). Aucune instance n8n ne tournait en continu.
 
-**Bloquant sur** : décision de l'utilisateur (arbitrage coût/simplicité), potentiellement une action de l'utilisateur (création de compte n8n Cloud, provisioning VPS) hors périmètre de Claude Code selon l'option choisie.
+**Résolution (D-2026-09-22-04)** : VM Oracle Cloud Free Tier provisionnée (`n8n-server`, `VM.Standard.A1.Flex`, 1 OCPU/6 Go, Oracle Linux 9, IP publique éphémère `145.241.173.33`, région `eu-paris-1`). Docker + Docker Compose installés. n8n déployé derrière un reverse proxy Caddy avec certificat HTTPS automatique (Let's Encrypt) sur le sous-domaine gratuit `deals-tennis-n8n.duckdns.org` (DuckDNS). Accès protégé par authentification basique (identifiant `admin`, mot de passe généré, communiqué à l'utilisateur — non stocké dans le dépôt) en plus du compte propriétaire n8n créé par l'utilisateur. Credential Postgres `Neon deals-tennis` créée manuellement dans l'UI n8n (jamais transmise en clair via un outil, bloqué explicitement par la protection anti-fuite d'identifiants de Claude Code — créée par l'utilisateur en suivant les valeurs de `.env.local`). Workflow ProTennis importé (`n8n import:workflow`), testé manuellement avec succès (23 offres, `updated_at` confirmé en base Neon de prod au moment du test), puis **activé** — le déclencheur planifié quotidien (6h) tourne maintenant réellement en continu.
 
-**Statut** : ouvert au 2026-09-22.
+**Statut** : résolu le 2026-09-22.
 
 ---
 
