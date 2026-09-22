@@ -223,3 +223,15 @@ L'ordre de traitement n'est pas encore arbitré — à décider en début de cha
 - **Fréquence de collecte** : 1 fois par jour. Cohérent avec la nature « bons plans » (prix/promos ne changent pas toutes les heures), minimise l'exposition/le risque de détection en tant que bot, respecte largement le `Crawl-delay: 60`.
 
 **Statut** : Actée (confirmée explicitement par l'utilisateur).
+
+---
+
+### D-2026-09-22-03 — Build workflow n8n ProTennis : gestion de la fin de vie d'une offre et clé d'identification stable
+
+**Contexte** : Au moment de construire le workflow (nœud HTTP Request + parsing HTML, contrat `ingestion-contract.md`), deux problèmes structurants sont apparus : (1) ProTennis n'affiche aucune date de fin de promo sur ses fiches produit, or le cron d'éviction existant (`n8n-eviction-cron.sql`) ne fait expirer une offre que si `expires_at` est dépassée — une offre ProTennis qui redevient à prix normal ne serait donc jamais désactivée automatiquement ; (2) le schéma `deals` n'a pas de champ pour identifier « la même offre » d'un passage de scraping à l'autre.
+
+**Décision** :
+- **Fin de vie d'une offre ProTennis** : à chaque exécution quotidienne, le workflow scrape la liste courante, upsert ces offres, puis marque `status='expired', is_active=false` toute offre ProTennis déjà en base dont l'URL n'apparaît plus dans le scraping du jour (produit vendu, promo terminée, prix redevenu normal). Garde-fou ajouté (auto-décidé, non structurant) : si le scraping renvoie 0 offre (site en panne, changement de structure), l'étape d'éviction ne s'exécute pas du tout — évite de désactiver en masse toutes les offres ProTennis suite à un échec de scraping.
+- **Clé d'identification stable** : `(merchant_id, affiliate_url)` — l'URL produit ProTennis sert de clé naturelle. Nécessite une migration (`002_deals_unique_merchant_url.sql`) ajoutant `UNIQUE (merchant_id, affiliate_url)` sur `deals`, appliquée directement à la base Neon de prod (pas de conflit avec les données existantes).
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur).

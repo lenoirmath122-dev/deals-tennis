@@ -45,3 +45,23 @@ Le protocole prévoit un flux branche → PR → CI → merge une fois une prote
 Suite à D-2026-09-21-16, une liste candidate de revendeurs a été actée pour le scraping direct. **Résolu (D-2026-09-22-01)** : `robots.txt` et CGV/mentions légales vérifiés réellement pour Tennispro.fr, Sport 2000, SportSystem, ProTennis, Decathlon — ProTennis retenu comme premier marchand (portée minimale : titre/prix/catégorie, image hotlinkée depuis le marchand, pas de description/visuel copié). **Résolu (D-2026-09-22-02)** : méthode technique (nœud HTTP Request n8n + parsing HTML, pas de Playwright) et fréquence (1 fois par jour) tranchées.
 
 **Statut** : résolu le 2026-09-22.
+
+---
+
+## GAP-2026-09-22-06 — Pas d'hébergement permanent pour n8n (OUVERT)
+
+Le workflow n8n ProTennis (`scripts/automation/n8n-protennis-ingestion-workflow.json`) a été construit et vérifié de bout en bout avec une instance n8n **locale et temporaire** (`npx n8n`, arrêtée après vérification). Aucune instance n8n ne tourne en continu — le déclencheur planifié quotidien (6h) ne s'exécutera donc pas tant qu'une solution d'hébergement permanent n'est pas choisie et mise en place (n8n Cloud, VPS, ou la machine de l'utilisateur qui resterait allumée avec n8n en arrière-plan).
+
+**Bloquant sur** : décision de l'utilisateur (arbitrage coût/simplicité), potentiellement une action de l'utilisateur (création de compte n8n Cloud, provisioning VPS) hors périmètre de Claude Code selon l'option choisie.
+
+**Statut** : ouvert au 2026-09-22.
+
+---
+
+## GAP-2026-09-22-07 — `scripts/migrate.ts` non idempotent (OUVERT, mineur)
+
+Le runner de migration (`scripts/migrate.ts`, `npm run db:migrate`) réapplique **tous** les fichiers de `scripts/migrations/` à chaque exécution, sans table de suivi des migrations déjà appliquées. La migration `002_deals_unique_merchant_url.sql` a dû être appliquée manuellement (hors `db:migrate`) pour cette raison — relancer `npm run db:migrate` échouerait sur `001_init_schema.sql` (`CREATE TABLE` sur des tables déjà existantes). Sans impact aujourd'hui (fait rare), mais à corriger avant d'ajouter une 3e migration si le problème doit être évité à nouveau.
+
+**Bloquant sur** : rien dans l'immédiat — amélioration technique à planifier, pas une décision utilisateur.
+
+**Statut** : ouvert au 2026-09-22.

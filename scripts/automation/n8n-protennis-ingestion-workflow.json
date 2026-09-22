@@ -1,0 +1,225 @@
+[
+  {
+    "id": "protennis-ingestion-wf-001",
+    "name": "ProTennis - Ingestion raquettes (destockage)",
+    "nodes": [
+      {
+        "parameters": {
+          "events": "worklfow_call"
+        },
+        "id": "exec-wf-trigger-1",
+        "name": "Execution manuelle CLI",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "days",
+                "triggerAtHour": 6,
+                "triggerAtMinute": 0
+              }
+            ]
+          }
+        },
+        "id": "trigger-schedule-1",
+        "name": "Tous les jours a 6h",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://www.protennis.fr/5624-destockage-raquettes",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "User-Agent",
+                "value": "deals-tennis-bot/1.0 (+https://deals-tennis.vercel.app)"
+              },
+              {
+                "name": "Accept",
+                "value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "text",
+                "outputPropertyName": "data"
+              }
+            }
+          }
+        },
+        "id": "http-request-1",
+        "name": "Recuperer la page destockage",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          220,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const html = $input.first().json.data;\n\nfunction parseEuro(str) {\n  return parseFloat(str.replace(/\\s|&nbsp;| /g, '').replace(',', '.'));\n}\n\nconst merchantId = '9bcb1729-926d-4462-b949-57f991e08673';\nconst category = 'raquettes';\n\nconst articles = html.match(/<article class=\"product-miniature[\\s\\S]*?<\\/article>/g) || [];\nconst items = [];\n\nfor (const block of articles) {\n  const urlMatch = block.match(/<a href=\"([^\"]+)\"[^>]*class=\"thumbnail product-thumbnail\">/);\n  const imgMatch = block.match(/data-full-size-image-url=\"([^\"]+)\"/) || block.match(/<img\\s+src=\"([^\"]+)\"/);\n  const titleMatch = block.match(/<h3 class=\"h3 product-title\">\\s*<a[^>]*>\\s*([\\s\\S]*?)\\s*<\\/a>/);\n  const priceMatch = block.match(/<span class=\"price\" aria-label=\"Prix\">\\s*([\\d.,\\s ]+)\\s*€\\s*<\\/span>/);\n  const regularMatch = block.match(/<span class=\"regular-price\" aria-label=\"Prix de base\">\\s*([\\d.,\\s ]+)\\s*€\\s*<\\/span>/);\n  const brandMatch = block.match(/alt=\"([^\"]+)\"\\s+class=\"brand-logo\"/);\n\n  if (!urlMatch || !titleMatch || !priceMatch || !regularMatch || !brandMatch || !imgMatch) continue;\n\n  const originalPrice = parseEuro(regularMatch[1]);\n  const discountedPrice = parseEuro(priceMatch[1]);\n  if (!(originalPrice > discountedPrice) || !(discountedPrice > 0)) continue;\n\n  const discountPercentage = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);\n\n  items.push({\n    json: {\n      title: titleMatch[1].replace(/\\s+/g, ' ').trim(),\n      brand: brandMatch[1].trim(),\n      category,\n      image_url: imgMatch[1],\n      original_price: originalPrice,\n      discounted_price: discountedPrice,\n      discount_percentage: discountPercentage,\n      merchant_id: merchantId,\n      affiliate_url: urlMatch[1],\n    },\n  });\n}\n\nreturn items;\n"
+        },
+        "id": "code-parse-1",
+        "name": "Parser le HTML en offres",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          440,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO deals (title, brand, category, image_url, original_price, discounted_price, discount_percentage, merchant_id, affiliate_url, status, is_active)\nVALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 'active', true)\nON CONFLICT (merchant_id, affiliate_url)\nDO UPDATE SET\n  title = EXCLUDED.title,\n  brand = EXCLUDED.brand,\n  category = EXCLUDED.category,\n  image_url = EXCLUDED.image_url,\n  original_price = EXCLUDED.original_price,\n  discounted_price = EXCLUDED.discounted_price,\n  discount_percentage = EXCLUDED.discount_percentage,\n  status = 'active',\n  is_active = true,\n  updated_at = NOW()\nRETURNING affiliate_url, merchant_id;",
+          "options": {
+            "queryBatching": "independently",
+            "queryReplacement": "={{ [$json.title, $json.brand, $json.category, $json.image_url, $json.original_price, $json.discounted_price, $json.discount_percentage, $json.merchant_id, $json.affiliate_url] }}"
+          }
+        },
+        "id": "postgres-upsert-1",
+        "name": "Upsert des offres",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          660,
+          0
+        ],
+        "credentials": {
+          "postgres": {
+            "id": "protennis-neon-cred-001",
+            "name": "Neon deals-tennis"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const items = $input.all();\nif (items.length === 0) {\n  return [];\n}\nconst affiliateUrls = items.map((i) => i.json.affiliate_url);\nconst merchantId = items[0].json.merchant_id;\nreturn [{ json: { merchant_id: merchantId, affiliate_urls: affiliateUrls } }];"
+        },
+        "id": "code-aggregate-1",
+        "name": "Regrouper les URLs vues aujourd hui",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          880,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE deals\nSET status = 'expired', is_active = false, updated_at = NOW()\nWHERE merchant_id = $1\n  AND status = 'active'\n  AND NOT (affiliate_url = ANY($2::text[]))\nRETURNING id, title, affiliate_url;",
+          "options": {
+            "queryBatching": "single",
+            "queryReplacement": "={{ [$json.merchant_id, $json.affiliate_urls] }}"
+          }
+        },
+        "id": "postgres-eviction-1",
+        "name": "Expirer les offres disparues",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.7,
+        "position": [
+          1100,
+          0
+        ],
+        "credentials": {
+          "postgres": {
+            "id": "protennis-neon-cred-001",
+            "name": "Neon deals-tennis"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Execution manuelle CLI": {
+        "main": [
+          [
+            {
+              "node": "Recuperer la page destockage",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tous les jours a 6h": {
+        "main": [
+          [
+            {
+              "node": "Recuperer la page destockage",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Recuperer la page destockage": {
+        "main": [
+          [
+            {
+              "node": "Parser le HTML en offres",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parser le HTML en offres": {
+        "main": [
+          [
+            {
+              "node": "Upsert des offres",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Upsert des offres": {
+        "main": [
+          [
+            {
+              "node": "Regrouper les URLs vues aujourd hui",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Regrouper les URLs vues aujourd hui": {
+        "main": [
+          [
+            {
+              "node": "Expirer les offres disparues",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    }
+  }
+]
