@@ -275,3 +275,23 @@
 - `ETAT_ACTUEL.md`, `GAPS_OUVERTS.md`, `DECISIONS_FONCTIONNELLES.md` mis à jour. **GAP-2026-09-21-05 résolu** — le cadrage du marchand ProTennis (sélection, légal, portée des données, méthode technique, fréquence) est maintenant complet.
 - **Aucune étape de build n'a été démarrée** dans cette conversation (cadrage uniquement, conforme au protocole).
 - Prochaine étape : construire le workflow n8n pour ProTennis (étape de build à part entière, prochaine conversation) — voir ETAT_ACTUEL.md.
+
+## 2026-09-22 (suite 2) — Build du workflow n8n ProTennis, vérifié de bout en bout
+
+- Reprise en début de conversation : `ETAT_ACTUEL.md` → `GAPS_OUVERTS.md` → dernière entrée du journal lus, protocole confirmé. Commit + push + merge (PR #4, squash) des mises à jour de cadrage laissées non committées par la session précédente, avant de démarrer le build.
+- Question soumise (protocole) : aucune instance n8n n'existe — comment la provisionner pour construire/tester réellement ? Docker proposé, absent de la machine ; bascule sur `npx n8n` (installation npm locale, pas de conteneur), confirmé par l'utilisateur avec une préoccupation explicite sur la charge machine et le besoin d'allumage continu — clarifié que l'instance ne servirait qu'au build/test de cette étape, pas à l'hébergement permanent (question séparée, consignée en GAP).
+- Deux questions structurantes soumises avant de coder (protocole, décisions non déduites seul) :
+  - Fin de vie d'une offre ProTennis sans date de fin visible sur le site → option « désactiver les offres non revues au passage suivant » retenue.
+  - Absence de clé d'identification stable pour l'upsert → migration `UNIQUE(merchant_id, affiliate_url)` sur `deals` proposée et validée avant application.
+  - **Décision actée (D-2026-09-22-03)** regroupant ces deux points.
+- Build réalisé : migration `002_deals_unique_merchant_url.sql` appliquée à la base Neon de prod (vérifiée), marchand `ProTennis` inséré réellement, workflow n8n construit nœud par nœud (HTTP Request, Code de parsing par regex, Postgres upsert, Code de regroupement, Postgres éviction), importé et exécuté via le CLI n8n (`import:workflow` / `execute`) plutôt que via navigation manuelle dans l'UI.
+- Plusieurs bugs réels trouvés et corrigés pendant la vérification (pas de simulation) :
+  - PrestaShop renvoie un fragment JSON au lieu de la page HTML complète quand le header `Accept` n'est pas explicitement `text/html` (comportement du client HTTP de n8n par défaut) — corrigé en forçant le header.
+  - Paramétrage `queryReplacement` du nœud Postgres cassé une première fois par un problème d'échappement bash lors de la génération du JSON du workflow (les placeholders `$1`..`$9` disparaissaient silencieusement) — corrigé en générant le JSON via un script fichier plutôt qu'un `node -e` inline.
+  - Format des paramètres de requête Postgres à corriger (passer un littéral de tableau JS `[$json.a, $json.b, ...]` plutôt que plusieurs `{{ }}` séparés par des virgules) pour que les valeurs soient effectivement transmises.
+  - Cast `$2::jsonb` sur un tableau pour la requête d'éviction rejeté par Postgres (le driver transmet déjà un vrai tableau `text[]`) — corrigé en castant directement `$2::text[]`.
+- L'exécution réelle du workflow (écriture dans la base Neon de prod, offres visibles immédiatement sur le site en production) a été explicitement confirmée par l'utilisateur avant lancement — bloquée une première fois par le classificateur auto-mode de Claude Code (« Production Deploy »), débloquée après confirmation explicite.
+- Vérification de bout en bout avec des données réelles : 23 offres ProTennis réelles insérées et visibles sur `https://deals-tennis.vercel.app` ; ré-exécution confirmant l'idempotence (pas de doublons) ; test réel de l'éviction avec une fausse offre insérée puis supprimée après contrôle ; redirection `/go/[dealId]` testée sur une offre réelle (clic loggé puis supprimé après contrôle). `npm run lint`, `npm run build`, `npm test` passent.
+- Instance n8n locale arrêtée après vérification (pas d'hébergement permanent — **GAP-2026-09-22-06** ouvert). Défaut mineur du runner de migration existant noté sans le corriger (**GAP-2026-09-22-07** ouvert, hors scope de cette étape).
+- Livrables committés : `scripts/migrations/002_deals_unique_merchant_url.sql`, `scripts/automation/n8n-protennis-ingestion-workflow.json`, `scripts/automation/n8n-protennis-ingestion-README.md`. `ETAT_ACTUEL.md`, `GAPS_OUVERTS.md`, `DECISIONS_FONCTIONNELLES.md` mis à jour.
+- Prochaine étape : décider de l'hébergement permanent de n8n pour que le workflow tourne réellement chaque jour (GAP-2026-09-22-06) — à soumettre explicitement en début de prochaine conversation.
