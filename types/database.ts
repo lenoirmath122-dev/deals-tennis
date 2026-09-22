@@ -32,8 +32,17 @@ export interface Deal {
   status: DealStatus;
   is_active: boolean;
   expires_at: string | null;
+  product_id: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface Product {
+  id: string;
+  brand: string;
+  model: string;
+  category: DealCategory;
+  created_at: string;
 }
 
 export interface ClickEvent {
