@@ -292,4 +292,18 @@ Vérification réelle effectuée avant de trancher : aucun marchand n'expose de 
 - **Remplacement de la page déstockage** : la page `5624-destockage-raquettes` (seule source actuelle) est un sous-ensemble de `973-raquette-de-tennis` (recoupement vérifié sur un échantillon réel) — elle est retirée du workflow au profit de la page catégorie complète, qui la couvre.
 
 **Statut** : Actée (confirmée explicitement par l'utilisateur). Build à suivre dans cette même conversation.
->>>>>>> Stashed changes
+
+---
+
+### D-2026-09-22-09 — Seuils chiffrés pour la politique d'archivage des fichiers de suivi (précision de D-2026-09-21-04)
+
+**Contexte** : D-2026-09-21-04 posait le principe (« synthèse courte, réécrite à chaque point d'étape ; version détaillée déplacée en `archive/` quand trop lourde ») mais sans seuil chiffré. Constat en session : `ETAT_ACTUEL.md` (200 lignes) et `JOURNAL_SESSIONS.md` (336 lignes, 27 entrées) avaient largement dépassé une taille de synthèse lisible sans que la condensation/archivage se déclenche, faute de seuil explicite — `archive/` était resté vide.
+
+**Décision** :
+- **`JOURNAL_SESSIONS.md`** : seuil de **150 lignes**. Au dépassement, condenser en gardant les sessions récentes en clair et déplacer les entrées les plus anciennes, telles quelles, dans `archive/`.
+- **`ETAT_ACTUEL.md`** : seuil de **150 lignes**, même logique que le journal (fichier lu en entier à chaque reprise de session, doit rester léger). Au dépassement : chaque phase/chantier **terminé** est condensé en une ligne de résumé dans le fichier courant ; le détail d'implémentation intégral de cette phase part dans `archive/`. Seule la phase/le chantier **en cours** garde son détail complet dans `ETAT_ACTUEL.md`.
+- **`GAPS_OUVERTS.md`** : pas de seuil de taille — un gap est retiré du fichier **immédiatement** dès qu'il est tranché (décision `D-xxx` associée qui le clôt). Pas d'archive séparée pour les gaps résolus : la décision qui clôt le gap fait foi dans `DECISIONS_FONCTIONNELLES.md`.
+- **`DECISIONS_FONCTIONNELLES.md`** : **jamais archivé**, quelle que soit sa taille. Motif différent des trois autres fichiers : ce n'est pas un document relu intégralement à chaque reprise de session (protocole de reprise = `ETAT_ACTUEL.md` → `GAPS_OUVERTS.md` → dernière entrée du journal, pas ce fichier), mais un registre consulté par référence ponctuelle à un ID (`D-AAAA-MM-JJ-NN`) depuis les autres documents. Archiver casserait la garantie « un ID = un emplacement stable et unique » sur laquelle s'appuient le journal, les gaps, les commits et les PR pour pointer vers une décision.
+- Application immédiate demandée par l'utilisateur : `ETAT_ACTUEL.md` et `JOURNAL_SESSIONS.md` étant déjà au-delà du seuil au moment de cette décision, la condensation + archivage est à effectuer dans la foulée.
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur après discussion des options).
