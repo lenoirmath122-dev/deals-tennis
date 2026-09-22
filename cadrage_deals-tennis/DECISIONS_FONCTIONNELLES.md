@@ -258,3 +258,22 @@ L'ordre de traitement n'est pas encore arbitré — à décider en début de cha
 - Le point sur l'affichage d'un même produit disponible chez plusieurs marchands à des réductions différentes est **hors périmètre de cette décision** — consigné comme point ouvert séparé (voir GAP-2026-09-22-08).
 
 **Statut** : Actée (confirmée explicitement par l'utilisateur). Cadrage uniquement — le build (élargissement effectif du workflow n8n ProTennis) reste une étape séparée, non commencée dans cette conversation.
+
+**Point de vigilance ajouté le 2026-09-22** (lors de l'inspection réelle du site avant de démarrer le build de cette décision) : ProTennis est un site **multi-sports** (tennis, padel, squash, badminton, pickleball), avec des pages dédiées à chaque sport. Le champ `deals.category` a une contrainte `CHECK` limitée à `'raquettes', 'cordages', 'chaussures', 'textile', 'accessoires'` (`data-model.md`) — une offre padel/squash/badminton ne peut pas y être insérée telle quelle. La mention « padel, squash, badminton, etc. » dans le contexte de cette décision reflète les catégories du **menu du site**, pas un périmètre produit confirmé pour deals-tennis (qui reste un catalogue tennis d'après `spec.md`). **Aucune correction actée à ce stade** — à trancher explicitement au moment du build de l'élargissement (exclure les autres sports, ou élargir le périmètre produit du site — décision non prise). Voir GAP-2026-09-22-09.
+
+---
+
+### D-2026-09-22-06 — Comparaison de prix multi-marchands pour un même article : direction produit et modèle de données
+
+**Contexte** : En démarrant le build de l'élargissement ProTennis (D-2026-09-22-05), l'utilisateur a redéfini l'objectif final du site : permettre à l'utilisateur final de rechercher un article précis et d'être redirigé vers le ou les marchands qui le proposent en réduction, pour comparer lui-même (prix, mais aussi préférence de marchand). Ce point recoupe GAP-2026-09-22-08 (affichage d'un même produit chez plusieurs marchands), que l'utilisateur élève au rang d'axe central plutôt que de point ouvert secondaire.
+
+Vérification réelle effectuée avant de trancher : aucun marchand n'expose de référence fabricant ou d'EAN/GTIN universel exploitable pour le rapprochement. Une fiche produit ProTennis réelle inspectée (`59922-raquette-de-tennis-lacoste-l23-light-275-gr-non-cordee.html`) expose un champ « Référence » (`18LACL23L`) qui est un **code interne au marchand** (convention PrestaShop), pas une référence fabricant partagée entre marchands.
+
+**Décision** :
+- **Modèle de données** : ajout d'une table `products` (article canonique : marque, modèle, catégorie) ; `deals` gagne un `product_id` nullable (FK vers `products`, `NULL` tant que le rapprochement n'a pas réussi). `deals` reste la table d'offres marchandes individuelles, `products` ne fait qu'identifier « le même article ».
+- **Méthode de rapprochement** : pas de référence fabricant/EAN disponible dans les données — le rapprochement se fait par **extraction de marque + modèle depuis le titre de l'offre** (parsing structuré : marque parmi une liste connue, puis tokens de modèle en excluant le bruit — grammage, mention « cordée/non cordée », taille, etc.). Approximatif par nature (pas de garantie à 100%), accepté explicitement par l'utilisateur.
+- **Page d'accueil / catalogue** : reste centrée **deal** (une carte = une offre marchande), triée par défaut du plus récent au plus ancien, filtres/tri existants inchangés (FR-009 et Phase 4 non remis en cause). Pas de fusion en une carte par article sur cette vue.
+- **Recherche** : devient centrée **article** — une recherche doit regrouper tous les deals rapprochés sur le même `product_id`, tous marchands confondus (évolution du contrat `catalog-query-api.md`, à cadrer en détail au moment du build).
+- **Détail d'un deal** : ouvre une page ou une popup (modalité UI non tranchée, voir GAP-2026-09-22-10) listant les autres offres marchandes du même article (via `product_id`), pour laisser l'utilisateur comparer lui-même et choisir selon ses propres critères (prix, mais aussi préférence de marchand) — pas de logique de « meilleur prix » imposée automatiquement au premier niveau d'affichage.
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur). Cadrage uniquement — aucun build effectué dans cette conversation. Reste à trancher avant/pendant le build : algorithme exact de parsing marque/modèle, modalité page vs popup pour le détail d'un deal, évolution précise du contrat de recherche.
