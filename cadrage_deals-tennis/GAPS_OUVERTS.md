@@ -37,3 +37,11 @@ Le protocole prévoit un flux branche → PR → CI → merge une fois une prote
 **Résolution (chantier CI + protection de branche, D-2026-09-21-11)** : dépôt GitHub privé `lenoirmath122-dev/deals-tennis` créé et lié en `origin`. Workflow GitHub Actions (`.github/workflows/ci.yml`) exécutant lint + build + tests unitaires (`npm run test:unit`, nouveau script scoping vitest à `tests/unit/`) sur chaque push/PR vers `master`, avec `DATABASE_URL` en secret repo (requis même sans tests de contrat : `lib/db.ts` évalue la connexion Neon au chargement du module, donc `next build` échoue sans cette variable). Protection de branche `master` activée : check `build-and-test` obligatoire avant merge, force-push et suppression de branche interdits. Merge squash uniquement + suppression automatique de la branche source configurés sur le repo (conforme au protocole point 4).
 
 **Statut** : résolu le 2026-09-21.
+
+---
+
+## GAP-2026-09-21-05 — Méthode technique de scraping (n8n HTTP node vs Playwright) et fréquence non tranchées (RÉSOLU)
+
+Suite à D-2026-09-21-16, une liste candidate de revendeurs a été actée pour le scraping direct. **Résolu (D-2026-09-22-01)** : `robots.txt` et CGV/mentions légales vérifiés réellement pour Tennispro.fr, Sport 2000, SportSystem, ProTennis, Decathlon — ProTennis retenu comme premier marchand (portée minimale : titre/prix/catégorie, image hotlinkée depuis le marchand, pas de description/visuel copié). **Résolu (D-2026-09-22-02)** : méthode technique (nœud HTTP Request n8n + parsing HTML, pas de Playwright) et fréquence (1 fois par jour) tranchées.
+
+**Statut** : résolu le 2026-09-22.

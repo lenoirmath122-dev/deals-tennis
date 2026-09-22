@@ -167,3 +167,59 @@ L'ordre de traitement n'est pas encore arbitré — à décider en début de cha
 **Conséquence à cadrer dans une prochaine étape** : sans affiliation, `deals.affiliate_url` ne peut pas pointer vers un lien traqué/rémunéré pour les marchands scrapés — à trancher (lien produit direct sans tracking marchand, ou affichage sans lien cliquable en attendant) avant tout code. Reste aussi à définir : quels marchands scraper en premier, méthode technique (n8n HTTP/Playwright), fréquence, respect des CGU/robots.txt de chaque site ciblé.
 
 **Statut** : Actée (confirmée explicitement par l'utilisateur).
+
+---
+
+### D-2026-09-21-15 — Chantier « Automatisation n8n » : comportement du lien pour une offre scrapée sans affiliation
+
+**Contexte** : Suite à D-2026-09-21-14, `deals.affiliate_url`/`/go/[dealId]` supposent aujourd'hui un lien tracké/rémunéré (programme d'affiliation accepté). Pour un marchand scrapé sans affiliation (canal d'appoint), ce lien n'existe pas au sens propre.
+
+**Décision** : `affiliate_url` pointe vers l'URL produit directe du marchand (pas de lien de tracking d'affiliation, puisqu'il n'y en a pas). `/go/[dealId]` continue de logger le clic dans `click_events` (analytics interne du site, RGPD, indépendant de la rémunération) mais sans rémunération associée pour ces offres. L'offre reste donc cliquable et utile à l'utilisateur final immédiatement, même sans affiliation acceptée pour ce marchand.
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur).
+
+---
+
+### D-2026-09-21-16 — Chantier « Automatisation n8n » : liste candidate de marchands pour le scraping direct
+
+**Contexte** : Suite à D-2026-09-21-14 (scraping direct en canal d'appoint), l'utilisateur a listé les marchands candidats pour ce canal : Tennispro.fr, Sport 2000, une « private sport shop » non nommée précisément, Decathlon, SportSystem, ProTennis, Tennis Pro, ainsi que des marques (Wilson, Babolat, Yonex, Head).
+
+**Décision** : Liste candidate actée telle que donnée, traitée en deux groupes distincts (même logique « au fil de l'eau » que D-2026-09-21-12 pour l'affiliation, appliquée ici à la faisabilité technique plutôt qu'à l'acceptation d'un programme) :
+- **Revendeurs multi-marques** (ont un catalogue produit + prix + promos exploitables directement) : Tennispro.fr, Sport 2000, Decathlon, SportSystem, ProTennis, Tennis Pro. Ce sont les candidats naturels pour un scraping de fiches produit/prix.
+- **Marques** (Wilson, Babolat, Yonex, Head) : à évaluer séparément — un site de marque a rarement un mécanisme de "bons plans"/promos comparable à un revendeur, et vend souvent lui-même via des revendeurs plutôt qu'en direct. Pas exclu, mais pas prioritaire pour ce canal.
+- Pas de sélection définitive d'un premier marchand à implémenter techniquement dans cette conversation (cadrage uniquement) — cette sélection, ainsi que la vérification robots.txt/CGU par site et la méthode technique (n8n HTTP node vs Playwright), restent à traiter dans une prochaine étape dédiée, conformément au protocole (une étape de build à la fois).
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur).
+
+---
+
+### D-2026-09-22-01 — Chantier « Automatisation n8n » : premier marchand scrapé, portée des données, risque juridique assumé
+
+**Contexte** : Suite à D-2026-09-21-16 (GAP-2026-09-21-05 ouvert), `robots.txt` et CGV/mentions légales vérifiés réellement (curl + lecture du texte, pas de suppositions) pour Tennispro.fr, Sport 2000, SportSystem, ProTennis et Decathlon.
+- **Tennispro.fr** : `robots.txt` permissif sur les fiches produit, mais mentions légales contiennent une clause explicite limitant toute reproduction à un « usage personnel et privé » — republication commerciale explicitement interdite. **Écarté.**
+- **Sport 2000** : `robots.txt` permissif, mais mentions légales interdisent explicitement l'usage de « lien profond, gratte-pages, robot, araignée » (clause anti-bot).
+- **SportSystem** : `robots.txt` permissif, mais CGV interdisent « strictement » toute reproduction de texte/image, même partielle.
+- **ProTennis** : `robots.txt` permissif sur les fiches produit (`/2397-raquette-de-tennis-babolat` etc., pas de préfixe `/fr/*` bloqué par erreur). CGV (Article 10) réservent tous les droits de reproduction/représentation à PROTENNIS et interdisent tout lien hypertexte sans accord écrit exprès — clause jugée peu solide juridiquement (la liberté de lien simple vers une page publique est largement reconnue en droit français) comparée aux clauses anti-bot explicites des deux marchands précédents.
+- **Decathlon** : retourne un 403 même en requête `curl` directe (protection anti-bot réelle, pas seulement un blocage de l'outil de fetch) — écarté techniquement sans même évaluer les CGV.
+- Risque juridique réel identifié et expliqué à l'utilisateur : le droit sui generis du producteur de base de données (art. L341-1 CPI) protège contre une extraction/réutilisation *substantielle et répétée* d'un catalogue, indépendamment des CGU ; c'est le risque principal, pas les clauses de CGV en elles-mêmes (largement standard/boilerplate). Risque concret réaliste pour un petit site niche : mise en demeure possible si repéré, procès improbable à cette échelle.
+
+**Décision** :
+- **Marchand retenu pour la première implémentation technique** : ProTennis (le plus pertinent pour le catalogue — revendeur spécialisé tennis — et la clause la plus problématique de son CGV, l'interdiction de lien, est jugée la moins solide juridiquement du lot).
+- **Portée des données scrapées, pour limiter l'exposition au droit des bases de données** : titre, prix, catégorie uniquement — pas de reproduction de description longue ni de copie/stockage d'image sur nos serveurs.
+- **Visuel produit** : hotlink de l'image directement depuis l'URL du marchand (`<img src="...">` vers son CDN, jamais téléchargée/republiée sur notre domaine) — réduit le risque de reproduction. Fallback vers les placeholders par catégorie déjà en place (`public/placeholders/`) si l'image casse (hotlinking bloqué côté marchand, URL invalide, etc.).
+- **Risque résiduel assumé explicitement par l'utilisateur** : le scraping direct (même minimal) reste un canal d'appoint temporaire (D-2026-09-21-14), pas la méthode cible à long terme — reste préférable de basculer ce marchand sur affiliation si un programme devient disponible.
+- Respect du `Crawl-delay: 60` de ProTennis pour toute fréquence de collecte définie (à cadrer dans une prochaine étape avec la méthode technique n8n HTTP node vs Playwright — GAP-2026-09-21-05 partiellement résolu, la sélection du marchand est faite mais pas encore la méthode technique/fréquence).
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur, plusieurs questions structurées successives).
+
+---
+
+### D-2026-09-22-02 — Chantier « Automatisation n8n » : méthode technique et fréquence de collecte pour ProTennis
+
+**Contexte** : Suite à D-2026-09-22-01 (ProTennis retenu comme premier marchand), il restait à trancher la méthode technique du nœud n8n et la fréquence de collecte (GAP-2026-09-21-05, reste ouvert). Contexte technique déjà établi : ProTennis tourne sous PrestaShop, rendu côté serveur — le contenu produit est présent dans le HTML brut sans exécution JS. `robots.txt` indique `Crawl-delay: 60`.
+
+**Décision** :
+- **Méthode technique** : nœud HTTP Request n8n (requête simple) + parsing HTML (HTML Extract / regex) — pas de Playwright/headless browser, inutile puisque le contenu est déjà présent dans le HTML brut. Plus léger, moins fragile, pas de dépendance navigateur.
+- **Fréquence de collecte** : 1 fois par jour. Cohérent avec la nature « bons plans » (prix/promos ne changent pas toutes les heures), minimise l'exposition/le risque de détection en tant que bot, respecte largement le `Crawl-delay: 60`.
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur).

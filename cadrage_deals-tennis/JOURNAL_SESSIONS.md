@@ -242,3 +242,36 @@
 - Décision structurante actée (D-2026-09-21-13) : typographie Space Grotesk, palette à deux accents (vert gazon `#1b4332` pour prix/CTA, terre cuite `#c1440e` pour badge réduction), cartes blanches/bordure gris clair, radius léger (6px cartes/boutons, 4px badges).
 - **Aucune étape de build n'a été démarrée** dans cette conversation (cadrage uniquement, conforme au protocole — l'utilisateur avait explicitement choisi ce périmètre en début de conversation).
 - Prochaine étape : soit poursuivre le cadrage du chantier (spacing/layout, style des composants de nav/filtres), soit démarrer l'application des tokens à `app/globals.css` comme étape de build à part entière — à soumettre explicitement en début de prochaine conversation dédiée. Voir aussi GAP-2026-09-21-04 (photo de terrain à recevoir).
+
+## 2026-09-21 (suite 19) — Cadrage chantier « Automatisation n8n » : lien scraping + liste de marchands candidats (pas de build)
+
+- Reprise de session (`/clear`), protocole de reprise appliqué (ETAT_ACTUEL → GAPS_OUVERTS → dernière entrée du journal), l'utilisateur ayant demandé un point de situation général sur le scraping.
+- Constat rappelé : cadrage du chantier « Charte graphique » terminé et mergé (PR #3) entre-temps ; deux décisions structurantes restaient ouvertes sur le chantier « Automatisation n8n » depuis D-2026-09-21-14 (marchands à scraper en premier, comportement du lien de destination sans affiliation).
+- Les deux décisions ont été soumises explicitement via question structurée :
+  - **D-2026-09-21-15** : `affiliate_url` pointe vers l'URL produit directe pour une offre scrapée sans affiliation (pas de lien d'affiliation, puisqu'il n'y en a pas) ; `/go/[dealId]` continue de logger le clic (analytics interne RGPD) sans rémunération associée.
+  - **D-2026-09-21-16** : liste candidate actée en deux groupes — revendeurs multi-marques prioritaires (Tennispro.fr, Sport 2000, Decathlon, SportSystem, ProTennis, Tennis Pro), marques à évaluer séparément et non prioritaires pour ce canal (Wilson, Babolat, Yonex, Head), car un site de marque a rarement un mécanisme de promos comparable à un revendeur.
+- **GAP-2026-09-21-05 ouvert** : aucun premier marchand sélectionné pour une implémentation technique concrète, `robots.txt`/CGU non vérifiés, méthode technique (n8n HTTP node vs Playwright) et fréquence non tranchées.
+- **Aucune étape de build n'a été démarrée** dans cette conversation (cadrage uniquement — deux décisions structurantes actées, pas d'enchaînement sur la sélection technique du premier marchand).
+- Prochaine étape : sélectionner le premier marchand à implémenter parmi la liste de revendeurs (D-2026-09-21-16), vérifier son `robots.txt`/ses CGU, puis cadrer la méthode technique de scraping et la fréquence — à soumettre explicitement en début de prochaine conversation. Voir GAP-2026-09-21-05.
+
+## 2026-09-22 (suite 20) — Sélection du premier marchand scrapé (ProTennis) + gestion du risque juridique (pas de build)
+
+- Reprise de session, protocole de reprise appliqué (ETAT_ACTUEL → GAPS_OUVERTS → dernière entrée du journal).
+- L'utilisateur a choisi Tennispro.fr comme premier candidat naturel. Vérification réelle (curl + lecture du texte, pas de suppositions) de `robots.txt` et des CGV/mentions légales : clause explicite limitant toute reproduction à un usage personnel/privé — écarté.
+- Vérification étendue aux autres candidats de D-2026-09-21-16 : Sport 2000 (clause anti-bot explicite « gratte-pages/robot/araignée »), SportSystem (reproduction texte/image « strictement interdite »), ProTennis (réserve de reproduction + clause anti-lien sans accord écrit), Decathlon (403 même en `curl` direct, anti-bot réel, écarté techniquement).
+- Constat remonté explicitement à l'utilisateur : le problème dépasse un marchand isolé, quasi tous les revendeurs ont une clause CGV restrictive — question de fond posée en retour par l'utilisateur sur le risque réel (pas juste une clarification de forme, une vraie discussion sur la stratégie).
+- Explication donnée : le risque juridique réel réside dans le droit sui generis du producteur de base de données (art. L341-1 CPI, extraction substantielle et répétée), pas dans les clauses CGV elles-mêmes (largement standard) ; risque concret réaliste pour un petit site niche = mise en demeure possible si repéré, procès improbable à cette échelle ; pratique de fait répandue chez les sites d'agrégation qui démarrent souvent ainsi avant de négocier une affiliation.
+- Recommandation de mitigation donnée et retenue : portée de données minimale (titre/prix/catégorie, pas de description longue), respect du `Crawl-delay`, arrêt immédiat si un marchand se manifeste.
+- Question sur le visuel produit : l'utilisateur a demandé confirmation de la conséquence (pas de visuel marchand en mode minimal). Option hotlink (afficher l'image depuis l'URL du marchand sans la copier/stocker) proposée et retenue, avec fallback vers les placeholders existants.
+- **Décision actée (D-2026-09-22-01)** : ProTennis retenu comme premier marchand, portée minimale (titre/prix/catégorie), image hotlinkée, risque résiduel assumé explicitement, scraping direct confirmé comme canal d'appoint temporaire (D-2026-09-21-14).
+- `ETAT_ACTUEL.md`, `GAPS_OUVERTS.md`, `DECISIONS_FONCTIONNELLES.md` mis à jour. GAP-2026-09-21-05 partiellement résolu (marchand sélectionné, robots.txt/CGU vérifiés) — reste ouvert sur la méthode technique (n8n HTTP node vs Playwright) et la fréquence de collecte.
+- **Aucune étape de build n'a été démarrée** dans cette conversation (cadrage + vérifications réelles de robots.txt/CGV uniquement, conforme au protocole).
+- Prochaine étape : cadrer la méthode technique de collecte pour ProTennis (n8n HTTP node vs Playwright) et la fréquence (caler sur `Crawl-delay: 60`) — à soumettre explicitement en début de prochaine conversation. Voir GAP-2026-09-21-05.
+
+## 2026-09-22 (suite) — Méthode technique et fréquence de collecte tranchées pour ProTennis
+
+- Question soumise explicitement à l'utilisateur (protocole) : méthode technique du nœud n8n (HTTP Request + parsing HTML vs Playwright/headless) et fréquence de collecte, sachant que ProTennis est en PrestaShop rendu côté serveur (contenu dans le HTML brut, pas de JS requis) et que `robots.txt` indique `Crawl-delay: 60`.
+- **Décision actée (D-2026-09-22-02)** : nœud HTTP Request n8n + parsing HTML (pas de Playwright), fréquence 1 fois par jour.
+- `ETAT_ACTUEL.md`, `GAPS_OUVERTS.md`, `DECISIONS_FONCTIONNELLES.md` mis à jour. **GAP-2026-09-21-05 résolu** — le cadrage du marchand ProTennis (sélection, légal, portée des données, méthode technique, fréquence) est maintenant complet.
+- **Aucune étape de build n'a été démarrée** dans cette conversation (cadrage uniquement, conforme au protocole).
+- Prochaine étape : construire le workflow n8n pour ProTennis (étape de build à part entière, prochaine conversation) — voir ETAT_ACTUEL.md.
