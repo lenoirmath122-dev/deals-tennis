@@ -40,10 +40,10 @@ Le protocole prévoit un flux branche → PR → CI → merge une fois une prote
 
 ---
 
-## GAP-2026-09-21-05 — Premier marchand à scraper non sélectionné, robots.txt/CGU non vérifiés (OUVERT)
+## GAP-2026-09-21-05 — Méthode technique de scraping (n8n HTTP node vs Playwright) et fréquence non tranchées (OUVERT, partiellement résolu)
 
-Suite à D-2026-09-21-16, une liste candidate de revendeurs (Tennispro.fr, Sport 2000, Decathlon, SportSystem, ProTennis, Tennis Pro) a été actée pour le scraping direct, mais aucun premier marchand n'a été sélectionné pour une implémentation technique concrète. Le `robots.txt` et les CGU de chaque site ciblé n'ont pas encore été vérifiés, ni la méthode technique (n8n HTTP node vs Playwright) ni la fréquence de collecte.
+Suite à D-2026-09-21-16, une liste candidate de revendeurs a été actée pour le scraping direct. **Résolu (D-2026-09-22-01)** : `robots.txt` et CGV/mentions légales vérifiés réellement pour Tennispro.fr, Sport 2000, SportSystem, ProTennis, Decathlon — ProTennis retenu comme premier marchand (portée minimale : titre/prix/catégorie, image hotlinkée depuis le marchand, pas de description/visuel copié).
 
-**Bloquant sur** : décision structurante à soumettre explicitement à l'utilisateur en début de prochaine conversation dédiée à ce chantier — ne pas déduire seul.
+**Reste ouvert** : méthode technique de collecte (n8n HTTP Request node + parsing HTML, vs Playwright/headless browser) et fréquence de collecte (à caler sur le `Crawl-delay: 60` de ProTennis) non tranchées — décision structurante à soumettre explicitement à l'utilisateur, ne pas déduire seul.
 
-**Statut** : ouvert au 2026-09-21.
+**Statut** : ouvert au 2026-09-22 (partiellement résolu le 2026-09-22).
