@@ -334,3 +334,13 @@
 - `ETAT_ACTUEL.md`, `GAPS_OUVERTS.md` mis à jour. Aucune décision structurante nouvelle nécessitant une entrée `DECISIONS_FONCTIONNELLES.md`.
 - Diff à committer : uniquement `scripts/automation/n8n-protennis-ingestion-workflow.json` (code) et `n8n-protennis-ingestion-README.md` (doc) — le reste de cette étape est de l'infrastructure distante hors dépôt, comme pour le chantier d'hébergement n8n précédent.
 - Prochaine étape : faire évoluer la recherche pour regrouper par `product_id`, puis reprendre l'élargissement du scraping ProTennis à toutes les catégories — ordre à confirmer explicitement en début de prochaine conversation.
+
+## 2026-09-22 (suite 8) — Seuils chiffrés pour l'archivage des fichiers de suivi
+
+- État des lieux demandé par l'utilisateur : constat que la règle d'archivage (D-2026-09-21-04) n'avait jamais été appliquée faute de seuil chiffré — `ETAT_ACTUEL.md` (200 lignes) et `JOURNAL_SESSIONS.md` (336 lignes) bien au-delà d'une synthèse lisible, `archive/` resté vide.
+- Découverte en route : une marque de conflit de stash non résolue (`>>>>>>> Stashed changes`) avait été committée par erreur dans `DECISIONS_FONCTIONNELLES.md` par le commit `cb8d3a1` (PR #12). Signalée à l'utilisateur, correction traitée en commit séparé (pas de mélange avec le sujet des seuils).
+- Discussion des seuils avec l'utilisateur (options soumises explicitement) → D-2026-09-22-09 actée : `ETAT_ACTUEL.md` et `JOURNAL_SESSIONS.md` à 150 lignes, `GAPS_OUVERTS.md` sans seuil (retrait immédiat d'un gap tranché), `DECISIONS_FONCTIONNELLES.md` jamais archivé (registre consulté par référence d'ID, motif expliqué à l'utilisateur qui a confirmé après question).
+- `DECISIONS_FONCTIONNELLES.md` et `INDEX.md` mis à jour. Mémoire persistante (feedback méthode de travail) mise à jour avec ces seuils.
+- Deux PR ouvertes sur demande explicite : #13 (fix marque de conflit) et #14 (seuils D-2026-09-22-09). Pas encore mergées.
+- **Aucune étape de build n'a été démarrée** dans cette conversation (conforme au protocole, confirmé explicitement par l'utilisateur).
+- Prochaine étape : une fois les PR #13/#14 mergées, appliquer la condensation + archivage à `ETAT_ACTUEL.md` et `JOURNAL_SESSIONS.md` (déjà au-delà des seuils décidés) — dans une conversation dédiée.
