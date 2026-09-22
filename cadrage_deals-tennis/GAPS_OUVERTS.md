@@ -68,12 +68,32 @@ Le runner de migration (`scripts/migrate.ts`, `npm run db:migrate`) réapplique 
 
 ---
 
-## GAP-2026-09-22-08 — Affichage d'un même produit disponible chez plusieurs marchands à des réductions différentes (OUVERT)
+## GAP-2026-09-22-08 — Rapprochement produit multi-marchands : direction actée, implémentation restant à construire (OUVERT)
 
-Suite à D-2026-09-22-05 (élargissement du scraping ProTennis à toutes les catégories, sans seuil de réduction) : une fois plusieurs marchands actifs sur le catalogue, un même produit (même référence/modèle) pourra apparaître chez plusieurs marchands avec des prix/réductions différents. Le modèle de données actuel (`deals` avec `UNIQUE (merchant_id, affiliate_url)`) ne fait aucun rapprochement entre offres de marchands différents pour un même produit — chaque offre marchand est indépendante, aucune logique de dédoublonnage ou de comparaison n'existe.
+Suite à D-2026-09-22-05, puis élevé par l'utilisateur au rang d'axe central du produit (comparaison de prix multi-marchands). **Direction actée en D-2026-09-22-06** : table `products` (marque+modèle+catégorie) + `deals.product_id` nullable, rapprochement par extraction marque/modèle depuis le titre (aucune référence fabricant/EAN disponible chez les marchands vérifiés). Page d'accueil reste centrée deal, recherche devient centrée article, détail d'un deal affiche les autres offres du même article.
 
-Questions à trancher lors d'un cadrage dédié : faut-il détecter ces doublons produit (et sur quel critère — titre, marque+modèle, référence fabricant ?), et si oui comment les afficher (fusionner en une seule carte avec le meilleur prix, afficher les deux séparément, afficher un badge "aussi disponible chez X moins cher/plus cher") ?
+**Reste à faire** : construire la table `products`, l'algorithme de parsing marque/modèle, la migration des `deals` existants, l'évolution du contrat de recherche, et le rendu du détail d'un deal (voir GAP-2026-09-22-10 pour la modalité page/popup). Aucun code écrit à ce stade — cadrage uniquement.
 
-**Bloquant sur** : décision utilisateur (structurante, fonctionnelle) — à traiter explicitement dans une future conversation, une fois plusieurs marchands réellement actifs (pas de doublon réel possible tant que ProTennis est le seul marchand scrapé).
+**Bloquant sur** : rien — c'est la prochaine étape de build actée avec l'utilisateur (avant l'élargissement du scraping ProTennis à toutes les catégories).
+
+**Statut** : ouvert au 2026-09-22 (direction actée, implémentation à faire).
+
+---
+
+## GAP-2026-09-22-09 — Contamination multi-sports du scraping ProTennis élargi (OUVERT)
+
+ProTennis est un site multi-sports (tennis, padel, squash, badminton, pickleball). La décision D-2026-09-22-05 (élargissement du scraping à toutes les catégories du site) mentionnait ces autres sports sans que ce soit un choix de périmètre produit confirmé — `deals.category` a une contrainte `CHECK` limitée aux 5 catégories tennis (`data-model.md`), et `spec.md` définit deals-tennis comme un catalogue tennis. Un exemple concret trouvé pendant l'inspection : la page `/5624-destockage-raquettes` (déjà scrapée aujourd'hui) contient au moins un produit squash (balles Dunlop) mêlé aux raquettes de tennis.
+
+**Bloquant sur** : décision utilisateur — exclure explicitement les autres sports au moment du build de l'élargissement (filtre sur la catégorie/breadcrumb du produit), ou élargir volontairement le périmètre du site à d'autres sports (changement de `spec.md`, hors décision actuelle).
+
+**Statut** : ouvert au 2026-09-22.
+
+---
+
+## GAP-2026-09-22-10 — Détail d'un deal : page dédiée ou popup ? (OUVERT)
+
+D-2026-09-22-06 acte que le clic sur un deal doit permettre de voir les autres offres marchandes du même article, mais la modalité d'affichage (page dédiée type `/deal/[id]` vs popup/modale sur le catalogue) n'est pas tranchée — l'utilisateur a explicitement dit "on verra" sur ce point.
+
+**Bloquant sur** : décision utilisateur, à trancher au moment du build de cette fonctionnalité (impact sur le routing Next.js, le SEO potentiel d'une page dédiée, la complexité d'implémentation).
 
 **Statut** : ouvert au 2026-09-22.
