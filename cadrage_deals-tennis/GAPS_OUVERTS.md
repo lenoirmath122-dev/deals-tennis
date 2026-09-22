@@ -40,10 +40,8 @@ Le protocole prévoit un flux branche → PR → CI → merge une fois une prote
 
 ---
 
-## GAP-2026-09-21-05 — Méthode technique de scraping (n8n HTTP node vs Playwright) et fréquence non tranchées (OUVERT, partiellement résolu)
+## GAP-2026-09-21-05 — Méthode technique de scraping (n8n HTTP node vs Playwright) et fréquence non tranchées (RÉSOLU)
 
-Suite à D-2026-09-21-16, une liste candidate de revendeurs a été actée pour le scraping direct. **Résolu (D-2026-09-22-01)** : `robots.txt` et CGV/mentions légales vérifiés réellement pour Tennispro.fr, Sport 2000, SportSystem, ProTennis, Decathlon — ProTennis retenu comme premier marchand (portée minimale : titre/prix/catégorie, image hotlinkée depuis le marchand, pas de description/visuel copié).
+Suite à D-2026-09-21-16, une liste candidate de revendeurs a été actée pour le scraping direct. **Résolu (D-2026-09-22-01)** : `robots.txt` et CGV/mentions légales vérifiés réellement pour Tennispro.fr, Sport 2000, SportSystem, ProTennis, Decathlon — ProTennis retenu comme premier marchand (portée minimale : titre/prix/catégorie, image hotlinkée depuis le marchand, pas de description/visuel copié). **Résolu (D-2026-09-22-02)** : méthode technique (nœud HTTP Request n8n + parsing HTML, pas de Playwright) et fréquence (1 fois par jour) tranchées.
 
-**Reste ouvert** : méthode technique de collecte (n8n HTTP Request node + parsing HTML, vs Playwright/headless browser) et fréquence de collecte (à caler sur le `Crawl-delay: 60` de ProTennis) non tranchées — décision structurante à soumettre explicitement à l'utilisateur, ne pas déduire seul.
-
-**Statut** : ouvert au 2026-09-22 (partiellement résolu le 2026-09-22).
+**Statut** : résolu le 2026-09-22.

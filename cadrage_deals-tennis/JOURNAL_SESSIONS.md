@@ -267,3 +267,11 @@
 - `ETAT_ACTUEL.md`, `GAPS_OUVERTS.md`, `DECISIONS_FONCTIONNELLES.md` mis à jour. GAP-2026-09-21-05 partiellement résolu (marchand sélectionné, robots.txt/CGU vérifiés) — reste ouvert sur la méthode technique (n8n HTTP node vs Playwright) et la fréquence de collecte.
 - **Aucune étape de build n'a été démarrée** dans cette conversation (cadrage + vérifications réelles de robots.txt/CGV uniquement, conforme au protocole).
 - Prochaine étape : cadrer la méthode technique de collecte pour ProTennis (n8n HTTP node vs Playwright) et la fréquence (caler sur `Crawl-delay: 60`) — à soumettre explicitement en début de prochaine conversation. Voir GAP-2026-09-21-05.
+
+## 2026-09-22 (suite) — Méthode technique et fréquence de collecte tranchées pour ProTennis
+
+- Question soumise explicitement à l'utilisateur (protocole) : méthode technique du nœud n8n (HTTP Request + parsing HTML vs Playwright/headless) et fréquence de collecte, sachant que ProTennis est en PrestaShop rendu côté serveur (contenu dans le HTML brut, pas de JS requis) et que `robots.txt` indique `Crawl-delay: 60`.
+- **Décision actée (D-2026-09-22-02)** : nœud HTTP Request n8n + parsing HTML (pas de Playwright), fréquence 1 fois par jour.
+- `ETAT_ACTUEL.md`, `GAPS_OUVERTS.md`, `DECISIONS_FONCTIONNELLES.md` mis à jour. **GAP-2026-09-21-05 résolu** — le cadrage du marchand ProTennis (sélection, légal, portée des données, méthode technique, fréquence) est maintenant complet.
+- **Aucune étape de build n'a été démarrée** dans cette conversation (cadrage uniquement, conforme au protocole).
+- Prochaine étape : construire le workflow n8n pour ProTennis (étape de build à part entière, prochaine conversation) — voir ETAT_ACTUEL.md.
