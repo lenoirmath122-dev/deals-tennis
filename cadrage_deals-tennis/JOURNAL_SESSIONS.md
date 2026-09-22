@@ -322,3 +322,15 @@
 - **GAP-2026-09-22-08 partiellement résolu** (fondation construite, recherche/détail restants). **GAP-2026-09-22-11 ouvert** : le workflow n8n ProTennis actif ne renseigne pas `product_id` sur les nouvelles offres qu'il insère (vérifié en lisant le workflow : les offres déjà rattachées gardent leur valeur, seules les offres réellement nouvelles arriveront avec `product_id = NULL`).
 - `ETAT_ACTUEL.md`, `GAPS_OUVERTS.md` mis à jour. Aucune décision structurante nouvelle nécessitant une entrée `DECISIONS_FONCTIONNELLES.md` (simplification mineure documentée dans ETAT_ACTUEL uniquement).
 - Prochaine étape : intégrer le rapprochement au workflow n8n ProTennis (GAP-2026-09-22-11) et/ou faire évoluer la recherche pour regrouper par `product_id`, ordre à soumettre explicitement en début de prochaine conversation.
+
+## 2026-09-22 (suite 7) — GAP-2026-09-22-11 résolu : rapprochement produit intégré au workflow n8n ProTennis
+
+- Reprise de session, protocole de reprise appliqué. Prochaine étape soumise explicitement à l'utilisateur (4 options) : "n8n → product_id (GAP-11)" choisi.
+- Requête d'upsert du workflow (`scripts/automation/n8n-protennis-ingestion-workflow.json`) réécrite en CTE pour résoudre `product_id` au moment de l'upsert du deal, via un miroir JS de `lib/product-matching.ts` (`extractModel`) ajouté au nœud de parsing.
+- Vérification réelle contre la base Neon de prod (script temporaire, supprimé après coup) : requête SQL testée avec un deal factice (nouveau produit créé, idempotence confirmée, nettoyage vérifié) ; miroir JS comparé aux 23 offres ProTennis réelles déjà rattachées (0 écart).
+- Accès SSH à la VM Oracle (`opc@145.241.173.33`) obtenu de l'utilisateur pour cette étape (clé retrouvée par l'utilisateur dans ses Téléchargements). Workflow réimporté sur l'instance n8n permanente.
+- Découverte en cours de route (GAP-2026-09-22-12, résolu dans cette même session) : le workflow était en réalité inactif sur l'instance permanente malgré D-2026-09-22-04. Réactivé via `n8n publish:workflow` (commande courante de n8n 2.40.5, `update:workflow` étant dépréciée) + redémarrage du conteneur (nécessaire selon la CLI elle-même pour que l'activation prenne effet).
+- Exécution manuelle réelle déclenchée par l'utilisateur depuis l'UI n8n (CLI `n8n execute` impossible en parallèle du serveur déjà actif, port 5679 occupé) : 23/23 offres ProTennis réelles avec `product_id` peuplé, vérifié en base.
+- `ETAT_ACTUEL.md`, `GAPS_OUVERTS.md` mis à jour. Aucune décision structurante nouvelle nécessitant une entrée `DECISIONS_FONCTIONNELLES.md`.
+- Diff à committer : uniquement `scripts/automation/n8n-protennis-ingestion-workflow.json` (code) et `n8n-protennis-ingestion-README.md` (doc) — le reste de cette étape est de l'infrastructure distante hors dépôt, comme pour le chantier d'hébergement n8n précédent.
+- Prochaine étape : faire évoluer la recherche pour regrouper par `product_id`, puis reprendre l'élargissement du scraping ProTennis à toutes les catégories — ordre à confirmer explicitement en début de prochaine conversation.

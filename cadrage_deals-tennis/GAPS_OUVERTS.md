@@ -82,13 +82,17 @@ Suite à D-2026-09-22-05, puis élevé par l'utilisateur au rang d'axe central d
 
 ---
 
-## GAP-2026-09-22-11 — Le workflow n8n ProTennis ne peuple pas `product_id` sur les nouvelles offres (OUVERT)
+## GAP-2026-09-22-11 — Le workflow n8n ProTennis ne peuple pas `product_id` sur les nouvelles offres (RÉSOLU)
 
-Le backfill de `deals.product_id` (GAP-2026-09-22-08) a été appliqué une seule fois, manuellement, sur les 33 deals existants au 2026-09-22. Le workflow n8n ProTennis actif (déclencheur quotidien 6h, `scripts/automation/n8n-protennis-ingestion-workflow.json`) continue d'insérer/mettre à jour des offres sans jamais renseigner `product_id` : la clause `DO UPDATE SET` de son upsert ne mentionne pas `product_id`, donc les offres déjà rattachées gardent leur valeur d'un passage à l'autre (vérifié en lisant le workflow) — mais toute **nouvelle** offre insérée par un futur passage (nouveau produit ProTennis) arrivera avec `product_id = NULL` tant que ce point n'est pas traité.
+Le backfill de `deals.product_id` (GAP-2026-09-22-08) avait été appliqué une seule fois, manuellement, sur les 33 deals existants au 2026-09-22. Le workflow n8n ProTennis actif insérait/mettait à jour des offres sans jamais renseigner `product_id`.
 
-**Bloquant sur** : rien — décision/implémentation à faire dans une prochaine étape de build (ajouter un nœud de rapprochement au workflow n8n, ou exécuter `npm run db:backfill-products` de façon régulière en attendant mieux).
+**Résolution** : requête d'upsert du workflow réécrite en CTE — `WITH upserted_product AS (INSERT INTO products ... ON CONFLICT (LOWER(brand), LOWER(model), category) DO UPDATE ... RETURNING id)` puis `INSERT INTO deals (..., product_id) VALUES (..., (SELECT id FROM upserted_product)) ON CONFLICT (merchant_id, affiliate_url) DO UPDATE SET ..., product_id = EXCLUDED.product_id`. Le modèle (`model`) est calculé dans l'étape de parsing du workflow via un miroir JS de `lib/product-matching.ts` (`extractModel` — à garder synchronisé manuellement, ce workflow ne peut pas importer le code TypeScript du repo).
 
-**Statut** : ouvert au 2026-09-22.
+Vérifié réellement : (1) requête SQL testée directement contre la base Neon de prod avec un deal factice — nouveau produit créé au premier passage, `product_id` réutilisé à l'identique au second passage (idempotence), aucun doublon créé, données de test supprimées après contrôle ; (2) miroir JS comparé aux 23 offres ProTennis réelles déjà rattachées — 0 écart avec `lib/product-matching.ts` ; (3) workflow réimporté et publié sur l'instance n8n permanente (VM Oracle), déclenché manuellement depuis l'UI n8n — les 23 offres réelles mises à jour, `product_id` peuplé à 100% (23/23), marque/modèle cohérents contrôlés en base.
+
+**Point découvert en cours de vérification (hors scope de ce GAP, documenté séparément)** : le workflow était en réalité **inactif** sur l'instance permanente au moment de reprendre cette étape, alors qu'`ETAT_ACTUEL.md` (D-2026-09-22-04) indiquait qu'il avait été activé — voir GAP-2026-09-22-12.
+
+**Statut** : résolu le 2026-09-22.
 
 ---
 
@@ -109,3 +113,15 @@ D-2026-09-22-06 acte que le clic sur un deal doit permettre de voir les autres o
 **Bloquant sur** : décision utilisateur, à trancher au moment du build de cette fonctionnalité (impact sur le routing Next.js, le SEO potentiel d'une page dédiée, la complexité d'implémentation).
 
 **Statut** : ouvert au 2026-09-22.
+
+---
+
+## GAP-2026-09-22-12 — Le workflow n8n ProTennis était inactif sur l'instance permanente malgré D-2026-09-22-04 (RÉSOLU)
+
+En reprenant l'étape GAP-2026-09-22-11, une vérification réelle sur l'instance n8n permanente (VM Oracle, `n8n export:workflow --id=protennis-ingestion-wf-001`) a montré `active: false`, alors qu'`ETAT_ACTUEL.md` documentait le workflow comme activé le 2026-09-22 (D-2026-09-22-04). Cause non investiguée (redémarrage du conteneur ayant réinitialisé l'état ? erreur lors de l'activation initiale ?) — non déterminée, hors scope de cette étape.
+
+**Résolution** : réactivé via `n8n publish:workflow --id=protennis-ingestion-wf-001` (commande actuelle, `update:workflow` étant dépréciée dans cette version 2.40.5 de n8n) puis conteneur redémarré (`docker restart opc-n8n-1`, nécessaire pour que le changement prenne effet selon le message de la CLI). Log de démarrage confirmé : `Processed 0 draft workflows, 1 published workflows.` Exécution manuelle réelle déclenchée ensuite depuis l'UI n8n par l'utilisateur, confirmée en base (23/23 offres mises à jour).
+
+**Point non couvert par cette résolution** : la cause de la désactivation n'est pas connue — si elle se reproduit (ex. après un redémarrage de VM), le cron quotidien de 6h pourrait à nouveau ne pas tourner sans que personne ne le remarque (pas d'alerte configurée). Rejoint le chantier « Observabilité/monitoring » (n°11 de la liste D-2026-09-21-09, non commencé) — une alerte sur l'absence d'exécution quotidienne y aurait sa place.
+
+**Statut** : résolu le 2026-09-22 (réactivé et vérifié) ; cause racine non déterminée, risque de récidive silencieuse noté pour le chantier observabilité.
