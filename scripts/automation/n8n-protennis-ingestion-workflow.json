@@ -1,7 +1,7 @@
 [
   {
     "id": "protennis-ingestion-wf-001",
-    "name": "ProTennis - Ingestion raquettes (destockage)",
+    "name": "ProTennis - Ingestion catalogue tennis (5 categories)",
     "nodes": [
       {
         "parameters": {
@@ -39,50 +39,16 @@
       },
       {
         "parameters": {
-          "url": "https://www.protennis.fr/5624-destockage-raquettes",
-          "sendHeaders": true,
-          "headerParameters": {
-            "parameters": [
-              {
-                "name": "User-Agent",
-                "value": "deals-tennis-bot/1.0 (+https://deals-tennis.vercel.app)"
-              },
-              {
-                "name": "Accept",
-                "value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-              }
-            ]
-          },
-          "options": {
-            "response": {
-              "response": {
-                "responseFormat": "text",
-                "outputPropertyName": "data"
-              }
-            }
-          }
-        },
-        "id": "http-request-1",
-        "name": "Recuperer la page destockage",
-        "type": "n8n-nodes-base.httpRequest",
-        "typeVersion": 4.2,
-        "position": [
-          220,
-          0
-        ]
-      },
-      {
-        "parameters": {
           "mode": "runOnceForAllItems",
           "language": "javaScript",
-          "jsCode": "const html = $input.first().json.data;\n\nfunction parseEuro(str) {\n  return parseFloat(str.replace(/\\s|&nbsp;| /g, '').replace(',', '.'));\n}\n\n// Miroir JS de lib/product-matching.ts (extractModel) - garder synchronise\n// manuellement, ce workflow n8n ne peut pas importer le code TypeScript du repo.\nconst CATEGORY_PREFIXES = {\n  raquettes: ['Raquette de tennis '],\n};\n\nfunction escapeRegExp(value) {\n  return value.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');\n}\n\nfunction extractModel(title, brand, category) {\n  let model = title;\n\n  for (const prefix of CATEGORY_PREFIXES[category] || []) {\n    if (model.toLowerCase().startsWith(prefix.toLowerCase())) {\n      model = model.slice(prefix.length);\n      break;\n    }\n  }\n\n  const brandPattern = new RegExp(`\\\\b${escapeRegExp(brand)}\\\\b`, 'i');\n  model = model.replace(brandPattern, '');\n\n  model = model.replace(/\\bnon\\s+cord[ée]e?\\b/gi, '');\n  model = model.replace(/\\bcord[ée]e?\\b/gi, '');\n\n  return model.replace(/\\s+/g, ' ').trim();\n}\n\nconst merchantId = '9bcb1729-926d-4462-b949-57f991e08673';\nconst category = 'raquettes';\n\nconst articles = html.match(/<article class=\"product-miniature[\\s\\S]*?<\\/article>/g) || [];\nconst items = [];\n\nfor (const block of articles) {\n  const urlMatch = block.match(/<a href=\"([^\"]+)\"[^>]*class=\"thumbnail product-thumbnail\">/);\n  const imgMatch = block.match(/data-full-size-image-url=\"([^\"]+)\"/) || block.match(/<img\\s+src=\"([^\"]+)\"/);\n  const titleMatch = block.match(/<h3 class=\"h3 product-title\">\\s*<a[^>]*>\\s*([\\s\\S]*?)\\s*<\\/a>/);\n  const priceMatch = block.match(/<span class=\"price\" aria-label=\"Prix\">\\s*([\\d.,\\s ]+)\\s*€\\s*<\\/span>/);\n  const regularMatch = block.match(/<span class=\"regular-price\" aria-label=\"Prix de base\">\\s*([\\d.,\\s ]+)\\s*€\\s*<\\/span>/);\n  const brandMatch = block.match(/alt=\"([^\"]+)\"\\s+class=\"brand-logo\"/);\n\n  if (!urlMatch || !titleMatch || !priceMatch || !regularMatch || !brandMatch || !imgMatch) continue;\n\n  const originalPrice = parseEuro(regularMatch[1]);\n  const discountedPrice = parseEuro(priceMatch[1]);\n  if (!(originalPrice > discountedPrice) || !(discountedPrice > 0)) continue;\n\n  const discountPercentage = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);\n  const title = titleMatch[1].replace(/\\s+/g, ' ').trim();\n  const brand = brandMatch[1].trim();\n\n  items.push({\n    json: {\n      title,\n      brand,\n      category,\n      image_url: imgMatch[1],\n      original_price: originalPrice,\n      discounted_price: discountedPrice,\n      discount_percentage: discountPercentage,\n      merchant_id: merchantId,\n      affiliate_url: urlMatch[1],\n      model: extractModel(title, brand, category),\n    },\n  });\n}\n\nreturn items;\n"
+          "jsCode": "// Miroir JS de lib/product-matching.ts (extractModel) - garder synchronise\n// manuellement, ce workflow n8n ne peut pas importer le code TypeScript du repo.\nconst CATEGORY_PREFIXES = {\n  raquettes: ['Raquette de tennis '],\n  cordages: ['Cordage de tennis '],\n  chaussures: ['Chaussures de tennis ', 'Chaussure de tennis '],\n  accessoires: ['Balles de tennis Carton ', 'Balles de tennis ', 'Sac de tennis '],\n};\n\n// Pages categorie ProTennis retenues (D-2026-09-22-08) : exclusivement des pages\n// tennis identifiees par leur slug, jamais une page toutes-categories du site\n// (resout GAP-2026-09-22-09). balle-tennis/bagagerie-tennis n'ont pas de\n// categorie dediee dans le modele -> rattachees a 'accessoires' (choix utilisateur).\nconst CATEGORY_PAGES = [\n  { category: 'raquettes', url: 'https://www.protennis.fr/973-raquette-de-tennis' },\n  { category: 'cordages', url: 'https://www.protennis.fr/977-cordage-raquette-tennis' },\n  { category: 'chaussures', url: 'https://www.protennis.fr/974-chaussure-de-tennis' },\n  { category: 'textile', url: 'https://www.protennis.fr/975-vetement-de-tennis' },\n  { category: 'accessoires', url: 'https://www.protennis.fr/978-accessoire-tennis' },\n  { category: 'accessoires', url: 'https://www.protennis.fr/979-balle-tennis' },\n  { category: 'accessoires', url: 'https://www.protennis.fr/976-bagagerie-tennis' },\n];\n\n// Filet de securite : ProTennis est multi-sports, une fiche hors tennis peut se\n// glisser sur une page tennis (deja observe : balles de squash sur une page\n// raquettes). On l'ecarte au titre plutot que de se fier uniquement a l'URL.\n// Pas de \\b : des marques composees comme 'Bullpadel' n'ont pas de frontiere de\n// mot avant 'padel' mais restent bien du materiel padel, pas tennis (verifie sur\n// donnees reelles : 'Gel Deshydratant Bullpadel ...' sur la page accessoires).\nconst OTHER_SPORTS_PATTERN = /squash|padel|badminton|pickleball/i;\n\nconst REQUEST_HEADERS = {\n  'User-Agent': 'deals-tennis-bot/1.0 (+https://deals-tennis.vercel.app)',\n  // Indispensable : sans cet Accept, PrestaShop renvoie un fragment JSON au lieu\n  // de la page HTML complete (bug decouvert lors du build initial, D-2026-09-22-03).\n  Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',\n};\n\nfunction parseEuro(str) {\n  return parseFloat(str.replace(/\\s|&nbsp;| /g, '').replace(',', '.'));\n}\n\nfunction stripTags(str) {\n  return str.replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim();\n}\n\nfunction escapeRegExp(value) {\n  return value.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');\n}\n\nfunction extractModel(title, brand, category) {\n  let model = title;\n\n  for (const prefix of CATEGORY_PREFIXES[category] || []) {\n    if (model.toLowerCase().startsWith(prefix.toLowerCase())) {\n      model = model.slice(prefix.length);\n      break;\n    }\n  }\n\n  const brandPattern = new RegExp(`\\\\b${escapeRegExp(brand)}\\\\b`, 'i');\n  model = model.replace(brandPattern, '');\n\n  model = model.replace(/\\bnon\\s+cord[ée]e?\\b/gi, '');\n  model = model.replace(/\\bcord[ée]e?\\b/gi, '');\n\n  return model.replace(/\\s+/g, ' ').trim();\n}\n\nfunction parseArticles(html, category) {\n  const merchantId = '9bcb1729-926d-4462-b949-57f991e08673';\n  // Chaque page categorie affiche aussi un bloc 'Nos recommandations pour : ...'\n  // (section 'featured-products', module nkmsuggestedproducts) qui montre des\n  // produits d'autres categories/pages identiques sur toutes les pages -> source\n  // de doublons et de mauvais rattachement de categorie si on ne l'exclut pas\n  // (verifie reellement : 6 des 42 articles de la page 1 raquettes venaient de ce\n  // bloc, dont un sac de tennis). On ne garde que la vraie grille de resultats.\n  const withoutFeatured = html.replace(/<section class=\"featured-products[\\s\\S]*?<\\/section>/g, '');\n  const articles = withoutFeatured.match(/<article class=\"product-miniature[\\s\\S]*?<\\/article>/g) || [];\n  const items = [];\n\n  for (const block of articles) {\n    const urlMatch = block.match(/<a href=\"([^\"]+)\"[^>]*class=\"thumbnail product-thumbnail\">/);\n    const imgMatch = block.match(/data-full-size-image-url=\"([^\"]+)\"/) || block.match(/<img\\s+src=\"([^\"]+)\"/);\n    const titleMatch = block.match(/<h3 class=\"h3 product-title\">\\s*<a[^>]*>\\s*([\\s\\S]*?)\\s*<\\/a>/);\n    const priceMatch = block.match(/<span class=\"price\" aria-label=\"Prix\">\\s*([\\d.,\\s ]+)\\s*€\\s*<\\/span>/);\n    const regularMatch = block.match(/<span class=\"regular-price\" aria-label=\"Prix de base\">\\s*([\\d.,\\s ]+)\\s*€\\s*<\\/span>/);\n    const brandMatch = block.match(/alt=\"([^\"]+)\"\\s+class=\"brand-logo\"/);\n\n    if (!urlMatch || !titleMatch || !priceMatch || !regularMatch || !brandMatch || !imgMatch) continue;\n\n    const title = stripTags(titleMatch[1]);\n    if (OTHER_SPORTS_PATTERN.test(title)) continue;\n\n    const originalPrice = parseEuro(regularMatch[1]);\n    const discountedPrice = parseEuro(priceMatch[1]);\n    if (!(originalPrice > discountedPrice) || !(discountedPrice > 0)) continue;\n\n    const discountPercentage = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);\n    const brand = brandMatch[1].trim();\n\n    items.push({\n      json: {\n        title,\n        brand,\n        category,\n        image_url: imgMatch[1],\n        original_price: originalPrice,\n        discounted_price: discountedPrice,\n        discount_percentage: discountPercentage,\n        merchant_id: merchantId,\n        affiliate_url: urlMatch[1],\n        model: extractModel(title, brand, category),\n      },\n    });\n  }\n\n  return items;\n}\n\nfunction maxPageFromHtml(html) {\n  const matches = [...html.matchAll(/[?&]page=([0-9]+)/g)].map((m) => parseInt(m[1], 10));\n  return matches.length > 0 ? Math.max(1, ...matches) : 1;\n}\n\nasync function fetchHtml(url) {\n  return this.helpers.httpRequest({\n    method: 'GET',\n    url,\n    headers: REQUEST_HEADERS,\n  });\n}\n\nconst allItems = [];\n\nfor (const page of CATEGORY_PAGES) {\n  const firstPageHtml = await fetchHtml.call(this, page.url);\n  allItems.push(...parseArticles(firstPageHtml, page.category));\n\n  const pageCount = maxPageFromHtml(firstPageHtml);\n  for (let n = 2; n <= pageCount; n++) {\n    const html = await fetchHtml.call(this, `${page.url}?page=${n}`);\n    allItems.push(...parseArticles(html, page.category));\n  }\n}\n\n// ProTennis affiche un bloc de produits mis en avant identique en tete de chaque\n// page paginee (verifie reellement : ~7 produits communs entre la page 1 et la\n// page 5 de /973-raquette-de-tennis) -> memes URLs vues plusieurs fois. Dedup\n// par affiliate_url pour eviter des upserts redondants (l'upsert est deja\n// idempotent, ceci ne change aucun resultat, seulement le nombre de requetes).\nconst seenUrls = new Set();\nconst dedupedItems = [];\nfor (const item of allItems) {\n  if (seenUrls.has(item.json.affiliate_url)) continue;\n  seenUrls.add(item.json.affiliate_url);\n  dedupedItems.push(item);\n}\n\nreturn dedupedItems;\n"
         },
         "id": "code-parse-1",
-        "name": "Parser le HTML en offres",
+        "name": "Parcourir les pages categories et parser les offres",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          440,
+          220,
           0
         ]
       },
@@ -155,7 +121,7 @@
         "main": [
           [
             {
-              "node": "Recuperer la page destockage",
+              "node": "Parcourir les pages categories et parser les offres",
               "type": "main",
               "index": 0
             }
@@ -166,25 +132,14 @@
         "main": [
           [
             {
-              "node": "Recuperer la page destockage",
+              "node": "Parcourir les pages categories et parser les offres",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Recuperer la page destockage": {
-        "main": [
-          [
-            {
-              "node": "Parser le HTML en offres",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Parser le HTML en offres": {
+      "Parcourir les pages categories et parser les offres": {
         "main": [
           [
             {
