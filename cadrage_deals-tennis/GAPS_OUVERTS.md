@@ -96,13 +96,13 @@ Vérifié réellement : (1) requête SQL testée directement contre la base Neon
 
 ---
 
-## GAP-2026-09-22-09 — Contamination multi-sports du scraping ProTennis élargi (OUVERT)
+## GAP-2026-09-22-09 — Contamination multi-sports du scraping ProTennis élargi (RÉSOLU)
 
 ProTennis est un site multi-sports (tennis, padel, squash, badminton, pickleball). La décision D-2026-09-22-05 (élargissement du scraping à toutes les catégories du site) mentionnait ces autres sports sans que ce soit un choix de périmètre produit confirmé — `deals.category` a une contrainte `CHECK` limitée aux 5 catégories tennis (`data-model.md`), et `spec.md` définit deals-tennis comme un catalogue tennis. Un exemple concret trouvé pendant l'inspection : la page `/5624-destockage-raquettes` (déjà scrapée aujourd'hui) contient au moins un produit squash (balles Dunlop) mêlé aux raquettes de tennis.
 
-**Bloquant sur** : décision utilisateur — exclure explicitement les autres sports au moment du build de l'élargissement (filtre sur la catégorie/breadcrumb du produit), ou élargir volontairement le périmètre du site à d'autres sports (changement de `spec.md`, hors décision actuelle).
+**Résolution (D-2026-09-22-08)** : le scraping cible exclusivement les pages catégories tennis identifiées par leur slug (`973-raquette-de-tennis`, `977-cordage-raquette-tennis`, `974-chaussure-de-tennis`, `975-vetement-de-tennis`, `978-accessoire-tennis`, `979-balle-tennis`, `976-bagagerie-tennis`), jamais une page toutes-catégories du site. Un filtre de sécurité supplémentaire écarte toute fiche dont le titre contient `squash`, `padel`, `badminton` ou `pickleball` (insensible à la casse), au cas où une fiche hors tennis se glisserait malgré tout sur une page tennis (comme observé dans l'exemple ci-dessus).
 
-**Statut** : ouvert au 2026-09-22.
+**Statut** : résolu le 2026-09-22.
 
 ---
 

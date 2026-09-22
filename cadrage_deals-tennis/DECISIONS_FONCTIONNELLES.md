@@ -277,3 +277,19 @@ Vérification réelle effectuée avant de trancher : aucun marchand n'expose de 
 - **Détail d'un deal** : ouvre une page ou une popup (modalité UI non tranchée, voir GAP-2026-09-22-10) listant les autres offres marchandes du même article (via `product_id`), pour laisser l'utilisateur comparer lui-même et choisir selon ses propres critères (prix, mais aussi préférence de marchand) — pas de logique de « meilleur prix » imposée automatiquement au premier niveau d'affichage.
 
 **Statut** : Actée (confirmée explicitement par l'utilisateur). Cadrage uniquement — aucun build effectué dans cette conversation. Reste à trancher avant/pendant le build : algorithme exact de parsing marque/modèle, modalité page vs popup pour le détail d'un deal, évolution précise du contrat de recherche.
+
+---
+
+### D-2026-09-22-08 — Élargissement du scraping ProTennis à toutes les catégories tennis du site : périmètre technique
+
+**Contexte** : Reprise de l'élargissement acté en D-2026-09-22-05 (GAP-2026-09-22-09 à trancher d'abord). Inspection réelle de la navigation ProTennis (`curl` sur la page d'accueil) : les catégories tennis ont des pages dédiées identifiables par leur slug (`973-raquette-de-tennis`, `977-cordage-raquette-tennis`, `974-chaussure-de-tennis`, `975-vetement-de-tennis`, `978-accessoire-tennis`), distinctes des catégories padel/squash/badminton/pickleball (`-de-squash`, `-de-padel`, `-de-badminton`, `-pickleball`). Deux catégories du site (`979-balle-tennis`, `976-bagagerie-tennis`) n'ont pas d'équivalent dans le modèle actuel (`CHECK` limité à `raquettes, cordages, chaussures, textile, accessoires`).
+
+**Décision** :
+- **Exclusion des autres sports (résolution GAP-2026-09-22-09)** : le scraping cible exclusivement les pages catégories tennis identifiées ci-dessus (pas de scraping générique « toutes catégories du site »). En complément, un filtre de sécurité par mots-clés (`squash`, `padel`, `badminton`, `pickleball` dans le titre du produit, insensible à la casse) écarte toute fiche qui s'y glisserait malgré tout — nécessaire car une inspection antérieure avait montré un produit squash mêlé à une page raquettes tennis (voir note du 2026-09-22 dans D-2026-09-22-05).
+- **Mapping catégories site → catégories `deals`** : `973-raquette-de-tennis` → `raquettes`, `977-cordage-raquette-tennis` → `cordages`, `974-chaussure-de-tennis` → `chaussures`, `975-vetement-de-tennis` → `textile`, et `978-accessoire-tennis` + `979-balle-tennis` + `976-bagagerie-tennis` → `accessoires` (balles et bagagerie n'ayant pas de catégorie dédiée dans le modèle, l'utilisateur a choisi de les rattacher à `accessoires` plutôt que de les exclure).
+- **Volume** : vérification réelle montrant un volume bien supérieur à l'estimation initiale (`973-raquette-de-tennis` seul fait 9 pages, ~370 produits, tous avec un badge de réduction comme déjà constaté en D-2026-09-22-05) — probablement plusieurs milliers de produits au total sur les 5 pages. L'utilisateur a confirmé maintenir l'absence de seuil de réduction (pas de retour sur D-2026-09-22-05) malgré ce volume quantifié.
+- **Pagination** : le nombre de pages par catégorie est déterminé dynamiquement à chaque exécution (lecture des liens `page=N` sur la première page de la catégorie), pas figé en dur — les catégories évoluent en volume au fil du temps.
+- **Remplacement de la page déstockage** : la page `5624-destockage-raquettes` (seule source actuelle) est un sous-ensemble de `973-raquette-de-tennis` (recoupement vérifié sur un échantillon réel) — elle est retirée du workflow au profit de la page catégorie complète, qui la couvre.
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur). Build à suivre dans cette même conversation.
+>>>>>>> Stashed changes

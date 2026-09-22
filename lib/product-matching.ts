@@ -1,5 +1,8 @@
 const CATEGORY_PREFIXES: Record<string, string[]> = {
   raquettes: ["Raquette de tennis "],
+  cordages: ["Cordage de tennis "],
+  chaussures: ["Chaussures de tennis ", "Chaussure de tennis "],
+  accessoires: ["Balles de tennis Carton ", "Balles de tennis ", "Sac de tennis "],
 };
 
 function escapeRegExp(value: string): string {
