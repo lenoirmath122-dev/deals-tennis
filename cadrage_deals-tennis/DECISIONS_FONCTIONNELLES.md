@@ -235,3 +235,13 @@ L'ordre de traitement n'est pas encore arbitré — à décider en début de cha
 - **Clé d'identification stable** : `(merchant_id, affiliate_url)` — l'URL produit ProTennis sert de clé naturelle. Nécessite une migration (`002_deals_unique_merchant_url.sql`) ajoutant `UNIQUE (merchant_id, affiliate_url)` sur `deals`, appliquée directement à la base Neon de prod (pas de conflit avec les données existantes).
 
 **Statut** : Actée (confirmée explicitement par l'utilisateur).
+
+---
+
+### D-2026-09-22-04 — Hébergement permanent de n8n : Oracle Cloud Free Tier
+
+**Contexte** : GAP-2026-09-22-06 (ouvert) — le workflow n8n ProTennis est construit et vérifié, mais aucune instance n8n ne tourne en continu, donc le déclencheur quotidien ne s'exécute pas réellement. Trois options présentées : n8n Cloud (payant, pas de tier gratuit permanent), VPS payant, machine perso allumée en continu (gratuit mais peu fiable), ou solutions gratuites permanentes à explorer. L'utilisateur n'a aucune connaissance en administration serveur et a demandé explicitement une orchestration conjointe du setup et de la maintenance.
+
+**Décision** : Hébergement sur une VM **Oracle Cloud Free Tier** (offre "Always Free", ARM Ampere, jusqu'à 4 OCPU/24 Go RAM, gratuite à durée indéterminée — pas un essai limité). n8n self-hosted via Docker sur cette VM. Setup et maintenance orchestrés conjointement (l'utilisateur n'a pas les compétences pour le faire seul) : les étapes nécessitant un compte/une identité/un paiement (création du compte Oracle Cloud, vérification carte bancaire pour le tier gratuit) restent à la charge de l'utilisateur — hors périmètre des outils de Claude Code — le reste (provisioning VM, installation Docker/n8n, import et activation du workflow ProTennis, vérification bout en bout) peut être fait avec Claude Code une fois l'accès à la VM disponible (SSH).
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur).
