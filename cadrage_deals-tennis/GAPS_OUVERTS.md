@@ -68,15 +68,27 @@ Le runner de migration (`scripts/migrate.ts`, `npm run db:migrate`) réapplique 
 
 ---
 
-## GAP-2026-09-22-08 — Rapprochement produit multi-marchands : direction actée, implémentation restant à construire (OUVERT)
+## GAP-2026-09-22-08 — Rapprochement produit multi-marchands : fondation construite, reste recherche + détail deal (PARTIELLEMENT RÉSOLU)
 
-Suite à D-2026-09-22-05, puis élevé par l'utilisateur au rang d'axe central du produit (comparaison de prix multi-marchands). **Direction actée en D-2026-09-22-06** : table `products` (marque+modèle+catégorie) + `deals.product_id` nullable, rapprochement par extraction marque/modèle depuis le titre (aucune référence fabricant/EAN disponible chez les marchands vérifiés). Page d'accueil reste centrée deal, recherche devient centrée article, détail d'un deal affiche les autres offres du même article.
+Suite à D-2026-09-22-05, puis élevé par l'utilisateur au rang d'axe central du produit (comparaison de prix multi-marchands). **Direction actée en D-2026-09-22-06** : table `products` (marque+modèle+catégorie) + `deals.product_id` nullable, rapprochement par extraction marque/modèle depuis le titre. Page d'accueil reste centrée deal, recherche devient centrée article, détail d'un deal affiche les autres offres du même article.
 
-**Reste à faire** : construire la table `products`, l'algorithme de parsing marque/modèle, la migration des `deals` existants, l'évolution du contrat de recherche, et le rendu du détail d'un deal (voir GAP-2026-09-22-10 pour la modalité page/popup). Aucun code écrit à ce stade — cadrage uniquement.
+**Résolu (build)** : table `products` créée (migration `003_products.sql`), `lib/product-matching.ts` (extraction du modèle depuis le titre — la marque vient en réalité de `deals.brand`, déjà fiable, pas d'un parsing du titre, contrairement à ce que D-2026-09-22-06 envisageait), `scripts/backfill-product-ids.ts` exécuté sur les 33 deals réels en base prod (33 rattachés, 0 orpheline, idempotent). Voir ETAT_ACTUEL.md pour le détail complet de vérification.
 
-**Bloquant sur** : rien — c'est la prochaine étape de build actée avec l'utilisateur (avant l'élargissement du scraping ProTennis à toutes les catégories).
+**Reste à faire** (étapes de build séparées, non commencées) : intégrer le rapprochement au workflow n8n ProTennis pour les nouvelles offres (GAP-2026-09-22-11), évolution du contrat de recherche pour regrouper par `product_id`, rendu du détail d'un deal (voir GAP-2026-09-22-10 pour la modalité page/popup, toujours non tranchée).
 
-**Statut** : ouvert au 2026-09-22 (direction actée, implémentation à faire).
+**Bloquant sur** : rien — ordre des étapes restantes à confirmer explicitement en début de prochaine conversation.
+
+**Statut** : ouvert au 2026-09-22 (fondation construite et vérifiée, recherche/détail restant à construire).
+
+---
+
+## GAP-2026-09-22-11 — Le workflow n8n ProTennis ne peuple pas `product_id` sur les nouvelles offres (OUVERT)
+
+Le backfill de `deals.product_id` (GAP-2026-09-22-08) a été appliqué une seule fois, manuellement, sur les 33 deals existants au 2026-09-22. Le workflow n8n ProTennis actif (déclencheur quotidien 6h, `scripts/automation/n8n-protennis-ingestion-workflow.json`) continue d'insérer/mettre à jour des offres sans jamais renseigner `product_id` : la clause `DO UPDATE SET` de son upsert ne mentionne pas `product_id`, donc les offres déjà rattachées gardent leur valeur d'un passage à l'autre (vérifié en lisant le workflow) — mais toute **nouvelle** offre insérée par un futur passage (nouveau produit ProTennis) arrivera avec `product_id = NULL` tant que ce point n'est pas traité.
+
+**Bloquant sur** : rien — décision/implémentation à faire dans une prochaine étape de build (ajouter un nœud de rapprochement au workflow n8n, ou exécuter `npm run db:backfill-products` de façon régulière en attendant mieux).
+
+**Statut** : ouvert au 2026-09-22.
 
 ---
 
