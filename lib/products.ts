@@ -10,6 +10,11 @@ export async function getProductSuggestions(rawQuery: string | undefined | null)
     return [];
   }
 
+  const words = query.split(/\s+/).filter(Boolean);
+  const wordConditions = words
+    .map((_, i) => `(p.brand ILIKE $${i + 1} OR p.model ILIKE $${i + 1})`)
+    .join(" AND ");
+
   const rows = await sql.query(
     `
       SELECT DISTINCT p.brand || ' ' || p.model AS suggestion
@@ -18,11 +23,11 @@ export async function getProductSuggestions(rawQuery: string | undefined | null)
       WHERE d.status = 'active'
         AND d.is_active = true
         AND (d.expires_at IS NULL OR d.expires_at > NOW())
-        AND (p.brand ILIKE $1 OR p.model ILIKE $1)
+        AND (${wordConditions})
       ORDER BY suggestion
       LIMIT ${MAX_SUGGESTIONS}
     `,
-    [`%${query}%`]
+    words.map((word) => `%${word}%`)
   );
 
   return (rows as { suggestion: string }[]).map((row) => row.suggestion);

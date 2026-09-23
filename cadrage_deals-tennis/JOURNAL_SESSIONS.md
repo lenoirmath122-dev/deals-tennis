@@ -87,3 +87,13 @@
 - Commit sur une nouvelle branche dédiée (`feat/recherche-suggestions-clic`, l'ancienne branche ne convenant pas), ne contenant que les fichiers liés à cette étape (les 2 photos hero laissées non stagées, hors sujet et pas de mon fait). Push + création de PR automatiques (D-2026-09-23-03) : **PR #23**.
 - **D-2026-09-23-05** actée et construite. Consignée dans `DECISIONS_FONCTIONNELLES.md` et `ETAT_ACTUEL.md`.
 - Prochaine étape : retour à la feuille de route — chantier « Charte graphique / design system » (étape 2), à confirmer explicitement en début de prochaine conversation.
+
+## 2026-09-23 (suite 9) — Fix recherche insensible à l'ordre des mots (bug rapporté par l'utilisateur)
+
+- Reprise de session (`/clear`). L'utilisateur rapporte 3 symptômes sur la recherche (suggestions ne mènent à rien / recherche exacte parfois infructueuse / demande de sous-catégorie couleur) avec un exemple concret (Babolat Antivibrateur de tennis Sonic Damp).
+- Diagnostic avec données réelles (Neon prod, requêtes directes) : `ILIKE '%requête%'` sur toute la chaîne, alors que le nom produit (suggestions) et le titre du deal scrappé n'ont pas le même ordre de mots. Reproduit en navigateur (Playwright CLI) avant tout fix : clic sur la suggestion → 0 résultat.
+- Clarification demandée à l'utilisateur sur le point 1 (ambigu) : confirmé qu'il s'agit du même symptôme que le point 4 (suggestion cliquée sans résultat), pas d'un problème distinct d'affichage du menu.
+- Deux décisions soumises avant build : approche de fix (mot-à-mot retenu vs plein texte PostgreSQL) et traitement de la demande de sous-catégorie couleur (reportée à une conversation dédiée, conformément au protocole une étape/conversation — nouveau GAP-2026-09-23-03 ouvert).
+- Fix appliqué (`lib/deals.ts`, `lib/products.ts`), vérifié en réel après coup (même clic → article trouvé), tests de régression ajoutés, lint/build/tests passants.
+- Branche précédente (`feat/recherche-suggestions-clic`) déjà mergée (PR #23) — nouvelle branche `fix/recherche-mot-a-mot` créée depuis `master` à jour, PR #24 poussée et créée automatiquement.
+- Prochaine étape : cadrage de la sous-catégorie couleur (GAP-2026-09-23-03) ou reprise de la feuille de route (charte graphique), au choix de l'utilisateur en début de prochaine conversation.

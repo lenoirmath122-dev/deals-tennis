@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-23 (Recherche par suggestions cliquables, D-2026-09-23-05)
+**Dernière mise à jour** : 2026-09-23 (Fix recherche insensible à l'ordre des mots, PR #24)
 
 > Détail complet du MVP (`tasks.md` T001-T034), du chantier « Déploiement production », du chantier « CI + protection de branche » et du chantier « Automatisation n8n / ProTennis » (build initial, hébergement permanent, rapprochement produit, élargissement à toutes les catégories tennis) archivé tel quel dans `archive/ETAT_ACTUEL_detail_2026-09-22.md`. Résumé ci-dessous.
 
@@ -65,6 +65,17 @@ Demande explicite de l'utilisateur, hors feuille de route (traitée avant la cha
 - Vérification bout en bout : `npm run lint`, `npm run build`, `npm test` (50 tests, 8 fichiers), `npm run test:e2e` (10 tests) passent tous. Comportement contrôlé manuellement au navigateur (Playwright CLI) contre les données réelles de prod (Neon) pour les 3 déclencheurs (suggestion, Entrée, icône loupe) : le catalogue reste non filtré pendant la frappe.
 - PR #23 (`feat/recherche-suggestions-clic`), poussée et créée automatiquement (D-2026-09-23-03).
 
+## Chantier « Fix recherche insensible à l'ordre des mots » (terminé le 2026-09-23, hors feuille de route)
+
+Bug rapporté par l'utilisateur sur la fonctionnalité de suggestions cliquables (D-2026-09-23-05, livrée juste avant) : cliquer sur une suggestion ramenait parfois 0 résultat, et taper un nom d'article exact ne le trouvait pas toujours. Exemple fourni : "Babolat Antivibrateur de tennis Sonic Damp".
+
+- Cause diagnostiquée avec des données réelles (Neon prod) : `getCatalogDeals`/`getProductSuggestions` comparaient la requête au titre/marque du deal via un `ILIKE '%texte%'` (sous-chaîne exacte de toute la requête). Le nom de produit affiché en suggestion (`brand + model`, table `products`) n'a pas toujours le même ordre de mots que le titre du deal scrappé — ex. produit réel `Babolat` + `Antivibrateur de tennis Sonic Damp` vs titre du deal `Antivibrateur de tennis Babolat Sonic Damp`. Les 3 symptômes rapportés par l'utilisateur se sont révélés être une seule et même cause (confirmé par une question de clarification avant fix).
+- Fix (`lib/deals.ts`, `lib/products.ts`) : la requête est découpée en mots, chaque mot doit matcher le titre ou la marque (ILIKE), peu importe l'ordre — au lieu d'exiger toute la chaîne comme sous-chaîne unique.
+- Deux approches de fix présentées et comparées à l'utilisateur avant build (mot-à-mot vs recherche plein texte PostgreSQL) — mot-à-mot retenu (plus simple, corrige le cas rapporté).
+- Vérifié en réel de bout en bout : reproduction du bug en navigateur (Playwright CLI) contre la prod (Neon) avant fix, re-vérification après fix (clic sur la suggestion Sonic Damp → article trouvé). Tests de régression ajoutés (`tests/contract/catalog-query.test.ts`, `tests/contract/product-suggestions.test.ts`, cas réel Sonic Damp). `npm run lint`, `npm run build`, `npm test` (52 tests) passent tous.
+- PR #24 (`fix/recherche-mot-a-mot`), poussée et créée automatiquement (protocole point 4). Note : la branche précédente (`feat/recherche-suggestions-clic`, PR #23) était déjà mergée sur `master` au moment de ce fix — nouvelle branche créée à partir de `master` à jour pour l'éviter.
+- Demande connexe de l'utilisateur (sous-catégorie par couleur pour éviter la pollution des champs de recherche) **non traitée ici** — nouvelle fonctionnalité structurante, à cadrer explicitement dans une prochaine conversation dédiée (voir `GAPS_OUVERTS.md`, GAP-2026-09-23-03).
+
 ## Feuille de route (actée le 2026-09-23, ordre confirmé par l'utilisateur)
 
 1. ~~Monitoring du cron n8n~~ — terminé le 2026-09-23 (GAP-2026-09-23-01).
@@ -74,4 +85,6 @@ Demande explicite de l'utilisateur, hors feuille de route (traitée avant la cha
 
 ## Prochaine étape
 
-Retour à la feuille de route : suite du chantier « Charte graphique / design system » (étape 2) — spacing/layout plus poussé et/ou style de la nav (inspiration Aceternity), à confirmer explicitement avec l'utilisateur en début de prochaine conversation. (Note : la recherche par suggestions traitée dans une conversation précédente était un ajout hors feuille de route, demandé explicitement par l'utilisateur.)
+Deux sujets en attente, à soumettre explicitement à l'utilisateur en début de prochaine conversation :
+1. Cadrage de la sous-catégorie couleur (GAP-2026-09-23-03, hors feuille de route, demande explicite de l'utilisateur).
+2. Retour à la feuille de route : suite du chantier « Charte graphique / design system » (étape 2) — spacing/layout plus poussé et/ou style de la nav (inspiration Aceternity).

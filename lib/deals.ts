@@ -50,10 +50,14 @@ export async function getCatalogDeals(
   }
 
   const searchQuery = sanitizeSearchQuery(params.q);
-  if (searchQuery.length > 0) {
-    conditions.push(`(d.title ILIKE $${paramIndex} OR d.brand ILIKE $${paramIndex})`);
-    paramIndex++;
-    queryParams.push(`%${searchQuery}%`);
+  const searchWords = searchQuery.length > 0 ? searchQuery.split(/\s+/).filter(Boolean) : [];
+  if (searchWords.length > 0) {
+    const wordConditions = searchWords.map((word) => {
+      const idx = paramIndex++;
+      queryParams.push(`%${word}%`);
+      return `(d.title ILIKE $${idx} OR d.brand ILIKE $${idx})`;
+    });
+    conditions.push(`(${wordConditions.join(" AND ")})`);
   }
 
   const whereClause = conditions.join(" AND ");
