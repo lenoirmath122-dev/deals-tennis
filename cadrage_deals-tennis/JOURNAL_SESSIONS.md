@@ -4,6 +4,17 @@
 > Sessions du 2026-09-22 (suite 2) au 2026-09-23 (recherche centrée article) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-22_a_2026-09-23-recherche-article.md` (même règle, condensation du 2026-09-23).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
 
+## 2026-09-23 (suite 5) — Scroll dans les menus de suggestions de recherche + rattrapage PR en conflit
+
+- Reprise de session (`/clear`). Demande hors feuille de route de l'utilisateur : ajouter un scroll dans les menus de suggestions de recherche pour ne pas être limité en hauteur.
+- Décision mineure tranchée seule (autorisé par le protocole) : `max-h-72 overflow-y-auto` sur les deux niveaux du menu (catégories, articles) dans `components/search-bar.tsx`.
+- Vérifié réellement au navigateur (Playwright CLI) contre les données réelles de prod (Neon) : recherche « de » → catégorie « Textile » (302 correspondances) → menu tronqué visuellement, `scrollHeight` (412px) > `clientHeight` (286px), `overflow-y: auto` confirmé actif par capture d'écran et lecture des dimensions DOM. `npm run lint`, `npm run build`, `npm test` (60 tests) passent tous.
+- Commit du scroll ajouté par-dessus le commit local du chantier précédent (resté non poussé, session d'avant arrêtée avant l'étape 4 du protocole), branche `feat/recherche-suggestions-categorie` poussée, PR #27 créée.
+- GitHub a signalé des conflits sur #27. Diagnostic : le commit initial du chantier précédent (« suggestions groupées par catégorie ») dupliquait, avec un SHA différent, ce que la PR #26 avait déjà mergé en squash entretemps — 3e occurrence du même schéma (voir mémoire feedback méthode de travail, §4). Résolu en recréant une branche propre (`fix/scroll-suggestions`) depuis `master` à jour, cherry-pick du seul commit de scroll (aucun conflit), nouvelle PR #28. PR #27 fermée sans merge (commentaire explicatif laissé).
+- Branche `feat/recherche-suggestions-categorie` laissée en place (suppression jamais automatique sans confirmation au cas par cas, protocole point 4) — à supprimer côté utilisateur ou sur confirmation explicite.
+- `ETAT_ACTUEL.md` mis à jour (chantier « Suggestions groupées par catégorie »).
+- Prochaine étape : retour à la feuille de route, chantier « Charte graphique / design system » — à confirmer explicitement en début de prochaine conversation.
+
 ## 2026-09-23 (suite) — Cadrage du monitoring n8n (D-2026-09-23-01, GAP-2026-09-23-01)
 
 - Reprise de session (`/clear`), protocole appliqué (ETAT_ACTUEL → GAPS_OUVERTS). Constat en route : le diff « recherche centrée article + détail deal » noté « non commité » dans `ETAT_ACTUEL.md` avait en fait été mergé entretemps (PR #16, `c3ed96c`) — corrigé.
