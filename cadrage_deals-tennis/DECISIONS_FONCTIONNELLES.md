@@ -307,3 +307,23 @@ Vérification réelle effectuée avant de trancher : aucun marchand n'expose de 
 - Application immédiate demandée par l'utilisateur : `ETAT_ACTUEL.md` et `JOURNAL_SESSIONS.md` étant déjà au-delà du seuil au moment de cette décision, la condensation + archivage est à effectuer dans la foulée.
 
 **Statut** : Actée (confirmée explicitement par l'utilisateur après discussion des options).
+
+---
+
+### D-2026-09-22-10 — Détail d'un deal : page dédiée `/deal/[dealId]` (résolution de GAP-2026-09-22-10)
+
+**Contexte** : D-2026-09-22-06 actait que le clic sur un deal devait permettre de voir les autres offres marchandes du même article, sans trancher la modalité d'affichage (page dédiée vs popup/modale sur le catalogue).
+
+**Décision** : page dédiée `/deal/[dealId]`, plutôt qu'une popup sur le catalogue — meilleure adéquation avec une URL partageable et un SEO potentiel par article, au prix d'un aller-retour supplémentaire pour l'utilisateur (jugé acceptable, la comparaison multi-marchands n'est pas une action fréquente).
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur, question structurée soumise avant le build).
+
+---
+
+### D-2026-09-22-11 — Regroupement par article limité au mode recherche
+
+**Contexte** : D-2026-09-22-06 actait que « la recherche devient centrée article » sans préciser si ce changement s'applique aussi à la navigation par défaut (catégorie/tri sans terme de recherche).
+
+**Décision** : le regroupement par article (une carte = un article, avec badge du nombre d'offres et lien vers la page détail) ne s'applique **que lorsqu'un terme de recherche (`q`) est actif**. La navigation par défaut (accueil, filtre catégorie seul, tri seul) reste inchangée : une carte = un deal, lien direct vers `/go/[dealId]`.
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur, question structurée soumise avant le build).
