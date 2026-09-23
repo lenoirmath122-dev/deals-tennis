@@ -22,6 +22,7 @@ test.describe("Catalogue de bons plans tennis", () => {
     await page.goto("/");
 
     await page.getByRole("searchbox").fill("Babolat");
+    await page.getByRole("searchbox").press("Enter");
     await expect(page).toHaveURL(/q=Babolat/, { timeout: 5000 });
 
     const titles = await page.locator("article h2").allTextContents();
@@ -29,6 +30,24 @@ test.describe("Catalogue de bons plans tennis", () => {
     for (const title of titles) {
       expect(title.toLowerCase()).toContain("babolat");
     }
+  });
+
+  test("la recherche ne filtre pas en direct : elle propose des suggestions cliquables", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    const searchbox = page.getByRole("searchbox");
+    await searchbox.fill("Pure Aero");
+
+    // Pas de navigation tant qu'on n'a pas validé (ni Entrée, ni clic loupe/suggestion).
+    await expect(page).not.toHaveURL(/q=/);
+
+    const suggestion = page.getByRole("button", { name: /Pure Aero/i }).first();
+    await expect(suggestion).toBeVisible({ timeout: 10000 });
+    await suggestion.click();
+
+    await expect(page).toHaveURL(/q=/, { timeout: 5000 });
   });
 
   test("le tri par réduction change l'ordre des offres", async ({ page }) => {
@@ -83,6 +102,7 @@ test.describe("Catalogue de bons plans tennis", () => {
     await page.goto("/");
 
     await page.getByRole("searchbox").fill("Pure Aero");
+    await page.getByRole("searchbox").press("Enter");
     await expect(page).toHaveURL(/q=Pure\+Aero/, { timeout: 5000 });
 
     const groupedCard = page.locator("article").filter({ hasText: "offres" }).first();

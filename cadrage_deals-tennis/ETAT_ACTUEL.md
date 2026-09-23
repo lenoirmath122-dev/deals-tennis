@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-23 (Monitoring n8n construit et vérifié de bout en bout)
+**Dernière mise à jour** : 2026-09-23 (Recherche par suggestions cliquables, D-2026-09-23-05)
 
 > Détail complet du MVP (`tasks.md` T001-T034), du chantier « Déploiement production », du chantier « CI + protection de branche » et du chantier « Automatisation n8n / ProTennis » (build initial, hébergement permanent, rapprochement produit, élargissement à toutes les catégories tennis) archivé tel quel dans `archive/ETAT_ACTUEL_detail_2026-09-22.md`. Résumé ci-dessous.
 
@@ -54,6 +54,17 @@ Déclenché par GAP-2026-09-22-12 (workflow n8n désactivé silencieusement sans
 - `npm run lint`, `npm run build`, `npm test` (46 tests) passent tous sans erreur.
 - **GAP-2026-09-23-01 résolu.**
 
+## Chantier « Recherche par suggestions cliquables » (terminé le 2026-09-23, D-2026-09-23-05)
+
+Demande explicite de l'utilisateur, hors feuille de route (traitée avant la charte graphique) : le filtrage en direct à chaque frappe hachait l'expérience.
+
+- `components/search-bar.tsx` : plus de debounce-navigation à chaque frappe. Pendant la frappe (dès 2 caractères), fetch débouncé (200ms) vers `GET /api/products/suggest?q=` affiche une liste de suggestions cliquables sous le champ. Recherche déclenchée uniquement par clic sur une suggestion, touche Entrée (formulaire), ou clic sur l'icône loupe ajoutée dans le champ.
+- `lib/products.ts` (nouveau) : `getProductSuggestions(q)` — `brand + model` de la table `products`, restreint aux articles ayant au moins une offre active, 8 résultats max.
+- `app/api/products/suggest/route.ts` (nouveau) : route GET appelant `getProductSuggestions`.
+- Tests : `tests/contract/product-suggestions.test.ts` (nouveau, 4 tests), `tests/e2e/catalog.spec.ts` mis à jour (les 2 tests recherche existants pressent désormais Entrée après le remplissage du champ, plus attendu ; nouveau test couvrant le flux suggestion → recherche).
+- Vérification bout en bout : `npm run lint`, `npm run build`, `npm test` (50 tests, 8 fichiers), `npm run test:e2e` (10 tests) passent tous. Comportement contrôlé manuellement au navigateur (Playwright CLI) contre les données réelles de prod (Neon) pour les 3 déclencheurs (suggestion, Entrée, icône loupe) : le catalogue reste non filtré pendant la frappe.
+- PR #23 (`feat/recherche-suggestions-clic`), poussée et créée automatiquement (D-2026-09-23-03).
+
 ## Feuille de route (actée le 2026-09-23, ordre confirmé par l'utilisateur)
 
 1. ~~Monitoring du cron n8n~~ — terminé le 2026-09-23 (GAP-2026-09-23-01).
@@ -63,4 +74,4 @@ Déclenché par GAP-2026-09-22-12 (workflow n8n désactivé silencieusement sans
 
 ## Prochaine étape
 
-Suite du chantier « Charte graphique / design system » (étape 2 de la feuille de route) — spacing/layout plus poussé et/ou style de la nav (inspiration Aceternity), à confirmer explicitement avec l'utilisateur en début de prochaine conversation.
+Retour à la feuille de route : suite du chantier « Charte graphique / design system » (étape 2) — spacing/layout plus poussé et/ou style de la nav (inspiration Aceternity), à confirmer explicitement avec l'utilisateur en début de prochaine conversation. (Note : la recherche par suggestions traitée dans une conversation précédente était un ajout hors feuille de route, demandé explicitement par l'utilisateur.)
