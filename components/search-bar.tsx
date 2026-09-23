@@ -3,8 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { buildCatalogHref } from "@/lib/catalog-url";
+import { CATEGORY_LABELS } from "@/lib/filters";
 
 const SUGGESTIONS_DEBOUNCE_MS = 200;
+
+interface SuggestionCategory {
+  category: string;
+  count: number;
+}
 
 export function SearchBar({
   defaultValue,
@@ -17,7 +23,9 @@ export function SearchBar({
 }) {
   const router = useRouter();
   const [value, setValue] = useState(defaultValue);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [categories, setCategories] = useState<SuggestionCategory[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [articles, setArticles] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const abortRef = useRef<AbortController | undefined>(undefined);
@@ -40,19 +48,20 @@ export function SearchBar({
     };
   }, []);
 
-  function runSearch(query: string) {
+  function runSearch(query: string, searchCategory: string) {
     setShowSuggestions(false);
-    router.push(buildCatalogHref({ category, sort, q: query }));
+    router.push(buildCatalogHref({ category: searchCategory, sort, q: query }));
   }
 
-  function handleChange(next: string) {
-    setValue(next);
+  function resetToCategoryLevel(next: string) {
+    setSelectedCategory(null);
+    setArticles([]);
 
     if (debounceRef.current) clearTimeout(debounceRef.current);
     abortRef.current?.abort();
 
     if (next.trim().length < 2) {
-      setSuggestions([]);
+      setCategories([]);
       setShowSuggestions(false);
       return;
     }
@@ -64,9 +73,9 @@ export function SearchBar({
         signal: controller.signal,
       })
         .then((response) => response.json())
-        .then((data: { suggestions: string[] }) => {
-          setSuggestions(data.suggestions);
-          setShowSuggestions(data.suggestions.length > 0);
+        .then((data: { categories: SuggestionCategory[] }) => {
+          setCategories(data.categories);
+          setShowSuggestions(data.categories.length > 0);
         })
         .catch(() => {
           // Requête annulée (nouvelle frappe) ou erreur réseau : pas de suggestions à afficher.
@@ -74,9 +83,29 @@ export function SearchBar({
     }, SUGGESTIONS_DEBOUNCE_MS);
   }
 
-  function handleSuggestionClick(suggestion: string) {
+  function handleChange(next: string) {
+    setValue(next);
+    resetToCategoryLevel(next);
+  }
+
+  function handleCategoryClick(clickedCategory: string) {
+    setSelectedCategory(clickedCategory);
+
+    fetch(
+      `/api/products/suggest?q=${encodeURIComponent(value.trim())}&category=${encodeURIComponent(clickedCategory)}`
+    )
+      .then((response) => response.json())
+      .then((data: { suggestions: string[] }) => {
+        setArticles(data.suggestions);
+      })
+      .catch(() => {
+        // Erreur réseau : pas de suggestions à afficher.
+      });
+  }
+
+  function handleArticleClick(suggestion: string) {
     setValue(suggestion);
-    runSearch(suggestion);
+    runSearch(suggestion, selectedCategory ?? category);
   }
 
   return (
@@ -85,7 +114,7 @@ export function SearchBar({
         role="search"
         onSubmit={(event) => {
           event.preventDefault();
-          runSearch(value);
+          runSearch(value, category);
         }}
         className="flex items-center gap-2 rounded-md border border-card-border bg-white px-3 py-1.5"
       >
@@ -94,7 +123,9 @@ export function SearchBar({
           value={value}
           onChange={(event) => handleChange(event.target.value)}
           onFocus={() => {
-            if (suggestions.length > 0) setShowSuggestions(true);
+            if (selectedCategory !== null ? articles.length > 0 : categories.length > 0) {
+              setShowSuggestions(true);
+            }
           }}
           placeholder="Rechercher un modèle ou une marque…"
           aria-label="Rechercher un bon plan par modèle ou marque"
@@ -122,13 +153,40 @@ export function SearchBar({
         </button>
       </form>
 
-      {showSuggestions && (
+      {showSuggestions && selectedCategory === null && (
         <ul className="absolute z-10 mt-1 w-full rounded-md border border-card-border bg-white py-1 shadow-md">
-          {suggestions.map((suggestion) => (
+          {categories.map(({ category: suggestionCategory, count }) => (
+            <li key={suggestionCategory}>
+              <button
+                type="button"
+                onClick={() => handleCategoryClick(suggestionCategory)}
+                className="flex w-full items-center justify-between px-3 py-1.5 text-left text-sm text-zinc-900 hover:bg-zinc-100"
+              >
+                <span>{CATEGORY_LABELS[suggestionCategory] ?? suggestionCategory}</span>
+                <span className="text-xs text-zinc-500">{count}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {showSuggestions && selectedCategory !== null && (
+        <ul className="absolute z-10 mt-1 w-full rounded-md border border-card-border bg-white py-1 shadow-md">
+          <li>
+            <button
+              type="button"
+              onClick={() => setSelectedCategory(null)}
+              className="flex w-full items-center gap-1 px-3 py-1.5 text-left text-xs text-zinc-500 hover:bg-zinc-100"
+            >
+              <span aria-hidden="true">←</span>
+              <span>{CATEGORY_LABELS[selectedCategory] ?? selectedCategory}</span>
+            </button>
+          </li>
+          {articles.map((suggestion) => (
             <li key={suggestion}>
               <button
                 type="button"
-                onClick={() => handleSuggestionClick(suggestion)}
+                onClick={() => handleArticleClick(suggestion)}
                 className="block w-full px-3 py-1.5 text-left text-sm text-zinc-900 hover:bg-zinc-100"
               >
                 {suggestion}

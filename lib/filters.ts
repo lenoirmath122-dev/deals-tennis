@@ -8,6 +8,15 @@ export const DEAL_CATEGORIES = [
 
 export type CatalogCategoryFilter = (typeof DEAL_CATEGORIES)[number] | "all";
 
+export const CATEGORY_LABELS: Record<string, string> = {
+  all: "Toutes",
+  raquettes: "Raquettes",
+  cordages: "Cordages",
+  chaussures: "Chaussures",
+  textile: "Textile",
+  accessoires: "Accessoires",
+};
+
 export function isValidCategory(value: string | undefined | null): value is CatalogCategoryFilter {
   if (!value) return false;
   return value === "all" || (DEAL_CATEGORIES as readonly string[]).includes(value);

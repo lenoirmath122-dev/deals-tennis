@@ -389,3 +389,19 @@ Vérification réelle effectuée avant de trancher : aucun marchand n'expose de 
 3. Vocabulaire de couleurs non reconnu par la liste connue : à traiter comme point ouvert au fil de l'eau (nouveau GAP), pas bloquant pour ce chantier.
 
 **Statut** : Actée, build à suivre dans cette conversation.
+
+---
+
+### D-2026-09-23-07 — Suggestions de recherche groupées par catégorie (menu à deux niveaux)
+
+**Contexte** : Les suggestions de recherche (D-2026-09-23-05) sont actuellement une liste plate `brand + model` triée alphabétiquement. L'utilisateur souhaite un regroupement par catégorie (raquettes, cordages, chaussures, textile, accessoires) pour rendre les suggestions plus lisibles quand une marque couvre plusieurs catégories (ex. « babolat »).
+
+**Décision** :
+1. Le menu de suggestions devient à deux niveaux, sans navigation ni changement de page :
+   - 1er niveau : liste des catégories (parmi `DEAL_CATEGORIES`) ayant au moins un article correspondant à la saisie, avec leur libellé affiché.
+   - Clic sur une catégorie → le menu bascule pour afficher les noms d'articles (`brand + model`) de cette catégorie correspondant à la saisie (2e niveau), dans le même menu déroulant.
+2. Clic sur un nom d'article (2e niveau) → lance la recherche avec **texte + catégorie** (`/?category=X&q=texte`), pas texte seul — cohérent avec le fait que la catégorie a été choisie explicitement.
+3. Touche Entrée (sans passer par les suggestions) : comportement inchangé, filtre uniquement avec le texte tapé (`/?q=texte`, toutes catégories) — confirmé explicitement par l'utilisateur.
+4. Reprendre la frappe (changement de texte) réinitialise le menu au 1er niveau (catégories).
+
+**Statut** : Actée (question soumise à l'utilisateur via choix explicite, validée). Build à suivre dans cette conversation.
