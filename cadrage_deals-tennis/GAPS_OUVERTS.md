@@ -1,5 +1,19 @@
 # Points ouverts
 
+## GAP-2026-09-23-02 — Prod restée figée sur le déploiement CLI du 2026-09-21, jamais reconnectée à Git (OUVERT)
+
+En vérifiant pourquoi la section hero (PR #18) n'apparaissait pas sur `https://deals-tennis.vercel.app`, découvert que le projet Vercel n'avait **jamais** été connecté au dépôt GitHub depuis sa création (D-2026-09-21-10 : déploiement initial volontairement fait via CLI, le lien Git devait être traité au chantier CI mais ne l'a jamais été — seuls les checks GitHub Actions l'ont été). Conséquence : la prod tournait sur l'unique déploiement du 21/09, ratant tout ce qui a été mergé depuis (PR #16 recherche centrée article, PR #18 hero).
+
+L'utilisateur a connecté le repo `lenoirmath122-dev/deals-tennis` à Vercel (branche `master`) dans cette conversation — la connexion est confirmée active. Mais la connexion seule ne redéploie pas rétroactivement : un premier "Redeploy" tenté par l'utilisateur a en réalité re-servi l'ancien snapshot CLI (`source: "redeploy"` d'un déploiement sans lien Git), pas le dernier commit `master`. Tentative de déclencher un déploiement propre via l'API Vercel (MCP) également bloquée (403, token MCP non autorisé sur le scope d'équipe `lenoir-nba`).
+
+**Résolution en cours** : un commit trivial est poussé sur une branche dédiée pour que le prochain merge sur `master` déclenche, via le webhook Git maintenant actif, un vrai déploiement à jour. À vérifier après ce merge que la prod reflète bien le hero + la recherche centrée article.
+
+**Bloquant sur** : le merge de cette PR par l'utilisateur (flux protégé), puis vérification réelle du contenu de la prod après déploiement.
+
+**Statut** : ouvert au 2026-09-23.
+
+---
+
 ## GAP-2026-09-21-01 — `tasks.md` coché mais aucun code correspondant (RÉSOLU)
 
 `cadrage_deals-tennis/tasks.md` listait des tâches marquées `[x]` sans aucun code réel correspondant, et des liens pointant vers `C:/Users/lenoi/mon-projet/specs/...` (un autre projet).
