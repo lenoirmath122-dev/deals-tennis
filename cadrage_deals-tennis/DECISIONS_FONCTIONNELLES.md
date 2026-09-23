@@ -336,3 +336,13 @@ Vérification réelle effectuée avant de trancher : aucun marchand n'expose de 
 **Décision** : option 1 retenue — le workflow n8n ProTennis enverra un ping HTTP vers un check healthchecks.io après chaque succès du scraping ; healthchecks.io alertera par email si le ping n'arrive pas dans la fenêtre attendue (~24h + marge de grâce). Choix motivé par le découplage total vis-à-vis de n8n lui-même : contrairement à l'option 3, ce mécanisme reste fonctionnel même si n8n plante, se désactive, ou si la VM redémarre mal — exactement le scénario de l'incident déjà survenu (GAP-2026-09-22-12), que l'option 3 n'aurait probablement pas détecté puisqu'elle partage le même point de défaillance.
 
 **Statut** : Actée (confirmée explicitement par l'utilisateur après explication détaillée des trois options). **Cadrage uniquement — aucun build effectué dans cette conversation**, conformément au protocole (une étape de build par conversation). Mise en œuvre (création du compte/check healthchecks.io par l'utilisateur, ajout du nœud HTTP au workflow n8n, vérification réelle) à faire dans une conversation dédiée.
+
+---
+
+### D-2026-09-23-02 — Choix de la photo de fond hero (GAP-2026-09-21-04)
+
+**Contexte** : Chantier « Charte graphique / design system » (D-2026-09-21-13), bloqué depuis le 2026-09-21 sur l'absence de photo de terrain pour le fond de la section hero. L'utilisateur a fourni 3 photos de test dans `public/hero/` : `mudassir-ali-Ygy6aPp6980-unsplash.jpg` (vue aérienne court dur, deux joueurs visibles), `siddharth-patel-StYnQsSRUPY-unsplash.jpg` (court en gazon réel, format portrait 2894×3024), `simone-viani-2XPHSXVT_Ls-unsplash.jpg` (vue aérienne, tons doux désaturés, format paysage large 3222×1861).
+
+**Décision** : `simone-viani-2XPHSXVT_Ls-unsplash.jpg` retenue — format paysage adapté à une bannière hero, larges zones vides pour superposer texte/CTA sans surcharge visuelle, tons désaturés cohérents avec le style épuré déjà acté (bordures fines, radius léger). Les deux autres écartées : la première est un court dur (pas gazon/terre battue comme prévu), la seconde a un format portrait mal adapté à un hero large.
+
+**Statut** : Actée (recommandation soumise avec justification, validée explicitement par l'utilisateur). **GAP-2026-09-21-04 résolu.**
