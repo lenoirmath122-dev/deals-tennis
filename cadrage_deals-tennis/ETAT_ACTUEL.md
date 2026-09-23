@@ -20,7 +20,8 @@ Next.js 16.3.5 (App Router), React 19, TypeScript, Tailwind CSS v4, PostgreSQL (
 
 - Direction actée (D-2026-09-21-13) : typographie Space Grotesk, palette à deux accents (vert gazon `#1b4332` prix/CTA, terre cuite `#c1440e` badge réduction), cartes blanches/bordure fine, radius léger (6px cartes/boutons, 4px badges).
 - **Tokens appliqués au code** (build, PR #3 ouverte par l'utilisateur, statut de merge non suivi par Claude Code depuis) : `app/layout.tsx` (police Space Grotesk), `app/globals.css` (tokens `--color-accent`/`--color-discount`/`--color-card-border`, `--font-sans`), rayons Tailwind par défaut (`rounded-md`/`rounded`), composants mis à jour, variantes `dark:` retirées (décision mineure — la charte actée ne définit qu'une palette claire).
-- **Section hero construite et vérifiée (2026-09-23, D-2026-09-23-02, résout GAP-2026-09-21-04)** : l'utilisateur a fourni 3 photos de test dans `public/hero/`, `simone-viani-2XPHSXVT_Ls-unsplash.jpg` retenue (format paysage, tons désaturés, espace pour le texte). Nouveau composant `components/hero.tsx` (image plein cadre via `next/image`, overlay dégradé vert foncé pour la lisibilité, titre + accroche repris de l'ancien `<h1>` du catalogue) intégré en tête de `app/(catalog)/page.tsx`. Vérifié réellement : `npm run lint`, `npm run build`, `npm test` (46 tests) passent tous ; rendu contrôlé visuellement au navigateur (Playwright) en desktop et mobile (390×844) — texte lisible, overlay cohérent avec la palette actée. Diff non committé à la fin de la conversation (branche `docs/cadrage-monitoring-n8n` obsolète pour ce travail, nouvelle branche à créer avant commit).
+- **Section hero construite et vérifiée (2026-09-23, D-2026-09-23-02, résout GAP-2026-09-21-04)** : l'utilisateur a fourni 3 photos de test dans `public/hero/`, `simone-viani-2XPHSXVT_Ls-unsplash.jpg` retenue (format paysage, tons désaturés, espace pour le texte). Nouveau composant `components/hero.tsx` (image plein cadre via `next/image`, overlay dégradé vert foncé pour la lisibilité, titre + accroche repris de l'ancien `<h1>` du catalogue) intégré en tête de `app/(catalog)/page.tsx`. Vérifié réellement : `npm run lint`, `npm run build`, `npm test` (46 tests) passent tous ; rendu contrôlé visuellement au navigateur (Playwright) en desktop et mobile (390×844) — texte lisible, overlay cohérent avec la palette actée. Mergé (PR #18).
+- **Hauteur du hero réduite (2026-09-23, PR #21, décision mineure)** : l'utilisateur a trouvé l'image trop haute après mise en prod. Réduction en deux passes validées visuellement par l'utilisateur : `min-h-[280px] sm:min-h-[360px]` → `196/250px` → `150/190px` (mobile/desktop), soit ~46% de moins au total. Lint clean, pas de vérification navigateur formelle (ajustement CSS trivial, confirmé visuellement par l'utilisateur de son côté).
 - Reste à cadrer/construire : spacing/layout plus poussé, style de la nav (inspiration Aceternity `resizable-navbar`/`hero-highlight`).
 
 ## Chantier « Recherche centrée article + détail deal » (terminé le 2026-09-23, résolution de GAP-2026-09-22-08/10)
@@ -56,10 +57,10 @@ Déclenché par GAP-2026-09-22-12 (workflow n8n désactivé silencieusement sans
 ## Feuille de route (actée le 2026-09-23, ordre confirmé par l'utilisateur)
 
 1. ~~Monitoring du cron n8n~~ — terminé le 2026-09-23 (GAP-2026-09-23-01).
-2. Charte graphique / design system (chantier en cours, bloqué sur la photo hero — GAP-2026-09-21-04).
+2. Charte graphique / design system (chantier en cours — hero construit et ajusté, reste spacing/layout et nav).
 3. Ajout de marchands supplémentaires (dépend de GAP-2026-09-21-03 — compte Awin à créer par l'utilisateur).
 4. Reste (mentions légales/CGU, disclosure affiliation, SEO, accessibilité, etc. — non détaillé à ce stade).
 
 ## Prochaine étape
 
-Chantier « Charte graphique / design system » (étape 2 de la feuille de route) — toujours bloqué sur GAP-2026-09-21-04 (photo de terrain non fournie) ; à confirmer explicitement avec l'utilisateur en début de prochaine conversation comment avancer malgré ce blocage (placeholder temporaire ? autre sous-tâche du chantier en attendant ?).
+Suite du chantier « Charte graphique / design system » (étape 2 de la feuille de route) — spacing/layout plus poussé et/ou style de la nav (inspiration Aceternity), à confirmer explicitement avec l'utilisateur en début de prochaine conversation.
