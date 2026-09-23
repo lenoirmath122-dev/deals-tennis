@@ -95,3 +95,32 @@
 - **GAP-2026-09-22-10 résolu** (page dédiée actée). **GAP-2026-09-22-08 résolu** (recherche centrée article + détail deal construits et vérifiés).
 - Diff non committé à la fin de cette conversation (laissé à la revue de l'utilisateur, conforme au protocole — pas de commit/push sans demande explicite).
 - Prochaine étape : non tranchée — à soumettre explicitement en début de prochaine conversation. Candidats restants : élargissement scraping à d'autres marchands (dépend toujours de GAP-2026-09-21-03, Awin), validation à l'échelle, mentions légales/disclosure affiliation, SEO, accessibilité, observabilité.
+
+## 2026-09-23 (suite) — Cadrage du monitoring n8n (D-2026-09-23-01, GAP-2026-09-23-01)
+
+- Reprise de session (`/clear`), protocole appliqué (ETAT_ACTUEL → GAPS_OUVERTS). Constat en route : le diff « recherche centrée article + détail deal » noté « non commité » dans `ETAT_ACTUEL.md` avait en fait été mergé entretemps (PR #16, `c3ed96c`) — corrigé.
+- Prochaine étape soumise explicitement à l'utilisateur : chantier « Observabilité/monitoring » (n°11 de D-2026-09-21-09) choisi, périmètre restreint au monitoring du cron n8n ProTennis (déclencheur : GAP-2026-09-22-12).
+- Trois mécanismes d'alerte présentés et comparés en détail (avantages/inconvénients) à la demande de l'utilisateur : dead man's switch externe (healthchecks.io), vérification côté app (Vercel Cron + email), alerte native n8n (2e workflow). Recommandation donnée (option 1, découplage du point de défaillance observé) et suivie par l'utilisateur.
+- **D-2026-09-23-01** actée : healthchecks.io retenu.
+- **Aucune étape de build n'a été démarrée** dans cette conversation, conformément au protocole (une étape de build par conversation) — l'utilisateur a explicitement demandé de reporter la mise en œuvre à une conversation dédiée.
+- `GAPS_OUVERTS.md` : nouveau `GAP-2026-09-23-01` ouvert (mécanisme décidé, build restant). `DECISIONS_FONCTIONNELLES.md` et `ETAT_ACTUEL.md` mis à jour.
+- Prochaine étape : construire le monitoring n8n (GAP-2026-09-23-01) — création du compte/check healthchecks.io par l'utilisateur, ajout du nœud HTTP de ping au workflow n8n, vérification réelle bout en bout.
+
+## 2026-09-23 (suite 2) — Feuille de route confirmée (pas de build)
+
+- Reprise de session, état d'avancement général demandé par l'utilisateur (résumé donné : MVP/prod/n8n opérationnels, bloquants identifiés : photo hero, monitoring, marchand unique).
+- Ordre des 4 prochains chantiers confirmé explicitement par l'utilisateur : (1) monitoring n8n, (2) charte graphique, (3) ajout de marchands, (4) reste (CGU/mentions légales, SEO, accessibilité...). Consigné dans `ETAT_ACTUEL.md`.
+- **Aucune étape de build n'a été démarrée** dans cette conversation, conformément au protocole.
+- Prochaine étape : construire le monitoring n8n (GAP-2026-09-23-01) — étape 1 de la feuille de route, à traiter en conversation dédiée.
+
+## 2026-09-23 (suite 3) — Monitoring n8n construit et vérifié de bout en bout (GAP-2026-09-23-01 résolu)
+
+- Reprise de session (`/clear`), protocole appliqué. Commit des 4 fichiers de cadrage laissés non committés par la session précédente sur une branche dédiée (`docs/cadrage-monitoring-n8n`), pas de push sans demande explicite.
+- URL de ping healthchecks.io fournie par l'utilisateur (compte/check créés côté utilisateur). Nœud HTTP Request ajouté à `scripts/automation/n8n-protennis-ingestion-workflow.json`, branché après le nœud d'éviction (ping uniquement si toute la chaîne réussit).
+- Vérification réelle en local : port 5679 occupé par un serveur n8n déjà lancé en tâche de fond lors d'une tentative précédente — arrêté pour libérer le port, puis deux exécutions `n8n execute` réelles (site ProTennis + base Neon de prod réels) terminées `status: success`, ping reçu par healthchecks.io (`"data": "OK"`) à chaque fois. Simulation d'échec via l'endpoint dédié `/fail` : check passé à "Down", alerte email réellement déclenchée et **confirmée par l'utilisateur** (seule vérification qu'il devait faire lui-même, accès à sa boîte mail) ; ping de succès renvoyé ensuite pour revenir à l'état normal.
+- Déploiement sur l'instance n8n permanente (VM Oracle) : accès SSH redonné par l'utilisateur (clé `ssh-key-2026-09-22.key` placée dans le repo, `*.key` ajouté à `.gitignore` par précaution avant toute autre action). Deux actions bloquées par le classificateur auto-mode (accès SSH puis commande de republication du workflow) débloquées après confirmation explicite de l'utilisateur à chaque fois. Workflow réimporté, republié (`n8n publish:workflow`), conteneur redémarré, `active: true` confirmé par export, fichiers temporaires nettoyés sur la VM.
+- Effet de bord découvert en vérifiant `npm test` après les runs réels : les `UPDATE` du workflow ont changé l'ordre physique des lignes en base, exposant un `LIMIT 1` sans `ORDER BY` dans `tests/contract/deal-detail.test.ts` (dépendait implicitement d'un ordre de résultat non garanti). Signalé à l'utilisateur comme diff sans rapport avec le monitoring avant correction (protocole point 4) ; correctif validé et appliqué (titre précis au lieu d'un `ILIKE` large).
+- `npm run lint`, `npm run build`, `npm test` (46 tests) passent tous sans erreur.
+- **GAP-2026-09-23-01 résolu.**
+- Question posée par l'utilisateur en cours de session : possibilité d'autorisation permanente pour les actions bloquées par l'auto-mode — répondu qu'une règle de permission durable est possible via `.claude/settings.json` (skill `update-config`), proposé pour une prochaine fois sans interrompre le déploiement en cours.
+- Prochaine étape : chantier « Charte graphique / design system » (étape 2 de la feuille de route), toujours bloqué sur GAP-2026-09-21-04 (photo hero) — comment avancer malgré ce blocage à soumettre explicitement en début de prochaine conversation.

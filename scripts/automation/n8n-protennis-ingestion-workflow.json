@@ -114,6 +114,20 @@
             "name": "Neon deals-tennis"
           }
         }
+      },
+      {
+        "parameters": {
+          "method": "GET",
+          "url": "https://hc-ping.com/09c98ebf-526a-4856-9cec-fc2f09714e99"
+        },
+        "id": "http-healthcheck-ping-1",
+        "name": "Ping healthchecks.io (succes)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1320,
+          0
+        ]
       }
     ],
     "connections": {
@@ -166,6 +180,17 @@
           [
             {
               "node": "Expirer les offres disparues",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Expirer les offres disparues": {
+        "main": [
+          [
+            {
+              "node": "Ping healthchecks.io (succes)",
               "type": "main",
               "index": 0
             }

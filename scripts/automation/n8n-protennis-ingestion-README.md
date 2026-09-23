@@ -61,10 +61,30 @@ via `n8n execute` contre la vraie page ProTennis et la vraie base Neon de produc
    de promo, donc le cron d'éviction générique par `expires_at`
    (`n8n-eviction-cron.sql`) ne suffit pas pour ce marchand.
 
-## Point ouvert : hébergement permanent
+## Hébergement permanent
 
-Cette étape a été construite et vérifiée avec une instance n8n **locale et temporaire**
-(`npx n8n`, arrêtée après vérification) — aucune instance n8n ne tourne en continu.
-Pour que le déclencheur planifié (6h/jour) s'exécute réellement en production, il faudra
-héberger n8n en continu (n8n Cloud, VPS, ou la machine de l'utilisateur qui resterait
-allumée) — décision non prise à ce stade, voir `GAPS_OUVERTS.md`.
+Le workflow tourne en continu sur une VM Oracle Cloud Free Tier
+(`deals-tennis-n8n.duckdns.org`, voir GAP-2026-09-22-06 résolu) — le déclencheur
+planifié (6h/jour) s'exécute réellement en production, pas seulement en local.
+
+## Monitoring (D-2026-09-23-01)
+
+Un dernier nœud **HTTP Request** (`Ping healthchecks.io (succes)`) est branché après
+« Expirer les offres disparues ». Il envoie un `GET` vers l'URL de ping du check
+healthchecks.io dédié à ce workflow (dead man's switch) **uniquement si toute la chaîne
+a réussi** (scraping → upsert → éviction). Si le check ne reçoit aucun ping dans le
+délai de grâce configuré (cron quotidien à 6h), healthchecks.io déclenche une alerte
+email — indépendamment de l'état de n8n lui-même (ne partage pas le même point de
+défaillance que l'incident GAP-2026-09-22-12 qui a motivé ce chantier).
+
+Une exécution avec 0 offre parsée ne déclenche pas le ping (le nœud d'éviction ne
+s'exécute pas sur une liste vide, cf. logique du nœud « Regrouper les URLs vues
+aujourd'hui » ci-dessus) — comportement voulu : 0 offre sur un site qui en affiche
+normalement des centaines est un signal d'anomalie, pas un succès à confirmer.
+
+Vérifié réellement le 2026-09-23 : deux exécutions complètes du workflow (`n8n execute`,
+site ProTennis réel + base Neon de prod réelle) terminées `status: "success"`, ping reçu
+par healthchecks.io (`"data": "OK"`) après chaque run ; simulation d'échec via l'endpoint
+dédié `https://hc-ping.com/<id>/fail` déclenchant réellement le passage du check à l'état
+« Down » et l'envoi de l'alerte email (confirmé par l'utilisateur), puis ping de succès
+renvoyé pour revenir à l'état normal.

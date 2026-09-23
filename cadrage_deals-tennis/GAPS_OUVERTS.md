@@ -121,3 +121,17 @@ En reprenant l'étape GAP-2026-09-22-11, une vérification réelle sur l'instanc
 **Point non couvert par cette résolution** : la cause de la désactivation n'est pas connue — si elle se reproduit (ex. après un redémarrage de VM), le cron quotidien de 6h pourrait à nouveau ne pas tourner sans que personne ne le remarque (pas d'alerte configurée). Rejoint le chantier « Observabilité/monitoring » (n°11 de la liste D-2026-09-21-09, non commencé) — une alerte sur l'absence d'exécution quotidienne y aurait sa place.
 
 **Statut** : résolu le 2026-09-22 (réactivé et vérifié) ; cause racine non déterminée, risque de récidive silencieuse noté pour le chantier observabilité.
+
+---
+
+## GAP-2026-09-23-01 — Monitoring du cron n8n ProTennis (RÉSOLU)
+
+Suite à GAP-2026-09-22-12 (récidive silencieuse possible sans alerte), le mécanisme de monitoring a été discuté et tranché en **D-2026-09-23-01** : dead man's switch externe healthchecks.io (ping HTTP du workflow n8n à chaque succès, alerte email si le ping manque).
+
+**Résolution (2026-09-23)** : nœud HTTP Request (`Ping healthchecks.io (succes)`) ajouté au workflow n8n ProTennis, branché après le nœud d'éviction — il ne se déclenche que si toute la chaîne (scraping → upsert → éviction) a réussi. Compte/check healthchecks.io créé par l'utilisateur. Déployé sur l'instance n8n permanente (VM Oracle), workflow réimporté/republié/conteneur redémarré, `active: true` confirmé.
+
+Vérifié réellement : deux exécutions complètes du workflow (`n8n execute`, site ProTennis réel + base Neon de prod réelle) terminées avec succès, ping reçu par healthchecks.io après chaque run ; simulation d'échec via l'endpoint dédié `/fail` ayant réellement fait passer le check à l'état "Down" et déclenché l'alerte email (confirmé par l'utilisateur), puis retour à l'état normal via un ping de succès.
+
+**Effet de bord découvert et corrigé** : les exécutions réelles du workflow (`UPDATE` sur les deals existants) ont changé l'ordre physique des lignes en base, révélant un bug préexistant dans `tests/contract/deal-detail.test.ts` (`LIMIT 1` sans `ORDER BY` sur un `ILIKE` large, non déterministe) — corrigé en ciblant le titre précis de l'article multi-marchand utilisé par le test.
+
+**Statut** : résolu le 2026-09-23.
