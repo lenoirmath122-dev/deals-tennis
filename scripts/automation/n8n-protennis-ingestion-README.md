@@ -44,9 +44,13 @@ via `n8n execute` contre la vraie page ProTennis et la vraie base Neon de produc
    ON CONFLICT (merchant_id, affiliate_url) DO UPDATE ...` — nécessite la contrainte
    ajoutée par la migration `002_deals_unique_merchant_url.sql` et la table `products`
    de la migration `003_products.sql`. Le modèle (`model`) utilisé pour le rapprochement
-   produit est calculé dans l'étape de parsing (miroir JS de `lib/product-matching.ts`,
-   `extractModel` — **à garder synchronisé manuellement**, ce workflow n8n ne peut pas
-   importer le code TypeScript du repo). `affiliate_url` = URL produit ProTennis directe
+   produit et la couleur (`color`, migration `004_deals_color.sql`) sont calculés dans
+   l'étape de parsing (miroir JS de `lib/product-matching.ts`, `extractModel` et
+   `extractColor` — **à garder synchronisé manuellement**, ce workflow n8n ne peut pas
+   importer le code TypeScript du repo). `extractModel` retire désormais aussi la
+   couleur du titre (D-2026-09-23-06) : la couleur reste un attribut par offre, pas une
+   clé d'identité produit — deux couleurs du même modèle restent le même article.
+   `affiliate_url` = URL produit ProTennis directe
    (pas de lien d'affiliation, ce marchand n'a pas de programme d'affiliation actif —
    D-2026-09-21-15). Résout GAP-2026-09-22-11 : chaque offre insérée/mise à jour par ce
    workflow est désormais rattachée à `product_id`, sans dépendre d'un backfill manuel.

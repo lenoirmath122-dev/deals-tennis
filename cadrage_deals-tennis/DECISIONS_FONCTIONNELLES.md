@@ -376,3 +376,16 @@ Vérification réelle effectuée avant de trancher : aucun marchand n'expose de 
 **Décision** : le filtrage en direct est retiré. Pendant la frappe (dès 2 caractères), une liste de suggestions d'articles s'affiche sous le champ (nouvel endpoint `GET /api/products/suggest`, `brand + model` de la table `products`, restreint aux articles ayant au moins une offre active). La recherche ne se déclenche que sur trois déclencheurs : clic sur une suggestion (lance la recherche avec ce texte), touche Entrée, clic sur une icône loupe ajoutée dans le champ.
 
 **Statut** : Actée et construite. `components/search-bar.tsx`, `lib/products.ts` (nouveau), `app/api/products/suggest/route.ts` (nouveau). Vérifié réellement : `npm run lint`/`build`/`test` (50 tests, 8 fichiers) et `npm run test:e2e` (10 tests) passent tous ; comportement contrôlé au navigateur (Playwright CLI) contre les données réelles de prod pour les 3 déclencheurs. PR #23 (`feat/recherche-suggestions-clic`).
+
+---
+
+### D-2026-09-23-06 — Sous-catégorie couleur : attribut affiché, pas clé d'identité produit ; extraction automatique depuis le titre
+
+**Contexte** : GAP-2026-09-23-03 — certains articles ne diffèrent que par la couleur, ce qui génère des variantes de nom qui polluent la recherche/les suggestions (ex. « Babolat Pure Aero Rouge » vs « ... Bleu » traités comme deux modèles distincts).
+
+**Décision** :
+1. La couleur reste un **attribut affiché**, pas une clé d'identité produit. Le regroupement multi-marchand (`products`, unicité `LOWER(brand), LOWER(model), category`) continue d'ignorer la couleur — deux couleurs du même modèle restent le même article, listées comme « autres offres » sur `/deal/[dealId]`.
+2. La couleur est **extraite automatiquement du titre scrappé**, sur le modèle de `extractModel` (`lib/product-matching.ts`) et de son miroir JS dans le workflow n8n. Un mot de couleur reconnu est retiré du texte utilisé pour `model`/la recherche et stocké séparément.
+3. Vocabulaire de couleurs non reconnu par la liste connue : à traiter comme point ouvert au fil de l'eau (nouveau GAP), pas bloquant pour ce chantier.
+
+**Statut** : Actée, build à suivre dans cette conversation.

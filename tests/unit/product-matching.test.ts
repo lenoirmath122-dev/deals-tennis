@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { extractModel, normalizeProductKey } from "@/lib/product-matching";
+import { extractColor, extractModel, normalizeProductKey } from "@/lib/product-matching";
 
 describe("extractModel", () => {
   it("retire le préfixe de catégorie et la marque pour une raquette", () => {
@@ -89,7 +89,7 @@ describe("extractModel", () => {
         "Yonex",
         "chaussures"
       )
-    ).toBe("Eclipsion 5 Homme White/Brown");
+    ).toBe("Eclipsion 5 Homme");
 
     expect(
       extractModel(
@@ -120,6 +120,43 @@ describe("extractModel", () => {
         "accessoires"
       )
     ).toBe("9 raquettes Pure Drive Spectra Gen11");
+  });
+  it("retire la couleur du modèle (D-2026-09-23-06), français comme anglais", () => {
+    expect(
+      extractModel(
+        "Chaussures de tennis Adidas Barricade 14 Homme Blanc Bleu",
+        "Adidas",
+        "chaussures"
+      )
+    ).toBe("Barricade 14 Homme");
+
+    expect(
+      extractModel(
+        "Chaussures de tennis Adidas Barricade 14 Homme White And Black",
+        "Adidas",
+        "chaussures"
+      )
+    ).toBe("Barricade 14 Homme");
+  });
+});
+
+describe("extractColor", () => {
+  it("retourne null si aucune couleur reconnue n'est présente", () => {
+    expect(extractColor("Raquette de tennis Babolat Pure Strike Lite")).toBeNull();
+  });
+
+  it("reconnaît une couleur simple, française ou anglaise", () => {
+    expect(
+      extractColor("Chaussures de tennis Wilson Rush Pro 4.5 Homme Noir")
+    ).toBe("Noir");
+    expect(
+      extractColor("Adizero Ubersonic 5 Homme White Dark Blue")
+    ).toBe("Blanc Bleu");
+  });
+
+  it("combine plusieurs couleurs dans l'ordre d'apparition, sans doublon", () => {
+    expect(extractColor("Barricade 14 Homme Blanc Bleu")).toBe("Blanc Bleu");
+    expect(extractColor("Barricade 14 Homme White And Black")).toBe("Blanc Noir");
   });
 });
 

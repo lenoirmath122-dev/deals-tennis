@@ -33,6 +33,8 @@ export interface Deal {
   is_active: boolean;
   expires_at: string | null;
   product_id: string | null;
+  /** Couleur extraite du titre (D-2026-09-23-06), attribut affiché mais hors identité produit. */
+  color: string | null;
   created_at: string;
   updated_at: string;
 }

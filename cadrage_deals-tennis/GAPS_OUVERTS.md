@@ -1,12 +1,12 @@
 # Points ouverts
 
-## GAP-2026-09-23-03 — Sous-catégorie couleur pour ne pas polluer la recherche/le nom d'article (OUVERT)
+## GAP-2026-09-23-03 — Sous-catégorie couleur pour ne pas polluer la recherche/le nom d'article (RÉSOLU)
 
-Demande explicite de l'utilisateur (rapportée en même temps que le bug de recherche insensible à l'ordre des mots) : certains articles n'ont de différence que la couleur, ce qui génère des variantes de nom qui polluent les champs de recherche/suggestions. L'utilisateur propose une sous-catégorie "couleur" par article.
+Demande explicite de l'utilisateur (rapportée en même temps que le bug de recherche insensible à l'ordre des mots) : certains articles n'ont de différence que la couleur, ce qui génère des variantes de nom qui polluent les champs de recherche/suggestions.
 
-**Bloquant sur** : décision structurante (modèle de données `products`/`deals`, impact sur le rapprochement produit multi-marchands déjà en place — voir GAP-2026-09-22-08 résolu) — à cadrer explicitement avant tout build, dans une conversation dédiée (l'utilisateur a choisi cette option plutôt que d'en discuter immédiatement).
+**Résolution (D-2026-09-23-06)** : couleur retenue comme attribut affiché (pas clé d'identité produit) extrait automatiquement du titre scrappé. `lib/product-matching.ts` (`extractColor`, `extractModel` nettoyé), migration `004_deals_color.sql`, `scripts/backfill-colors.ts`, workflow n8n ProTennis mis à jour. Vérifié réellement sur la prod : 881 produits en doublon uniquement par couleur fusionnés (1503 → 1322). Voir `ETAT_ACTUEL.md` pour le détail.
 
-**Statut** : ouvert au 2026-09-23.
+**Statut** : résolu le 2026-09-23.
 
 ---
 

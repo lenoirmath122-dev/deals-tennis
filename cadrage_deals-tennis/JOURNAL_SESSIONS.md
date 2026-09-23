@@ -97,3 +97,14 @@
 - Fix appliqué (`lib/deals.ts`, `lib/products.ts`), vérifié en réel après coup (même clic → article trouvé), tests de régression ajoutés, lint/build/tests passants.
 - Branche précédente (`feat/recherche-suggestions-clic`) déjà mergée (PR #23) — nouvelle branche `fix/recherche-mot-a-mot` créée depuis `master` à jour, PR #24 poussée et créée automatiquement.
 - Prochaine étape : cadrage de la sous-catégorie couleur (GAP-2026-09-23-03) ou reprise de la feuille de route (charte graphique), au choix de l'utilisateur en début de prochaine conversation.
+
+## 2026-09-23 (suite 10) — Sous-catégorie couleur (D-2026-09-23-06, résout GAP-2026-09-23-03)
+
+- Reprise de session (`/clear`). GAP-2026-09-23-03 soumis explicitement comme point en attente ; l'utilisateur a demandé à le traiter en premier.
+- Deux décisions structurantes soumises avant tout build : (1) la couleur reste un attribut affiché, pas une clé d'identité produit (couleurs fusionnées comme un seul article) ; (2) extraction automatique depuis le titre scrappé (plutôt que pas d'extraction).
+- Build : `lib/product-matching.ts` étendu (`extractColor`, retrait des mots de couleur — français + anglais, marchands mélangeant les deux — du modèle dans `extractModel`), migration `004_deals_color.sql` (`deals.color`), nouveau script `scripts/backfill-colors.ts` (recalcule modèle/couleur sur **toutes** les offres, pas seulement celles sans `product_id`, pour fusionner les produits qui n'étaient distincts que par couleur), miroir JS + upsert SQL du workflow n8n ProTennis mis à jour en parallèle.
+- Vérification réelle bout en bout sur la prod (Neon) : migration appliquée directement (GAP-2026-09-22-07 toujours non résolu, même contournement que pour 002), backfill exécuté sur 1505 offres réelles — **881 produits en doublon uniquement par couleur fusionnés/supprimés** (1503 → 1322 produits), confirmé par un cas concret ("Adidas Barricade 14 Homme" : 4 titres couleur différents désormais sous le même `product_id`, un seul résidu non fusionné faute de mot-clé couleur reconnu — "Lucid", limitation documentée et acceptée). Suggestions vérifiées sur ce cas réel (avant/après : ~14 variantes quasi-dupliquées → 9 entrées distinctes). `npm run lint`, `npm run build`, `npm test` (56 tests, 8 fichiers), `npm run test:e2e` (9 tests) tous verts après le backfill.
+- Portée volontairement limitée : pas de filtre/badge couleur ajouté à l'UI (non demandé, le titre affiché reste inchangé et montre déjà la couleur) — uniquement la correction de la pollution recherche/suggestions décrite dans le GAP.
+- Push + création de PR automatiques (D-2026-09-23-03) : branche `feat/sous-categorie-couleur`.
+- **D-2026-09-23-06 actée et construite. GAP-2026-09-23-03 résolu.**
+- Prochaine étape : retour à la feuille de route — chantier « Charte graphique / design system » (étape 2, spacing/layout et/ou nav), à confirmer explicitement en début de prochaine conversation.
