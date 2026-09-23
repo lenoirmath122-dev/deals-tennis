@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-23 (Fix recherche insensible à l'ordre des mots, PR #24)
+**Dernière mise à jour** : 2026-09-23 (Sous-catégorie couleur, D-2026-09-23-06)
 
 > Détail complet du MVP (`tasks.md` T001-T034), du chantier « Déploiement production », du chantier « CI + protection de branche » et du chantier « Automatisation n8n / ProTennis » (build initial, hébergement permanent, rapprochement produit, élargissement à toutes les catégories tennis) archivé tel quel dans `archive/ETAT_ACTUEL_detail_2026-09-22.md`. Résumé ci-dessous.
 
@@ -76,6 +76,18 @@ Bug rapporté par l'utilisateur sur la fonctionnalité de suggestions cliquables
 - PR #24 (`fix/recherche-mot-a-mot`), poussée et créée automatiquement (protocole point 4). Note : la branche précédente (`feat/recherche-suggestions-clic`, PR #23) était déjà mergée sur `master` au moment de ce fix — nouvelle branche créée à partir de `master` à jour pour l'éviter.
 - Demande connexe de l'utilisateur (sous-catégorie par couleur pour éviter la pollution des champs de recherche) **non traitée ici** — nouvelle fonctionnalité structurante, à cadrer explicitement dans une prochaine conversation dédiée (voir `GAPS_OUVERTS.md`, GAP-2026-09-23-03).
 
+## Chantier « Sous-catégorie couleur » (terminé le 2026-09-23, D-2026-09-23-06, résout GAP-2026-09-23-03)
+
+Demande explicite de l'utilisateur (rapportée en même temps que le fix de recherche mot-à-mot) : des articles ne différant que par la couleur généraient des variantes de nom polluant la recherche/les suggestions.
+
+- Deux décisions soumises avant build : couleur = attribut affiché, pas clé d'identité produit (couleurs fusionnées comme un seul article) ; source = extraction automatique depuis le titre scrappé.
+- `lib/product-matching.ts` : nouvelle fonction `extractColor` (liste de couleurs français + anglais → forme canonique française unique, les marchands mélangeant les deux) ; `extractModel` retire désormais aussi les mots de couleur reconnus. Miroir JS synchronisé dans le workflow n8n ProTennis (parsing + upsert, nouvelle colonne `deals.color`).
+- Migration `004_deals_color.sql` (`deals.color`, nullable). Nouveau script `scripts/backfill-colors.ts` : recalcule modèle/couleur sur **toutes** les offres existantes (contrairement à `backfill-product-ids.ts`, limité aux offres sans `product_id`) pour fusionner les produits qui n'étaient distincts que par couleur, puis supprime les produits orphelins résultants.
+- Vérifié réellement sur la prod (Neon) : migration appliquée, backfill exécuté sur 1505 offres réelles — **881 produits en doublon uniquement par couleur fusionnés** (1503 → 1322 produits). Cas concret vérifié ("Adidas Barricade 14 Homme" : 4 couleurs fusionnées sous le même produit, suggestions passées de ~14 variantes quasi-dupliquées à 9 entrées distinctes pour toute la famille "Barricade"). Un résidu non fusionné documenté comme limitation acceptée (mot de coloris propriétaire "Lucid" non reconnu — vocabulaire de couleur non exhaustif par construction).
+- Portée volontairement limitée à la correction du problème rapporté : pas de filtre/badge couleur ajouté à l'UI (le titre affiché montre déjà la couleur, inchangé).
+- `npm run lint`, `npm run build`, `npm test` (56 tests, 8 fichiers), `npm run test:e2e` (9 tests) passent tous.
+- **GAP-2026-09-23-03 résolu.**
+
 ## Feuille de route (actée le 2026-09-23, ordre confirmé par l'utilisateur)
 
 1. ~~Monitoring du cron n8n~~ — terminé le 2026-09-23 (GAP-2026-09-23-01).
@@ -85,6 +97,4 @@ Bug rapporté par l'utilisateur sur la fonctionnalité de suggestions cliquables
 
 ## Prochaine étape
 
-Deux sujets en attente, à soumettre explicitement à l'utilisateur en début de prochaine conversation :
-1. Cadrage de la sous-catégorie couleur (GAP-2026-09-23-03, hors feuille de route, demande explicite de l'utilisateur).
-2. Retour à la feuille de route : suite du chantier « Charte graphique / design system » (étape 2) — spacing/layout plus poussé et/ou style de la nav (inspiration Aceternity).
+Retour à la feuille de route : suite du chantier « Charte graphique / design system » (étape 2) — spacing/layout plus poussé et/ou style de la nav (inspiration Aceternity). À confirmer explicitement en début de prochaine conversation.

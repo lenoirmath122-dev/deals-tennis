@@ -5,16 +5,121 @@ const CATEGORY_PREFIXES: Record<string, string[]> = {
   accessoires: ["Balles de tennis Carton ", "Balles de tennis ", "Sac de tennis "],
 };
 
+/**
+ * Mots de couleur reconnus (français + anglais, les marchands mélangent les deux
+ * dans les titres scrappés) vers une forme canonique unique en français. Liste non
+ * exhaustive par construction (ex. noms de coloris propriétaires type "Aurora Ink") —
+ * une couleur non reconnue reste dans le titre/modèle, voir GAP dédié si besoin.
+ */
+const COLOR_WORD_MAP: Record<string, string> = {
+  noir: "Noir",
+  noire: "Noir",
+  blanc: "Blanc",
+  blanche: "Blanc",
+  gris: "Gris",
+  grise: "Gris",
+  bleu: "Bleu",
+  bleue: "Bleu",
+  rouge: "Rouge",
+  vert: "Vert",
+  verte: "Vert",
+  jaune: "Jaune",
+  orange: "Orange",
+  rose: "Rose",
+  violet: "Violet",
+  violette: "Violet",
+  marron: "Marron",
+  beige: "Beige",
+  turquoise: "Turquoise",
+  bordeaux: "Bordeaux",
+  kaki: "Kaki",
+  corail: "Corail",
+  marine: "Marine",
+  doré: "Doré",
+  dorée: "Doré",
+  argenté: "Argenté",
+  argentée: "Argenté",
+  argent: "Argent",
+  multicolore: "Multicolore",
+  white: "Blanc",
+  black: "Noir",
+  grey: "Gris",
+  gray: "Gris",
+  blue: "Bleu",
+  red: "Rouge",
+  green: "Vert",
+  yellow: "Jaune",
+  pink: "Rose",
+  purple: "Violet",
+  silver: "Argent",
+  gold: "Doré",
+  brown: "Marron",
+};
+
+const CONNECTOR_PATTERN = /\b(and|et)\b/gi;
+
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function findColorTokens(title: string): { canonical: string; index: number }[] {
+  const matches: { canonical: string; index: number }[] = [];
+
+  for (const [word, canonical] of Object.entries(COLOR_WORD_MAP)) {
+    const regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+    let match: RegExpExecArray | null;
+    while ((match = regex.exec(title)) !== null) {
+      matches.push({ canonical, index: match.index });
+    }
+  }
+
+  return matches.sort((a, b) => a.index - b.index);
+}
+
+/**
+ * Extrait la (les) couleur(s) mentionnée(s) dans le titre, dans leur ordre
+ * d'apparition et sans doublon (ex. "White And Black" -> "Blanc Noir"), ou
+ * `null` si aucune couleur reconnue n'est présente.
+ */
+export function extractColor(title: string): string | null {
+  const tokens = findColorTokens(title);
+  if (tokens.length === 0) {
+    return null;
+  }
+
+  const seen = new Set<string>();
+  const ordered: string[] = [];
+  for (const token of tokens) {
+    if (!seen.has(token.canonical)) {
+      seen.add(token.canonical);
+      ordered.push(token.canonical);
+    }
+  }
+
+  return ordered.join(" ");
+}
+
+function stripColorWords(text: string): string {
+  let result = text;
+
+  for (const word of Object.keys(COLOR_WORD_MAP)) {
+    result = result.replace(new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi"), " ");
+  }
+
+  result = result.replace(CONNECTOR_PATTERN, " ");
+  // Nettoie les séparateurs devenus orphelins après retrait des couleurs qu'ils reliaient (ex. "White/Brown").
+  result = result.replace(/\s*[/&]\s*/g, " ");
+
+  return result;
 }
 
 /**
  * Extrait le modèle d'un article à partir du titre marchand et de sa marque
  * (déjà connue de façon fiable, ex: `deals.brand`). Ne fait aucune supposition
  * sur la marque elle-même — seul le titre est nettoyé des mentions de marque,
- * de catégorie et de variante de cordage qui ne distinguent pas deux produits
- * différents.
+ * de catégorie, de variante de cordage et de couleur (D-2026-09-23-06 : la
+ * couleur n'est pas une clé d'identité produit, voir extractColor) qui ne
+ * distinguent pas deux produits différents.
  */
 export function extractModel(
   title: string,
@@ -35,6 +140,8 @@ export function extractModel(
 
   model = model.replace(/\bnon\s+cord[ée]e?\b/gi, "");
   model = model.replace(/\bcord[ée]e?\b/gi, "");
+
+  model = stripColorWords(model);
 
   return model.replace(/\s+/g, " ").trim();
 }
