@@ -124,12 +124,14 @@ En reprenant l'étape GAP-2026-09-22-11, une vérification réelle sur l'instanc
 
 ---
 
-## GAP-2026-09-23-01 — Monitoring du cron n8n ProTennis : mécanisme décidé, pas encore construit (OUVERT)
+## GAP-2026-09-23-01 — Monitoring du cron n8n ProTennis (RÉSOLU)
 
-Suite à GAP-2026-09-22-12 (récidive silencieuse possible sans alerte), le mécanisme de monitoring a été discuté et tranché en **D-2026-09-23-01** : dead man's switch externe healthchecks.io (ping HTTP du workflow n8n à chaque succès, alerte email si le ping manque). Conformément au protocole (une étape de build par conversation), aucun build n'a été fait dans la conversation où la décision a été prise.
+Suite à GAP-2026-09-22-12 (récidive silencieuse possible sans alerte), le mécanisme de monitoring a été discuté et tranché en **D-2026-09-23-01** : dead man's switch externe healthchecks.io (ping HTTP du workflow n8n à chaque succès, alerte email si le ping manque).
 
-**Reste à faire** : création du compte/check healthchecks.io (action utilisateur), ajout du nœud HTTP de ping au workflow n8n ProTennis, vérification réelle (ping reçu en conditions normales, alerte déclenchée en simulant une absence de ping).
+**Résolution (2026-09-23)** : nœud HTTP Request (`Ping healthchecks.io (succes)`) ajouté au workflow n8n ProTennis, branché après le nœud d'éviction — il ne se déclenche que si toute la chaîne (scraping → upsert → éviction) a réussi. Compte/check healthchecks.io créé par l'utilisateur. Déployé sur l'instance n8n permanente (VM Oracle), workflow réimporté/republié/conteneur redémarré, `active: true` confirmé.
 
-**Bloquant sur** : rien d'externe — à traiter dans une prochaine conversation dédiée.
+Vérifié réellement : deux exécutions complètes du workflow (`n8n execute`, site ProTennis réel + base Neon de prod réelle) terminées avec succès, ping reçu par healthchecks.io après chaque run ; simulation d'échec via l'endpoint dédié `/fail` ayant réellement fait passer le check à l'état "Down" et déclenché l'alerte email (confirmé par l'utilisateur), puis retour à l'état normal via un ping de succès.
 
-**Statut** : ouvert au 2026-09-23.
+**Effet de bord découvert et corrigé** : les exécutions réelles du workflow (`UPDATE` sur les deals existants) ont changé l'ordre physique des lignes en base, révélant un bug préexistant dans `tests/contract/deal-detail.test.ts` (`LIMIT 1` sans `ORDER BY` sur un `ILIKE` large, non déterministe) — corrigé en ciblant le titre précis de l'article multi-marchand utilisé par le test.
+
+**Statut** : résolu le 2026-09-23.

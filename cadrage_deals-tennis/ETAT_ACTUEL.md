@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-23 (Cadrage du monitoring n8n — mécanisme décidé, build à faire dans une prochaine conversation)
+**Dernière mise à jour** : 2026-09-23 (Monitoring n8n construit et vérifié de bout en bout)
 
 > Détail complet du MVP (`tasks.md` T001-T034), du chantier « Déploiement production », du chantier « CI + protection de branche » et du chantier « Automatisation n8n / ProTennis » (build initial, hébergement permanent, rapprochement produit, élargissement à toutes les catégories tennis) archivé tel quel dans `archive/ETAT_ACTUEL_detail_2026-09-22.md`. Résumé ci-dessous.
 
@@ -10,6 +10,7 @@
 - **Déploiement production** (D-2026-09-21-10) : Vercel, projet `lenoir-nba/deals-tennis`, URL `https://deals-tennis.vercel.app`, base Neon prod = base dev.
 - **CI + protection de branche** : dépôt GitHub privé `lenoirmath122-dev/deals-tennis`, CI (lint/build/tests unitaires) obligatoire avant merge squash, plus de push direct sur `master` (y compris pour l'utilisateur).
 - **Automatisation n8n / ProTennis** : marchand ProTennis scrapé quotidiennement (VM Oracle permanente, `deals-tennis-n8n.duckdns.org`), toutes les 5 catégories tennis couvertes (**1495 offres actives**), rapprochement produit multi-marchands opérationnel (table `products`, `deals.product_id` peuplé à 100% côté ProTennis, y compris par le workflow n8n lui-même sur les nouvelles offres).
+- **Monitoring du cron n8n** (D-2026-09-23-01, GAP-2026-09-23-01) : dead man's switch healthchecks.io — nœud HTTP de ping en fin de workflow (uniquement si succès complet), alerte email si le ping quotidien manque. Vérifié réellement (ping succès + alerte déclenchée via simulation d'échec, confirmée par l'utilisateur).
 
 ## Stack réelle
 
@@ -39,21 +40,25 @@ Suite directe de D-2026-09-22-06 (direction produit du rapprochement multi-march
 - **GAP-2026-09-22-10 résolu. GAP-2026-09-22-08 résolu** (fondation + recherche + détail tous construits et vérifiés).
 - Mergé depuis (PR #16, commit `c3ed96c`) — arbre propre.
 
-## Chantier « Observabilité : monitoring du cron n8n ProTennis » (cadré le 2026-09-23, pas encore construit)
+## Chantier « Observabilité : monitoring du cron n8n ProTennis » (terminé le 2026-09-23)
 
 Déclenché par GAP-2026-09-22-12 (workflow n8n désactivé silencieusement sans alerte, cause racine non déterminée).
 
 - **D-2026-09-23-01** : mécanisme retenu = dead man's switch externe healthchecks.io (ping HTTP du workflow n8n à chaque succès ; alerte email si le ping manque). Trois options détaillées et comparées avec l'utilisateur avant tranchage — choisi pour son découplage total de l'état de n8n (contrairement à une alerte native n8n, qui partagerait le même point de défaillance que l'incident observé).
-- Conformément au protocole (une étape de build par conversation), **aucun build n'a été fait** dans cette conversation — cadrage uniquement.
-- Voir GAP-2026-09-23-01 pour le reste à faire.
+- Build réalisé : nœud HTTP Request ajouté en fin de workflow (`scripts/automation/n8n-protennis-ingestion-workflow.json`), branché uniquement après succès complet de la chaîne (scraping → upsert → éviction) — un run à 0 offre ne déclenche pas de ping (signal d'anomalie, pas de succès).
+- Vérification réelle : deux exécutions complètes du workflow (`n8n execute`, site ProTennis + base Neon de prod réels) → ping reçu par healthchecks.io ; simulation d'échec via l'endpoint `/fail` → check passé à "Down" et alerte email réellement envoyée (confirmé par l'utilisateur) ; retour à l'état normal ensuite. Déployé sur l'instance n8n permanente (VM Oracle) : réimporté, republié, conteneur redémarré, `active: true` confirmé.
+- Effet de bord corrigé : les `UPDATE` réels ont exposé un `LIMIT 1` non déterministe dans `tests/contract/deal-detail.test.ts`, corrigé en ciblant un titre précis (diff sans rapport avec le monitoring, signalé à l'utilisateur avant correction).
+- `.gitignore` : ajout de `*.key` (clé SSH de la VM Oracle placée dans le repo par l'utilisateur pour cette étape, jamais commitée).
+- `npm run lint`, `npm run build`, `npm test` (46 tests) passent tous sans erreur.
+- **GAP-2026-09-23-01 résolu.**
 
 ## Feuille de route (actée le 2026-09-23, ordre confirmé par l'utilisateur)
 
-1. Monitoring du cron n8n (GAP-2026-09-23-01, mécanisme déjà décidé en D-2026-09-23-01).
+1. ~~Monitoring du cron n8n~~ — terminé le 2026-09-23 (GAP-2026-09-23-01).
 2. Charte graphique / design system (chantier en cours, bloqué sur la photo hero — GAP-2026-09-21-04).
 3. Ajout de marchands supplémentaires (dépend de GAP-2026-09-21-03 — compte Awin à créer par l'utilisateur).
 4. Reste (mentions légales/CGU, disclosure affiliation, SEO, accessibilité, etc. — non détaillé à ce stade).
 
 ## Prochaine étape
 
-Construire le monitoring n8n (GAP-2026-09-23-01, mécanisme déjà décidé en D-2026-09-23-01) — étape 1 de la feuille de route ci-dessus, à démarrer en début de prochaine conversation.
+Chantier « Charte graphique / design system » (étape 2 de la feuille de route) — toujours bloqué sur GAP-2026-09-21-04 (photo de terrain non fournie) ; à confirmer explicitement avec l'utilisateur en début de prochaine conversation comment avancer malgré ce blocage (placeholder temporaire ? autre sous-tâche du chantier en attendant ?).
