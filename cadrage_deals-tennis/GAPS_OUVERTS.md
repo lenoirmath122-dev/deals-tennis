@@ -1,16 +1,14 @@
 # Points ouverts
 
-## GAP-2026-09-23-02 — Prod restée figée sur le déploiement CLI du 2026-09-21, jamais reconnectée à Git (OUVERT)
+## GAP-2026-09-23-02 — Prod restée figée sur le déploiement CLI du 2026-09-21, jamais reconnectée à Git (RÉSOLU)
 
 En vérifiant pourquoi la section hero (PR #18) n'apparaissait pas sur `https://deals-tennis.vercel.app`, découvert que le projet Vercel n'avait **jamais** été connecté au dépôt GitHub depuis sa création (D-2026-09-21-10 : déploiement initial volontairement fait via CLI, le lien Git devait être traité au chantier CI mais ne l'a jamais été — seuls les checks GitHub Actions l'ont été). Conséquence : la prod tournait sur l'unique déploiement du 21/09, ratant tout ce qui a été mergé depuis (PR #16 recherche centrée article, PR #18 hero).
 
-L'utilisateur a connecté le repo `lenoirmath122-dev/deals-tennis` à Vercel (branche `master`) dans cette conversation — la connexion est confirmée active. Mais la connexion seule ne redéploie pas rétroactivement : un premier "Redeploy" tenté par l'utilisateur a en réalité re-servi l'ancien snapshot CLI (`source: "redeploy"` d'un déploiement sans lien Git), pas le dernier commit `master`. Tentative de déclencher un déploiement propre via l'API Vercel (MCP) également bloquée (403, token MCP non autorisé sur le scope d'équipe `lenoir-nba`).
+**Résolution** : l'utilisateur a connecté le repo `lenoirmath122-dev/deals-tennis` à Vercel (branche `master`) depuis le dashboard. Un premier "Redeploy" tenté par l'utilisateur a re-servi l'ancien snapshot CLI (`source: "redeploy"`, pas un vrai pull Git) ; un premier déploiement preview parti du webhook Git a confirmé la connexion active mais échoué au build (`DATABASE_URL` absente de l'environnement preview — voir D-2026-09-23-04). Le merge de la PR #19 (commit déclencheur) a produit le premier vrai déploiement production depuis Git (`source: "git"`, commit `b179aa2`).
 
-**Résolution en cours** : un commit trivial est poussé sur une branche dédiée pour que le prochain merge sur `master` déclenche, via le webhook Git maintenant actif, un vrai déploiement à jour. À vérifier après ce merge que la prod reflète bien le hero + la recherche centrée article.
+Vérifié réellement sur `https://deals-tennis.vercel.app` après ce déploiement : section hero visible (photo + overlay), recherche groupée par article fonctionnelle (`?q=Pure%20Aero` affiche le badge « 2 offres »).
 
-**Bloquant sur** : le merge de cette PR par l'utilisateur (flux protégé), puis vérification réelle du contenu de la prod après déploiement.
-
-**Statut** : ouvert au 2026-09-23.
+**Statut** : résolu le 2026-09-23.
 
 ---
 
