@@ -405,3 +405,13 @@ Vérification réelle effectuée avant de trancher : aucun marchand n'expose de 
 4. Reprendre la frappe (changement de texte) réinitialise le menu au 1er niveau (catégories).
 
 **Statut** : Actée (question soumise à l'utilisateur via choix explicite, validée). Build à suivre dans cette conversation.
+
+---
+
+### D-2026-09-23-08 — Suppression du plafond de 8 suggestions d'articles par catégorie
+
+**Contexte** : Bug rapporté par l'utilisateur sur le menu de suggestions à deux niveaux (D-2026-09-23-07) : après avoir cliqué sur une catégorie (ex. « Cordages » pour « babolat »), certains articles réels n'apparaissaient jamais, même en scrollant (ex. « BABOLAT RPM TEAM 125 BOBINE 200m », la liste s'arrêtant à « Babolat RPM BLAST 135 BOBINE 200m »). Cause diagnostiquée : `getProductSuggestions` (`lib/products.ts`) avait un `LIMIT 8` en dur, hérité de l'ancienne liste plate (D-2026-09-23-05) — la requête SQL ne remontait donc jamais plus de 8 articles, indépendamment du scroll ajouté ensuite (PR #28), qui ne peut afficher que ce qui a été chargé.
+
+**Décision** : suppression pure et simple du plafond — la requête retourne tous les articles correspondants de la catégorie choisie, le scroll (déjà en place) gérant l'affichage. Option alternative (relever le plafond à ~30) écartée par l'utilisateur au profit de la suppression complète.
+
+**Statut** : Actée et construite dans cette conversation.

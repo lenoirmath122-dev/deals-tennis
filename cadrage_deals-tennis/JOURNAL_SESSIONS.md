@@ -4,6 +4,17 @@
 > Sessions du 2026-09-22 (suite 2) au 2026-09-23 (recherche centrée article) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-22_a_2026-09-23-recherche-article.md` (même règle, condensation du 2026-09-23).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
 
+## 2026-09-23 (suite 6) — Fix plafond de 8 suggestions par catégorie (D-2026-09-23-08)
+
+- Reprise de session (`/clear`). Bug rapporté par l'utilisateur juste après le fix du scroll (PR #28, déjà mergée) : dans le menu « Cordages » de la recherche « babolat », « BABOLAT RPM TEAM 125 BOBINE 200m » n'apparaît jamais même en scrollant.
+- Diagnostic : `getProductSuggestions` (`lib/products.ts`) avait un `LIMIT 8` en dur hérité de l'ancienne liste plate (D-2026-09-23-05) — le scroll ne peut afficher que ce qui a été chargé.
+- Décision soumise à l'utilisateur avant fix (suppression complète du plafond vs relever à ~30) — suppression complète retenue (**D-2026-09-23-08**).
+- Effet de bord découvert en supprimant le plafond : un test contrat (`product-suggestions.test.ts`) supposait à tort que toute suggestion « Babolat » commence par ce mot — hypothèse fausse avec les données réelles (produit mal étiqueté marque « Head », voir **GAP-2026-09-23-04**, ouvert car hors scope). Assertion du test corrigée pour refléter l'intention réelle (`includes` au lieu de `startsWith`).
+- Vérifié réellement au navigateur (Playwright CLI, données réelles Neon) : le cas exact rapporté par l'utilisateur (babolat → Cordages → RPM TEAM 125) fonctionne après le fix. `npm run lint`, `npm run build`, `npm test` (60 tests), `npm run test:e2e` (9 tests) passent tous.
+- Vérification git avant commit (protocole point 4, leçon des 3 incidents précédents) : branche `fix/scroll-suggestions` déjà mergée (PR #28, squash) — nouvelle branche `fix/limite-suggestions-articles` créée depuis `origin/master` à jour pour ce fix.
+- `ETAT_ACTUEL.md`, `GAPS_OUVERTS.md`, `DECISIONS_FONCTIONNELLES.md` mis à jour.
+- Prochaine étape : retour à la feuille de route, chantier « Charte graphique / design system » — à confirmer explicitement en début de prochaine conversation.
+
 ## 2026-09-23 (suite 5) — Scroll dans les menus de suggestions de recherche + rattrapage PR en conflit
 
 - Reprise de session (`/clear`). Demande hors feuille de route de l'utilisateur : ajouter un scroll dans les menus de suggestions de recherche pour ne pas être limité en hauteur.

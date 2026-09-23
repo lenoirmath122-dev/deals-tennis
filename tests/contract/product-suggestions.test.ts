@@ -18,7 +18,7 @@ describe("getProductSuggestions contract", () => {
   it("matches on brand as well as model", async () => {
     const result = await getProductSuggestions("Babolat");
     expect(result.length).toBeGreaterThanOrEqual(1);
-    expect(result.every((suggestion) => suggestion.toLowerCase().startsWith("babolat"))).toBe(
+    expect(result.every((suggestion) => suggestion.toLowerCase().includes("babolat"))).toBe(
       true
     );
   });

@@ -1,5 +1,17 @@
 # Points ouverts
 
+## GAP-2026-09-23-04 — Mauvaise marque associée à un produit ProTennis (« Head » au lieu de « Babolat ») (OUVERT, mineur)
+
+Découvert en vérifiant le fix du plafond de suggestions (D-2026-09-23-08) : le produit dont le titre scrappé est « Protection raquette de tennis Babolat Super Tape » (catégorie accessoires, marchand ProTennis) est enregistré en base avec `brand = 'Head'` alors qu'il s'agit visiblement d'un article Babolat. Conséquence mineure observée : ce produit remonte dans les suggestions de la recherche « Babolat » (correspondance sur le mot dans `model`) alors que sa fiche affiche la marque Head.
+
+**Cause non investiguée** : à vérifier si le titre ProTennis lui-même contient une erreur (article mal classé côté marchand) ou si l'extraction de marque (`lib/product-matching.ts`) a mal identifié la marque sur ce titre précis.
+
+**Bloquant sur** : rien dans l'immédiat — un seul produit concerné, impact cosmétique (suggestion visible dans la mauvaise recherche). À traiter au fil de l'eau ou lors d'un futur passage sur la qualité des données produit.
+
+**Statut** : ouvert au 2026-09-23.
+
+---
+
 ## GAP-2026-09-23-03 — Sous-catégorie couleur pour ne pas polluer la recherche/le nom d'article (RÉSOLU)
 
 Demande explicite de l'utilisateur (rapportée en même temps que le bug de recherche insensible à l'ordre des mots) : certains articles n'ont de différence que la couleur, ce qui génère des variantes de nom qui polluent les champs de recherche/suggestions.
