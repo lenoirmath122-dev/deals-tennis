@@ -307,7 +307,6 @@ Vérification réelle effectuée avant de trancher : aucun marchand n'expose de 
 - Application immédiate demandée par l'utilisateur : `ETAT_ACTUEL.md` et `JOURNAL_SESSIONS.md` étant déjà au-delà du seuil au moment de cette décision, la condensation + archivage est à effectuer dans la foulée.
 
 **Statut** : Actée (confirmée explicitement par l'utilisateur après discussion des options).
-
 ---
 
 ### D-2026-09-22-10 — Détail d'un deal : page dédiée `/deal/[dealId]` (résolution de GAP-2026-09-22-10)
