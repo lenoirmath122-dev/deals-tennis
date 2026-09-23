@@ -4,6 +4,16 @@
 > Sessions du 2026-09-22 (suite 2) au 2026-09-23 (recherche centrée article) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-22_a_2026-09-23-recherche-article.md` (même règle, condensation du 2026-09-23).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
 
+## 2026-09-23 (suite 5) — Scroll dans les menus de suggestions de recherche
+
+- Reprise de session (`/clear`). Demande hors feuille de route de l'utilisateur : ajouter un scroll dans les menus de suggestions de recherche pour ne pas être limité en hauteur.
+- Décision mineure tranchée seul (autorisé par le protocole) : `max-h-72 overflow-y-auto` sur les deux niveaux du menu (catégories, articles) dans `components/search-bar.tsx`.
+- Vérifié réellement au navigateur (Playwright CLI) contre les données réelles de prod (Neon) : recherche « de » → catégorie « Textile » (302 correspondances) → menu tronqué visuellement, `scrollHeight` (412px) > `clientHeight` (286px), `overflow-y: auto` confirmé actif par capture d'écran et lecture des dimensions DOM.
+- `npm run lint`, `npm run build`, `npm test` (60 tests) passent tous.
+- Constat en route : le commit du chantier précédent (« suggestions groupées par catégorie », D-2026-09-23-07) était resté local, non poussé/PR — la session précédente s'est arrêtée avant l'étape 4 du protocole. Régularisé ici : commit du scroll ajouté par-dessus, branche `feat/recherche-suggestions-categorie` poussée, PR #27 créée automatiquement (regroupe les deux commits).
+- `ETAT_ACTUEL.md` mis à jour (chantier « Suggestions groupées par catégorie »).
+- Prochaine étape : retour à la feuille de route, chantier « Charte graphique / design system » — à confirmer explicitement en début de prochaine conversation.
+
 ## 2026-09-23 (suite) — Cadrage du monitoring n8n (D-2026-09-23-01, GAP-2026-09-23-01)
 
 - Reprise de session (`/clear`), protocole appliqué (ETAT_ACTUEL → GAPS_OUVERTS). Constat en route : le diff « recherche centrée article + détail deal » noté « non commité » dans `ETAT_ACTUEL.md` avait en fait été mergé entretemps (PR #16, `c3ed96c`) — corrigé.
