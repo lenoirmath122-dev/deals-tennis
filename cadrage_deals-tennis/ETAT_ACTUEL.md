@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-23 (Pages réglementaires : mentions légales, CGU, confidentialité, affiliation, D-2026-09-23-10)
+**Dernière mise à jour** : 2026-09-23 (Fix lien de retour vers l'accueil, PR #32)
 
 > Détail complet du MVP (`tasks.md` T001-T034), du chantier « Déploiement production », du chantier « CI + protection de branche » et du chantier « Automatisation n8n / ProTennis » (build initial, hébergement permanent, rapprochement produit, élargissement à toutes les catégories tennis) archivé tel quel dans `archive/ETAT_ACTUEL_detail_2026-09-22.md`. Résumé ci-dessous.
 
@@ -133,6 +133,16 @@ Reprise du point 4 de la feuille de route (« mentions légales/CGU, disclosure 
 - `components/footer.tsx` (nouveau) : lien vers les 4 pages, intégré à `app/layout.tsx` sur tout le site.
 - Vérifié réellement : `npm run lint`, `npm run build` (les 4 pages générées en statique `○`), `npm test` (60 tests) passent tous. Serveur de vérification dédié (port 3123) : les 4 routes répondent 200, titres `<title>` corrects, liens du footer présents sur la page d'accueil, contenu attendu présent (nom de l'éditeur, mention absence de traceur), serveur arrêté après contrôle.
 - **D-2026-09-23-10 actée et construite.**
+
+## Fix « Lien de retour vers l'accueil » (terminé le 2026-09-23, hors feuille de route)
+
+Demande explicite de l'utilisateur juste après le chantier « Pages réglementaires » : depuis ces pages il n'y avait aucun moyen de revenir à l'accueil, et le nom du site dans le footer n'était pas cliquable.
+
+- `components/footer.tsx` : le texte « Deals Tennis » du footer redevient un lien vers `/`.
+- `components/legal-page.tsx` : ajout d'un lien « ← Retour à l'accueil » en haut de chaque page réglementaire.
+- La PR #31 (pages réglementaires) était déjà mergée en squash au moment de cette demande — nouvelle branche `fix/retour-accueil` créée depuis `master` à jour pour éviter le conflit déjà rencontré par le passé (protocole git, point 4).
+- Vérifié réellement : `npm run lint`, `npm run build`, `npm test` (60 tests) passent tous. Serveur de vérification dédié (port 3123) : lien footer vers `/` présent (`href="/"`), lien « Retour à l'accueil » présent sur `/mentions-legales` ; serveur arrêté après contrôle.
+- PR #32 (`fix/retour-accueil`), poussée et créée automatiquement.
 
 ## Feuille de route (actée le 2026-09-23, ordre confirmé par l'utilisateur)
 

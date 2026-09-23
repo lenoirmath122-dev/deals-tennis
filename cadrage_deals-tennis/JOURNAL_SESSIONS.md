@@ -13,6 +13,14 @@
 - Build complété : 4 pages statiques (`app/mentions-legales`, `app/cgu`, `app/confidentialite`, `app/affiliation`) sur le composant partagé `legal-page.tsx`. Contenu de la politique de confidentialité basé sur une lecture réelle de `lib/tracking.ts`/`app/go/[dealId]/route.ts` (statistiques de clic anonymes, pas d'IP ni d'identifiant) plutôt qu'une affirmation générique.
 - Vérification réelle : `npm run lint`, `npm run build` (4 pages générées en statique), `npm test` (60 tests) tous verts ; serveur de vérification dédié (port 3123) — 4 routes en 200, titres corrects, liens du footer présents sur l'accueil, contenu attendu présent, serveur arrêté après contrôle.
 - **D-2026-09-23-10 actée et construite.**
+
+## 2026-09-23 (suite 13) — Fix lien de retour vers l'accueil
+
+- Reprise de session (`/clear`). Demande initiale de l'utilisateur vague (« ajouter une redirection vers l'accueil ») — clarifiée via une question ciblée avant tout code : deux points distincts (lien depuis les pages réglementaires, nom du site dans le footer cliquable).
+- Build : `components/footer.tsx` (« Deals Tennis » redevient un lien vers `/`), `components/legal-page.tsx` (lien « ← Retour à l'accueil » ajouté en haut de chaque page réglementaire).
+- Incident git anticipé (schéma déjà rencontré 3 fois, voir mémoire feedback) : la PR #31 (pages réglementaires) était déjà mergée en squash au moment de cette demande — nouvelle branche `fix/retour-accueil` créée directement depuis `origin/master` à jour, avant tout commit.
+- Vérifié réellement : `npm run lint`, `npm run build`, `npm test` (60 tests) tous verts ; serveur de vérification dédié (port 3123) — lien footer vers `/` et lien « Retour à l'accueil » sur `/mentions-legales` confirmés par `curl`, serveur arrêté après contrôle.
+- PR #32 (`fix/retour-accueil`) poussée et créée automatiquement (protocole point 4).
 - `ETAT_ACTUEL.md`, `DECISIONS_FONCTIONNELLES.md` mis à jour.
 - Prochaine étape : au choix de l'utilisateur — résultat recherche cowork (marchands), charte graphique (spacing/layout/nav), ou SEO/accessibilité (reste du point 4) — à confirmer explicitement en début de prochaine conversation.
 
