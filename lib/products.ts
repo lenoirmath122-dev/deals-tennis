@@ -2,7 +2,6 @@ import { sql } from "@/lib/db";
 import { sanitizeSearchQuery } from "@/lib/filters";
 import { DEAL_CATEGORIES, type CatalogCategoryFilter } from "@/lib/filters";
 
-const MAX_SUGGESTIONS = 8;
 const MIN_QUERY_LENGTH = 2;
 
 function wordConditions(words: string[], startIndex: number): string {
@@ -73,7 +72,6 @@ export async function getProductSuggestions(
         AND (d.expires_at IS NULL OR d.expires_at > NOW())
         AND (${wordConditions(words, 1)})${categoryCondition}
       ORDER BY suggestion
-      LIMIT ${MAX_SUGGESTIONS}
     `,
     params
   );

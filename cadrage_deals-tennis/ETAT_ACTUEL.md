@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-23 (Suggestions de recherche groupées par catégorie, D-2026-09-23-07)
+**Dernière mise à jour** : 2026-09-23 (Fix plafond de 8 suggestions par catégorie, D-2026-09-23-08)
 
 > Détail complet du MVP (`tasks.md` T001-T034), du chantier « Déploiement production », du chantier « CI + protection de branche » et du chantier « Automatisation n8n / ProTennis » (build initial, hébergement permanent, rapprochement produit, élargissement à toutes les catégories tennis) archivé tel quel dans `archive/ETAT_ACTUEL_detail_2026-09-22.md`. Résumé ci-dessous.
 
@@ -103,6 +103,17 @@ Demande explicite de l'utilisateur, hors feuille de route : les suggestions de r
 
 Ajout ultérieur, conversation suivante, hors feuille de route : demande explicite de l'utilisateur d'un scroll sur les deux niveaux du menu de suggestions (pas de limite de hauteur visible). `components/search-bar.tsx` : `max-h-72 overflow-y-auto` sur les deux `<ul>`. Vérifié réellement au navigateur (Playwright CLI, données réelles Neon) : recherche « de » → catégorie « Textile » (302 correspondances) → liste tronquée visuellement, `scrollHeight` (412px) > `clientHeight` (286px), `overflow-y: auto` actif. `npm run lint`, `npm run build`, `npm test` (60 tests) passent tous. PR #28 (`fix/scroll-suggestions`).
 - Incident git rencontré (3e occurrence du même schéma, voir mémoire feedback) : le commit initial de ce chantier était resté local, non poussé, à la fin de la session précédente (arrêtée avant l'étape 4 du protocole). Une PR construite par-dessus (#27, branche `feat/recherche-suggestions-categorie` avec le commit du scroll ajouté) s'est retrouvée en conflit car ce commit initial dupliquait (contenu identique, SHA différent) ce que la PR #26 avait déjà mergé en squash entretemps. Résolu en recréant une branche propre (`fix/scroll-suggestions`) depuis `master` à jour, cherry-pick du seul commit de scroll, nouvelle PR #28 ; #27 fermée sans merge.
+
+## Fix « Plafond de 8 suggestions par catégorie » (terminé le 2026-09-23, D-2026-09-23-08)
+
+Bug rapporté par l'utilisateur juste après le fix du scroll (PR #28, déjà mergée) : dans le menu de suggestions à deux niveaux, certains articles réels (ex. « BABOLAT RPM TEAM 125 BOBINE 200m ») n'apparaissaient jamais même en scrollant.
+
+- Cause diagnostiquée : `getProductSuggestions` (`lib/products.ts`) avait un `LIMIT 8` en dur hérité de l'ancienne liste plate (D-2026-09-23-05) — le scroll ne peut afficher que ce qui a été chargé, or la requête SQL ne remontait jamais plus de 8 lignes.
+- Fix (D-2026-09-23-08) : suppression du plafond, la requête retourne tous les articles correspondants de la catégorie.
+- Effet de bord découvert : le test `product-suggestions.test.ts` (« matches on brand as well as model ») supposait à tort que toute suggestion correspondant à « Babolat » commence par « babolat » — hypothèse fausse en présence de données réelles (produit « Head Protection raquette de tennis Babolat Super Tape », voir GAP-2026-09-23-04), masquée jusqu'ici par le plafond de 8. Assertion corrigée (`startsWith` → `includes`, reflète l'intention réelle du test : correspondance sur marque OU modèle, pas préfixe).
+- Vérifié réellement au navigateur (Playwright CLI, données réelles Neon) : recherche « babolat » → catégorie « Cordages » → « Babolat RPM TEAM 125 BOBINE 200m » présent après scroll, clic → navigation `?category=cordages&q=...` correcte. `npm run lint`, `npm run build`, `npm test` (60 tests), `npm run test:e2e` (9 tests) passent tous.
+- **GAP-2026-09-23-04 ouvert** (donnée produit erronée découverte en marge, hors scope de ce fix).
+- PR à suivre (branche `fix/limite-suggestions-articles`, créée depuis `master` à jour — la branche précédente `fix/scroll-suggestions` était déjà mergée, PR #28).
 
 ## Feuille de route (actée le 2026-09-23, ordre confirmé par l'utilisateur)
 
