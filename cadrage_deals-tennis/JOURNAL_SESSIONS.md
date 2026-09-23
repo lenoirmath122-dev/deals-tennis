@@ -67,3 +67,11 @@
 - Les commits de documentation manquants récupérés (`git cherry-pick` depuis `docs/vercel-git-deploy-gap`, toujours présente côté remote) sur une nouvelle branche `fix/rattrapage-decisions-manquees`, avec mise à jour finale du statut de GAP-2026-09-23-02 (résolu, vérifié).
 - **Point de méthode retenu pour la suite** : quand une PR reste ouverte après un push initial, vérifier son statut de merge avant d'y ajouter des commits supplémentaires plutôt que de supposer qu'elle est encore ouverte — l'utilisateur mergeant souvent très vite après la création de la PR.
 - Prochaine étape : une fois `fix/rattrapage-decisions-manquees` mergée, reprendre la feuille de route (reste du chantier charte graphique, ou chantier suivant) — à soumettre explicitement en début de prochaine conversation.
+
+## 2026-09-23 (suite 7) — Hauteur du hero réduite (décision mineure)
+
+- L'utilisateur a signalé que l'image du hero (PR #18) prenait trop de hauteur, demandé une réduction d'au moins 30%. Ajustement mineur du CSS (`components/hero.tsx`), pas de décision structurante — traité directement sans passer par `DECISIONS_FONCTIONNELLES.md`.
+- Deux passes de réduction, chacune validée visuellement par l'utilisateur de son côté : `280/360px` → `196/250px`, puis `196/250px` → `150/190px` (mobile/desktop), soit ~46% de moins au total.
+- Commit sur une branche dédiée (`fix/hero-hauteur-reduite`, créée depuis `master` pour ne pas mélanger avec la PR #20 alors en cours) : lint clean, push + PR #21 automatiques (D-2026-09-23-03). PR mise à jour (merge de `master`) après que la PR #20 a été mergée entre-temps, puis mergée par l'utilisateur.
+- Aucune étape de build produit distincte de cet ajustement n'a été réalisée dans cette conversation.
+- Prochaine étape : suite du chantier « Charte graphique / design system » (spacing/layout, style de la nav) — à soumettre explicitement en début de prochaine conversation.
