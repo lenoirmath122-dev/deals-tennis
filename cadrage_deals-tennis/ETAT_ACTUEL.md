@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-23 (Fix plafond de 8 suggestions par catégorie, D-2026-09-23-08)
+**Dernière mise à jour** : 2026-09-23 (Marchands supplémentaires : candidats scraping écartés, pivot recherche affiliation, D-2026-09-23-09)
 
 > Détail complet du MVP (`tasks.md` T001-T034), du chantier « Déploiement production », du chantier « CI + protection de branche » et du chantier « Automatisation n8n / ProTennis » (build initial, hébergement permanent, rapprochement produit, élargissement à toutes les catégories tennis) archivé tel quel dans `archive/ETAT_ACTUEL_detail_2026-09-22.md`. Résumé ci-dessous.
 
@@ -115,13 +115,20 @@ Bug rapporté par l'utilisateur juste après le fix du scroll (PR #28, déjà me
 - **GAP-2026-09-23-04 ouvert** (donnée produit erronée découverte en marge, hors scope de ce fix).
 - PR à suivre (branche `fix/limite-suggestions-articles`, créée depuis `master` à jour — la branche précédente `fix/scroll-suggestions` était déjà mergée, PR #28).
 
+## Chantier « Marchands supplémentaires » (en cours, D-2026-09-23-09)
+
+- 6 candidats au scraping direct proposés par l'utilisateur (Private Sport Shop, Tennis Pro, Wilson, Babolat, Yonex, Head) — tous vérifiés réellement (robots.txt + CGU/CGV, curl + WebFetch) et **écartés** : Tennis Pro = tennispro.fr déjà écarté le 2026-09-22 ; Head bloque tout crawl (`robots.txt`) ; Wilson a une protection anti-bot technique réelle (PerimeterX, même une requête `curl` simple est bloquée) — catégorie de risque différente (contournement actif), écarté de fait ; Babolat interdit explicitement la collecte automatisée en masse dans ses CGU ; Yonex interdit la reproduction et restreint tout lien entrant à sa page d'accueil (incompatible avec `/go/[dealId]`) ; Private Sport Shop est une SPA JS pure, incompatible avec la méthode technique actée (HTTP node + parsing HTML, sans Playwright).
+- Discussion du niveau de risque avec l'utilisateur (même raisonnement que ProTennis pour Babolat/Head — droit sui generis des bases de données, risque mesuré) : l'utilisateur a préféré ne pas assumer de risque supplémentaire et pivoter vers la recherche de marchands avec **programme d'affiliation public** (tout réseau, pas seulement Awin), via un outil externe (« cowork »).
+- Prompt de recherche rédigé et remis à l'utilisateur (critères : vente tennis en France, programme d'affiliation actif vérifiable, exclusion des marchands déjà connus/écartés).
+- **GAP-2026-09-23-05 ouvert** : en attente du résultat de cette recherche externe.
+
 ## Feuille de route (actée le 2026-09-23, ordre confirmé par l'utilisateur)
 
 1. ~~Monitoring du cron n8n~~ — terminé le 2026-09-23 (GAP-2026-09-23-01).
 2. Charte graphique / design system (chantier en cours — hero construit et ajusté, reste spacing/layout et nav).
-3. Ajout de marchands supplémentaires (dépend de GAP-2026-09-21-03 — compte Awin à créer par l'utilisateur).
+3. Ajout de marchands supplémentaires (en cours, voir ci-dessus — bloqué en attente du résultat de la recherche cowork, ou de la création du compte Awin par l'utilisateur, GAP-2026-09-21-03).
 4. Reste (mentions légales/CGU, disclosure affiliation, SEO, accessibilité, etc. — non détaillé à ce stade).
 
 ## Prochaine étape
 
-Retour à la feuille de route : suite du chantier « Charte graphique / design system » (étape 2) — spacing/layout plus poussé et/ou style de la nav (inspiration Aceternity). À confirmer explicitement en début de prochaine conversation (sauf nouvelle demande hors feuille de route, comme les deux dernières fois).
+Selon ce que rapporte l'utilisateur : résultat de la recherche cowork (nouveaux marchands affiliés à évaluer), avancée sur l'Awin, ou retour au chantier « Charte graphique / design system » (spacing/layout, nav). À confirmer explicitement en début de prochaine conversation.
