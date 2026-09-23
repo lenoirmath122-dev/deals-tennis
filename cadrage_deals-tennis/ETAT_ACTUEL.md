@@ -16,11 +16,12 @@
 
 Next.js 16.3.5 (App Router), React 19, TypeScript, Tailwind CSS v4, PostgreSQL (Neon Serverless), déploiement Vercel. n8n (VM Oracle Cloud Free Tier) pour l'ingestion ProTennis.
 
-## Chantier « Charte graphique / design system » (en cours — bloqué sur la photo hero)
+## Chantier « Charte graphique / design system » (en cours)
 
-- Direction actée (D-2026-09-21-13) : typographie Space Grotesk, palette à deux accents (vert gazon `#1b4332` prix/CTA, terre cuite `#c1440e` badge réduction), cartes blanches/bordure fine, radius léger (6px cartes/boutons, 4px badges). Fond hero prévu en photo de terrain (gazon/terre battue), à fournir par l'utilisateur — **GAP-2026-09-21-04 toujours ouvert**.
+- Direction actée (D-2026-09-21-13) : typographie Space Grotesk, palette à deux accents (vert gazon `#1b4332` prix/CTA, terre cuite `#c1440e` badge réduction), cartes blanches/bordure fine, radius léger (6px cartes/boutons, 4px badges).
 - **Tokens appliqués au code** (build, PR #3 ouverte par l'utilisateur, statut de merge non suivi par Claude Code depuis) : `app/layout.tsx` (police Space Grotesk), `app/globals.css` (tokens `--color-accent`/`--color-discount`/`--color-card-border`, `--font-sans`), rayons Tailwind par défaut (`rounded-md`/`rounded`), composants mis à jour, variantes `dark:` retirées (décision mineure — la charte actée ne définit qu'une palette claire).
-- Pas de section hero (photo toujours absente). Reste à cadrer/construire : spacing/layout plus poussé, style de la nav (inspiration Aceternity `resizable-navbar`/`hero-highlight`), la section hero elle-même dès réception de la photo.
+- **Section hero construite et vérifiée (2026-09-23, D-2026-09-23-02, résout GAP-2026-09-21-04)** : l'utilisateur a fourni 3 photos de test dans `public/hero/`, `simone-viani-2XPHSXVT_Ls-unsplash.jpg` retenue (format paysage, tons désaturés, espace pour le texte). Nouveau composant `components/hero.tsx` (image plein cadre via `next/image`, overlay dégradé vert foncé pour la lisibilité, titre + accroche repris de l'ancien `<h1>` du catalogue) intégré en tête de `app/(catalog)/page.tsx`. Vérifié réellement : `npm run lint`, `npm run build`, `npm test` (46 tests) passent tous ; rendu contrôlé visuellement au navigateur (Playwright) en desktop et mobile (390×844) — texte lisible, overlay cohérent avec la palette actée. Diff non committé à la fin de la conversation (branche `docs/cadrage-monitoring-n8n` obsolète pour ce travail, nouvelle branche à créer avant commit).
+- Reste à cadrer/construire : spacing/layout plus poussé, style de la nav (inspiration Aceternity `resizable-navbar`/`hero-highlight`).
 
 ## Chantier « Recherche centrée article + détail deal » (terminé le 2026-09-23, résolution de GAP-2026-09-22-08/10)
 

@@ -124,3 +124,14 @@
 - **GAP-2026-09-23-01 résolu.**
 - Question posée par l'utilisateur en cours de session : possibilité d'autorisation permanente pour les actions bloquées par l'auto-mode — répondu qu'une règle de permission durable est possible via `.claude/settings.json` (skill `update-config`), proposé pour une prochaine fois sans interrompre le déploiement en cours.
 - Prochaine étape : chantier « Charte graphique / design system » (étape 2 de la feuille de route), toujours bloqué sur GAP-2026-09-21-04 (photo hero) — comment avancer malgré ce blocage à soumettre explicitement en début de prochaine conversation.
+
+## 2026-09-23 (suite 4) — Section hero construite et vérifiée (GAP-2026-09-21-04 résolu)
+
+- Reprise de session (`/clear`), protocole appliqué (ETAT_ACTUEL → GAPS_OUVERTS → dernier journal) : chantier « Charte graphique / design system » identifié comme prochaine étape, toujours bloqué sur la photo hero.
+- L'utilisateur a fourni 3 photos de test dans `public/hero/` (dossier créé en amont sur sa demande). Les 3 comparées et présentées avec analyse (format, ton, cohérence avec la charte actée) ; recommandation donnée (photo aérienne `simone-viani`, format paysage large, tons désaturés adaptés à la superposition de texte) et validée par l'utilisateur sans modification.
+- **D-2026-09-23-02** actée : choix de la photo hero. **GAP-2026-09-21-04 résolu.**
+- Confirmation explicite demandée et obtenue avant de démarrer le build (construction de la section hero, étape de build unique de cette conversation).
+- Build réalisé : nouveau composant `components/hero.tsx` (image plein cadre `next/image`, overlay dégradé pour lisibilité, titre + accroche repris de l'ancien `<h1>` du catalogue), intégré dans `app/(catalog)/page.tsx`.
+- Vérification réelle : `npm run lint`, `npm run build`, `npm test` (46 tests) passent tous. Rendu contrôlé au navigateur via Playwright (serveur `next dev` de vérification, port 3001 — 3000 déjà occupé par un autre processus, non touché) : desktop et mobile (390×844), texte lisible, overlay cohérent. Captures d'écran temporaires et fichiers Playwright supprimés après contrôle ; serveur de vérification arrêté (port 3001 confirmé libéré).
+- Diff non committé, laissé à la revue de l'utilisateur (conforme au protocole). Point signalé : la branche courante (`docs/cadrage-monitoring-n8n`) correspond à un chantier déjà mergé — une nouvelle branche sera nécessaire avant tout commit de ce travail.
+- Prochaine étape : non tranchée — reste du chantier charte graphique (spacing/layout, style de la nav inspiration Aceternity) ou autre chantier de la feuille de route, à soumettre explicitement en début de prochaine conversation.
