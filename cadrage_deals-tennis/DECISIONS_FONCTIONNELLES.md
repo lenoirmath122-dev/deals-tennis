@@ -356,3 +356,13 @@ Vérification réelle effectuée avant de trancher : aucun marchand n'expose de 
 **Décision** : à partir de maintenant, en fin d'étape de build (une fois le commit fait sur une branche dédiée, diff vérifié), Claude Code pousse la branche (`git push -u origin <branche>`) et crée la PR (`gh pr create`) **automatiquement, sans demander confirmation à chaque fois**. Reste inchangé : jamais de commit direct sur `master`, jamais de merge sans passage par CI, jamais de force-push, et toute action git destructrice (reset --hard, push --force, suppression de branche) continue de requérir une confirmation explicite au cas par cas.
 
 **Statut** : Actée (demandée explicitement par l'utilisateur). Modifie D-2026-09-21-01 (point 4) pour la suite du projet.
+
+---
+
+### D-2026-09-23-04 — `DATABASE_URL` étendue à l'environnement preview Vercel
+
+**Contexte** : En connectant le projet Vercel au dépôt GitHub (résolution en cours de GAP-2026-09-23-02), le premier déploiement preview déclenché par le push d'une branche a échoué (`npm run build` exit 1). Cause identifiée : `DATABASE_URL` n'était configurée dans Vercel que pour la cible `production` (jamais pour `preview`), alors que `lib/db.ts` évalue la connexion Neon au chargement du module — même cause que GAP-2026-09-21-02 côté CI GitHub Actions.
+
+**Décision** : `DATABASE_URL` étendue à la cible `preview` en plus de `production` (même valeur, une seule base Neon existe — cohérent avec D-2026-09-21-10, pas de séparation dev/prod à ce stade). Modifié via l'API Vercel (MCP `edit_project_env`) sans jamais lire la valeur en clair (variable de type `sensitive`).
+
+**Statut** : Actée (question soumise à l'utilisateur, validée explicitement). Les futures previews de PR pourront se builder.

@@ -6,9 +6,11 @@ En vérifiant pourquoi la section hero (PR #18) n'apparaissait pas sur `https://
 
 L'utilisateur a connecté le repo `lenoirmath122-dev/deals-tennis` à Vercel (branche `master`) dans cette conversation — la connexion est confirmée active. Mais la connexion seule ne redéploie pas rétroactivement : un premier "Redeploy" tenté par l'utilisateur a en réalité re-servi l'ancien snapshot CLI (`source: "redeploy"` d'un déploiement sans lien Git), pas le dernier commit `master`. Tentative de déclencher un déploiement propre via l'API Vercel (MCP) également bloquée (403, token MCP non autorisé sur le scope d'équipe `lenoir-nba`).
 
-**Résolution en cours** : un commit trivial est poussé sur une branche dédiée pour que le prochain merge sur `master` déclenche, via le webhook Git maintenant actif, un vrai déploiement à jour. À vérifier après ce merge que la prod reflète bien le hero + la recherche centrée article.
+**Résolution en cours** : un commit trivial poussé sur une branche dédiée (PR #19) pour que son merge sur `master` déclenche, via le webhook Git maintenant actif, un vrai déploiement production à jour. Premier déploiement preview déclenché par ce push effectivement parti d'un vrai commit Git (`source: "git"`, confirmant le webhook actif) mais en échec de build — cause et résolution en D-2026-09-23-04 (`DATABASE_URL` absente de l'environnement preview). N'affecte pas le check obligatoire au merge (`build-and-test` uniquement, vérifié dans la protection de branche — le check `Vercel` n'est pas requis).
 
-**Bloquant sur** : le merge de cette PR par l'utilisateur (flux protégé), puis vérification réelle du contenu de la prod après déploiement.
+En documentant cette étape, découvert que **D-2026-09-23-03** (push+PR automatiques) avait été poussée sur `feat/hero-section` après le merge de la PR #18 — jamais arrivée sur `master`. Récupérée par cherry-pick sur la branche de la PR #19, qui portera donc les deux décisions (D-2026-09-23-03 et D-2026-09-23-04) en plus du commit déclencheur.
+
+**Bloquant sur** : le merge de la PR #19 par l'utilisateur (flux protégé), puis vérification réelle du contenu de la prod après déploiement (hero + recherche centrée article + présence de D-2026-09-23-03/04 sur `master`).
 
 **Statut** : ouvert au 2026-09-23.
 
