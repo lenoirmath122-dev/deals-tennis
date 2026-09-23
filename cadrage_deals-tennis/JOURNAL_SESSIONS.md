@@ -108,3 +108,13 @@
 - Push + création de PR automatiques (D-2026-09-23-03) : branche `feat/sous-categorie-couleur`.
 - **D-2026-09-23-06 actée et construite. GAP-2026-09-23-03 résolu.**
 - Prochaine étape : retour à la feuille de route — chantier « Charte graphique / design system » (étape 2, spacing/layout et/ou nav), à confirmer explicitement en début de prochaine conversation.
+
+## 2026-09-23 (suite 11) — Suggestions de recherche groupées par catégorie (D-2026-09-23-07)
+
+- Reprise de session (`/clear`). Demande explicite de l'utilisateur, hors feuille de route : les suggestions de recherche (liste plate triée alphabétiquement) doivent se regrouper par catégorie (raquettes, cordages, etc.), les noms d'articles n'apparaissant qu'après clic sur une catégorie ; touche Entrée reste inchangée (filtre texte seul).
+- Décision structurante soumise avant build (deux questions ciblées) : (1) clic catégorie reste dans le menu déroulant (2e niveau d'articles) plutôt que de naviguer directement ; (2) clic sur un article final inclut la catégorie choisie dans l'URL de recherche (`category=X&q=texte`), pas texte seul. **D-2026-09-23-07 actée.**
+- Build : `lib/filters.ts` (`CATEGORY_LABELS` partagé), `lib/products.ts` (`getSuggestionCategories`, `getProductSuggestions` avec filtre catégorie optionnel), `app/api/products/suggest/route.ts` (bascule 1er/2e niveau), `components/search-bar.tsx` (menu à deux niveaux).
+- Vérification réelle bout en bout : `npm run lint`, `npm run build`, `npm test` (60 tests), `npm run test:e2e` (9 tests) tous verts. Flux complet contrôlé au navigateur (Playwright CLI) contre la prod (Neon) : « babolat » → catégories avec compteurs réels → clic Raquettes → articles → clic article → `?category=raquettes&q=...` ; Entrée seule → `?q=...` sans catégorie.
+- Un flake e2e initial (timeout 10s tout juste dépassé sur le premier test de la suite, cold-start Turbopack) diagnostiqué et confirmé non reproductible (test isolé puis suite complète, deux fois verts).
+- Branche précédente (`feat/sous-categorie-couleur`) déjà mergée (PR #25) — nouvelle branche `feat/recherche-suggestions-categorie` créée depuis `master` à jour.
+- Prochaine étape : retour à la feuille de route — chantier « Charte graphique / design system » (étape 2), à confirmer explicitement en début de prochaine conversation (sauf nouvelle demande hors feuille de route).

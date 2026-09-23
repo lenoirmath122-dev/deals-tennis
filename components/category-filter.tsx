@@ -1,15 +1,6 @@
 import Link from "next/link";
-import { DEAL_CATEGORIES } from "@/lib/filters";
+import { CATEGORY_LABELS, DEAL_CATEGORIES } from "@/lib/filters";
 import { buildCatalogHref } from "@/lib/catalog-url";
-
-const CATEGORY_LABELS: Record<string, string> = {
-  all: "Toutes",
-  raquettes: "Raquettes",
-  cordages: "Cordages",
-  chaussures: "Chaussures",
-  textile: "Textile",
-  accessoires: "Accessoires",
-};
 
 export function CategoryFilter({
   active,

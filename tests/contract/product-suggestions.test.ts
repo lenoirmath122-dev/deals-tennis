@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getProductSuggestions } from "@/lib/products";
+import { getProductSuggestions, getSuggestionCategories } from "@/lib/products";
 
 describe("getProductSuggestions contract", () => {
   it("returns no suggestion for a query shorter than 2 characters", async () => {
@@ -36,5 +36,49 @@ describe("getProductSuggestions contract", () => {
     const { getCatalogDeals } = await import("@/lib/deals");
     const result = await getCatalogDeals({ q: suggestion });
     expect(result.deals.some((deal) => deal.title.includes("Sonic Damp"))).toBe(true);
+  });
+});
+
+describe("getSuggestionCategories contract", () => {
+  it("returns no category for a query shorter than 2 characters", async () => {
+    const result = await getSuggestionCategories("p");
+    expect(result).toEqual([]);
+  });
+
+  it("returns the categories matching a real multi-category brand", async () => {
+    const result = await getSuggestionCategories("Babolat");
+    expect(result.length).toBeGreaterThanOrEqual(1);
+    for (const { category, count } of result) {
+      expect(["raquettes", "cordages", "chaussures", "textile", "accessoires"]).toContain(
+        category
+      );
+      expect(count).toBeGreaterThan(0);
+    }
+  });
+
+  it("returns an empty list for a query matching no product", async () => {
+    const result = await getSuggestionCategories("zzzznonexistentmodelzzzz");
+    expect(result).toEqual([]);
+  });
+});
+
+describe("getProductSuggestions filtered by category", () => {
+  it("only returns suggestions from the requested category", async () => {
+    const categories = await getSuggestionCategories("Babolat");
+    const target = categories[0];
+    expect(target).toBeDefined();
+
+    const result = await getProductSuggestions("Babolat", target.category as never);
+    expect(result.length).toBeGreaterThanOrEqual(1);
+
+    const { sql } = await import("@/lib/db");
+    for (const suggestion of result) {
+      const [brand, ...modelParts] = suggestion.split(" ");
+      const rows = (await sql.query(
+        `SELECT category FROM products WHERE LOWER(brand) = LOWER($1) AND LOWER(model) = LOWER($2)`,
+        [brand, modelParts.join(" ")]
+      )) as { category: string }[];
+      expect(rows.some((row) => row.category === target.category)).toBe(true);
+    }
   });
 });

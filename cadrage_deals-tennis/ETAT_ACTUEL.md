@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-23 (Sous-catégorie couleur, D-2026-09-23-06)
+**Dernière mise à jour** : 2026-09-23 (Suggestions de recherche groupées par catégorie, D-2026-09-23-07)
 
 > Détail complet du MVP (`tasks.md` T001-T034), du chantier « Déploiement production », du chantier « CI + protection de branche » et du chantier « Automatisation n8n / ProTennis » (build initial, hébergement permanent, rapprochement produit, élargissement à toutes les catégories tennis) archivé tel quel dans `archive/ETAT_ACTUEL_detail_2026-09-22.md`. Résumé ci-dessous.
 
@@ -88,6 +88,19 @@ Demande explicite de l'utilisateur (rapportée en même temps que le fix de rech
 - `npm run lint`, `npm run build`, `npm test` (56 tests, 8 fichiers), `npm run test:e2e` (9 tests) passent tous.
 - **GAP-2026-09-23-03 résolu.**
 
+## Chantier « Suggestions de recherche groupées par catégorie » (terminé le 2026-09-23, D-2026-09-23-07)
+
+Demande explicite de l'utilisateur, hors feuille de route : les suggestions de recherche (D-2026-09-23-05) étaient une liste plate triée alphabétiquement, peu lisible quand une marque couvre plusieurs catégories (ex. « babolat »).
+
+- Décision soumise et actée avant build (D-2026-09-23-07) : menu de suggestions à deux niveaux, sans navigation. 1er niveau = catégories ayant au moins un article correspondant (avec compteur) ; clic sur une catégorie → 2e niveau, noms d'articles de cette catégorie dans le même menu. Clic sur un article → recherche texte + catégorie (`/?category=X&q=texte`). Touche Entrée : comportement inchangé (texte seul, toutes catégories).
+- `lib/filters.ts` : `CATEGORY_LABELS` extrait de `components/category-filter.tsx` (désormais partagé avec `search-bar.tsx`).
+- `lib/products.ts` : nouvelle fonction `getSuggestionCategories(q)` (catégories + compteur, ordonnées selon `DEAL_CATEGORIES`) ; `getProductSuggestions(q, category?)` accepte désormais un filtre catégorie optionnel.
+- `app/api/products/suggest/route.ts` : bascule entre les deux niveaux selon la présence d'un paramètre `category` valide dans la requête.
+- `components/search-bar.tsx` : menu à deux niveaux (catégories → articles, avec bouton retour), état réinitialisé au niveau catégories à chaque nouvelle frappe.
+- Tests : `tests/contract/product-suggestions.test.ts` (+7 tests : `getSuggestionCategories`, filtre catégorie de `getProductSuggestions`), `tests/e2e/catalog.spec.ts` mis à jour (le test suggestions clique désormais catégorie puis article, vérifie `category=raquettes` dans l'URL finale).
+- Vérifié réellement : `npm run lint`, `npm run build`, `npm test` (60 tests, 8 fichiers), `npm run test:e2e` (9 tests) passent tous. Flux complet contrôlé au navigateur (Playwright CLI) contre les données réelles de prod (Neon) : saisie « babolat » → catégories Raquettes/Cordages/... avec compteurs réels, clic Raquettes → liste d'articles + bouton retour, clic article → navigation `?category=raquettes&q=...` ; touche Entrée seule → `?q=...` sans catégorie (inchangé).
+- Nouvelle branche `feat/recherche-suggestions-categorie` créée depuis `master` à jour (la branche précédente, `feat/sous-categorie-couleur`, était déjà mergée — PR #25).
+
 ## Feuille de route (actée le 2026-09-23, ordre confirmé par l'utilisateur)
 
 1. ~~Monitoring du cron n8n~~ — terminé le 2026-09-23 (GAP-2026-09-23-01).
@@ -97,4 +110,4 @@ Demande explicite de l'utilisateur (rapportée en même temps que le fix de rech
 
 ## Prochaine étape
 
-Retour à la feuille de route : suite du chantier « Charte graphique / design system » (étape 2) — spacing/layout plus poussé et/ou style de la nav (inspiration Aceternity). À confirmer explicitement en début de prochaine conversation.
+Retour à la feuille de route : suite du chantier « Charte graphique / design system » (étape 2) — spacing/layout plus poussé et/ou style de la nav (inspiration Aceternity). À confirmer explicitement en début de prochaine conversation (sauf nouvelle demande hors feuille de route, comme les deux dernières fois).

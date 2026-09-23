@@ -43,11 +43,16 @@ test.describe("Catalogue de bons plans tennis", () => {
     // Pas de navigation tant qu'on n'a pas validé (ni Entrée, ni clic loupe/suggestion).
     await expect(page).not.toHaveURL(/q=/);
 
+    const categoryOption = page.getByRole("button", { name: /Raquettes/i }).first();
+    await expect(categoryOption).toBeVisible({ timeout: 10000 });
+    await categoryOption.click();
+
     const suggestion = page.getByRole("button", { name: /Pure Aero/i }).first();
     await expect(suggestion).toBeVisible({ timeout: 10000 });
     await suggestion.click();
 
     await expect(page).toHaveURL(/q=/, { timeout: 5000 });
+    await expect(page).toHaveURL(/category=raquettes/, { timeout: 5000 });
   });
 
   test("le tri par réduction change l'ordre des offres", async ({ page }) => {
