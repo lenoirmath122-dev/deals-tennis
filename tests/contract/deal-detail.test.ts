@@ -23,8 +23,13 @@ describe("getDealDetail contract", () => {
   });
 
   it("returns the deal with its other active offers for the same article, cheapest first", async () => {
+    // Titre precis (pas un simple '%Pure Aero%') : c'est le seul article Pure Aero
+    // reellement rattache a plusieurs marchands (ProTennis + Tennis-Point) en prod.
+    // Sans ce filtrage precis, un LIMIT 1 sans ORDER BY est non deterministe et peut
+    // retomber sur une offre Pure Aero mono-marchand selon l'ordre physique des lignes
+    // (deja observe apres des UPDATE reels via le workflow n8n).
     const [deal] = await sql.query(
-      `SELECT id FROM deals WHERE title ILIKE '%Pure Aero%' AND status = 'active' LIMIT 1`
+      `SELECT id FROM deals WHERE title ILIKE '%Pure Aero Cordée 2023%' AND status = 'active' LIMIT 1`
     );
     expect(deal).toBeDefined();
 
