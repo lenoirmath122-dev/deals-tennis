@@ -27,4 +27,14 @@ describe("getProductSuggestions contract", () => {
     const result = await getProductSuggestions("zzzznonexistentmodelzzzz");
     expect(result).toEqual([]);
   });
+
+  it("clicking a suggestion must lead back to a search that finds the article (word order regression)", async () => {
+    const suggestions = await getProductSuggestions("Sonic Damp");
+    const suggestion = suggestions.find((s) => s.includes("Sonic Damp"));
+    expect(suggestion).toBeDefined();
+
+    const { getCatalogDeals } = await import("@/lib/deals");
+    const result = await getCatalogDeals({ q: suggestion });
+    expect(result.deals.some((deal) => deal.title.includes("Sonic Damp"))).toBe(true);
+  });
 });

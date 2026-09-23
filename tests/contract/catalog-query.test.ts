@@ -26,6 +26,15 @@ describe("getCatalogDeals contract", () => {
   });
 });
 
+describe("getCatalogDeals contract — search matches regardless of word order", () => {
+  it("finds a deal when the query word order differs from the deal title (product suggestion case)", async () => {
+    // Article réel : produit "Babolat" + "Antivibrateur de tennis Sonic Damp",
+    // titre du deal scrappé "Antivibrateur de tennis Babolat Sonic Damp" (ordre différent).
+    const result = await getCatalogDeals({ q: "Babolat Antivibrateur de tennis Sonic Damp" });
+    expect(result.deals.some((deal) => deal.title.includes("Sonic Damp"))).toBe(true);
+  });
+});
+
 describe("getCatalogDeals contract — grouped search mode (D-2026-09-22-06/17)", () => {
   it("groups results for a query matching offers from multiple merchants for the same article", async () => {
     const result = await getCatalogDeals({ q: "Pure Aero" });
