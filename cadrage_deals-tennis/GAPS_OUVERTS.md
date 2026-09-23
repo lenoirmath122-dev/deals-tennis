@@ -1,5 +1,15 @@
 # Points ouverts
 
+## GAP-2026-09-23-03 — Sous-catégorie couleur pour ne pas polluer la recherche/le nom d'article (OUVERT)
+
+Demande explicite de l'utilisateur (rapportée en même temps que le bug de recherche insensible à l'ordre des mots) : certains articles n'ont de différence que la couleur, ce qui génère des variantes de nom qui polluent les champs de recherche/suggestions. L'utilisateur propose une sous-catégorie "couleur" par article.
+
+**Bloquant sur** : décision structurante (modèle de données `products`/`deals`, impact sur le rapprochement produit multi-marchands déjà en place — voir GAP-2026-09-22-08 résolu) — à cadrer explicitement avant tout build, dans une conversation dédiée (l'utilisateur a choisi cette option plutôt que d'en discuter immédiatement).
+
+**Statut** : ouvert au 2026-09-23.
+
+---
+
 ## GAP-2026-09-23-02 — Prod restée figée sur le déploiement CLI du 2026-09-21, jamais reconnectée à Git (RÉSOLU)
 
 En vérifiant pourquoi la section hero (PR #18) n'apparaissait pas sur `https://deals-tennis.vercel.app`, découvert que le projet Vercel n'avait **jamais** été connecté au dépôt GitHub depuis sa création (D-2026-09-21-10 : déploiement initial volontairement fait via CLI, le lien Git devait être traité au chantier CI mais ne l'a jamais été — seuls les checks GitHub Actions l'ont été). Conséquence : la prod tournait sur l'unique déploiement du 21/09, ratant tout ce qui a été mergé depuis (PR #16 recherche centrée article, PR #18 hero).
