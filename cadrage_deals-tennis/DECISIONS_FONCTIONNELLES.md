@@ -433,3 +433,21 @@ Discussion du niveau de risque avec l'utilisateur : pour Babolat/Head, le risque
 **Décision** : plutôt que d'assumer un risque supplémentaire sur Babolat/Head, l'utilisateur pivote vers la recherche de **nouveaux marchands disposant d'un programme d'affiliation public** (pas seulement Awin — tout réseau : Effiliation, Tradedoubler, CJ, Rakuten Advertising, Partnerize, ou programme in-house), via un outil de recherche externe (« cowork »). Un prompt de recherche a été rédigé (critères : vente de matériel tennis en France, programme d'affiliation actif et vérifiable, en excluant les marchands déjà connus/écartés) et remis à l'utilisateur pour exécution hors de cette session.
 
 **Statut** : Actée. Aucun code construit dans cette conversation (étape de cadrage/investigation uniquement). Prochaine étape dépendante du résultat de la recherche cowork, à rapporter par l'utilisateur en début de prochaine conversation.
+
+---
+
+### D-2026-09-23-10 — Chantier « Pages réglementaires » : périmètre, source du contenu et identité
+
+**Contexte** : Reprise du point 4 de la feuille de route (« Reste : mentions légales/CGU, disclosure affiliation, SEO, accessibilité, etc. »), jamais détaillé jusqu'ici. L'utilisateur a demandé explicitement de démarrer ce chantier.
+
+**Décision** :
+1. **Périmètre retenu pour cette étape** : mentions légales, CGU, politique de confidentialité/cookies, disclosure affiliation. SEO et accessibilité restent hors périmètre (autres sous-chantiers du point 4, non traités ici).
+2. **Source du contenu** : rédigé directement par Claude Code (pas de détour par un outil externe) — texte standard/générique à partir des faits réels du projet, l'utilisateur n'ayant aucune compétence juridique. Explicitement signalé à l'utilisateur : ce n'est pas une rédaction par un professionnel du droit, à faire vérifier avant une mise en prod à fort trafic si une couverture juridique complète est souhaitée.
+3. **Faits factuels confirmés par l'utilisateur pour la rédaction** :
+   - Éditeur : personne physique (particulier), Mathieu Lenoir, contact `lenoir.math122@gmail.com`.
+   - Hébergement : Vercel Inc. Base de données : Neon (sous-traitant technique, aucune donnée personnelle utilisateur stockée à ce jour — pas de comptes utilisateurs sur le site).
+   - Domaine : `deals-tennis.vercel.app` uniquement à ce jour (domaine personnalisé prévu mais non acté — pages à rédiger sans dépendre du nom de domaine).
+   - Aucun outil d'analytics/tracking tiers installé à ce jour (vérifié dans le code : aucune dépendance analytics dans `package.json`, aucune référence dans le code).
+   - Modèle : catalogue d'offres avec redirection d'affiliation vers les marchands (`/go/[dealId]`), marchand actif ProTennis — disclosure à formuler en conséquence.
+
+**Statut** : Actée. Build à suivre dans cette conversation.

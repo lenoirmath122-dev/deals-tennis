@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-23 (Marchands supplémentaires : candidats scraping écartés, pivot recherche affiliation, D-2026-09-23-09)
+**Dernière mise à jour** : 2026-09-23 (Pages réglementaires : mentions légales, CGU, confidentialité, affiliation, D-2026-09-23-10)
 
 > Détail complet du MVP (`tasks.md` T001-T034), du chantier « Déploiement production », du chantier « CI + protection de branche » et du chantier « Automatisation n8n / ProTennis » (build initial, hébergement permanent, rapprochement produit, élargissement à toutes les catégories tennis) archivé tel quel dans `archive/ETAT_ACTUEL_detail_2026-09-22.md`. Résumé ci-dessous.
 
@@ -122,13 +122,25 @@ Bug rapporté par l'utilisateur juste après le fix du scroll (PR #28, déjà me
 - Prompt de recherche rédigé et remis à l'utilisateur (critères : vente tennis en France, programme d'affiliation actif vérifiable, exclusion des marchands déjà connus/écartés).
 - **GAP-2026-09-23-05 ouvert** : en attente du résultat de cette recherche externe.
 
+## Chantier « Pages réglementaires » (terminé le 2026-09-23, D-2026-09-23-10)
+
+Reprise du point 4 de la feuille de route (« mentions légales/CGU, disclosure affiliation, SEO, accessibilité »), jamais détaillé jusqu'ici. SEO et accessibilité restent hors périmètre de cette étape.
+
+- Périmètre soumis et confirmé par l'utilisateur : mentions légales, CGU, politique de confidentialité/cookies, disclosure affiliation. Source du contenu : rédigé directement par Claude Code (texte standard/générique, pas une rédaction par un professionnel du droit — signalé explicitement à l'utilisateur), faute de compétence juridique côté utilisateur.
+- Faits confirmés par l'utilisateur avant rédaction : éditeur particulier (Mathieu Lenoir, `lenoir.math122@gmail.com`), hébergement Vercel + base Neon, domaine `deals-tennis.vercel.app` uniquement (pas de domaine personnalisé acté), aucun outil d'analytics/tracking tiers installé (vérifié dans le code), modèle d'affiliation via `/go/[dealId]` (marchand actif : ProTennis).
+- 4 nouvelles pages statiques : `app/mentions-legales/page.tsx`, `app/cgu/page.tsx`, `app/confidentialite/page.tsx`, `app/affiliation/page.tsx`, toutes construites sur un composant partagé `components/legal-page.tsx` (titre, date de mise à jour, sections).
+- Politique de confidentialité rédigée à partir d'une lecture réelle du code de tracking (`lib/tracking.ts`, `app/go/[dealId]/route.ts`) : seules des statistiques anonymes de clic sont enregistrées (type d'appareil, page de référence interne), aucune adresse IP ni identifiant utilisateur — pas seulement une affirmation générique.
+- `components/footer.tsx` (nouveau) : lien vers les 4 pages, intégré à `app/layout.tsx` sur tout le site.
+- Vérifié réellement : `npm run lint`, `npm run build` (les 4 pages générées en statique `○`), `npm test` (60 tests) passent tous. Serveur de vérification dédié (port 3123) : les 4 routes répondent 200, titres `<title>` corrects, liens du footer présents sur la page d'accueil, contenu attendu présent (nom de l'éditeur, mention absence de traceur), serveur arrêté après contrôle.
+- **D-2026-09-23-10 actée et construite.**
+
 ## Feuille de route (actée le 2026-09-23, ordre confirmé par l'utilisateur)
 
 1. ~~Monitoring du cron n8n~~ — terminé le 2026-09-23 (GAP-2026-09-23-01).
 2. Charte graphique / design system (chantier en cours — hero construit et ajusté, reste spacing/layout et nav).
 3. Ajout de marchands supplémentaires (en cours, voir ci-dessus — bloqué en attente du résultat de la recherche cowork, ou de la création du compte Awin par l'utilisateur, GAP-2026-09-21-03).
-4. Reste (mentions légales/CGU, disclosure affiliation, SEO, accessibilité, etc. — non détaillé à ce stade).
+4. Pages réglementaires : mentions légales/CGU/confidentialité/affiliation ~~terminé le 2026-09-23~~ (D-2026-09-23-10) ; SEO et accessibilité restent non traités.
 
 ## Prochaine étape
 
-Selon ce que rapporte l'utilisateur : résultat de la recherche cowork (nouveaux marchands affiliés à évaluer), avancée sur l'Awin, ou retour au chantier « Charte graphique / design system » (spacing/layout, nav). À confirmer explicitement en début de prochaine conversation.
+Selon ce que rapporte l'utilisateur : résultat de la recherche cowork (nouveaux marchands affiliés à évaluer), avancée sur l'Awin, retour au chantier « Charte graphique / design system » (spacing/layout, nav), ou SEO/accessibilité (reste du point 4). À confirmer explicitement en début de prochaine conversation.

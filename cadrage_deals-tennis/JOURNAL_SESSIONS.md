@@ -5,6 +5,17 @@
 > Sessions du 2026-09-23 (cadrage monitoring n8n) au 2026-09-23 (hauteur du hero réduite) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-23-monitoring_a_hero-hauteur.md` (même règle, condensation du 2026-09-23, chantier marchands supplémentaires).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
 
+## 2026-09-23 (suite 12) — Pages réglementaires : mentions légales, CGU, confidentialité, affiliation (D-2026-09-23-10)
+
+- Reprise de session (`/clear`). L'utilisateur demande de reprendre le point 4 de la feuille de route (« pages réglementaires »), jamais cadré jusqu'ici.
+- Cadrage soumis avant tout code (plusieurs allers-retours via questions ciblées) : périmètre (mentions légales, CGU, confidentialité, affiliation — SEO/accessibilité exclus), source du contenu (rédigé directement par Claude Code, pas de détour par un outil externe, l'utilisateur n'ayant aucune compétence juridique — limite explicitement signalée), puis faits factuels nécessaires (statut particulier, nom/email à afficher, absence de domaine personnalisé acté). Vérification dans le code (pas de supposition) : aucun outil d'analytics/tracking installé.
+- Session interrompue en cours de build (l'utilisateur devait fermer l'ordinateur) juste après la création de `components/footer.tsx`, `app/layout.tsx` (footer intégré) et `components/legal-page.tsx` — repris ensuite dans la même conversation à la demande de l'utilisateur, sans re-cadrage (état confirmé avant reprise).
+- Build complété : 4 pages statiques (`app/mentions-legales`, `app/cgu`, `app/confidentialite`, `app/affiliation`) sur le composant partagé `legal-page.tsx`. Contenu de la politique de confidentialité basé sur une lecture réelle de `lib/tracking.ts`/`app/go/[dealId]/route.ts` (statistiques de clic anonymes, pas d'IP ni d'identifiant) plutôt qu'une affirmation générique.
+- Vérification réelle : `npm run lint`, `npm run build` (4 pages générées en statique), `npm test` (60 tests) tous verts ; serveur de vérification dédié (port 3123) — 4 routes en 200, titres corrects, liens du footer présents sur l'accueil, contenu attendu présent, serveur arrêté après contrôle.
+- **D-2026-09-23-10 actée et construite.**
+- `ETAT_ACTUEL.md`, `DECISIONS_FONCTIONNELLES.md` mis à jour.
+- Prochaine étape : au choix de l'utilisateur — résultat recherche cowork (marchands), charte graphique (spacing/layout/nav), ou SEO/accessibilité (reste du point 4) — à confirmer explicitement en début de prochaine conversation.
+
 ## 2026-09-23 (suite 7) — Marchands supplémentaires : candidats scraping écartés, pivot recherche affiliation (D-2026-09-23-09)
 
 - Reprise de session (`/clear`). L'utilisateur demande d'avancer sur le chantier n°3 de la feuille de route (« Ajout de marchands supplémentaires »).
