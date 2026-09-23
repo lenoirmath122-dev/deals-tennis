@@ -154,7 +154,7 @@ export function SearchBar({
       </form>
 
       {showSuggestions && selectedCategory === null && (
-        <ul className="absolute z-10 mt-1 w-full rounded-md border border-card-border bg-white py-1 shadow-md">
+        <ul className="absolute z-10 mt-1 max-h-72 w-full overflow-y-auto rounded-md border border-card-border bg-white py-1 shadow-md">
           {categories.map(({ category: suggestionCategory, count }) => (
             <li key={suggestionCategory}>
               <button
@@ -171,7 +171,7 @@ export function SearchBar({
       )}
 
       {showSuggestions && selectedCategory !== null && (
-        <ul className="absolute z-10 mt-1 w-full rounded-md border border-card-border bg-white py-1 shadow-md">
+        <ul className="absolute z-10 mt-1 max-h-72 w-full overflow-y-auto rounded-md border border-card-border bg-white py-1 shadow-md">
           <li>
             <button
               type="button"
