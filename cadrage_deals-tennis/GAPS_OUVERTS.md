@@ -121,3 +121,15 @@ En reprenant l'étape GAP-2026-09-22-11, une vérification réelle sur l'instanc
 **Point non couvert par cette résolution** : la cause de la désactivation n'est pas connue — si elle se reproduit (ex. après un redémarrage de VM), le cron quotidien de 6h pourrait à nouveau ne pas tourner sans que personne ne le remarque (pas d'alerte configurée). Rejoint le chantier « Observabilité/monitoring » (n°11 de la liste D-2026-09-21-09, non commencé) — une alerte sur l'absence d'exécution quotidienne y aurait sa place.
 
 **Statut** : résolu le 2026-09-22 (réactivé et vérifié) ; cause racine non déterminée, risque de récidive silencieuse noté pour le chantier observabilité.
+
+---
+
+## GAP-2026-09-23-01 — Monitoring du cron n8n ProTennis : mécanisme décidé, pas encore construit (OUVERT)
+
+Suite à GAP-2026-09-22-12 (récidive silencieuse possible sans alerte), le mécanisme de monitoring a été discuté et tranché en **D-2026-09-23-01** : dead man's switch externe healthchecks.io (ping HTTP du workflow n8n à chaque succès, alerte email si le ping manque). Conformément au protocole (une étape de build par conversation), aucun build n'a été fait dans la conversation où la décision a été prise.
+
+**Reste à faire** : création du compte/check healthchecks.io (action utilisateur), ajout du nœud HTTP de ping au workflow n8n ProTennis, vérification réelle (ping reçu en conditions normales, alerte déclenchée en simulant une absence de ping).
+
+**Bloquant sur** : rien d'externe — à traiter dans une prochaine conversation dédiée.
+
+**Statut** : ouvert au 2026-09-23.

@@ -326,3 +326,13 @@ Vérification réelle effectuée avant de trancher : aucun marchand n'expose de 
 **Décision** : le regroupement par article (une carte = un article, avec badge du nombre d'offres et lien vers la page détail) ne s'applique **que lorsqu'un terme de recherche (`q`) est actif**. La navigation par défaut (accueil, filtre catégorie seul, tri seul) reste inchangée : une carte = un deal, lien direct vers `/go/[dealId]`.
 
 **Statut** : Actée (confirmée explicitement par l'utilisateur, question structurée soumise avant le build).
+
+---
+
+### D-2026-09-23-01 — Mécanisme de monitoring du cron n8n ProTennis : dead man's switch externe (healthchecks.io)
+
+**Contexte** : Chantier « Observabilité/monitoring » (n°11 de la liste D-2026-09-21-09), déclenché concrètement par GAP-2026-09-22-12 (le workflow n8n ProTennis s'était désactivé silencieusement, sans alerte, cause racine non déterminée). Trois options soumises à l'utilisateur : (1) dead man's switch externe (healthchecks.io, gratuit), (2) vérification côté app via Vercel Cron + fournisseur email à provisionner, (3) alerte native n8n (2e workflow planifié).
+
+**Décision** : option 1 retenue — le workflow n8n ProTennis enverra un ping HTTP vers un check healthchecks.io après chaque succès du scraping ; healthchecks.io alertera par email si le ping n'arrive pas dans la fenêtre attendue (~24h + marge de grâce). Choix motivé par le découplage total vis-à-vis de n8n lui-même : contrairement à l'option 3, ce mécanisme reste fonctionnel même si n8n plante, se désactive, ou si la VM redémarre mal — exactement le scénario de l'incident déjà survenu (GAP-2026-09-22-12), que l'option 3 n'aurait probablement pas détecté puisqu'elle partage le même point de défaillance.
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur après explication détaillée des trois options). **Cadrage uniquement — aucun build effectué dans cette conversation**, conformément au protocole (une étape de build par conversation). Mise en œuvre (création du compte/check healthchecks.io par l'utilisateur, ajout du nœud HTTP au workflow n8n, vérification réelle) à faire dans une conversation dédiée.

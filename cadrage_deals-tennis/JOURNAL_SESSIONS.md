@@ -95,3 +95,20 @@
 - **GAP-2026-09-22-10 résolu** (page dédiée actée). **GAP-2026-09-22-08 résolu** (recherche centrée article + détail deal construits et vérifiés).
 - Diff non committé à la fin de cette conversation (laissé à la revue de l'utilisateur, conforme au protocole — pas de commit/push sans demande explicite).
 - Prochaine étape : non tranchée — à soumettre explicitement en début de prochaine conversation. Candidats restants : élargissement scraping à d'autres marchands (dépend toujours de GAP-2026-09-21-03, Awin), validation à l'échelle, mentions légales/disclosure affiliation, SEO, accessibilité, observabilité.
+
+## 2026-09-23 (suite) — Cadrage du monitoring n8n (D-2026-09-23-01, GAP-2026-09-23-01)
+
+- Reprise de session (`/clear`), protocole appliqué (ETAT_ACTUEL → GAPS_OUVERTS). Constat en route : le diff « recherche centrée article + détail deal » noté « non commité » dans `ETAT_ACTUEL.md` avait en fait été mergé entretemps (PR #16, `c3ed96c`) — corrigé.
+- Prochaine étape soumise explicitement à l'utilisateur : chantier « Observabilité/monitoring » (n°11 de D-2026-09-21-09) choisi, périmètre restreint au monitoring du cron n8n ProTennis (déclencheur : GAP-2026-09-22-12).
+- Trois mécanismes d'alerte présentés et comparés en détail (avantages/inconvénients) à la demande de l'utilisateur : dead man's switch externe (healthchecks.io), vérification côté app (Vercel Cron + email), alerte native n8n (2e workflow). Recommandation donnée (option 1, découplage du point de défaillance observé) et suivie par l'utilisateur.
+- **D-2026-09-23-01** actée : healthchecks.io retenu.
+- **Aucune étape de build n'a été démarrée** dans cette conversation, conformément au protocole (une étape de build par conversation) — l'utilisateur a explicitement demandé de reporter la mise en œuvre à une conversation dédiée.
+- `GAPS_OUVERTS.md` : nouveau `GAP-2026-09-23-01` ouvert (mécanisme décidé, build restant). `DECISIONS_FONCTIONNELLES.md` et `ETAT_ACTUEL.md` mis à jour.
+- Prochaine étape : construire le monitoring n8n (GAP-2026-09-23-01) — création du compte/check healthchecks.io par l'utilisateur, ajout du nœud HTTP de ping au workflow n8n, vérification réelle bout en bout.
+
+## 2026-09-23 (suite 2) — Feuille de route confirmée (pas de build)
+
+- Reprise de session, état d'avancement général demandé par l'utilisateur (résumé donné : MVP/prod/n8n opérationnels, bloquants identifiés : photo hero, monitoring, marchand unique).
+- Ordre des 4 prochains chantiers confirmé explicitement par l'utilisateur : (1) monitoring n8n, (2) charte graphique, (3) ajout de marchands, (4) reste (CGU/mentions légales, SEO, accessibilité...). Consigné dans `ETAT_ACTUEL.md`.
+- **Aucune étape de build n'a été démarrée** dans cette conversation, conformément au protocole.
+- Prochaine étape : construire le monitoring n8n (GAP-2026-09-23-01) — étape 1 de la feuille de route, à traiter en conversation dédiée.

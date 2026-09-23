@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-23 (Recherche centrée article + page détail deal — construits et vérifiés, non commités)
+**Dernière mise à jour** : 2026-09-23 (Cadrage du monitoring n8n — mécanisme décidé, build à faire dans une prochaine conversation)
 
 > Détail complet du MVP (`tasks.md` T001-T034), du chantier « Déploiement production », du chantier « CI + protection de branche » et du chantier « Automatisation n8n / ProTennis » (build initial, hébergement permanent, rapprochement produit, élargissement à toutes les catégories tennis) archivé tel quel dans `archive/ETAT_ACTUEL_detail_2026-09-22.md`. Résumé ci-dessous.
 
@@ -37,8 +37,23 @@ Suite directe de D-2026-09-22-06 (direction produit du rapprochement multi-march
 - Vérification bout en bout avec données réelles de production : recherche `?q=Pure%20Aero` affiche 1 carte groupée avec badge « 2 offres », navigation normale (`/`) inchangée (aucun badge, liens directs `/go/`), page détail testée sur le produit réel (2 offres listées), cas deal introuvable et deal expiré vérifiés (redirection + bon message).
 - `npm run lint`, `npm run build`, `npm test` (50 tests, 8 fichiers) et `npm run test:e2e` (8 tests) passent tous sans erreur.
 - **GAP-2026-09-22-10 résolu. GAP-2026-09-22-08 résolu** (fondation + recherche + détail tous construits et vérifiés).
-- **Diff non commité à la fin de cette conversation** — laissé à la revue de l'utilisateur (protocole : pas de commit/push sans demande explicite).
+- Mergé depuis (PR #16, commit `c3ed96c`) — arbre propre.
+
+## Chantier « Observabilité : monitoring du cron n8n ProTennis » (cadré le 2026-09-23, pas encore construit)
+
+Déclenché par GAP-2026-09-22-12 (workflow n8n désactivé silencieusement sans alerte, cause racine non déterminée).
+
+- **D-2026-09-23-01** : mécanisme retenu = dead man's switch externe healthchecks.io (ping HTTP du workflow n8n à chaque succès ; alerte email si le ping manque). Trois options détaillées et comparées avec l'utilisateur avant tranchage — choisi pour son découplage total de l'état de n8n (contrairement à une alerte native n8n, qui partagerait le même point de défaillance que l'incident observé).
+- Conformément au protocole (une étape de build par conversation), **aucun build n'a été fait** dans cette conversation — cadrage uniquement.
+- Voir GAP-2026-09-23-01 pour le reste à faire.
+
+## Feuille de route (actée le 2026-09-23, ordre confirmé par l'utilisateur)
+
+1. Monitoring du cron n8n (GAP-2026-09-23-01, mécanisme déjà décidé en D-2026-09-23-01).
+2. Charte graphique / design system (chantier en cours, bloqué sur la photo hero — GAP-2026-09-21-04).
+3. Ajout de marchands supplémentaires (dépend de GAP-2026-09-21-03 — compte Awin à créer par l'utilisateur).
+4. Reste (mentions légales/CGU, disclosure affiliation, SEO, accessibilité, etc. — non détaillé à ce stade).
 
 ## Prochaine étape
 
-Non tranchée — à soumettre explicitement en début de prochaine conversation. Candidats restants : suite du chantier charte graphique (spacing/nav/hero, dépend de GAP-2026-09-21-04), élargissement du scraping à d'autres marchands (dépend de GAP-2026-09-21-03, Awin toujours en attente), validation à l'échelle, mentions légales/disclosure affiliation, SEO, accessibilité, observabilité (pertinent aussi pour surveiller une éventuelle récidive silencieuse du workflow n8n, GAP-2026-09-22-12).
+Construire le monitoring n8n (GAP-2026-09-23-01, mécanisme déjà décidé en D-2026-09-23-01) — étape 1 de la feuille de route ci-dessus, à démarrer en début de prochaine conversation.
