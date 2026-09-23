@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export function Hero() {
   return (
-    <section className="relative isolate mb-8 flex min-h-[280px] items-end overflow-hidden rounded-md sm:min-h-[360px]">
+    <section className="relative isolate mb-8 flex min-h-[150px] items-end overflow-hidden rounded-md sm:min-h-[190px]">
       <Image
         src="/hero/simone-viani-2XPHSXVT_Ls-unsplash.jpg"
         alt=""
