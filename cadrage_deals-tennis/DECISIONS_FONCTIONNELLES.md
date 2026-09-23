@@ -366,3 +366,13 @@ Vérification réelle effectuée avant de trancher : aucun marchand n'expose de 
 **Décision** : `DATABASE_URL` étendue à la cible `preview` en plus de `production` (même valeur, une seule base Neon existe — cohérent avec D-2026-09-21-10, pas de séparation dev/prod à ce stade). Modifié via l'API Vercel (MCP `edit_project_env`) sans jamais lire la valeur en clair (variable de type `sensitive`).
 
 **Statut** : Actée (question soumise à l'utilisateur, validée explicitement). Les futures previews de PR pourront se builder.
+
+---
+
+### D-2026-09-23-05 — Recherche par suggestions cliquables au lieu du filtrage en direct
+
+**Contexte** : Le champ de recherche du catalogue filtrait en direct à chaque frappe (debounce 300ms puis navigation), ce que l'utilisateur a jugé haché comme expérience. Demande explicite, hors feuille de route (le chantier planifié était « charte graphique »), traitée à la place sur demande de l'utilisateur.
+
+**Décision** : le filtrage en direct est retiré. Pendant la frappe (dès 2 caractères), une liste de suggestions d'articles s'affiche sous le champ (nouvel endpoint `GET /api/products/suggest`, `brand + model` de la table `products`, restreint aux articles ayant au moins une offre active). La recherche ne se déclenche que sur trois déclencheurs : clic sur une suggestion (lance la recherche avec ce texte), touche Entrée, clic sur une icône loupe ajoutée dans le champ.
+
+**Statut** : Actée et construite. `components/search-bar.tsx`, `lib/products.ts` (nouveau), `app/api/products/suggest/route.ts` (nouveau). Vérifié réellement : `npm run lint`/`build`/`test` (50 tests, 8 fichiers) et `npm run test:e2e` (10 tests) passent tous ; comportement contrôlé au navigateur (Playwright CLI) contre les données réelles de prod pour les 3 déclencheurs. PR #23 (`feat/recherche-suggestions-clic`).
