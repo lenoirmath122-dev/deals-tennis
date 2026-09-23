@@ -47,11 +47,15 @@
 
 ## 2026-09-22 (suite 7) — GAP-2026-09-22-11 résolu : rapprochement produit intégré au workflow n8n ProTennis
 
-- Reprise de session, protocole appliqué. Requête d'upsert du workflow réécrite en CTE (upsert `products` puis `deals.product_id` résolu par sous-requête), miroir JS de `lib/product-matching.ts` ajouté au nœud de parsing (code dupliqué volontairement, n8n ne peut pas importer le TypeScript du repo).
-- Vérification réelle en trois temps : requête SQL testée contre Neon prod (deal factice, idempotence confirmée, nettoyage vérifié), miroir JS comparé aux 23 offres réelles (0 écart), déploiement + activation sur l'instance n8n permanente.
-- **Découverte (GAP-2026-09-22-12, résolu dans la même session)** : le workflow était en réalité inactif sur l'instance permanente malgré D-2026-09-22-04 (cause racine non déterminée). Réactivé via `n8n publish:workflow` + redémarrage du conteneur.
-- Exécution réelle : 23/23 offres avec `product_id` peuplé, vérifié en base.
-- Prochaine étape : faire évoluer la recherche pour regrouper par `product_id`, puis reprendre l'élargissement du scraping ProTennis à toutes les catégories — ordre à confirmer explicitement.
+- Reprise de session, protocole de reprise appliqué. Prochaine étape soumise explicitement à l'utilisateur (4 options) : "n8n → product_id (GAP-11)" choisi.
+- Requête d'upsert du workflow (`scripts/automation/n8n-protennis-ingestion-workflow.json`) réécrite en CTE pour résoudre `product_id` au moment de l'upsert du deal, via un miroir JS de `lib/product-matching.ts` (`extractModel`) ajouté au nœud de parsing.
+- Vérification réelle contre la base Neon de prod (script temporaire, supprimé après coup) : requête SQL testée avec un deal factice (nouveau produit créé, idempotence confirmée, nettoyage vérifié) ; miroir JS comparé aux 23 offres ProTennis réelles déjà rattachées (0 écart).
+- Accès SSH à la VM Oracle (`opc@145.241.173.33`) obtenu de l'utilisateur pour cette étape (clé retrouvée par l'utilisateur dans ses Téléchargements). Workflow réimporté sur l'instance n8n permanente.
+- Découverte en cours de route (GAP-2026-09-22-12, résolu dans cette même session) : le workflow était en réalité inactif sur l'instance permanente malgré D-2026-09-22-04. Réactivé via `n8n publish:workflow` (commande courante de n8n 2.40.5, `update:workflow` étant dépréciée) + redémarrage du conteneur (nécessaire selon la CLI elle-même pour que l'activation prenne effet).
+- Exécution manuelle réelle déclenchée par l'utilisateur depuis l'UI n8n (CLI `n8n execute` impossible en parallèle du serveur déjà actif, port 5679 occupé) : 23/23 offres ProTennis réelles avec `product_id` peuplé, vérifié en base.
+- `ETAT_ACTUEL.md`, `GAPS_OUVERTS.md` mis à jour. Aucune décision structurante nouvelle nécessitant une entrée `DECISIONS_FONCTIONNELLES.md`.
+- Diff à committer : uniquement `scripts/automation/n8n-protennis-ingestion-workflow.json` (code) et `n8n-protennis-ingestion-README.md` (doc) — le reste de cette étape est de l'infrastructure distante hors dépôt, comme pour le chantier d'hébergement n8n précédent.
+- Prochaine étape : faire évoluer la recherche pour regrouper par `product_id`, puis reprendre l'élargissement du scraping ProTennis à toutes les catégories — ordre à confirmer explicitement en début de prochaine conversation.
 
 ## 2026-09-22 (suite 8) — Élargissement du scraping ProTennis à toutes les catégories tennis (D-2026-09-22-08)
 
@@ -61,6 +65,16 @@
 - Déployé en production sur la VM Oracle (credential réexploitée sans jamais être manipulée en clair), workflow réimporté, republié, conteneur redémarré, `active: true` confirmé.
 - `npm run lint`, `npm run build`, `npm test` (39 tests) passent.
 - Prochaine étape : à confirmer explicitement — candidats restants : recherche centrée article/détail deal (GAP-2026-09-22-08 reste partiellement ouvert), validation à l'échelle, mentions légales/disclosure affiliation, SEO, accessibilité, observabilité.
+
+## 2026-09-22 (suite 9) — Seuils chiffrés pour l'archivage des fichiers de suivi
+
+- État des lieux demandé par l'utilisateur : constat que la règle d'archivage (D-2026-09-21-04) n'avait jamais été appliquée faute de seuil chiffré — `ETAT_ACTUEL.md` (200 lignes) et `JOURNAL_SESSIONS.md` (336 lignes) bien au-delà d'une synthèse lisible, `archive/` resté vide.
+- Découverte en route : une marque de conflit de stash non résolue (`>>>>>>> Stashed changes`) avait été committée par erreur dans `DECISIONS_FONCTIONNELLES.md` par le commit `cb8d3a1` (PR #12). Signalée à l'utilisateur, correction traitée en commit séparé (pas de mélange avec le sujet des seuils).
+- Discussion des seuils avec l'utilisateur (options soumises explicitement) → D-2026-09-22-09 actée : `ETAT_ACTUEL.md` et `JOURNAL_SESSIONS.md` à 150 lignes, `GAPS_OUVERTS.md` sans seuil (retrait immédiat d'un gap tranché), `DECISIONS_FONCTIONNELLES.md` jamais archivé (registre consulté par référence d'ID, motif expliqué à l'utilisateur qui a confirmé après question).
+- `DECISIONS_FONCTIONNELLES.md` et `INDEX.md` mis à jour. Mémoire persistante (feedback méthode de travail) mise à jour avec ces seuils.
+- Deux PR ouvertes sur demande explicite : #13 (fix marque de conflit) et #14 (seuils D-2026-09-22-09). Pas encore mergées.
+- **Aucune étape de build n'a été démarrée** dans cette conversation (conforme au protocole, confirmé explicitement par l'utilisateur).
+- Prochaine étape : une fois les PR #13/#14 mergées, appliquer la condensation + archivage à `ETAT_ACTUEL.md` et `JOURNAL_SESSIONS.md` (déjà au-delà des seuils décidés) — dans une conversation dédiée.
 
 ## 2026-09-23 — Recherche centrée article + détail deal (D-2026-09-22-06/17, résolution de GAP-2026-09-22-08/10)
 
