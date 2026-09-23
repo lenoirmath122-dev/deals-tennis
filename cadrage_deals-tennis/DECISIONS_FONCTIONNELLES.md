@@ -346,3 +346,13 @@ Vérification réelle effectuée avant de trancher : aucun marchand n'expose de 
 **Décision** : `simone-viani-2XPHSXVT_Ls-unsplash.jpg` retenue — format paysage adapté à une bannière hero, larges zones vides pour superposer texte/CTA sans surcharge visuelle, tons désaturés cohérents avec le style épuré déjà acté (bordures fines, radius léger). Les deux autres écartées : la première est un court dur (pas gazon/terre battue comme prévu), la seconde a un format portrait mal adapté à un hero large.
 
 **Statut** : Actée (recommandation soumise avec justification, validée explicitement par l'utilisateur). **GAP-2026-09-21-04 résolu.**
+
+---
+
+### D-2026-09-23-03 — Push + création de PR automatiques en fin d'étape de build
+
+**Contexte** : Le protocole (D-2026-09-21-01, point 4 « Git ») imposait de ne jamais `git push` sans demande explicite à chaque fois. Dans la pratique, l'utilisateur valide systématiquement le push et la création de PR en fin d'étape depuis la mise en place du flux branche → PR → CI (GAP-2026-09-21-02) — la demande explicite répétée à chaque fin d'étape n'apportait plus de contrôle réel, seulement une étape manuelle systématique.
+
+**Décision** : à partir de maintenant, en fin d'étape de build (une fois le commit fait sur une branche dédiée, diff vérifié), Claude Code pousse la branche (`git push -u origin <branche>`) et crée la PR (`gh pr create`) **automatiquement, sans demander confirmation à chaque fois**. Reste inchangé : jamais de commit direct sur `master`, jamais de merge sans passage par CI, jamais de force-push, et toute action git destructrice (reset --hard, push --force, suppression de branche) continue de requérir une confirmation explicite au cas par cas.
+
+**Statut** : Actée (demandée explicitement par l'utilisateur). Modifie D-2026-09-21-01 (point 4) pour la suite du projet.

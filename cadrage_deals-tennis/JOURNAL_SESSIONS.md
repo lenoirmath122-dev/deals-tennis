@@ -135,3 +135,10 @@
 - Vérification réelle : `npm run lint`, `npm run build`, `npm test` (46 tests) passent tous. Rendu contrôlé au navigateur via Playwright (serveur `next dev` de vérification, port 3001 — 3000 déjà occupé par un autre processus, non touché) : desktop et mobile (390×844), texte lisible, overlay cohérent. Captures d'écran temporaires et fichiers Playwright supprimés après contrôle ; serveur de vérification arrêté (port 3001 confirmé libéré).
 - Diff non committé, laissé à la revue de l'utilisateur (conforme au protocole). Point signalé : la branche courante (`docs/cadrage-monitoring-n8n`) correspond à un chantier déjà mergé — une nouvelle branche sera nécessaire avant tout commit de ce travail.
 - Prochaine étape : non tranchée — reste du chantier charte graphique (spacing/layout, style de la nav inspiration Aceternity) ou autre chantier de la feuille de route, à soumettre explicitement en début de prochaine conversation.
+
+## 2026-09-23 (suite 5) — Push + PR de la section hero, nouvelle règle git automatique (D-2026-09-23-03)
+
+- Push de `feat/hero-section` et création de la PR #18 demandés explicitement par l'utilisateur, exécutés.
+- L'utilisateur a ensuite demandé que push + création de PR en fin d'étape de build se fassent désormais **automatiquement**, sans redemander confirmation à chaque fois.
+- **D-2026-09-23-03** actée : modifie le point 4 (Git) du protocole (D-2026-09-21-01). Le merge reste manuel (décision de l'utilisateur après CI). Actions destructrices (reset --hard, force-push, suppression de branche) restent soumises à confirmation au cas par cas.
+- Mis à jour : `DECISIONS_FONCTIONNELLES.md`, `INDEX.md` (règles de travail), mémoire persistante `feedback_methode_travail.md`.
