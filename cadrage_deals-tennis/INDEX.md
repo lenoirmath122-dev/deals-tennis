@@ -24,7 +24,7 @@ Point d'entrée et protocole de reprise du projet. À lire dans cet ordre en dé
 - Une étape de build par conversation, jamais plusieurs enchaînées.
 - Toute décision structurante est soumise explicitement avant d'être actée.
 - Chaque étape livrée est vérifiée avec des données réelles, pas seulement des tests unitaires.
-- Pas de `git push` sans demande explicite ; flux branche → PR → CI → merge squash une fois la protection de branche en place.
+- Flux branche → PR → CI → merge squash. Depuis D-2026-09-23-03 : push de la branche + création de la PR **automatiques** en fin d'étape de build, sans redemander confirmation à chaque fois (le merge, lui, reste manuel — décision de l'utilisateur après revue CI). Toute action git destructrice (reset --hard, push --force, suppression de branche) reste soumise à confirmation explicite au cas par cas.
 
 ## Seuils d'archivage des fichiers de suivi (D-2026-09-22-09)
 
