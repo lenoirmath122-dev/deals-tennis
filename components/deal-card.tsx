@@ -3,19 +3,25 @@ import { formatDiscountBadge, formatFreshnessLabel, formatPrice } from "@/lib/fo
 import { DealImage } from "@/components/deal-image";
 
 export function DealCard({ deal }: { deal: DealCardData }) {
+  const hasMultipleOffers = (deal.offer_count ?? 1) > 1;
+  const href = hasMultipleOffers ? `/deal/${deal.id}` : `/go/${deal.id}`;
+  const linkProps = hasMultipleOffers
+    ? {}
+    : { target: "_blank" as const, rel: "noopener noreferrer" };
+
   return (
     <article className="flex flex-col overflow-hidden rounded-md border border-card-border bg-white">
-      <a
-        href={`/go/${deal.id}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex flex-1 flex-col"
-      >
+      <a href={href} {...linkProps} className="flex flex-1 flex-col">
         <div className="relative aspect-square bg-zinc-100">
           <DealImage src={deal.image_url} alt={deal.title} category={deal.category} />
           <span className="absolute left-2 top-2 rounded bg-discount px-2 py-1 text-xs font-semibold text-discount-foreground">
             {formatDiscountBadge(deal.discount_percentage)}
           </span>
+          {hasMultipleOffers && (
+            <span className="absolute right-2 top-2 rounded bg-zinc-900/80 px-2 py-1 text-xs font-semibold text-white">
+              {deal.offer_count} offres
+            </span>
+          )}
         </div>
         <div className="flex flex-1 flex-col gap-1 p-3">
           <p className="text-xs uppercase tracking-wide text-zinc-500">{deal.brand}</p>

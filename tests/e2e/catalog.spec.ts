@@ -75,4 +75,47 @@ test.describe("Catalogue de bons plans tennis", () => {
     await page.goto("/?notification=deal-expired");
     await expect(page.getByText(/expirer/i)).toBeVisible();
   });
+
+  test("une recherche groupant plusieurs marchands mène à la page détail avec les autres offres", async ({
+    page,
+    context,
+  }) => {
+    await page.goto("/");
+
+    await page.getByRole("searchbox").fill("Pure Aero");
+    await expect(page).toHaveURL(/q=Pure\+Aero/, { timeout: 5000 });
+
+    const groupedCard = page.locator("article").filter({ hasText: "offres" }).first();
+    await expect(groupedCard).toBeVisible();
+
+    await groupedCard.locator("a").click();
+    await expect(page).toHaveURL(/\/deal\//);
+
+    await expect(page.getByRole("heading", { name: "Autres offres pour cet article" })).toBeVisible();
+    const offerLinks = page.locator("li a", { hasText: "Voir l'offre" });
+    await expect(offerLinks.first()).toBeVisible();
+
+    const [popup] = await Promise.all([
+      context.waitForEvent("page"),
+      offerLinks.first().click(),
+    ]);
+    await popup.waitForLoadState();
+    expect(popup.url()).not.toContain("localhost");
+    await popup.close();
+  });
+
+  test("la page détail d'un deal expiré redirige vers le catalogue avec la bonne notification", async ({
+    page,
+  }) => {
+    const [deal] = await sql.query(
+      `SELECT id FROM deals
+       WHERE status != 'active' OR is_active = false OR expires_at <= NOW()
+       LIMIT 1`
+    );
+    expect(deal).toBeDefined();
+
+    await page.goto(`/deal/${deal.id}`);
+    await expect(page).toHaveURL(/notification=deal-expired/);
+    await expect(page.getByText(/expirer/i)).toBeVisible();
+  });
 });

@@ -72,6 +72,13 @@ export interface DealCardData {
   merchant: MerchantSummary;
   created_at: string;
   expires_at: string | null;
+  /** Nombre d'offres actives pour le même article (product_id). Présent uniquement en mode recherche groupée. */
+  offer_count?: number;
+}
+
+export interface DealDetail {
+  deal: DealCardData;
+  otherOffers: DealCardData[];
 }
 
 export interface CatalogPagination {

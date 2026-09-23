@@ -68,17 +68,13 @@ Le runner de migration (`scripts/migrate.ts`, `npm run db:migrate`) réapplique 
 
 ---
 
-## GAP-2026-09-22-08 — Rapprochement produit multi-marchands : fondation construite, reste recherche + détail deal (PARTIELLEMENT RÉSOLU)
+## GAP-2026-09-22-08 — Rapprochement produit multi-marchands : fondation, recherche et détail deal construits (RÉSOLU)
 
-Suite à D-2026-09-22-05, puis élevé par l'utilisateur au rang d'axe central du produit (comparaison de prix multi-marchands). **Direction actée en D-2026-09-22-06** : table `products` (marque+modèle+catégorie) + `deals.product_id` nullable, rapprochement par extraction marque/modèle depuis le titre. Page d'accueil reste centrée deal, recherche devient centrée article, détail d'un deal affiche les autres offres du même article.
+Suite à D-2026-09-22-05, puis élevé par l'utilisateur au rang d'axe central du produit (comparaison de prix multi-marchands). **Direction actée en D-2026-09-22-06** : table `products` (marque+modèle+catégorie) + `deals.product_id` nullable, rapprochement par extraction du modèle depuis le titre (la marque vient en réalité de `deals.brand`, déjà fiable). Page d'accueil reste centrée deal, recherche devient centrée article, détail d'un deal affiche les autres offres du même article.
 
-**Résolu (build)** : table `products` créée (migration `003_products.sql`), `lib/product-matching.ts` (extraction du modèle depuis le titre — la marque vient en réalité de `deals.brand`, déjà fiable, pas d'un parsing du titre, contrairement à ce que D-2026-09-22-06 envisageait), `scripts/backfill-product-ids.ts` exécuté sur les 33 deals réels en base prod (33 rattachés, 0 orpheline, idempotent). Voir ETAT_ACTUEL.md pour le détail complet de vérification.
+**Résolution complète (2026-09-23)** : fondation (table `products`, backfill), intégration au workflow n8n (GAP-2026-09-22-11), recherche groupée par `product_id` en mode recherche (D-2026-09-22-11), page détail `/deal/[dealId]` (D-2026-09-22-10, résout aussi GAP-2026-09-22-10) — tous construits et vérifiés bout en bout avec des données réelles de production. Voir `ETAT_ACTUEL.md` pour le détail.
 
-**Reste à faire** (étapes de build séparées, non commencées) : intégrer le rapprochement au workflow n8n ProTennis pour les nouvelles offres (GAP-2026-09-22-11), évolution du contrat de recherche pour regrouper par `product_id`, rendu du détail d'un deal (voir GAP-2026-09-22-10 pour la modalité page/popup, toujours non tranchée).
-
-**Bloquant sur** : rien — ordre des étapes restantes à confirmer explicitement en début de prochaine conversation.
-
-**Statut** : ouvert au 2026-09-22 (fondation construite et vérifiée, recherche/détail restant à construire).
+**Statut** : résolu le 2026-09-23.
 
 ---
 
@@ -106,13 +102,13 @@ ProTennis est un site multi-sports (tennis, padel, squash, badminton, pickleball
 
 ---
 
-## GAP-2026-09-22-10 — Détail d'un deal : page dédiée ou popup ? (OUVERT)
+## GAP-2026-09-22-10 — Détail d'un deal : page dédiée ou popup ? (RÉSOLU)
 
-D-2026-09-22-06 acte que le clic sur un deal doit permettre de voir les autres offres marchandes du même article, mais la modalité d'affichage (page dédiée type `/deal/[id]` vs popup/modale sur le catalogue) n'est pas tranchée — l'utilisateur a explicitement dit "on verra" sur ce point.
+D-2026-09-22-06 acte que le clic sur un deal doit permettre de voir les autres offres marchandes du même article, mais la modalité d'affichage (page dédiée type `/deal/[id]` vs popup/modale sur le catalogue) n'était pas tranchée.
 
-**Bloquant sur** : décision utilisateur, à trancher au moment du build de cette fonctionnalité (impact sur le routing Next.js, le SEO potentiel d'une page dédiée, la complexité d'implémentation).
+**Résolution (D-2026-09-22-10)** : page dédiée `/deal/[dealId]`. Construite et vérifiée le 2026-09-23 — voir `ETAT_ACTUEL.md`.
 
-**Statut** : ouvert au 2026-09-22.
+**Statut** : résolu le 2026-09-23.
 
 ---
 
