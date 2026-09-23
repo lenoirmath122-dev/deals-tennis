@@ -1,5 +1,15 @@
 # Points ouverts
 
+## GAP-2026-09-23-05 — Marchands supplémentaires : en attente du résultat d'une recherche externe de programmes d'affiliation (OUVERT)
+
+Suite à D-2026-09-23-09 : 6 candidats au scraping direct (Private Sport Shop, Tennis Pro, Wilson, Babolat, Yonex, Head) ont tous été écartés après vérification réelle (robots.txt/CGU, protection anti-bot technique pour Wilson, SPA JS pour Private Sport Shop — voir la décision pour le détail par marchand). L'utilisateur a choisi de rechercher de nouveaux marchands tennis avec un programme d'affiliation public via un outil externe (« cowork ») plutôt que d'assumer un risque supplémentaire de scraping direct.
+
+**Bloquant sur** : action de l'utilisateur hors de cette session (recherche cowork) ; à rapporter en résultat au début d'une prochaine conversation.
+
+**Statut** : ouvert au 2026-09-23.
+
+---
+
 ## GAP-2026-09-23-04 — Mauvaise marque associée à un produit ProTennis (« Head » au lieu de « Babolat ») (OUVERT, mineur)
 
 Découvert en vérifiant le fix du plafond de suggestions (D-2026-09-23-08) : le produit dont le titre scrappé est « Protection raquette de tennis Babolat Super Tape » (catégorie accessoires, marchand ProTennis) est enregistré en base avec `brand = 'Head'` alors qu'il s'agit visiblement d'un article Babolat. Conséquence mineure observée : ce produit remonte dans les suggestions de la recherche « Babolat » (correspondance sur le mot dans `model`) alors que sa fiche affiche la marque Head.

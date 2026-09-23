@@ -415,3 +415,21 @@ Vérification réelle effectuée avant de trancher : aucun marchand n'expose de 
 **Décision** : suppression pure et simple du plafond — la requête retourne tous les articles correspondants de la catégorie choisie, le scroll (déjà en place) gérant l'affichage. Option alternative (relever le plafond à ~30) écartée par l'utilisateur au profit de la suppression complète.
 
 **Statut** : Actée et construite dans cette conversation.
+
+---
+
+### D-2026-09-23-09 — Chantier « Marchands supplémentaires » : candidats scraping direct écartés, pivot vers la recherche de programmes d'affiliation
+
+**Contexte** : Reprise du chantier n°3 de la feuille de route (« Ajout de marchands supplémentaires »). L'utilisateur a proposé 6 candidats pour un scraping direct (canal d'appoint, D-2026-09-21-14) : Private Sport Shop, Tennis Pro, Wilson, Babolat, Yonex, Head. Vérification réelle effectuée (robots.txt + CGU/CGV réelles, curl + WebFetch) :
+- **Tennis Pro** = tennispro.fr, déjà évalué et écarté le 2026-09-22 (D-2026-09-22-01, clause « usage personnel et privé ») — pas un nouveau candidat.
+- **Head** : `robots.txt` bloque tout le site (`Disallow: /`).
+- **Wilson** : protection anti-bot technique réelle (PerimeterX/captcha), bloque même une requête `curl` simple sans JS — même catégorie que Decathlon (blocage technique effectif, pas seulement contractuel).
+- **Babolat** : CGU (Article 4) interdisent explicitement la collecte automatisée en masse — clause directe, comparable à celle de Sport 2000 (déjà écarté).
+- **Yonex** : CGU interdisent la reproduction de contenu sans autorisation et restreignent tout lien entrant à la page d'accueil uniquement (« Link must be to the home page only ») — incompatible avec le mécanisme `/go/[dealId]` (lien direct vers la fiche produit).
+- **Private Sport Shop** : site rendu entièrement en JavaScript côté client (SPA Vue), incompatible avec la méthode technique actée (nœud HTTP n8n + parsing HTML, sans Playwright, D-2026-09-22-02) ; `robots.txt` bloque en plus explicitement `/deals/`, où vivent vraisemblablement ses listings.
+
+Discussion du niveau de risque avec l'utilisateur : pour Babolat/Head, le risque resterait du même ordre que celui déjà assumé pour ProTennis (droit sui generis des bases de données, art. L341-1 CPI — mise en demeure possible, procès improbable à cette échelle) et aurait pu être accepté sur décision explicite. Pour Wilson, le risque est de nature différente (contournement actif d'une protection anti-bot technique, à la marge de l'article 323-1 CP) — écarté de fait, pas seulement proposé à l'arbitrage de l'utilisateur.
+
+**Décision** : plutôt que d'assumer un risque supplémentaire sur Babolat/Head, l'utilisateur pivote vers la recherche de **nouveaux marchands disposant d'un programme d'affiliation public** (pas seulement Awin — tout réseau : Effiliation, Tradedoubler, CJ, Rakuten Advertising, Partnerize, ou programme in-house), via un outil de recherche externe (« cowork »). Un prompt de recherche a été rédigé (critères : vente de matériel tennis en France, programme d'affiliation actif et vérifiable, en excluant les marchands déjà connus/écartés) et remis à l'utilisateur pour exécution hors de cette session.
+
+**Statut** : Actée. Aucun code construit dans cette conversation (étape de cadrage/investigation uniquement). Prochaine étape dépendante du résultat de la recherche cowork, à rapporter par l'utilisateur en début de prochaine conversation.
