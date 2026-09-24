@@ -451,3 +451,35 @@ Discussion du niveau de risque avec l'utilisateur : pour Babolat/Head, le risque
    - Modèle : catalogue d'offres avec redirection d'affiliation vers les marchands (`/go/[dealId]`), marchand actif ProTennis — disclosure à formuler en conséquence.
 
 **Statut** : Actée. Build à suivre dans cette conversation.
+
+---
+
+### D-2026-09-24-01 — Revirement GAP-2026-09-23-06 : usage de scrape.do pour Amazon/Babolat/Wilson/Head/Yonex/Tecnifibre, risque assumé
+
+**Contexte** : GAP-2026-09-23-06 avait explicitement refusé l'usage de scrape.do (service de contournement actif d'anti-bot/CGU) pour Amazon + Babolat/Wilson/Head/Yonex/Tecnifibre + 2 gros revendeurs, au motif d'un risque pénal réel pour le contournement actif d'un dispositif de sécurité technique (art. 323-1 CP, cas concret : PerimeterX chez Wilson) et d'une violation CGU explicite (Babolat/Yonex interdisent la collecte automatisée ; Amazon la sanctionne par résiliation du compte Partenaires). L'alternative retenue à la place était l'ajout manuel supervisé (navigation humaine, script d'insertion réutilisable), jamais construite.
+
+L'utilisateur revient sur ce refus et demande explicitement d'utiliser scrape.do, en reconnaissant que ça contredit la décision précédente.
+
+**Décision** :
+1. **Périmètre** : Amazon, Babolat, Wilson, Head, Yonex, Tecnifibre (2 gros revendeurs non nommés restent hors périmètre de cette décision, à traiter séparément si l'utilisateur les remet sur la table).
+2. **Motif du revirement** : l'utilisateur réévalue le risque (pénal pour le contournement anti-bot technique, CGU/résiliation de compte pour les autres) comme acceptable et l'assume consciemment — même logique que le risque sui generis des bases de données déjà assumé pour ProTennis, mais ici de nature différente (contournement actif, pas seulement extraction de données publiques) et donc pas automatiquement comparable en gravité. Signalé explicitement à l'utilisateur avant la décision.
+3. **Fréquence retenue** : scraping récurrent mais réduit — une fois par mois par marchand, le temps de démarrer (« bootstrap ») le catalogue sur ces marchands, pas un scraping quotidien comme ProTennis.
+4. **Caractère temporaire** : l'utilisateur indique vouloir supprimer ce mécanisme après la phase de démarrage (durée/critère d'arrêt non précisés à ce stade — à clarifier avant le build : volume cible ? date ? disponibilité d'une alternative type affiliation ?).
+5. **Reste à cadrer avant tout code** (explicitement non traité dans cette conversation, une seule étape de cadrage à la fois) : méthode technique par marchand (quelles pages, quels champs, gestion du rendu JS le cas échéant), mapping catégories/prix par marchand (comme pour Sport Outlet FR, GAP-2026-09-24-01), lieu d'exécution (n8n vs script ponctuel), et le critère de fin du mécanisme temporaire.
+
+**Statut** : Actée (revirement explicite et assumé par l'utilisateur). Remplace la position de refus de GAP-2026-09-23-06 pour ces 6 marchands uniquement. Aucun code construit dans cette conversation — cadrage technique détaillé à faire dans une prochaine conversation dédiée.
+
+---
+
+### D-2026-09-24-02 — Nouveau chantier « scraping local gratuit » : remplace scrape.do, périmètre élargi
+
+**Contexte** : L'utilisateur veut un mécanisme gratuit pour alimenter le catalogue en attendant que d'autres programmes d'affiliation se mettent en place, plutôt que le service payant scrape.do (D-2026-09-24-01). Proposition : un outil piloté localement sur sa machine, qui pilote un vrai navigateur (ex. Playwright) pour naviguer/extraire les données comme le ferait un humain, plutôt que des requêtes HTTP directes (méthode n8n existante pour ProTennis) ou un service tiers de contournement anti-bot payant (scrape.do).
+
+**Décision** :
+1. **Remplace scrape.do** : le plan D-2026-09-24-01 (service payant scrape.do) est abandonné au profit de ce nouveau mécanisme, pour le même type d'usage (démarrage/bootstrap du catalogue en attendant des affiliations).
+2. **Mécanisme technique** : navigateur réel piloté localement (Playwright pressenti, à confirmer au cadrage technique détaillé), exécuté **manuellement à la demande par l'utilisateur sur sa machine** — pas de cron, pas de serveur permanent, pas d'automatisation planifiée. Choix motivé par la gratuité et la simplicité (contrairement à l'instance n8n permanente sur VM Oracle utilisée pour ProTennis).
+3. **Périmètre marchands** (liste confirmée explicitement par l'utilisateur) : Tennispro.fr, Sport 2000, SportSystem, Decathlon, Private Sport Shop, Tennis Pro (déjà identifié comme = Tennispro.fr, pas un doublon), Wilson, Babolat, Yonex, Head, Amazon, Tecnifibre, Tennis Point FR — 12 marchands distincts (Tennis Pro fusionné avec Tennispro.fr).
+4. **Point signalé explicitement à l'utilisateur avant d'acter** : piloter un navigateur réel plutôt que scrape.do ne change pas le risque juridique déjà identifié par marchand — les clauses CGU (Babolat, Sport 2000, SportSystem, Amazon, Yonex, Tennispro.fr : usage personnel), le blocage `robots.txt` (Head), et la protection anti-bot technique (Wilson, PerimeterX) restent les mêmes obstacles, qu'on y accède via une requête HTTP, un service tiers ou un navigateur local piloté par un humain. Seul change : le coût (gratuit) et, potentiellement, la détectabilité technique (Wilson/PerimeterX — à vérifier empiriquement, pas garanti). L'utilisateur a déjà assumé ce risque en substance via D-2026-09-24-01 pour 6 de ces marchands ; ce chantier étend l'exécution à un outil local gratuit et à une liste élargie, sur la même base de risque assumé.
+5. **Reste à cadrer avant tout code** (non traité dans cette conversation) : vérification réelle robots.txt/CGU pour les marchands jamais évalués (Private Sport Shop, Tecnifibre, Tennis Point FR — ce dernier ayant par ailleurs une candidature Awin en cours, GAP-2026-09-21-03, à ne pas court-circuiter sans clarification), méthode par marchand (pages ciblées, champs, sélecteurs), mapping catégories/prix par marchand, fréquence/critère d'usage (à la demande = pas de fréquence fixe, mais volume cible ou durée de vie du mécanisme à préciser), structure du script (réutilisable par marchand ou un script par marchand), et gestion de l'insertion en base (même route que le workflow n8n existant ou script séparé).
+
+**Statut** : Actée (remplace D-2026-09-24-01/scrape.do). Aucun code construit dans cette conversation — cadrage technique détaillé (par marchand) à faire dans une prochaine conversation dédiée, conformément au protocole (une étape à la fois).
