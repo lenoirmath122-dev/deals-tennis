@@ -1,28 +1,26 @@
 # Points ouverts
 
-## GAP-2026-09-24-02 — Scraping local gratuit : périmètre défini, reste mapping/URLs/structure à cadrer (OUVERT)
+## GAP-2026-09-24-02 — Scraping local gratuit : rendu/URLs vérifiés pour tout le périmètre, reste le mapping fin des champs (OUVERT)
 
-Suite à D-2026-09-24-02 puis D-2026-09-24-03 : mécanisme retenu pour démarrer le catalogue sans affiliation — outil piloté localement sur la machine de l'utilisateur (navigateur réel, Playwright), exécuté manuellement à la demande, gratuit. Remplace le plan scrape.do (D-2026-09-24-01, abandonné).
+Suite à D-2026-09-24-02, D-2026-09-24-03 puis D-2026-09-24-04 : mécanisme retenu pour démarrer le catalogue sans affiliation — outil piloté localement sur la machine de l'utilisateur (navigateur réel, Playwright), exécuté manuellement à la demande, gratuit. Remplace le plan scrape.do (D-2026-09-24-01, abandonné).
 
-**Vérifications réelles faites (D-2026-09-24-03)** : robots.txt/CGU/CGV lus intégralement et tests Playwright réels effectués pour tous les marchands restants — voir D-2026-09-24-03 pour le détail complet par marchand.
+**Vérifications réelles faites (D-2026-09-24-03 puis D-2026-09-24-04)** : robots.txt/CGU/CGV lus intégralement, mode de rendu (SSR/JS) et URLs de catégorie vérifiés réellement (WebSearch pour trouver les URLs, `curl`/WebFetch/Playwright réel pour confirmer le rendu) pour **tous** les marchands du périmètre actionnable — voir D-2026-09-24-03 et D-2026-09-24-04 pour le détail complet par marchand.
 
-**Périmètre définitif en deux groupes** :
-- **Actionnables (9)** : Tecnifibre (SSR, méthode HTTP+parsing comme ProTennis), Tennis Point FR (rendu JS/Algolia, Playwright ou API Algolia directe à explorer), Head (Playwright requis pour passer un checkpoint anti-bot Vercel), Tennispro.fr, Sport 2000, SportSystem, Babolat, Yonex, Amazon (risque CGU assumé consciemment pour ces 6 derniers, mode de rendu pas encore vérifié).
-- **Différés à la fin du chantier (3)** : Decathlon, Wilson, Private Sport Shop — blocage technique edge confirmé (WAF/challenge JS/PerimeterX) non contourné par un navigateur local simple (testé réellement avec Playwright non headless, profil persistant, IP résidentielle française). Contournement plus poussé explicitement mis de côté pour l'instant.
+**Périmètre définitif en trois groupes** :
+- **Actionnables (8)** : Tecnifibre (SSR), Tennis Point FR (JS/Algolia), Head (Playwright, checkpoint anti-bot), Tennispro.fr (SSR), SportSystem (SSR), Sport 2000 (JS), Babolat (JS, Salesforce Commerce Cloud), Amazon (JS + anti-bot, accessible via Playwright réel testé sans captcha).
+- **Différés — blocage technique edge (3)** : Decathlon, Wilson, Private Sport Shop — WAF/challenge JS/PerimeterX non contourné par un navigateur local simple. Contournement plus poussé explicitement mis de côté pour l'instant.
+- **Différé — problème structurel (1)** : **Yonex** (D-2026-09-24-04) — aucun prix affiché nulle part sur le site officiel + clause CGU interdisant le lien profond vers une fiche produit (incompatible `/go/[dealId]`). À reprendre plus tard via un revendeur (ex. Intersport), pas via yonex.com.
 
-**Reste à cadrer avant tout code, pour les 6 marchands non encore vérifiés techniquement (Tennispro.fr, Sport 2000, SportSystem, Babolat, Yonex, Amazon)** :
-- URLs de catégories exactes (les tentatives devinées cette session ont toutes échoué en 404 — à rechercher précisément par marchand, pas deviner).
-- Mode de rendu (SSR vs JS) et sélecteurs/champs par marchand.
-- Amazon en particulier : protection anti-bot connue pour être sophistiquée (retour `202` vide en requête simple) — à tester avec Playwright avant de considérer la méthode acquise.
+**Reste à cadrer avant tout code, transverse aux 8 marchands actionnables** :
+- Mapping catégorie site → nos 5 catégories pour Sport 2000 (cordages semble fusionné avec accessoires, à confirmer).
+- Structure précise des champs (sélecteurs prix/nom/marque/URL produit) à figer en contrat technique pour Sport 2000/Babolat/Amazon — observée en Playwright (D-2026-09-24-04) mais pas encore écrite en spec exploitable pour un script.
+- Lieu d'insertion en base : réutiliser le schéma `deals`/`products` existant, comme ProTennis/Sport Outlet FR (pas encore confirmé explicitement pour ce mécanisme).
 
-**Reste à cadrer avant tout code, transverse à tous les marchands actionnables** :
-- Mapping catégories/prix par marchand (comme pour Sport Outlet FR, GAP-2026-09-24-01).
-- Volume cible ou durée de vie du mécanisme (outil « à la demande », pas de fréquence fixe, mais critère d'arrêt/désactivation à préciser).
-- Structure technique du/des script(s) et lieu d'insertion en base (réutiliser le schéma `deals`/`products` existant).
+**Décisions transverses déjà tranchées (D-2026-09-24-04)** : structure technique = un script par marchand (comme ProTennis) ; critère d'arrêt = seuil de volume par marchand, fixé à 30 articles tennis actifs répartis entre les 5 catégories, révisable plus tard.
 
-**Bloquant sur** : reprise explicite par l'utilisateur en début de prochaine conversation dédiée à la suite du cadrage technique — pas de code avant ça.
+**Bloquant sur** : reprise explicite par l'utilisateur en début de prochaine conversation dédiée à la suite du cadrage technique (mapping fin des champs) — pas de code avant ça.
 
-**Statut** : ouvert au 2026-09-24, avancé (vérifications techniques faites pour 3 des 9 marchands actionnables, périmètre final tranché).
+**Statut** : ouvert au 2026-09-24, très avancé (rendu/URLs vérifiés pour les 8 marchands actionnables, décisions transverses structure/volume tranchées ; reste le mapping fin des champs par marchand avant le premier build).
 
 ---
 
