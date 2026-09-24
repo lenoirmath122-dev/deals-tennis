@@ -1,5 +1,5 @@
 import { sql } from "@/lib/db";
-import { isValidCategory, sanitizeSearchQuery } from "@/lib/filters";
+import { isValidCategory, sanitizeSearchQuery, type CatalogSort } from "@/lib/filters";
 import type { CatalogResponse, DealCardData, DealDetail } from "@/types/database";
 
 const PER_PAGE = 24;
@@ -25,9 +25,35 @@ const DEAL_CARD_FIELDS = `
 
 export interface GetCatalogDealsParams {
   category?: string;
-  sort?: "newest" | "discount";
+  sort?: CatalogSort;
   q?: string;
   page?: number;
+}
+
+function dealsOrderByClause(sort: CatalogSort | undefined): string {
+  switch (sort) {
+    case "discount":
+      return "d.discount_percentage DESC, d.created_at DESC";
+    case "price_asc":
+      return "d.discounted_price ASC, d.created_at DESC";
+    case "price_desc":
+      return "d.discounted_price DESC, d.created_at DESC";
+    default:
+      return "d.created_at DESC";
+  }
+}
+
+function groupedDealsOrderByClause(sort: CatalogSort | undefined): string {
+  switch (sort) {
+    case "discount":
+      return "sub.discount_percentage DESC, sub.created_at DESC";
+    case "price_asc":
+      return "sub.discounted_price ASC, sub.created_at DESC";
+    case "price_desc":
+      return "sub.discounted_price DESC, sub.created_at DESC";
+    default:
+      return "sub.created_at DESC";
+  }
 }
 
 export async function getCatalogDeals(
@@ -67,10 +93,7 @@ export async function getCatalogDeals(
     return getGroupedCatalogDeals({ whereClause, queryParams, page, offset, sort: params.sort });
   }
 
-  const orderByClause =
-    params.sort === "discount"
-      ? "d.discount_percentage DESC, d.created_at DESC"
-      : "d.created_at DESC";
+  const orderByClause = dealsOrderByClause(params.sort);
 
   const countQuery = `SELECT COUNT(*)::int AS total FROM deals d WHERE ${whereClause}`;
   const countResult = await sql.query(countQuery, queryParams);
@@ -116,12 +139,9 @@ async function getGroupedCatalogDeals({
   queryParams: unknown[];
   page: number;
   offset: number;
-  sort?: "newest" | "discount";
+  sort?: CatalogSort;
 }): Promise<CatalogResponse> {
-  const groupOrderByClause =
-    sort === "discount"
-      ? "sub.discount_percentage DESC, sub.created_at DESC"
-      : "sub.created_at DESC";
+  const groupOrderByClause = groupedDealsOrderByClause(sort);
 
   const countQuery = `
     SELECT COUNT(DISTINCT COALESCE(d.product_id::text, d.id::text))::int AS total

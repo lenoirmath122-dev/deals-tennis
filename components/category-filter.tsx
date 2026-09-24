@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CATEGORY_LABELS, DEAL_CATEGORIES } from "@/lib/filters";
+import { CATEGORY_LABELS, DEAL_CATEGORIES, type CatalogSort } from "@/lib/filters";
 import { buildCatalogHref } from "@/lib/catalog-url";
 
 export function CategoryFilter({
@@ -8,7 +8,7 @@ export function CategoryFilter({
   q,
 }: {
   active: string;
-  sort: "newest" | "discount";
+  sort: CatalogSort;
   q: string;
 }) {
   const categories: string[] = ["all", ...DEAL_CATEGORIES];

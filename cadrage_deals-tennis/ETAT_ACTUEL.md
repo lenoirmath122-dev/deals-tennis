@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-24 (Scraping local gratuit : premier script construit — Tecnifibre, 159 offres réelles, PR #38)
+**Dernière mise à jour** : 2026-09-24 (Petite pré-étape : tri par prix croissant/décroissant sur le catalogue, PR #39)
 
 > Détail complet du MVP (`tasks.md` T001-T034), du chantier « Déploiement production », du chantier « CI + protection de branche » et du chantier « Automatisation n8n / ProTennis » (build initial, hébergement permanent, rapprochement produit, élargissement à toutes les catégories tennis) archivé tel quel dans `archive/ETAT_ACTUEL_detail_2026-09-22.md`. Chantiers du 2026-09-23 (recherche centrée article → fix lien retour accueil) archivés tels quels dans `archive/ETAT_ACTUEL_detail_2026-09-23-recherche_a_retour-accueil.md` (seuil 150 lignes, condensé le 2026-09-24). Résumé ci-dessous.
 
@@ -20,6 +20,7 @@
 - **Fix plafond de 8 suggestions par catégorie** (D-2026-09-23-08) : suppression du `LIMIT 8` en dur dans `getProductSuggestions`. PR #29. A révélé GAP-2026-09-23-04 (donnée produit erronée, mineur, toujours ouvert).
 - **Pages réglementaires** (D-2026-09-23-10) : mentions légales, CGU, confidentialité, affiliation — 4 pages statiques + composant partagé `legal-page.tsx`, footer avec liens. PR #31.
 - **Fix lien de retour vers l'accueil** : footer et pages réglementaires pointent de nouveau vers `/`. PR #32.
+- **Tri par prix croissant/décroissant** (2026-09-24, petite pré-étape avant la suite du scraping) : options `price_asc`/`price_desc` ajoutées au dropdown de tri (mode catalogue normal + mode recherche groupée). Type `CatalogSort`/`SORT_OPTIONS` centralisés dans `lib/filters.ts`. Vérifié réellement au navigateur (ordre des prix confirmé croissant/décroissant sur données de prod). PR #39.
 
 ## Stack réelle
 
@@ -53,7 +54,7 @@ Next.js 16.3.5 (App Router), React 19, TypeScript, Tailwind CSS v4, PostgreSQL (
 
 ## Prochaine étape
 
-Scraping local gratuit : ordre acté Tecnifibre (fait, PR #38) → **Tennispro.fr** → SportSystem → Sport 2000 → Babolat → Tennis Point FR → Head → Amazon. Un marchand par conversation, `/clear` entre chaque, confirmer le marchand en début de session.
+Reprise du scraping local gratuit après la pré-étape de tri par prix (PR #39) : ordre acté Tecnifibre (fait, PR #38) → **Tennispro.fr** → SportSystem → Sport 2000 → Babolat → Tennis Point FR → Head → Amazon. Un marchand par conversation, `/clear` entre chaque, confirmer le marchand en début de session.
 
 Chantier en parallèle toujours en attente : recadrage du mécanisme d'ingestion Sport Outlet FR (GAP-2026-09-24-01) : logique de récupération des données, filtre tennis vs tennis de table, mapping catégories, gestion du prix de référence (`rrp_price`).
 
