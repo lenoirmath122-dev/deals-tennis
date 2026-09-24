@@ -1,6 +1,8 @@
+import type { CatalogSort } from "@/lib/filters";
+
 export interface CatalogQueryState {
   category?: string;
-  sort?: "newest" | "discount";
+  sort?: CatalogSort;
   q?: string;
   page?: number;
 }

@@ -1,5 +1,5 @@
 import { getCatalogDeals } from "@/lib/deals";
-import { isValidCategory, sanitizeSearchQuery } from "@/lib/filters";
+import { isValidCategory, isValidSort, sanitizeSearchQuery } from "@/lib/filters";
 import { DealGrid } from "@/components/deal-grid";
 import { Pagination } from "@/components/pagination";
 import { CategoryFilter } from "@/components/category-filter";
@@ -17,7 +17,8 @@ export default async function CatalogPage({
 
   const rawCategory = typeof params.category === "string" ? params.category : "all";
   const category = isValidCategory(rawCategory) ? rawCategory : "all";
-  const sort = params.sort === "discount" ? "discount" : "newest";
+  const rawSort = typeof params.sort === "string" ? params.sort : "newest";
+  const sort = isValidSort(rawSort) ? rawSort : "newest";
   const q = sanitizeSearchQuery(typeof params.q === "string" ? params.q : "");
   const page = Number(params.page) || 1;
   const notification = typeof params.notification === "string" ? params.notification : null;

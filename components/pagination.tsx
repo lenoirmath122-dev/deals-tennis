@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { buildCatalogHref } from "@/lib/catalog-url";
+import type { CatalogSort } from "@/lib/filters";
 
 function buildPageNumbers(currentPage: number, totalPages: number): (number | "ellipsis")[] {
   const pages = new Set<number>([1, totalPages, currentPage, currentPage - 1, currentPage + 1]);
@@ -27,7 +28,7 @@ export function Pagination({
   currentPage: number;
   totalPages: number;
   category: string;
-  sort: "newest" | "discount";
+  sort: CatalogSort;
   q: string;
 }) {
   if (totalPages <= 1) {

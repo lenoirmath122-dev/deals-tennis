@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { buildCatalogHref } from "@/lib/catalog-url";
-import { CATEGORY_LABELS } from "@/lib/filters";
+import { CATEGORY_LABELS, type CatalogSort } from "@/lib/filters";
 
 const SUGGESTIONS_DEBOUNCE_MS = 200;
 
@@ -19,7 +19,7 @@ export function SearchBar({
 }: {
   defaultValue: string;
   category: string;
-  sort: "newest" | "discount";
+  sort: CatalogSort;
 }) {
   const router = useRouter();
   const [value, setValue] = useState(defaultValue);
