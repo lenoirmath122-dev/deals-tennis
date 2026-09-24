@@ -1,5 +1,13 @@
 # Points ouverts
 
+## GAP-2026-09-24-03 — Scraping local : sélecteurs/URLs restants à vérifier au fil de l'eau (OUVERT)
+
+Le cadrage technique acté (D-2026-09-24-03/04/05) n'a figé des sélecteurs/URLs précis que pour Sport 2000, Babolat et Amazon. Pour Tecnifibre (traité en premier, voir ci-dessous), aucune URL/sélecteur n'avait été vérifié à l'avance — la vérification réelle (robots.txt, structure Shopify, volumes de remise par collection) a été faite directement en début de conversation de build, plutôt que dans une conversation de cadrage séparée. Il reste probablement la même situation pour Tennis Point FR, Head, Tennispro.fr, SportSystem : à vérifier réellement au moment de construire chaque script (pas de suppositions), pas besoin de conversation de cadrage dédiée si la vérification est rapide.
+
+**Statut** : ouvert au 2026-09-24, à traiter au fil de l'eau, un marchand à la fois.
+
+---
+
 ## GAP-2026-09-24-02 — Scraping local gratuit : cadrage technique complet, prêt pour le premier build (RÉSOLU)
 
 Suite à D-2026-09-24-02, D-2026-09-24-03, D-2026-09-24-04 puis D-2026-09-24-05 : mécanisme retenu pour démarrer le catalogue sans affiliation — outil piloté localement sur la machine de l'utilisateur (navigateur réel, Playwright), exécuté manuellement à la demande, gratuit. Remplace le plan scrape.do (D-2026-09-24-01, abandonné).

@@ -67,3 +67,12 @@
 - **D-2026-09-24-05 actée**, clôt le cadrage technique du chantier scraping local gratuit. `GAPS_OUVERTS.md` : **GAP-2026-09-24-02 résolu**. `ETAT_ACTUEL.md` mis à jour (résumé condensé + prochaine étape).
 - Aucun code construit (étape de cadrage uniquement).
 - Prochaine étape : premier build (script(s) de scraping local, un marchand à la fois probablement) — à cadrer précisément en début de prochaine conversation dédiée, pas enchaîné ici.
+
+## 2026-09-24 (session 8) — Scraping local : premier script Tecnifibre construit et vérifié (PR #38)
+
+- Reprise (`/clear`). Choix explicite entre les deux chantiers en attente (Sport Outlet FR vs premier build scraping local) confirmé par l'utilisateur : scraping local.
+- Ordre des 8 marchands actionnables fixé pour la suite (simple → complexe) : Tecnifibre, Tennispro.fr, SportSystem, Sport 2000, Babolat, Tennis Point FR, Head, Amazon — un marchand par conversation, `/clear` entre chaque.
+- Explication donnée à l'utilisateur : pourquoi pas n8n pour ce mécanisme (Playwright/anti-bot incompatible avec le nœud HTTP simple de la VM, risque assumé volontairement gardé manuel/local plutôt qu'automatisé en continu, caractère temporaire de bootstrap) ; chemin complet des données (script local → écriture directe dans la base Neon de prod via `DATABASE_URL` → visible immédiatement sur le site, pas de build/déploiement à refaire).
+- Build Tecnifibre : sélecteurs/URLs jamais vérifiés à l'avance pour ce marchand (contrairement à Sport 2000/Babolat/Amazon) — vérification réelle faite en séance (robots.txt Shopify, volumes de remise par collection via l'endpoint JSON public `/collections/<handle>/products.json`, seule `outlet-articles-de-tennis` ayant de vraies promos). `scripts/scraping/tecnifibre.ts` construit, testé deux fois contre la vraie base Neon de prod (upsert idempotent confirmé), 159 offres réelles, `product_id` à 100%, lint/build clean, visible en prod. PR #38 ouverte sur une branche fraîche depuis `origin/master` (l'ancienne branche `docs/scraping-local-mapping-selecteurs-d05` était déjà mergée sous un autre SHA).
+- `GAPS_OUVERTS.md` : nouveau **GAP-2026-09-24-03** (sélecteurs restants à vérifier au fil de l'eau pour les 4 marchands SSR/JS non encore cadrés en détail).
+- Prochaine étape : Tennispro.fr, nouvelle conversation dédiée.
