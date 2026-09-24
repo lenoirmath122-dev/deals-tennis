@@ -57,3 +57,13 @@
 - Aucun code construit (étape de cadrage uniquement).
 - Reste à cadrer avant tout code : mapping précis catégorie marchand → nos 5 catégories pour Sport 2000 (cordages), structure exacte de prix/nom/marque par marchand pour Sport 2000/Babolat/Amazon (vu en Playwright mais pas figé en spec), lieu d'insertion en base (réutilisation du schéma `deals`/`products`).
 - Prochaine étape : nouvelle conversation dédiée pour finir la spec technique détaillée (mapping prix/champs par marchand + structure du script) puis premier build — à confirmer explicitement en début de prochaine conversation.
+
+## 2026-09-24 (session 7) — Scraping local gratuit : cadrage technique clos (D-2026-09-24-05, GAP-2026-09-24-02 résolu)
+
+- Reprise de session (`/clear`, « on reprend »). Choix explicite soumis à l'utilisateur entre les chantiers en attente (Sport Outlet FR vs suite du scraping local vs charte graphique vs autre) — suite du scraping local choisie.
+- Vérifications réelles (Playwright piloté réellement) pour les 3 marchands dont les sélecteurs manquaient encore : **Sport 2000** (cordages confirmés sans taxon dédié, mélangés dans `accessoires-tennis/equipements-tennis` ; sélecteurs `.mini-product__*` figés), **Babolat** (sélecteurs `div.product[data-pid]`/`.c-price__value[content=...]` figés ; aucune promo trouvée sur tout le site au moment du test), **Amazon** (sélecteurs `[data-asin]`/`.a-price .a-offscreen` figés ; pas d'URL de catégorie fixe, fonctionne par recherche mot-clé).
+- Deux décisions structurantes soumises et tranchées par questions ciblées : traitement de Babolat sans promo (ingéré à 0% de réduction pour l'instant, prix de référence à retravailler plus tard) ; mots-clés de recherche Amazon (simples en français pour démarrer, affinage par marque/modèle différé).
+- Lieu d'insertion en base tranché comme décision mineure (réutilisation du schéma `merchants`/`deals`/`products` existant, cohérent avec tous les marchands déjà intégrés).
+- **D-2026-09-24-05 actée**, clôt le cadrage technique du chantier scraping local gratuit. `GAPS_OUVERTS.md` : **GAP-2026-09-24-02 résolu**. `ETAT_ACTUEL.md` mis à jour (résumé condensé + prochaine étape).
+- Aucun code construit (étape de cadrage uniquement).
+- Prochaine étape : premier build (script(s) de scraping local, un marchand à la fois probablement) — à cadrer précisément en début de prochaine conversation dédiée, pas enchaîné ici.
