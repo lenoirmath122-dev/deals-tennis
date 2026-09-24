@@ -1,22 +1,28 @@
 # Points ouverts
 
-## GAP-2026-09-24-02 — Scraping local gratuit (navigateur piloté localement) : cadrage technique par marchand à faire (OUVERT)
+## GAP-2026-09-24-02 — Scraping local gratuit : périmètre défini, reste mapping/URLs/structure à cadrer (OUVERT)
 
-Suite à D-2026-09-24-02 : nouveau mécanisme retenu pour démarrer le catalogue sans affiliation — outil piloté localement sur la machine de l'utilisateur (navigateur réel, ex. Playwright), exécuté manuellement à la demande, gratuit. Remplace le plan scrape.do (D-2026-09-24-01, abandonné).
+Suite à D-2026-09-24-02 puis D-2026-09-24-03 : mécanisme retenu pour démarrer le catalogue sans affiliation — outil piloté localement sur la machine de l'utilisateur (navigateur réel, Playwright), exécuté manuellement à la demande, gratuit. Remplace le plan scrape.do (D-2026-09-24-01, abandonné).
 
-**Périmètre confirmé par l'utilisateur** : Tennispro.fr, Sport 2000, SportSystem, Decathlon, Private Sport Shop, Wilson, Babolat, Yonex, Head, Amazon, Tecnifibre, Tennis Point FR (12 marchands distincts, Tennis Pro = Tennispro.fr).
+**Vérifications réelles faites (D-2026-09-24-03)** : robots.txt/CGU/CGV lus intégralement et tests Playwright réels effectués pour tous les marchands restants — voir D-2026-09-24-03 pour le détail complet par marchand.
 
-**Reste à cadrer avant tout code** :
-- Vérification réelle robots.txt/CGU jamais faite pour Private Sport Shop, Tecnifibre, Tennis Point FR (ce dernier a une candidature Awin en cours, GAP-2026-09-21-03 — à clarifier si le scraping local vise à le remplacer en attendant ou à coexister avec l'affiliation une fois acceptée).
-- Méthode par marchand (pages ciblées, champs, sélecteurs), rendu JS le cas échéant.
+**Périmètre définitif en deux groupes** :
+- **Actionnables (9)** : Tecnifibre (SSR, méthode HTTP+parsing comme ProTennis), Tennis Point FR (rendu JS/Algolia, Playwright ou API Algolia directe à explorer), Head (Playwright requis pour passer un checkpoint anti-bot Vercel), Tennispro.fr, Sport 2000, SportSystem, Babolat, Yonex, Amazon (risque CGU assumé consciemment pour ces 6 derniers, mode de rendu pas encore vérifié).
+- **Différés à la fin du chantier (3)** : Decathlon, Wilson, Private Sport Shop — blocage technique edge confirmé (WAF/challenge JS/PerimeterX) non contourné par un navigateur local simple (testé réellement avec Playwright non headless, profil persistant, IP résidentielle française). Contournement plus poussé explicitement mis de côté pour l'instant.
+
+**Reste à cadrer avant tout code, pour les 6 marchands non encore vérifiés techniquement (Tennispro.fr, Sport 2000, SportSystem, Babolat, Yonex, Amazon)** :
+- URLs de catégories exactes (les tentatives devinées cette session ont toutes échoué en 404 — à rechercher précisément par marchand, pas deviner).
+- Mode de rendu (SSR vs JS) et sélecteurs/champs par marchand.
+- Amazon en particulier : protection anti-bot connue pour être sophistiquée (retour `202` vide en requête simple) — à tester avec Playwright avant de considérer la méthode acquise.
+
+**Reste à cadrer avant tout code, transverse à tous les marchands actionnables** :
 - Mapping catégories/prix par marchand (comme pour Sport Outlet FR, GAP-2026-09-24-01).
 - Volume cible ou durée de vie du mécanisme (outil « à la demande », pas de fréquence fixe, mais critère d'arrêt/désactivation à préciser).
 - Structure technique du/des script(s) et lieu d'insertion en base (réutiliser le schéma `deals`/`products` existant).
-- Rappel du risque déjà signalé en D-2026-09-24-02 : un navigateur local ne lève pas les obstacles CGU/robots.txt/anti-bot déjà identifiés par marchand — seul le coût change.
 
-**Bloquant sur** : reprise explicite par l'utilisateur en début de prochaine conversation dédiée au cadrage technique détaillé — pas de code avant ça.
+**Bloquant sur** : reprise explicite par l'utilisateur en début de prochaine conversation dédiée à la suite du cadrage technique — pas de code avant ça.
 
-**Statut** : ouvert au 2026-09-24.
+**Statut** : ouvert au 2026-09-24, avancé (vérifications techniques faites pour 3 des 9 marchands actionnables, périmètre final tranché).
 
 ---
 
