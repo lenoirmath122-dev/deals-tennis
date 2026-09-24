@@ -1,12 +1,44 @@
 # Points ouverts
 
-## GAP-2026-09-23-05 — Marchands supplémentaires : en attente du résultat d'une recherche externe de programmes d'affiliation (OUVERT)
+## GAP-2026-09-24-01 — Sport Outlet FR : programme Awin accepté, datafeed pas encore exporté (OUVERT)
+
+Résultat de la recherche cowork (GAP-2026-09-23-05) : Sport Outlet FR identifié comme marchand tennis avec programme d'affiliation public sur Awin. Compte Awin publisher créé par l'utilisateur et candidature au programme Sport Outlet FR **acceptée** — résout de fait le blocage compte Awin de GAP-2026-09-21-03 (au moins pour ce marchand).
+
+**Bloquant sur** : l'utilisateur n'a pas encore exporté le datafeed produit depuis le dashboard publisher Awin (Products → Product Feeds). Format exact (CSV/XML, champs disponibles, fréquence de mise à jour) non vérifié — rien ne peut être cadré techniquement avant d'avoir examiné un export réel.
+
+**Prochaine étape (à confirmer en début de prochaine conversation)** : l'utilisateur récupère l'export (fichier ou URL directe du flux) et le fournit ; examen du format réel avant de proposer un mécanisme d'ingestion (une seule étape de cadrage, pas de code avant confirmation).
+
+**Statut** : ouvert au 2026-09-24.
+
+---
+
+## GAP-2026-09-23-06 — Amazon Partenaires : compte créé, PA-API non accessible, mode d'ajout manuel non cadré (OUVERT)
+
+L'utilisateur a rejoint le programme Amazon Partenaires (Amazon Associates France). Vérifié réellement : PA-API (Product Advertising API) inaccessible pour l'instant — Amazon exige 3 ventes qualifiées sous 180 jours avant d'ouvrir l'accès. Scraping direct d'Amazon écarté d'emblée (CGU du programme l'interdisent explicitement, motif de résiliation du compte affilié — distinct des cas robots.txt/anti-bot déjà évalués pour d'autres marchands, voir GAP-2026-09-23-05).
+
+Décision actée : en attendant l'éligibilité PA-API, ajouter manuellement quelques offres Amazon en base (lien produit + tag associé) pour générer du volume et atteindre les 3 ventes plus vite.
+
+**Mise à jour 2026-09-24 — élargi à 3 autres marchands, cadrage du mécanisme en cours** : suite à une proposition de l'utilisateur d'utiliser scrape.do (service de contournement actif d'anti-bot/CGU) pour Amazon + Babolat/Wilson/Head/Yonex/Tecnifibre + 2 gros revendeurs, refusé (risque pénal réel pour le contournement anti-bot actif — art. 323-1 CP — et violation CGU explicite pour Babolat/Yonex ; résiliation de compte pour Amazon). Alternative retenue : ce même mécanisme d'ajout manuel, étendu à **Amazon, Wilson, Head, Babolat** (Yonex exclu — CGU restreint tout lien entrant à sa page d'accueil, incompatible avec `/go/[dealId]`, indépendamment de la méthode de collecte). Tecnifibre + 2 gros revendeurs pas encore évalués (robots.txt/CGU à vérifier séparément, hors scope de ce GAP).
+
+Décisions actées dans cette discussion (à reconfirmer en tête de la prochaine session, rien construit) :
+- **Mécanisme d'insertion** : script réutilisable (option A), ex. `scripts/add-manual-deal.ts` — pas de SQL ponctuel à chaque fois.
+- **Collecte des liens/infos produit** : navigation supervisée (humain présent — via Claude in Chrome par l'utilisateur, ou Playwright interactif piloté par Claude Code avec validation à chaque étape) — jamais de script headless non supervisé, qui redeviendrait fonctionnellement un scraper automatisé (anti-bot Wilson, `robots.txt` Head, CGU Babolat visant explicitement la « collecte automatisée »).
+- **Fraîcheur du prix** : même règle pour les 4 marchands — pas de synchro automatique, pas d'expiration courte, risque de prix obsolète accepté (cohérent avec la décision Amazon initiale).
+- **Reste à faire avant tout build** : estimer réellement (pas deviner) le coût en tokens d'une collecte Playwright supervisée par produit, via un essai concret sur un produit réel (proposé, pas encore réalisé) — conditionne si l'option 2 (collecte par Claude via Playwright) est praticable à un rythme hebdomadaire de 10-20 articles, ou si l'utilisateur doit collecter lui-même via Claude in Chrome (coût zéro token côté Claude Code).
+
+**Bloquant sur** : reprise explicite par l'utilisateur en début de prochaine conversation — décider si on fait l'essai de mesure de tokens, puis construire le script d'insertion.
+
+**Statut** : ouvert au 2026-09-24.
+
+---
+
+## GAP-2026-09-23-05 — Marchands supplémentaires : en attente du résultat d'une recherche externe de programmes d'affiliation (RÉSOLU)
 
 Suite à D-2026-09-23-09 : 6 candidats au scraping direct (Private Sport Shop, Tennis Pro, Wilson, Babolat, Yonex, Head) ont tous été écartés après vérification réelle (robots.txt/CGU, protection anti-bot technique pour Wilson, SPA JS pour Private Sport Shop — voir la décision pour le détail par marchand). L'utilisateur a choisi de rechercher de nouveaux marchands tennis avec un programme d'affiliation public via un outil externe (« cowork ») plutôt que d'assumer un risque supplémentaire de scraping direct.
 
-**Bloquant sur** : action de l'utilisateur hors de cette session (recherche cowork) ; à rapporter en résultat au début d'une prochaine conversation.
+**Résolution (2026-09-24)** : premier résultat rapporté — Sport Outlet FR, programme Awin accepté. Suite du cadrage technique dans GAP-2026-09-24-01.
 
-**Statut** : ouvert au 2026-09-23.
+**Statut** : résolu le 2026-09-24 (premier candidat trouvé ; d'autres résultats de la recherche cowork peuvent encore être rapportés ultérieurement, traités au cas par cas si l'utilisateur en apporte).
 
 ---
 
@@ -54,13 +86,15 @@ Vérifié réellement sur `https://deals-tennis.vercel.app` après ce déploieme
 
 ---
 
-## GAP-2026-09-21-03 — Pas de compte Awin publisher, datafeed non vérifiable (OUVERT)
+## GAP-2026-09-21-03 — Pas de compte Awin publisher, datafeed non vérifiable (PARTIELLEMENT RÉSOLU)
 
-Tennis Point FR (Awin #13266) et Padel-Point FR (Awin #25160) annoncent un flux de données produit (datafeed) dans les avantages de leur programme Awin, mais le format exact (CSV/XML, champs, fréquence) n'est visible qu'après création d'un compte affilié Awin et acceptation de la candidature sur chacun des deux programmes. Aucun compte Awin n'existe à ce jour.
+Tennis Point FR (Awin #13266) et Padel-Point FR (Awin #25160) annoncent un flux de données produit (datafeed) dans les avantages de leur programme Awin, mais le format exact (CSV/XML, champs, fréquence) n'est visible qu'après création d'un compte affilié Awin et acceptation de la candidature sur chacun des deux programmes.
 
-**Bloquant sur** : action de l'utilisateur, hors périmètre de Claude Code (création de compte, informations d'entreprise/paiement, candidature aux programmes).
+**Mise à jour 2026-09-24** : un compte Awin publisher a été créé par l'utilisateur (voir GAP-2026-09-24-01, contexte Sport Outlet FR) — le blocage « aucun compte Awin » est levé. Reste ouvert spécifiquement pour Tennis Point FR / Padel-Point FR : candidature à ces deux programmes pas encore soumise/acceptée, datafeed toujours non vérifié pour eux.
 
-**Statut** : ouvert au 2026-09-21.
+**Bloquant sur** : action de l'utilisateur (candidature aux deux programmes depuis le compte Awin désormais actif).
+
+**Statut** : ouvert au 2026-09-24 (compte Awin résolu, candidatures Tennis Point/Padel-Point restent à faire).
 
 ---
 

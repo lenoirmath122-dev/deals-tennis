@@ -5,6 +5,14 @@
 > Sessions du 2026-09-23 (cadrage monitoring n8n) au 2026-09-23 (hauteur du hero réduite) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-23-monitoring_a_hero-hauteur.md` (même règle, condensation du 2026-09-23, chantier marchands supplémentaires).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
 
+## 2026-09-24 — Marchands supplémentaires : Sport Outlet FR, compte Awin actif (GAP-2026-09-24-01)
+
+- Reprise de session (`/clear`). L'utilisateur demande « peut-on ajouter les articles de Sport Outlet FR ? » — sans autre contexte initial.
+- Clarification par questions ciblées avant tout code (ajout de marchand = décision structurante) : Sport Outlet FR est le premier résultat de la recherche cowork (GAP-2026-09-23-05), programme d'affiliation Awin confirmé, compte Awin publisher créé par l'utilisateur et candidature Sport Outlet FR acceptée. Datafeed produit pas encore exporté côté utilisateur — impossible de cadrer le mécanisme d'ingestion sans avoir examiné un export réel.
+- Aucun code construit (étape de cadrage/investigation uniquement, bloquée sur une action utilisateur hors session).
+- `GAPS_OUVERTS.md` : nouveau **GAP-2026-09-24-01** (bloquant sur export du datafeed) ; **GAP-2026-09-23-05 résolu** (résultat cowork rapporté) ; **GAP-2026-09-21-03 partiellement résolu** (compte Awin créé, lève le blocage générique — Tennis Point FR/Padel-Point FR restent à candidater séparément). `ETAT_ACTUEL.md` mis à jour (chantier « Marchands supplémentaires »).
+- Prochaine étape : l'utilisateur exporte le datafeed Sport Outlet FR depuis Awin (dashboard publisher) et le fournit en début de prochaine conversation, pour examen du format réel avant tout cadrage technique.
+
 ## 2026-09-23 (suite 12) — Pages réglementaires : mentions légales, CGU, confidentialité, affiliation (D-2026-09-23-10)
 
 - Reprise de session (`/clear`). L'utilisateur demande de reprendre le point 4 de la feuille de route (« pages réglementaires »), jamais cadré jusqu'ici.
