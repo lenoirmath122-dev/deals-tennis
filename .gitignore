@@ -48,3 +48,9 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# exports de flux affiliation (datafeeds bruts, ne pas committer)
+*.csv.gz
+
+# artefacts locaux de l'outil playwright-cli (snapshots/logs de session)
+.playwright-cli/
