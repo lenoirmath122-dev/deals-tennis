@@ -5,13 +5,41 @@
 > Sessions du 2026-09-23 (cadrage monitoring n8n) au 2026-09-23 (hauteur du hero réduite) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-23-monitoring_a_hero-hauteur.md` (même règle, condensation du 2026-09-23, chantier marchands supplémentaires).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
 
-## 2026-09-24 — Marchands supplémentaires : Sport Outlet FR, compte Awin actif (GAP-2026-09-24-01)
+## 2026-09-24 (session 1) — Marchands supplémentaires : Sport Outlet FR, compte Awin actif (GAP-2026-09-24-01)
 
 - Reprise de session (`/clear`). L'utilisateur demande « peut-on ajouter les articles de Sport Outlet FR ? » — sans autre contexte initial.
 - Clarification par questions ciblées avant tout code (ajout de marchand = décision structurante) : Sport Outlet FR est le premier résultat de la recherche cowork (GAP-2026-09-23-05), programme d'affiliation Awin confirmé, compte Awin publisher créé par l'utilisateur et candidature Sport Outlet FR acceptée. Datafeed produit pas encore exporté côté utilisateur — impossible de cadrer le mécanisme d'ingestion sans avoir examiné un export réel.
 - Aucun code construit (étape de cadrage/investigation uniquement, bloquée sur une action utilisateur hors session).
 - `GAPS_OUVERTS.md` : nouveau **GAP-2026-09-24-01** (bloquant sur export du datafeed) ; **GAP-2026-09-23-05 résolu** (résultat cowork rapporté) ; **GAP-2026-09-21-03 partiellement résolu** (compte Awin créé, lève le blocage générique — Tennis Point FR/Padel-Point FR restent à candidater séparément). `ETAT_ACTUEL.md` mis à jour (chantier « Marchands supplémentaires »).
 - Prochaine étape : l'utilisateur exporte le datafeed Sport Outlet FR depuis Awin (dashboard publisher) et le fournit en début de prochaine conversation, pour examen du format réel avant tout cadrage technique.
+
+## 2026-09-24 (session 2) — Sport Outlet FR : navigation Awin guidée, export obtenu et examiné (GAP-2026-09-24-01)
+
+- Reprise (`/clear`) sur GAP-2026-09-24-01. L'utilisateur n'avait que le mail de confirmation d'affiliation, pas encore trouvé l'outil d'export — session passée à le guider pas à pas dans l'UI Awin (Annonceurs → fiche Sport Outlet FR → Outils → Create-a-Feed) puisque Claude Code n'a pas de session Awin connectée (refus explicite de demander les identifiants du compte à l'utilisateur pour se connecter à sa place).
+- Sélection des colonnes du flux discutée en comparant explicitement à `data-model.md` (`deals`, `merchants`, couleur migration 004) : proposition initiale ciblée (`brand_name`, `product_model`, `colour`, `rrp_price`), l'utilisateur a préféré tout cocher et filtrer après (décision mineure acceptée — pas de risque, juste un fichier plus lourd).
+- Export réel téléchargé par l'utilisateur (`21502-48225-fr_FR-Default.csv.gz`, déposé dans le dépôt puis ajouté à `.gitignore` — `*.csv.gz`, ne doit jamais être committé). Décompressé et parsé réellement (parseur CSV maison en Node, pas de Python disponible sur la machine) : 7818 lignes, 0 malformée.
+- Constats réels tirés de l'examen (détail complet dans `GAPS_OUVERTS.md`) : volume de vrais produits tennis très faible (~30 après exclusion du tennis de table, qui doit être filtré comme un sport à part) ; `product_model` vide chez ce marchand (extraction depuis le titre à refaire, comme ProTennis) ; prix de référence = `rrp_price` (`product_price_old` vide), mais format décimal incohérent entre colonnes (virgule vs point) et certaines valeurs à `0,00` à écarter ; mapping catégories marchand → nos 5 catégories tennis non trivial.
+- L'utilisateur a choisi de ne pas enchaîner le cadrage technique (filtre tennis/tennis de table, mapping catégories, règle prix de référence) dans cette conversation — reporté à une nouvelle conversation dédiée. Aucun code construit.
+- `GAPS_OUVERTS.md` et `ETAT_ACTUEL.md` mis à jour avec le détail des constats. `.gitignore` mis à jour (`*.csv.gz`).
+- Prochaine étape : nouvelle conversation de cadrage (pas de build) sur le mécanisme d'ingestion Sport Outlet FR, en repartant des constats listés dans GAP-2026-09-24-01.
+
+## 2026-09-24 (session 3) — Revirement scrape.do pour Amazon/Babolat/Wilson/Head/Yonex/Tecnifibre (D-2026-09-24-01)
+
+- Reprise de session. L'utilisateur ouvre directement sur un sujet différent de la « prochaine étape » attendue (Sport Outlet FR) : demande d'utiliser scrape.do pour scraper plusieurs sites, en reconnaissant explicitement que ça contredit une décision précédente.
+- Rappel du contexte trouvé dans `GAPS_OUVERTS.md` (GAP-2026-09-23-06) : cette même proposition (scrape.do pour Amazon + Babolat/Wilson/Head/Yonex/Tecnifibre + 2 revendeurs) avait déjà été refusée le 2026-09-24 (risque pénal art. 323-1 CP pour le contournement anti-bot actif de Wilson, violation CGU explicite Babolat/Yonex, résiliation de compte Amazon).
+- Cadrage par questions ciblées avant tout code (décision structurante, revirement d'une décision antérieure) : périmètre confirmé (Amazon, Babolat, Wilson, Head, Yonex, Tecnifibre), motif du revirement (l'utilisateur réévalue le risque comme acceptable et l'assume consciemment), portée temporaire précisée (scraping récurrent mais réduit, une fois par mois par marchand, le temps de démarrer le catalogue — pas un cron quotidien comme ProTennis).
+- Aucun code construit (étape de cadrage uniquement). Cadrage technique détaillé (méthode par marchand, mapping catégories/prix, lieu d'exécution, critère d'arrêt du mécanisme temporaire) explicitement reporté à une prochaine conversation.
+- **D-2026-09-24-01 actée** dans `DECISIONS_FONCTIONNELLES.md`. `GAPS_OUVERTS.md` (GAP-2026-09-23-06) mis à jour pour refléter le revirement, ancien plan d'ajout manuel conservé pour mémoire.
+- Prochaine étape : nouvelle conversation dédiée au cadrage technique du scraping scrape.do (méthode par marchand, mapping, critère d'arrêt) — pas de code avant ça. À confirmer explicitement en début de prochaine conversation (alternative possible : reprise de Sport Outlet FR, GAP-2026-09-24-01).
+
+## 2026-09-24 (session 4) — Nouveau chantier scraping local gratuit, remplace scrape.do (D-2026-09-24-02)
+
+- Reprise de session (`/clear`). L'utilisateur propose une idée exploratoire : un outil qui scrape sur sa machine en pilotant un vrai navigateur, « comme si c'était moi ». Réponse courte (recommandation + compromis) sans construire, puis l'utilisateur confirme vouloir cadrer ce chantier maintenant, motivé par l'objectif d'avoir un mécanisme gratuit avant les affiliations.
+- Cadrage par questions ciblées avant tout code (décision structurante) : périmètre marchands (union des deux listes déjà évoquées — scrape.do + candidats scraping direct écartés — plus Tennis Point FR ajouté explicitement par l'utilisateur), mode d'exécution (manuel à la demande, pas de cron/serveur), relation à scrape.do (remplace, ne coexiste pas).
+- Point signalé explicitement à l'utilisateur avant d'acter la décision : un navigateur local ne change pas le risque juridique déjà identifié par marchand (CGU, robots.txt, anti-bot) — seul le coût change (gratuit vs scrape.do payant).
+- `DECISIONS_FONCTIONNELLES.md` : nouvelle **D-2026-09-24-02**. `GAPS_OUVERTS.md` : nouveau **GAP-2026-09-24-02** (cadrage technique par marchand restant à faire), **GAP-2026-09-23-06 marqué remplacé**. `ETAT_ACTUEL.md` mis à jour (chantier scraping local gratuit, prochaine étape révisée).
+- Aucun code construit (étape de cadrage uniquement).
+- Prochaine étape : nouvelle conversation dédiée au cadrage technique détaillé du scraping local (vérification robots.txt/CGU restante pour Private Sport Shop/Tecnifibre/Tennis Point FR, méthode par marchand, mapping catégories/prix, structure du script, critère d'arrêt) — voir GAP-2026-09-24-02.
 
 ## 2026-09-23 (suite 12) — Pages réglementaires : mentions légales, CGU, confidentialité, affiliation (D-2026-09-23-10)
 

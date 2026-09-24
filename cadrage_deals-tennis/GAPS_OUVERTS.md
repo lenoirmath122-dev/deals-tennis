@@ -1,34 +1,64 @@
 # Points ouverts
 
-## GAP-2026-09-24-01 — Sport Outlet FR : programme Awin accepté, datafeed pas encore exporté (OUVERT)
+## GAP-2026-09-24-02 — Scraping local gratuit (navigateur piloté localement) : cadrage technique par marchand à faire (OUVERT)
 
-Résultat de la recherche cowork (GAP-2026-09-23-05) : Sport Outlet FR identifié comme marchand tennis avec programme d'affiliation public sur Awin. Compte Awin publisher créé par l'utilisateur et candidature au programme Sport Outlet FR **acceptée** — résout de fait le blocage compte Awin de GAP-2026-09-21-03 (au moins pour ce marchand).
+Suite à D-2026-09-24-02 : nouveau mécanisme retenu pour démarrer le catalogue sans affiliation — outil piloté localement sur la machine de l'utilisateur (navigateur réel, ex. Playwright), exécuté manuellement à la demande, gratuit. Remplace le plan scrape.do (D-2026-09-24-01, abandonné).
 
-**Bloquant sur** : l'utilisateur n'a pas encore exporté le datafeed produit depuis le dashboard publisher Awin (Products → Product Feeds). Format exact (CSV/XML, champs disponibles, fréquence de mise à jour) non vérifié — rien ne peut être cadré techniquement avant d'avoir examiné un export réel.
+**Périmètre confirmé par l'utilisateur** : Tennispro.fr, Sport 2000, SportSystem, Decathlon, Private Sport Shop, Wilson, Babolat, Yonex, Head, Amazon, Tecnifibre, Tennis Point FR (12 marchands distincts, Tennis Pro = Tennispro.fr).
 
-**Prochaine étape (à confirmer en début de prochaine conversation)** : l'utilisateur récupère l'export (fichier ou URL directe du flux) et le fournit ; examen du format réel avant de proposer un mécanisme d'ingestion (une seule étape de cadrage, pas de code avant confirmation).
+**Reste à cadrer avant tout code** :
+- Vérification réelle robots.txt/CGU jamais faite pour Private Sport Shop, Tecnifibre, Tennis Point FR (ce dernier a une candidature Awin en cours, GAP-2026-09-21-03 — à clarifier si le scraping local vise à le remplacer en attendant ou à coexister avec l'affiliation une fois acceptée).
+- Méthode par marchand (pages ciblées, champs, sélecteurs), rendu JS le cas échéant.
+- Mapping catégories/prix par marchand (comme pour Sport Outlet FR, GAP-2026-09-24-01).
+- Volume cible ou durée de vie du mécanisme (outil « à la demande », pas de fréquence fixe, mais critère d'arrêt/désactivation à préciser).
+- Structure technique du/des script(s) et lieu d'insertion en base (réutiliser le schéma `deals`/`products` existant).
+- Rappel du risque déjà signalé en D-2026-09-24-02 : un navigateur local ne lève pas les obstacles CGU/robots.txt/anti-bot déjà identifiés par marchand — seul le coût change.
+
+**Bloquant sur** : reprise explicite par l'utilisateur en début de prochaine conversation dédiée au cadrage technique détaillé — pas de code avant ça.
 
 **Statut** : ouvert au 2026-09-24.
 
 ---
 
-## GAP-2026-09-23-06 — Amazon Partenaires : compte créé, PA-API non accessible, mode d'ajout manuel non cadré (OUVERT)
+## GAP-2026-09-24-01 — Sport Outlet FR : datafeed obtenu et examiné, mécanisme d'ingestion à recadrer (OUVERT)
+
+Résultat de la recherche cowork (GAP-2026-09-23-05) : Sport Outlet FR identifié comme marchand tennis avec programme d'affiliation public sur Awin. Compte Awin publisher créé par l'utilisateur et candidature au programme Sport Outlet FR **acceptée** — résout de fait le blocage compte Awin de GAP-2026-09-21-03 (au moins pour ce marchand).
+
+**Export obtenu et examiné réellement (2026-09-24)** : datafeed généré via l'outil Awin "Create-a-Feed" (toutes colonnes cochées, CSV/`,`/gzip), téléchargé par l'utilisateur (`21502-48225-fr_FR-Default.csv.gz`, hors dépôt Git — voir `.gitignore`). URL Awin de téléchargement contient une clé API personnelle (secret), à traiter comme `DATABASE_URL` le moment venu (variable d'environnement, jamais committée). 7818 produits, 0 ligne malformée.
+
+**Constats issus de l'examen réel** (à reprendre/creuser en détail dans la prochaine conversation de cadrage) :
+- Volume de produits tennis réel très faible : ~65 lignes mentionnent "tennis" (nom ou catégorie) sur 7818, et une partie sont en fait du **tennis de table** (à exclure, symétrique au filtre squash/padel/badminton de ProTennis) — volume utile estimé à l'ordre d'une trentaine d'articles. Catalogue du marchand très majoritairement football/mode sportive.
+- `product_model` est une colonne vide chez ce marchand (contrairement à l'hypothèse initiale) — extraction du modèle depuis le titre à refaire comme pour ProTennis, pas de lecture directe possible.
+- Candidat pour `original_price` : `rrp_price` (peuplé, cohérent) — pas `product_price_old` (vide sur l'échantillon). Certaines lignes ont `rrp_price = "0,00"` (pas de prix de référence connu), incompatible avec la contrainte `original_price > 0` : à écarter ou traiter à part, pas à forcer.
+- Format des prix incohérent entre colonnes : `search_price`/`store_price` en point décimal (`89.99`), `rrp_price` en virgule française (`139,95`) — à gérer explicitement au parsing.
+- Catégorisation du marchand (`merchant_product_category_path`) ne recoupe pas directement nos 5 catégories (`raquettes`, `cordages`, `chaussures`, `textile`, `accessoires`) — mapping à définir.
+
+**Décision de l'utilisateur (2026-09-24)** : ne pas poursuivre le cadrage technique dans cette conversation. Tout ce qui précède (logique de récupération des données, filtrage tennis vs tennis de table, mapping catégories, gestion du prix de référence) sera **recadré dans une nouvelle conversation dédiée**, pas enchaîné ici.
+
+**Prochaine étape** : nouvelle conversation de cadrage (pas de build) sur le mécanisme d'ingestion Sport Outlet FR — reprendre les constats ci-dessus, décider du filtre tennis/tennis de table, du mapping catégories, de la règle sur `rrp_price = 0`, avant toute écriture de code.
+
+**Statut** : ouvert au 2026-09-24.
+
+---
+
+## GAP-2026-09-23-06 — Amazon Partenaires : compte créé, PA-API non accessible, mode d'ajout manuel non cadré (REMPLACÉ par GAP-2026-09-24-02)
 
 L'utilisateur a rejoint le programme Amazon Partenaires (Amazon Associates France). Vérifié réellement : PA-API (Product Advertising API) inaccessible pour l'instant — Amazon exige 3 ventes qualifiées sous 180 jours avant d'ouvrir l'accès. Scraping direct d'Amazon écarté d'emblée (CGU du programme l'interdisent explicitement, motif de résiliation du compte affilié — distinct des cas robots.txt/anti-bot déjà évalués pour d'autres marchands, voir GAP-2026-09-23-05).
 
 Décision actée : en attendant l'éligibilité PA-API, ajouter manuellement quelques offres Amazon en base (lien produit + tag associé) pour générer du volume et atteindre les 3 ventes plus vite.
 
-**Mise à jour 2026-09-24 — élargi à 3 autres marchands, cadrage du mécanisme en cours** : suite à une proposition de l'utilisateur d'utiliser scrape.do (service de contournement actif d'anti-bot/CGU) pour Amazon + Babolat/Wilson/Head/Yonex/Tecnifibre + 2 gros revendeurs, refusé (risque pénal réel pour le contournement anti-bot actif — art. 323-1 CP — et violation CGU explicite pour Babolat/Yonex ; résiliation de compte pour Amazon). Alternative retenue : ce même mécanisme d'ajout manuel, étendu à **Amazon, Wilson, Head, Babolat** (Yonex exclu — CGU restreint tout lien entrant à sa page d'accueil, incompatible avec `/go/[dealId]`, indépendamment de la méthode de collecte). Tecnifibre + 2 gros revendeurs pas encore évalués (robots.txt/CGU à vérifier séparément, hors scope de ce GAP).
+**Mise à jour 2026-09-24 (première proposition, refusée)** : suite à une proposition de l'utilisateur d'utiliser scrape.do (service de contournement actif d'anti-bot/CGU) pour Amazon + Babolat/Wilson/Head/Yonex/Tecnifibre + 2 gros revendeurs, refusé (risque pénal réel pour le contournement anti-bot actif — art. 323-1 CP — et violation CGU explicite pour Babolat/Yonex ; résiliation de compte pour Amazon). Alternative retenue à ce moment-là : mécanisme d'ajout manuel, étendu à **Amazon, Wilson, Head, Babolat** (Yonex exclu — CGU restreint tout lien entrant à sa page d'accueil, incompatible avec `/go/[dealId]`, indépendamment de la méthode de collecte). Tecnifibre + 2 gros revendeurs pas évalués.
 
-Décisions actées dans cette discussion (à reconfirmer en tête de la prochaine session, rien construit) :
-- **Mécanisme d'insertion** : script réutilisable (option A), ex. `scripts/add-manual-deal.ts` — pas de SQL ponctuel à chaque fois.
-- **Collecte des liens/infos produit** : navigation supervisée (humain présent — via Claude in Chrome par l'utilisateur, ou Playwright interactif piloté par Claude Code avec validation à chaque étape) — jamais de script headless non supervisé, qui redeviendrait fonctionnellement un scraper automatisé (anti-bot Wilson, `robots.txt` Head, CGU Babolat visant explicitement la « collecte automatisée »).
-- **Fraîcheur du prix** : même règle pour les 4 marchands — pas de synchro automatique, pas d'expiration courte, risque de prix obsolète accepté (cohérent avec la décision Amazon initiale).
-- **Reste à faire avant tout build** : estimer réellement (pas deviner) le coût en tokens d'une collecte Playwright supervisée par produit, via un essai concret sur un produit réel (proposé, pas encore réalisé) — conditionne si l'option 2 (collecte par Claude via Playwright) est praticable à un rythme hebdomadaire de 10-20 articles, ou si l'utilisateur doit collecter lui-même via Claude in Chrome (coût zéro token côté Claude Code).
+**Mise à jour 2026-09-24 (revirement, D-2026-09-24-01)** : l'utilisateur est revenu sur ce refus dans une conversation suivante et a explicitement demandé d'utiliser scrape.do pour **Amazon, Babolat, Wilson, Head, Yonex, Tecnifibre**, en assumant consciemment le risque signalé ci-dessus. Fréquence retenue : scraping récurrent réduit, une fois par mois par marchand, le temps de démarrer (« bootstrap ») le catalogue — pas un cron quotidien comme ProTennis. Caractère explicitement temporaire (l'utilisateur veut supprimer le mécanisme après la phase de démarrage), mais le critère d'arrêt (durée, volume cible, ou alternative trouvée) n'est pas encore précisé. Le mécanisme d'ajout manuel (script `add-manual-deal.ts`, navigation supervisée) reste décrit ci-dessous à titre historique mais n'est plus l'option retenue pour ces 6 marchands — voir D-2026-09-24-01 pour le détail complet du revirement.
 
-**Bloquant sur** : reprise explicite par l'utilisateur en début de prochaine conversation — décider si on fait l'essai de mesure de tokens, puis construire le script d'insertion.
+Ancien plan d'ajout manuel (abandonné pour ces 6 marchands par D-2026-09-24-01, conservé pour mémoire) :
+- Mécanisme d'insertion envisagé : script réutilisable (option A), ex. `scripts/add-manual-deal.ts`.
+- Collecte envisagée : navigation supervisée (humain présent — Claude in Chrome ou Playwright interactif avec validation à chaque étape).
+- Fraîcheur du prix : pas de synchro automatique envisagée, pas d'expiration courte.
 
-**Statut** : ouvert au 2026-09-24.
+**Mise à jour 2026-09-24 (remplacement, D-2026-09-24-02)** : le plan scrape.do (payant) est abandonné au profit d'un outil de scraping local gratuit (navigateur réel piloté localement, exécution manuelle) — même logique de risque assumé, périmètre élargi (12 marchands, dont ces 6). Suite du cadrage dans **GAP-2026-09-24-02**.
+
+**Statut** : remplacé le 2026-09-24, voir GAP-2026-09-24-02.
 
 ---
 
