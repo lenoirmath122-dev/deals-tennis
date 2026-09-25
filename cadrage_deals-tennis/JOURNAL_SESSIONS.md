@@ -7,6 +7,16 @@
 > Sessions du 2026-09-24 (Sport Outlet FR) à 2026-09-24 (pré-étape tri prix) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-24-sportoutlet_a_pre-etape-tri.md` (même règle, condensation du 2026-09-25).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
 
+## 2026-09-25 (session) — Chantier SEO/GEO bloc 1 : fondations techniques (D-2026-09-25-12, PR #52)
+
+- Reprise (« on fait le bloc 1 du SEO ? »). Protocole de reprise suivi (ETAT_ACTUEL.md → GAPS_OUVERTS.md → dernière entrée du journal → diff de D-2026-09-25-10/GAP-2026-09-25-07 pour le détail des 7 blocs).
+- État réel vérifié avant cadrage : aucun `robots.txt`/`sitemap.xml`, 4 pages réglementaires déjà dotées d'un titre mais pas de description, page `/deal/[dealId]` déjà munie d'un `generateMetadata` minimal (titre seul, non touché — hors périmètre soumis à l'utilisateur), aucun domaine personnalisé.
+- 4 décisions structurantes soumises via question à choix multiples et confirmées (toutes options recommandées retenues) : URL canonique `deals-tennis.vercel.app`, sitemap dynamique incluant les offres actives, `/go/` exclu de l'indexation, une description par page pour les 4 pages réglementaires (catalogue racine jugée déjà couverte par `app/layout.tsx`).
+- Branche locale périmée détectée avant tout travail (contenu déjà mergé sous un autre SHA via PR #51) — nouvelle branche `feat/seo-fondations-techniques` recréée depuis `origin/master` à jour, conformément à la leçon git du protocole.
+- Construit : `app/robots.ts`, `app/sitemap.ts` (+ `lib/deals.ts::getActiveDealsForSitemap`, `lib/site.ts`), descriptions sur les 4 pages réglementaires.
+- Vérifié réellement : `tsc`/`lint`/`build` clean, serveur de production local lancé et testé au `curl` (`robots.txt`, `sitemap.xml` avec 5706 URL recoupées contre un `COUNT(*)` SQL direct sur la base Neon de prod = 5701 offres actives + 5 pages fixes, balises meta de `/affiliation`).
+- PR #52 ouverte. Fichiers `head-*.yml` non liés (résidus d'une session précédente) repérés dans le répertoire de travail et volontairement laissés de côté, non commités. Prochaine étape : bloc 2 (données structurées Schema.org/JSON-LD), nouvelle conversation.
+
 ## 2026-09-25 (session) — Scraping local Tennis Point FR (D-2026-09-25-11, PR #50)
 
 - Reprise (« On reprend le scraping » → confirmation Tennis Point FR, prochain marchand acté). Protocole de reprise suivi (ETAT_ACTUEL.md → GAPS_OUVERTS.md), vérification indépendante de l'état Babolat en base de prod (0 offre active, cohérent avec D-2026-09-25-09).

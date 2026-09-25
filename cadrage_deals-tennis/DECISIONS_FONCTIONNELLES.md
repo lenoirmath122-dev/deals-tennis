@@ -717,3 +717,21 @@ L'utilisateur revient sur ce refus et demande explicitement d'utiliser scrape.do
 **Décision (mineure, tranchée seule, même nature que les choix techniques Tecnifibre/Sport 2000/Babolat)** : endpoint JSON public Shopify `/collections/<handle>/products.json` utilisé directement (aucun Playwright), cible les deux collections promotionnelles du site (`aktion-10-sale`, `aktion-deal`) plutôt que les pages catégorie tennis (trop fragmentées par marque côté marchand, aucune collection de premier niveau exploitable).
 
 **Statut** : Actée et construite le 2026-09-25 (branche `feat/scraping-tennis-point-fr`, PR #50). Vérifié réellement : 2427 offres réelles en base de prod, `product_id` à 100%, idempotence et éviction testées, lint/typecheck/build clean, vérification navigateur/HTTP (marque « BIDI BADU » trouvée en recherche). Voir `ETAT_ACTUEL.md` pour le détail complet.
+
+---
+
+### D-2026-09-25-12 — Chantier SEO/GEO, bloc 1 (fondations techniques) : décisions cadrées et actées
+
+**Contexte** : Reprise du chantier SEO/GEO sur le bloc 1 du plan en 7 blocs (D-2026-09-25-10), conformément au protocole (cadrage explicite avant tout code, un bloc = une conversation).
+
+**Décisions soumises et confirmées par l'utilisateur avant code** :
+1. **URL canonique** : `https://deals-tennis.vercel.app` (aucun domaine personnalisé pour l'instant) — utilisée dans `robots.txt`, `sitemap.xml` et comme base des URL de métadonnées.
+2. **Sitemap dynamique** : `app/sitemap.ts` génère les pages fixes (accueil, affiliation, cgu, confidentialite, mentions-legales) + une entrée par offre active (`deals.status = 'active' AND is_active = true AND (expires_at IS NULL OR expires_at > NOW())`), plutôt qu'un sitemap statique limité aux pages fixes.
+3. **`/go/[dealId]` exclu de l'indexation** : `Disallow: /go/` dans `robots.txt` — c'est une redirection de tracking affilié, pas une page de contenu.
+4. **Métadonnées par page** : titre + description dédiés sur les 4 pages statiques (affiliation, cgu, confidentialite, mentions-legales) — elles avaient déjà un titre mais pas de description. La page catalogue racine a été jugée déjà couverte par le titre/description par défaut de `app/layout.tsx` (rédigés spécifiquement pour la page d'accueil), donc aucune métadonnée additionnelle n'y a été ajoutée pour éviter la duplication.
+
+**Décision mineure tranchée seule** : `export const revalidate = 3600` sur `app/sitemap.ts` (ISR, 1h) plutôt qu'un rendu entièrement dynamique à chaque requête — équilibre entre fraîcheur du catalogue (qui change en continu via le scraping) et charge sur la base Neon de prod à chaque crawl. Pas de champ structurant nécessitant validation utilisateur.
+
+**Hors périmètre de ce bloc** (traité dans les blocs suivants du plan) : données structurées Schema.org, URLs canoniques pour le contenu dupliqué des filtres catalogue, ouverture aux robots IA, `llms.txt`, performance, Open Graph.
+
+**Statut** : Actée et construite le 2026-09-25 (branche `feat/seo-fondations-techniques`, PR #52). Vérifié réellement : `npx tsc --noEmit` et `npm run lint` clean, `npm run build` clean (`robots.txt`/`sitemap.xml` générés), serveur de production local testé via `curl` (`robots.txt` conforme, `sitemap.xml` avec 5706 URL = 5701 offres actives + 5 pages fixes, compte confirmé par une requête `COUNT(*)` SQL directe sur la base Neon de prod), balises `<title>`/`<meta name="description">` vérifiées sur `/affiliation`.
