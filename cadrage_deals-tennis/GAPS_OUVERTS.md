@@ -1,5 +1,25 @@
 # Points ouverts
 
+## GAP-2026-09-25-20 — Trigger `price_observations` prêt et vérifié sur Neon, en attente d'application en prod (OUVERT)
+
+Suite à D-2026-09-25-22 (Phase 1 de `CADRAGE_vrais-bons-plans.md`, précisée par l'ordre global révisé en D-2026-09-25-24). Migration `scripts/migrations/006_price_observations.sql` + script d'application dédié `scripts/setup-price-observations.ts` (pas via `scripts/migrate.ts`, dont le découpage naïf du SQL sur `;\n` casserait le corps de fonction PL/pgSQL `$$ ... $$`).
+
+**Vérifié réellement sur une branche Neon dédiée** (créée/détruite via `neonctl`, projet `floral-mountain-74046188`) :
+- `INSERT` d'un deal `active` crée bien une ligne `price_observations` du jour.
+- Un second `UPDATE` le même jour (prix identique, seul `updated_at` change) reste idempotent : toujours 1 ligne, `last_seen_at` avance.
+- Un `UPDATE` avec un prix différent le même jour met à jour la ligne existante (pas de doublon).
+- Un passage à `status = 'expired'` n'écrit **rien** de nouveau (comportement voulu, une éviction ne doit pas polluer l'historique).
+- Jour d'observation calculé en heure de Paris (`(NOW() AT TIME ZONE 'Europe/Paris')::date`), vérifié par requête directe.
+- `ON DELETE CASCADE` (`deal_id`) vérifié : supprimer un deal supprime ses observations.
+
+**Non testé, hors périmètre actuel** : le chemin `status = 'tracked'` (le trigger le gère déjà, `NEW.status IN ('active', 'tracked')`, conforme à D-2026-09-25-22) — impossible à tester aujourd'hui, `tracked` n'est pas encore une valeur autorisée par la contrainte `deals.status_check` (`'active', 'expired', 'invalid'` seulement). L'ajout du statut `tracked` fait partie de R3 (`lib/ingest.ts` + réécriture des scripts, D-2026-09-25-24), pas de cette étape — pas de scope creep sur la contrainte aujourd'hui.
+
+**Bloquant sur** : arrêt explicitement demandé par l'utilisateur avant application en prod (contrairement au retrait ProTennis, où l'application en prod était incluse dans la même instruction). Feu vert requis avant d'exécuter `node --env-file=.env.local scripts/setup-price-observations.ts` contre la prod.
+
+**Statut** : ouvert au 2026-09-25 — prêt, vérifié sur Neon, en attente de validation avant prod.
+
+---
+
 ## GAP-2026-09-25-18 — Retrait de ProTennis : inventaire, export, expiration faits ; reste la suppression définitive (OUVERT)
 
 Suite à D-2026-09-25-20. Étapes 1 à 3 faites et vérifiées réellement le 2026-09-25 (voir `JOURNAL_SESSIONS.md` pour le détail).
