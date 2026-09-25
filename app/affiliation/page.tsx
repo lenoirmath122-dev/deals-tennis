@@ -9,12 +9,12 @@ export const metadata: Metadata = {
 
 export default function AffiliationPage() {
   return (
-    <LegalPage title="Affiliation" updated="23 septembre 2026">
+    <LegalPage title="Affiliation" updated="25 septembre 2026">
       <section>
         <h2>Comment fonctionne Tennisdeals</h2>
         <p>
           Tennisdeals référence des offres promotionnelles sur du matériel de tennis provenant de
-          marchands partenaires (actuellement ProTennis) et redirige l&apos;utilisateur vers leur
+          marchands partenaires et redirige l&apos;utilisateur vers leur
           site pour finaliser un éventuel achat. Tennisdeals ne vend aucun produit directement.
         </p>
       </section>
