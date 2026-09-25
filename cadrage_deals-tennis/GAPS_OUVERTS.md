@@ -1,35 +1,5 @@
 # Points ouverts
 
-## GAP-2026-09-25-18 — Retrait de ProTennis : inventaire, export, expiration faits ; reste la suppression définitive (OUVERT)
-
-Suite à D-2026-09-25-20. Étapes 1 à 3 faites et vérifiées réellement le 2026-09-25 (voir `JOURNAL_SESSIONS.md` pour le détail).
-
-**Inventaire (étape 1, complété par la recherche complémentaire demandée par l'utilisateur)** :
-- **Code ProTennis-spécifique** : `scripts/automation/n8n-protennis-ingestion-workflow.json`, `scripts/automation/n8n-protennis-ingestion-README.md`.
-- **`scripts/automation/n8n-eviction-cron.sql`** : générique (éviction horaire par `expires_at`, écrit pour le MVP T031), jamais utilisé par le workflow ProTennis réel (qui fait sa propre éviction par diff d'URL, D-2026-09-22-03). Hors périmètre de ce retrait, mais **acté comme code mort à supprimer lors de la reconstruction n8n (Phase 2, D-2026-09-25-23)** — aucun autre marchand ne passe par n8n aujourd'hui.
-- **Contrats génériques** (`ingestion-contract.md`, `catalog-query-api.md`, `redirection-api.md`) : aucune mention de ProTennis, inchangés.
-- **Recherche complémentaire (variantes de casse/nom de domaine/slug, `.env.example`, assets/logos, sitemap, métadonnées SEO)** : rien de plus trouvé. Pas de variable d'environnement ProTennis-spécifique (`.env.example` ne contient que `DATABASE_URL`), pas de logo/asset dédié (les placeholders `public/placeholders/*.svg` sont génériques par catégorie, pas par marchand), `app/sitemap.ts` est entièrement dynamique (aucune URL ProTennis en dur).
-- **Mention documentaire mise à jour** : `app/affiliation/page.tsx` (« marchands partenaires (actuellement ProTennis) ») — **non corrigée dans cette conversation**, à faire lors de la suppression définitive (étape 4) puisque le texte reste correct tant que la ligne `merchants` existe encore (offres seulement `expired`, pas supprimées).
-- **Test fragile corrigé** : `tests/contract/deal-detail.test.ts` sélectionnait un produit "Pure Aero" par titre exact, supposé rester multi-marchand (ProTennis + Tennis-Point) indéfiniment. Remplacé par une sélection dynamique du premier produit ayant réellement 2+ offres actives de marchands différents au moment du test (`GROUP BY product_id HAVING COUNT(DISTINCT merchant_id) >= 2`), sans dépendre d'un titre ni d'un marchand précis. Vérifié réellement contre la prod (après le passage en `expired` de l'étape 3) : 4/4 tests passent. `tsc`/lint/build clean.
-- **Base de données avant retrait (vérifié réellement, 2026-09-25)** : 1 ligne `merchants` (`ProTennis`, id `9bcb1729-926d-4462-b949-57f991e08673`), 1508 deals actifs, 12 click_events liés, 1489 produits qui deviendraient orphelins, 18 produits partagés avec au moins un autre marchand actif (au sens large, tous statuts confondus).
-
-**Export d'archive (étape 2, fait)** : 5 fichiers CSV dans `cadrage_deals-tennis/archive/protennis-retrait-2026-09-25/` (`merchant.csv`, `deals.csv` — 1508 lignes, `products_orphelins.csv` — 1489 lignes, `products_partages.csv` — 18 lignes, `click_events.csv` — 12 lignes), ~850 Ko au total. Gardé dans le dépôt (volume négligeable, cohérent avec la convention `cadrage_deals-tennis/archive/` déjà utilisée pour les autres archives de suivi) plutôt qu'hors dépôt.
-
-**Passage en `expired` (étape 3, fait et vérifié réellement)** :
-- 1508/1508 deals ProTennis passés à `status='expired', is_active=false` en base Neon de prod. 0 deal ProTennis encore `active` après l'opération.
-- Vérifié en HTTP sur `https://deals-tennis.vercel.app` : aucune occurrence de « protennis » sur l'accueil, sur `?category=textile`, ni sur `?category=raquettes&page=1`. `/go/[dealId]` et `/deal/[dealId]` sur un ancien dealId ProTennis réel redirigent tous les deux proprement vers `/?notification=deal-expired` (307), pas d'erreur.
-- **Effet de bord attendu, pas un bug** : `app/sitemap.xml` (ISR, `revalidate=1h`, Bloc 1 SEO D-2026-09-25-12) contient encore une entrée pour ce dealId juste après le changement — se corrigera automatiquement à la prochaine revalidation (dans l'heure), pas d'action requise.
-- **Nombre de produits multi-marchands** (métrique de référence citée par l'utilisateur, définition = produits avec 2+ offres actives, `COUNT(*) >= 2` sur `product_id`, tous marchands confondus) : **455 avant → 445 après** le retrait ProTennis (reconstruction de l'état "avant" vérifiée par requête directe, en recombinant les deals ProTennis désormais expirés — mais tous actifs avant cette session — avec l'état actuel des 8 autres marchands). Chute bien plus faible qu'attendue au premier calcul (une métrique intermédiaire "produits avec offres d'au moins 2 marchands distincts" était tombée de 10 à 1, mais ce n'est pas la définition utilisée par l'utilisateur pour son point de référence 455 — signalé ici pour éviter toute confusion future entre les deux métriques).
-
-**Reste à faire (étape 4, après validation utilisateur)** :
-4. Suppression définitive en migration : deals ProTennis (1508, déjà `expired`), produits orphelins (1489), `click_events` (12), ligne `merchants` — puis suppression du code ProTennis-spécifique (workflow n8n JSON + README) et correction de `app/affiliation/page.tsx`.
-
-**Bloquant sur** : validation explicite de l'utilisateur avant l'étape 4 (suppression définitive, migration).
-
-**Statut** : ouvert au 2026-09-25 — étapes 1 à 3 faites et vérifiées réellement en prod, en attente de validation avant l'étape 4.
-
----
-
 ## GAP-2026-09-25-15 — Raquettes juniors mal classées `adulte` : correction cadrée, reste tout le code (OUVERT)
 
 Suite à D-2026-09-25-19 : deux exemples réels signalés par l'utilisateur (Tecnifibre « T-Fight Club 25 », Head « Coco 25 » via Tennis Point FR) — raquettes juniors identifiées uniquement par leur taille en pouces (25") dans le nom de gamme, sans mot-clé enfant/junior dans le titre marchand, retombant sur `age_group = adulte` par défaut. Deux corrections actées : heuristique taille en pouces (19/21/23/25/26 = enfant, 27+ = adulte) pour la catégorie raquettes, tous marchands ; lecture de la description produit comme second signal, gratuite pour Tecnifibre/Tennis Point FR (déjà dans le payload Shopify récupéré), avec requête HTTP supplémentaire par produit pour les 6 autres marchands (coût accepté par l'utilisateur).
@@ -134,16 +104,6 @@ Trois options soumises à l'utilisateur le 2026-09-25, décision explicitement r
 Découvert en vérifiant le build Head (voir `ETAT_ACTUEL.md`) : la page `shop-sportswear/summer` ciblée pour le textile (page "Tennis and Padel" du marchand, vérifiée 100% tennis sur l'échantillon parcouru au cadrage) contient au moins un article générique sans indice tennis explicite dans son titre — « HEAD Bandana », retenu en base (catégorie textile). Le filet de sécurité multi-sports (exclusion padel/squash/badminton/pickleball) ne peut pas l'exclure, n'ayant aucun mot-clé d'autre sport non plus.
 
 **Bloquant sur** : rien dans l'immédiat — impact d'un article isolé sur 66 offres Head, un bandana reste un accessoire plausible pour le tennis (porté par de nombreux joueurs), pas une donnée fausse à proprement parler. Même catégorie que GAP-2026-09-23-04/GAP-2026-09-25-02/04/05 (qualité de donnée mineure, isolée) — à surveiller si le volume de ce type d'item augmente lors des passages suivants.
-
-**Statut** : ouvert au 2026-09-25.
-
----
-
-## GAP-2026-09-25-08 — Miroir JS du workflow n8n ProTennis non resynchronisé après l'extension du lexique sexe/âge au pluriel (OUVERT, mineur)
-
-Suite à D-2026-09-25-11 : le lexique partagé `extractGender`/`extractAgeGroup` (`lib/product-matching.ts`) a été étendu pour reconnaître le pluriel français ("Hommes"/"Femmes"/"Enfants"), découverte en construisant Tennis Point FR. Le workflow n8n ProTennis (`scripts/automation/n8n-protennis-ingestion-workflow.json`) contient un miroir JS de ces mêmes regex (ajouté en D-2026-09-25-04, GAP-2026-09-25-01 point 4) qui n'a pas été mis à jour dans cette conversation (hors périmètre de cette étape).
-
-**Bloquant sur** : rien dans l'immédiat — ProTennis utilise déjà l'extraction avant la découverte de ce gap, le miroir reste fonctionnellement correct pour le singulier (pas de régression), juste pas amélioré pour le pluriel s'il apparaît dans des titres ProTennis. À resynchroniser à la prochaine intervention sur ce workflow (ex. lors du déploiement en attente, voir GAP-2026-09-25-01 point 4).
 
 **Statut** : ouvert au 2026-09-25.
 
