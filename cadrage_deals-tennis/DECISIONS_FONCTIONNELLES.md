@@ -930,3 +930,23 @@ Voir `CADRAGE_vrais-bons-plans.md` section 6.4 pour le texte de référence.
 **Complément (2026-09-25, pendant l'inventaire ProTennis GAP-2026-09-25-18)** : `scripts/automation/n8n-eviction-cron.sql` (mécanisme générique d'éviction horaire par `expires_at`, jamais utilisé par le workflow ProTennis réel) est confirmé orphelin — acté comme code mort à supprimer lors de ce build.
 
 **Statut** : Actée (confirmée explicitement par l'utilisateur). Cadrage uniquement — aucun code construit dans cette conversation.
+
+---
+
+### D-2026-09-25-24 — Ordre global révisé par le cadrage rapprochement multi-niveaux (§10)
+
+**Contexte** : `CADRAGE_rapprochement-multi-niveaux.md` complète `CADRAGE_vrais-bons-plans.md`, remplace ses phases 3b/3c (audit et fusion des doublons par similarité de titre) par un rapprochement à trois niveaux (famille/modèle/variante, R0-R5) et modifie l'ordre de la phase 1.
+
+**Décision** : ordre global des chantiers actés désormais :
+1. Retrait définitif de ProTennis (GAP-2026-09-25-18, en cours).
+2. Trigger `price_observations` (D-2026-09-25-22) : inchangé, reste prioritaire — l'historique reste attaché à `deal_id`, aucune perte pendant la réorganisation des modèles.
+3. R0 à R2 du chantier de rapprochement (diagnostic, jeu de référence, référentiel de modèles v1 — voir GAP-2026-09-25-19).
+4. `lib/ingest.ts` + statut `tracked` (D-2026-09-25-21) + réécriture des 8 scripts, **devient R3** : cette étape n'est plus traitée juste après le trigger comme prévu initialement en D-2026-09-25-22, elle attend R0-R2 pour que les scripts ne soient réécrits qu'une seule fois (capture du GTIN/mpn/attributs bruts en même temps que la capture `price_observations`/`tracked`).
+5. R4 (moteur en mode fantôme) puis R5 (bascule).
+6. Phases 2 (n8n, D-2026-09-25-23), 4 (verdict) et 5 (supervision) de `CADRAGE_vrais-bons-plans.md`. La phase 2 peut démarrer en parallèle de R0-R2, elle ne dépend pas du rapprochement.
+
+R0 n'est pas démarré : feu vert explicite de l'utilisateur requis après validation du trigger `price_observations`.
+
+Voir `CADRAGE_rapprochement-multi-niveaux.md` section 10 pour le texte de référence.
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur). Cadrage uniquement — aucun code construit dans cette conversation.
