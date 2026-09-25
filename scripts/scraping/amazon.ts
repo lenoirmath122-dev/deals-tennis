@@ -40,12 +40,43 @@
 //
 // Filtre positif supplémentaire (décision mineure, propre à Amazon) : contrairement
 // aux autres marchands qui exposent des pages catégorie déjà scopées tennis,
-// la recherche Amazon renvoie aussi du bruit hors sujet (ex. porte-clés
-// multi-sports sans rapport, vu réellement sur "accessoire tennis") — un
-// article est retenu seulement si son titre contient le mot "tennis" (en plus
-// du filet de sécurité multi-sports habituel qui exclut padel/squash/
+// la recherche par mot-clé Amazon renvoie aussi du bruit hors sujet (ex.
+// porte-clés multi-sports sans rapport, vu réellement sur "accessoire tennis")
+// — un article est retenu seulement si son titre contient le mot "tennis" (en
+// plus du filet de sécurité multi-sports habituel qui exclut padel/squash/
 // badminton/pickleball, étendu ici à "tennis de table"/"ping-pong" — trouvés
-// réellement mélangés aux résultats "raquette de tennis").
+// réellement mélangés aux résultats "raquette de tennis"). Ce filtre positif
+// ne s'applique qu'en mode recherche par mot-clé : les rayons Amazon
+// (raquettes/cordages/chaussures, voir ci-dessous) sont déjà scopés tennis par
+// Amazon lui-même (même principe que les pages catégorie des autres
+// marchands), un titre de rayon n'a pas toujours le mot "tennis" au sens
+// strict (ex. "Asics Gel-Dedicate 9").
+//
+// Build révisé (2026-09-25, D-2026-09-25-18, résout GAP-2026-09-25-13) :
+// suite au volume sous le seuil de 30 après le filtre marque connue
+// (D-2026-09-25-16), 7 pistes vérifiées réellement sur amazon.fr (Playwright)
+// en cadrage puis reconfirmées en tout début de ce build. Retenu :
+// - Raquettes (node 340151031), cordages (node 488345031), chaussures homme
+//   (node 1765284031) et chaussures femme (node 1765106031, retrouvé en cours
+//   de build — seul le nœud homme avait été noté en cadrage — en descendant
+//   l'arborescence Amazon Mode > Femme > Chaussures > Baskets et chaussures
+//   de sport > Chaussures de sport > Tennis) : rayon + facette native "Tous
+//   les rabais" (`p_n_deal_type:26902977031`, ID global vérifié sur les 4
+//   rayons), ratio de vraie remise très supérieur à la recherche par mot-clé
+//   (18-29 cartes avec prix barré sur 24-48 vérifiées réellement selon le
+//   rayon, contre ~50% en recherche simple). Mêmes sélecteurs DOM que la
+//   recherche par mot-clé (`h2[aria-label]`, `[data-cy="price-recipe"]`),
+//   revérifiés réellement sur ces pages rayon.
+// - Accessoires et textile restent en recherche par mot-clé (pas de gain net
+//   prouvé côté rayon pour ces catégories, textile trop fragmenté côté
+//   Amazon) — pagination ajoutée (`&page=2`, fonctionne réellement, vérifié)
+//   pour augmenter le volume.
+// - Indice de sexe ajouté au titre pour les rayons chaussures homme/femme
+//   (même mécanisme que Head/SportSystem) : le rayon connaît le sexe même
+//   quand le titre du produit ne le précise pas explicitement.
+// - Wilson ajouté à la liste des marques reconnues (marque tennis notoire,
+//   vendue sur Amazon, absente aujourd'hui du filtre dynamique car non vendue
+//   par un autre marchand actif du catalogue) — voir EXTRA_KNOWN_BRANDS.
 //
 // Pas de page produit à visiter pour la marque (contrairement à SportSystem) :
 // extractAmazonBrand compare le titre à une liste de marques connues plutôt
@@ -104,17 +135,34 @@ const TENNIS_WORD_PATTERN = /tennis/i;
 // "marque" absurde de ce type — corrigé par une comparaison à une liste de
 // marques connues (`startsWith`) plutôt qu'un mot pris au hasard.
 
+const DEAL_FACET = "p_n_deal_type:26902977031";
+const PAGES_PER_SOURCE = 2;
+
+interface RayonSource {
+  node: number;
+  genderHint?: "Homme" | "Femme";
+}
+
 interface CategoryConfig {
-  keyword: string;
   dbCategory: string;
+  mode: "rayon" | "keyword";
+  rayons?: RayonSource[];
+  keyword?: string;
 }
 
 const CATEGORIES: CategoryConfig[] = [
-  { keyword: "raquette de tennis", dbCategory: "raquettes" },
-  { keyword: "cordage tennis", dbCategory: "cordages" },
-  { keyword: "chaussures de tennis", dbCategory: "chaussures" },
-  { keyword: "vêtement de tennis", dbCategory: "textile" },
-  { keyword: "accessoire tennis", dbCategory: "accessoires" },
+  { dbCategory: "raquettes", mode: "rayon", rayons: [{ node: 340151031 }] },
+  { dbCategory: "cordages", mode: "rayon", rayons: [{ node: 488345031 }] },
+  {
+    dbCategory: "chaussures",
+    mode: "rayon",
+    rayons: [
+      { node: 1765284031, genderHint: "Homme" },
+      { node: 1765106031, genderHint: "Femme" },
+    ],
+  },
+  { dbCategory: "textile", mode: "keyword", keyword: "vêtement de tennis" },
+  { dbCategory: "accessoires", mode: "keyword", keyword: "accessoire tennis" },
 ];
 
 interface ScrapedProduct {
@@ -124,6 +172,11 @@ interface ScrapedProduct {
   price: number;
   originalPrice: number;
 }
+
+// Marques tennis notoires vendues sur Amazon mais absentes du catalogue
+// dynamique (aucun autre marchand actif ne les vend actuellement) — revisable
+// additivement si d'autres cas similaires sont trouvés (D-2026-09-25-18).
+const EXTRA_KNOWN_BRANDS = ["Wilson"];
 
 async function fetchKnownBrands(): Promise<string[]> {
   const rows = await sql`
@@ -136,9 +189,9 @@ async function fetchKnownBrands(): Promise<string[]> {
       AND d.brand IS NOT NULL
       AND d.brand <> 'Générique'
   `;
-  return rows
-    .map((row) => row.brand as string)
-    .sort((a, b) => b.length - a.length);
+  return [...rows.map((row) => row.brand as string), ...EXTRA_KNOWN_BRANDS].sort(
+    (a, b) => b.length - a.length
+  );
 }
 
 function extractAmazonBrand(title: string, knownBrands: string[]): string | null {
@@ -151,8 +204,15 @@ function extractAmazonBrand(title: string, knownBrands: string[]): string | null
   return null;
 }
 
-async function scrapeKeyword(page: Page, keyword: string): Promise<ScrapedProduct[]> {
-  const url = `${MERCHANT_WEBSITE}/s?k=${encodeURIComponent(keyword)}`;
+function buildRayonUrl(node: number, pageNum: number): string {
+  return `${MERCHANT_WEBSITE}/s?rh=n:${node},${DEAL_FACET}&page=${pageNum}`;
+}
+
+function buildKeywordUrl(keyword: string, pageNum: number): string {
+  return `${MERCHANT_WEBSITE}/s?k=${encodeURIComponent(keyword)}&page=${pageNum}`;
+}
+
+async function scrapeSearchUrl(page: Page, url: string): Promise<ScrapedProduct[]> {
   await page.goto(url, { waitUntil: "domcontentloaded", timeout: NAV_TIMEOUT_MS });
   await page.waitForSelector("[data-asin]", { timeout: NAV_TIMEOUT_MS });
   await page.waitForTimeout(1500);
@@ -237,89 +297,119 @@ async function main() {
     });
 
     for (const config of CATEGORIES) {
-      console.log(`Recherche "${config.keyword}"...`);
       let categoryCount = 0;
+      const seenAsins = new Set<string>();
 
-      const products = await scrapeKeyword(page, config.keyword);
-
-      for (const product of products) {
-        if (!Number.isFinite(product.price) || product.price <= 0) {
-          skippedUnparsable += 1;
-          continue;
+      type Source = { url: string; genderHint?: "Homme" | "Femme"; label: string };
+      const sources: Source[] = [];
+      if (config.mode === "rayon") {
+        for (const rayon of config.rayons!) {
+          for (let p = 1; p <= PAGES_PER_SOURCE; p++) {
+            sources.push({
+              url: buildRayonUrl(rayon.node, p),
+              genderHint: rayon.genderHint,
+              label: `rayon ${rayon.node} page ${p}`,
+            });
+          }
         }
-
-        if (!Number.isFinite(product.originalPrice) || product.originalPrice <= product.price) {
-          skippedNoDiscount += 1;
-          continue;
+      } else {
+        for (let p = 1; p <= PAGES_PER_SOURCE; p++) {
+          sources.push({
+            url: buildKeywordUrl(config.keyword!, p),
+            label: `"${config.keyword}" page ${p}`,
+          });
         }
-
-        if (!TENNIS_WORD_PATTERN.test(product.title)) {
-          skippedNotTennis += 1;
-          continue;
-        }
-
-        if (OTHER_SPORTS_PATTERN.test(product.title)) {
-          skippedOtherSport += 1;
-          continue;
-        }
-
-        const brand = extractAmazonBrand(product.title, knownBrands);
-        if (brand === null) {
-          skippedUnknownBrand += 1;
-          continue;
-        }
-
-        const affiliateUrl = `${MERCHANT_WEBSITE}/dp/${product.asin}?tag=${ASSOCIATE_TAG}`;
-        const model = extractModel(product.title, brand, config.dbCategory);
-        const color = extractColor(product.title);
-        const gender = extractGender(product.title);
-        const ageGroup = extractAgeGroup(product.title);
-        const discountPercentage = Math.round(
-          ((product.originalPrice - product.price) / product.originalPrice) * 100
-        );
-
-        const [upsertedProduct] = await sql`
-          INSERT INTO products (brand, model, category, gender, age_group)
-          VALUES (${brand}, ${model}, ${config.dbCategory}, ${gender}, ${ageGroup})
-          ON CONFLICT (LOWER(brand), LOWER(model), category)
-          DO UPDATE SET
-            brand = EXCLUDED.brand,
-            gender = CASE WHEN products.gender = 'non_determine' THEN EXCLUDED.gender ELSE products.gender END,
-            age_group = CASE WHEN products.age_group = 'adulte' AND EXCLUDED.age_group = 'enfant' THEN 'enfant' ELSE products.age_group END
-          RETURNING id
-        `;
-
-        await sql`
-          INSERT INTO deals (
-            title, brand, category, image_url, original_price, discounted_price,
-            discount_percentage, merchant_id, affiliate_url, status, is_active,
-            color, product_id
-          )
-          VALUES (
-            ${product.title}, ${brand}, ${config.dbCategory}, ${product.image}, ${product.originalPrice},
-            ${product.price}, ${discountPercentage}, ${merchant.id}, ${affiliateUrl}, 'active', true,
-            ${color}, ${upsertedProduct.id}
-          )
-          ON CONFLICT (merchant_id, affiliate_url) DO UPDATE SET
-            title = EXCLUDED.title,
-            brand = EXCLUDED.brand,
-            image_url = EXCLUDED.image_url,
-            original_price = EXCLUDED.original_price,
-            discounted_price = EXCLUDED.discounted_price,
-            discount_percentage = EXCLUDED.discount_percentage,
-            status = 'active',
-            is_active = true,
-            color = EXCLUDED.color,
-            product_id = EXCLUDED.product_id,
-            updated_at = NOW()
-        `;
-
-        seenUrls.push(affiliateUrl);
-        inserted += 1;
-        categoryCount += 1;
       }
 
-      console.log(`  ${categoryCount} offre(s) retenue(s) pour "${config.keyword}".`);
+      for (const source of sources) {
+        console.log(`Recherche ${source.label}...`);
+        const products = await scrapeSearchUrl(page, source.url);
+
+        for (const product of products) {
+          if (seenAsins.has(product.asin)) continue;
+          seenAsins.add(product.asin);
+
+          if (!Number.isFinite(product.price) || product.price <= 0) {
+            skippedUnparsable += 1;
+            continue;
+          }
+
+          if (!Number.isFinite(product.originalPrice) || product.originalPrice <= product.price) {
+            skippedNoDiscount += 1;
+            continue;
+          }
+
+          const genderSuffix = source.genderHint ? ` ${source.genderHint}` : "";
+          const title = `${product.title}${genderSuffix}`.replace(/\s+/g, " ").trim();
+
+          if (config.mode === "keyword" && !TENNIS_WORD_PATTERN.test(title)) {
+            skippedNotTennis += 1;
+            continue;
+          }
+
+          if (OTHER_SPORTS_PATTERN.test(title)) {
+            skippedOtherSport += 1;
+            continue;
+          }
+
+          const brand = extractAmazonBrand(title, knownBrands);
+          if (brand === null) {
+            skippedUnknownBrand += 1;
+            continue;
+          }
+
+          const affiliateUrl = `${MERCHANT_WEBSITE}/dp/${product.asin}?tag=${ASSOCIATE_TAG}`;
+          const model = extractModel(title, brand, config.dbCategory);
+          const color = extractColor(title);
+          const gender = extractGender(title);
+          const ageGroup = extractAgeGroup(title);
+          const discountPercentage = Math.round(
+            ((product.originalPrice - product.price) / product.originalPrice) * 100
+          );
+
+          const [upsertedProduct] = await sql`
+            INSERT INTO products (brand, model, category, gender, age_group)
+            VALUES (${brand}, ${model}, ${config.dbCategory}, ${gender}, ${ageGroup})
+            ON CONFLICT (LOWER(brand), LOWER(model), category)
+            DO UPDATE SET
+              brand = EXCLUDED.brand,
+              gender = CASE WHEN products.gender = 'non_determine' THEN EXCLUDED.gender ELSE products.gender END,
+              age_group = CASE WHEN products.age_group = 'adulte' AND EXCLUDED.age_group = 'enfant' THEN 'enfant' ELSE products.age_group END
+            RETURNING id
+          `;
+
+          await sql`
+            INSERT INTO deals (
+              title, brand, category, image_url, original_price, discounted_price,
+              discount_percentage, merchant_id, affiliate_url, status, is_active,
+              color, product_id
+            )
+            VALUES (
+              ${title}, ${brand}, ${config.dbCategory}, ${product.image}, ${product.originalPrice},
+              ${product.price}, ${discountPercentage}, ${merchant.id}, ${affiliateUrl}, 'active', true,
+              ${color}, ${upsertedProduct.id}
+            )
+            ON CONFLICT (merchant_id, affiliate_url) DO UPDATE SET
+              title = EXCLUDED.title,
+              brand = EXCLUDED.brand,
+              image_url = EXCLUDED.image_url,
+              original_price = EXCLUDED.original_price,
+              discounted_price = EXCLUDED.discounted_price,
+              discount_percentage = EXCLUDED.discount_percentage,
+              status = 'active',
+              is_active = true,
+              color = EXCLUDED.color,
+              product_id = EXCLUDED.product_id,
+              updated_at = NOW()
+          `;
+
+          seenUrls.push(affiliateUrl);
+          inserted += 1;
+          categoryCount += 1;
+        }
+      }
+
+      console.log(`  ${categoryCount} offre(s) retenue(s) pour "${config.dbCategory}".`);
     }
   } finally {
     await browser?.close();
