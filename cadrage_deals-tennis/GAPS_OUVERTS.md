@@ -42,12 +42,12 @@ Suite à D-2026-09-25-19 : deux exemples réels signalés par l'utilisateur (Tec
 1. ~~Heuristique taille en pouces dans `lib/product-matching.ts`~~ **FAIT** (2026-09-25) : `extractAgeGroup(title, category?)` prend désormais un second paramètre `category` optionnel, applique le motif `\b(19|21|23|25|26)\b` uniquement quand `category === "raquettes"`. Correction par rapport au cadrage initial : contrairement à ce qui était supposé, les 6 scripts de scraping (+ Amazon) ont dû être touchés d'une ligne chacun pour passer leur catégorie à l'appel (`config.dbCategory` / `typeInfo.category` / `category.dbCategory`) — `extractAgeGroup(title)` sans catégorie reste possible (compat `scripts/backfill-gender-age.ts`, non touché, hors périmètre ici) et se comporte comme avant (jamais enfant via taille). 5 tests unitaires ajoutés dans `tests/unit/product-matching.test.ts`, dont les deux exemples réels signalés par l'utilisateur (Tecnifibre T-Fight Club 25, Head Coco 25). `tsc`/lint/tests unitaires/build vérifiés clean.
 2. ~~Lecture de la description (`body_html`) dans `scripts/scraping/tecnifibre.ts` et `scripts/scraping/tennis-point-fr.ts`~~ **FAIT** (2026-09-25) : `extractAgeGroup(title, category?, description?)` prend un troisième paramètre optionnel — titre et description concaténés avant application des mêmes motifs (décision explicite, pas de logique séparée). Découverte en cours d'étape : `tecnifibre.ts` n'appelait jamais `extractGender`/`extractAgeGroup` et n'écrivait pas les colonnes `gender`/`age_group` (contrairement aux 6 autres marchands) — corrigé dans cette même étape (décision explicite), sinon le "T-Fight Club 25" cité en exemple dans ce GAP restait non résolu. 3 tests unitaires ajoutés. `tsc`/lint/tests unitaires/build vérifiés clean.
 3. ~~Backfill des raquettes déjà en base de prod mal classées~~ **FAIT** (2026-09-25) : l'utilisateur a confirmé le périmètre « raquettes + vérifier les autres catégories » avant de construire. Investigation réelle contre la base Neon de prod : 24 offres hors raquettes avec un nombre isolé 19-26 dans le titre examinées manuellement (millésimes/tailles de gamme comme "Short ... 23", "Cordage MT 19 Plus Power", jamais une taille de raquette) — confirme que restreindre l'heuristique à la catégorie raquettes (étape 1) était le bon choix, aucune extension nécessaire ailleurs. `scripts/backfill-racquet-junior-size.ts` (`npm run db:backfill-racquet-junior-size`) : recalcule `age_group` uniquement pour les produits `category='raquettes'` actuellement `adulte`, même règle de réconciliation que le backfill initial (upgrade `adulte`→`enfant` uniquement, jamais l'inverse). Vérifié réellement contre la prod : 619 produits raquettes `adulte` examinés, 30 basculés vers `enfant` (Wilson Clash/Ultra/Blade 25-26, Babolat Pure Aero/Strike 26, Tecnifibre T-Fight Tour 26, etc. — vraies gammes junior confirmées par le nom de modèle), relancé une deuxième fois (0 nouveau basculement, idempotent), échantillon contrôlé directement en base (HEAD "Coco 25" bien passé à `enfant`, l'un des deux exemples cités par l'utilisateur en D-2026-09-25-19). **Découverte non corrigée, hors périmètre de cette étape** : Tecnifibre "T-fight Club 17" reste `adulte` — la taille 17" (raquette pour très jeune enfant) n'est pas couverte par `RACQUET_JUNIOR_SIZE_PATTERN` (19/21/23/25/26 seulement), gap dans le motif déjà mergé aux étapes 1-2, voir GAP-2026-09-25-17 (mineur, nouveau). `tsc`/lint/build clean.
-4. Extension aux 6 autres marchands (SportSystem, Sport 2000, Babolat, Tennispro.fr, Head, Amazon) : ajouter une requête HTTP supplémentaire par fiche produit retenue pour lire la description — décision de principe déjà actée (D-2026-09-25-19), mais coût/lenteur à vérifier réellement marchand par marchand au moment du build (ex. Tennispro `Crawl-delay: 60`).
-5. Miroir JS du workflow n8n ProTennis (`scripts/automation/n8n-protennis-ingestion-workflow.json`) : ProTennis n'a pas été cité dans les deux exemples signalés, mais le même défaut de taille en pouces s'applique probablement à ses raquettes juniors — à vérifier et resynchroniser si besoin (même schéma que GAP-2026-09-25-08).
+4. **Gelée, intégrée à R3** (2026-09-26) : extension aux 6 autres marchands (SportSystem, Sport 2000, Babolat, Tennispro.fr, Head, Amazon) via une requête HTTP supplémentaire par fiche produit. Ne plus traiter isolément — R3 (`CADRAGE_rapprochement-multi-niveaux.md` §10) réécrit les 8 scripts un par un de toute façon (capture GTIN/mpn/attributs bruts + statut `tracked`) ; cette lecture de description sera ajoutée dans la même passe pour ne réécrire chaque script qu'une seule fois.
+5. **Close, obsolète** (2026-09-26) : miroir JS du workflow n8n ProTennis — sans objet depuis le retrait définitif de ProTennis (`scripts/automation/n8n-protennis-ingestion-workflow.json` supprimé du dépôt).
 
-**Bloquant sur** : rien — étapes 1 à 3 livrées et vérifiées réellement en prod, prochaine conversation dédiée à l'étape 4 (extension 6 marchands) ou 5 (miroir n8n), à confirmer explicitement.
+**Bloquant sur** : étape 4 attend R0-R2 (voir GAP-2026-09-25-19) avant d'être traitée dans le cadre de R3.
 
-**Statut** : ouvert au 2026-09-25.
+**Statut** : ouvert au 2026-09-26 — étapes 1 à 3 faites, étape 4 gelée/rattachée à R3, étape 5 close (obsolète).
 
 ---
 
@@ -100,21 +100,23 @@ Découvert en vérifiant le build Amazon (voir `ETAT_ACTUEL.md`) : la recherche 
 
 ---
 
-## GAP-2026-09-25-11 — Sous-catégories d'accessoires : cadrage fait, reste tout le build (OUVERT)
+## GAP-2026-09-25-11 — Sous-catégories d'accessoires : cadrage fait, rattaché à R2 (OUVERT)
 
 Suite à D-2026-09-25-15 : décisions de principe actées (nouveau champ `deals.subcategory` nullable, liste `sacs`/`balles`/`antivibrateurs`/`grips_surgrips`/`accessoires_cordage`, `NULL` pour le reste, backfill complet). Aucun code écrit dans cette conversation (cadrage uniquement). Numéroté -11 (et non -10) pour éviter une collision : GAP-2026-09-25-10 est déjà pris (conflit de nom Tennisdeals), mergé sur `master` entretemps par une autre session parallèle.
 
-**Reste à faire, dans l'ordre (une étape de build par conversation, comme pour le chantier sexe/âge)** :
+**Rattaché à R2** (2026-09-26, `CADRAGE_rapprochement-multi-niveaux.md` §10, « référentiel v1 et règles de tolérance ») : la taxonomie/sous-catégorisation relève de la même famille de travail que le référentiel de modèles v1 (§7) — traiter dans la même étape plutôt qu'isolément, pour ne pas retoucher deux fois les mêmes scripts de scraping.
+
+**Reste à faire, dans l'ordre, une fois R2 démarré** :
 1. Migration (`deals.subcategory VARCHAR` + `CHECK` limité aux 5 valeurs ou `NULL`, index si utile au filtre).
 2. Fonction d'extraction (`lib/product-matching.ts`, ex. `extractAccessorySubcategory`) avec le lexique vérifié en cadrage (voir D-2026-09-25-15 pour le détail par sous-catégorie et les volumes réels constatés sur les 611 offres accessoires actives de prod).
 3. Script de backfill (`scripts/backfill-accessory-subcategory.ts`) sur les offres déjà en base.
-4. Mise à jour des 7 scripts de scraping déjà écrits (Tecnifibre, Tennispro.fr, SportSystem, Sport 2000, Babolat, Tennis Point FR, Head) pour peupler `subcategory` dès l'ingestion.
-5. Mise à jour du workflow n8n ProTennis (miroir JS de la fonction d'extraction + upsert, même mécanisme que GAP-2026-09-25-01 point 4 — nécessitera aussi un redéploiement par l'utilisateur sur la VM Oracle, pas d'accès SSH pour Claude Code).
+4. Mise à jour des 8 scripts de scraping (dans la même passe R3 que GAP-2026-09-25-15 étape 4) pour peupler `subcategory` dès l'ingestion.
+5. ~~Mise à jour du workflow n8n ProTennis~~ — **close, obsolète** (2026-09-26) : ProTennis retiré définitivement, plus de workflow n8n ProTennis dans le dépôt.
 6. UI du filtre secondaire (pills sous-catégorie, visibles uniquement quand « Accessoires » est sélectionné, incluant une option « Autres accessoires » pour `subcategory IS NULL`).
 
-**Bloquant sur** : rien — chantier tout juste cadré, prochaine conversation dédiée à l'étape 1.
+**Bloquant sur** : R0-R1 du chantier de rapprochement multi-niveaux (voir GAP-2026-09-25-19).
 
-**Statut** : ouvert au 2026-09-25.
+**Statut** : ouvert au 2026-09-26 — cadré, rattaché à R2, étape 5 close (obsolète).
 
 ---
 
@@ -168,9 +170,11 @@ Suite à D-2026-09-25-10 : plan en 7 blocs acté (fondations techniques, donnée
 
 Chaque bloc doit être cadré en détail (décisions structurantes propres, ex. quels crawlers IA autoriser) avant tout code, conformément au protocole général.
 
+**Indépendant du chemin critique « vrais bons plans » / rapprochement multi-niveaux** (confirmé 2026-09-26) : ne dépend d'aucune étape R0-R5 ni des phases du cadrage `CADRAGE_vrais-bons-plans.md`, peut être repris à tout moment sans attendre.
+
 **Bloquant sur** : rien — chantier en cours, prochaine conversation dédiée au bloc 4. Vérifier le statut de merge de la branche `feat/seo-canonical-catalogue` (bloc 3) avant de commencer.
 
-**Statut** : ouvert au 2026-09-25.
+**Statut** : ouvert au 2026-09-26.
 
 ---
 
