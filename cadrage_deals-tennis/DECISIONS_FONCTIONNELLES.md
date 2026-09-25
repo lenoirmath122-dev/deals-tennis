@@ -810,3 +810,43 @@ Total 611 = 300+59+33+77+0+142, cohérent. Les motifs exacts (regex) seront affi
 **Implémentation** : `scripts/scraping/amazon.ts` — `fetchKnownBrands()` (nouvelle requête `SELECT DISTINCT d.brand FROM deals d JOIN merchants m ON m.id = d.merchant_id WHERE m.slug != 'amazon' AND d.status = 'active' AND d.is_active = true AND d.brand IS NOT NULL AND d.brand <> 'Générique'`, résultat trié côté JS par longueur décroissante pour préférer les correspondances les plus spécifiques — `ORDER BY LENGTH()` a dû être retiré de la requête SQL, `SELECT DISTINCT` de Postgres exige que toute expression d'`ORDER BY` figure dans la liste de sélection, découvert en exécutant réellement le script). `extractAmazonBrand` retourne désormais `string | null` (`null` = marque non reconnue) au lieu d'un fallback `'Générique'`. Ancienne liste statique `KNOWN_BRANDS` supprimée. Offre exclue comptée séparément (`skippedUnknownBrand`) dans le résumé de fin de passage. Le mécanisme d'éviction déjà existant (offres actives non revues à ce passage → `expired`/`is_active=false`) traite automatiquement les offres déjà en base à `brand = 'Générique'` : elles ne seront plus jamais "revues" par le prochain passage, donc évincées naturellement, sans script de nettoyage ponctuel séparé.
 
 **Statut** : Actée le 2026-09-25.
+
+---
+
+### D-2026-09-25-17 — Rejet de la comparaison de prix inter-marchands : le site reste centré sur les vraies promos
+
+**Contexte** : suite à GAP-2026-09-25-14 (piste : pour Amazon, comparer son prix au prix de référence connu chez un autre marchand plutôt qu'exiger une remise propre à Amazon), la réflexion a été élargie à toute la logique du site (proposition initiale de l'utilisateur) : afficher pour chaque article le meilleur prix trouvé tous marchands confondus (promo ou pas), avec le détail multi-marchand au clic.
+
+**Décision** : rejetée. L'utilisateur a explicitement reconfirmé que deals-tennis est un site de mise en avant de **vraies promotions**, pas un comparateur de prix généraliste — un article moins cher chez un marchand simplement parce qu'il n'y est jamais en promo n'a pas sa place sur le site. Conséquences :
+- Aucun scraping catalogue complet (option B envisagée un temps) — le scraping reste ciblé sur les pages promo/outlet de chaque marchand, comme aujourd'hui.
+- Pas de logique "meilleur prix toutes offres confondues" sur le catalogue ni la page détail — la page détail `/deal/[dealId]` continue d'afficher les autres offres du même article, mais uniquement celles déjà captées (donc déjà des deals, pas des prix catalogue ajoutés pour la comparaison).
+- **GAP-2026-09-25-14 clos par ce rejet** : pour Amazon spécifiquement, comparer son prix à celui d'un autre marchand ne serait pas non plus une "vraie promo" au sens du principe ci-dessus (ce n'est pas une réduction publiée par Amazon lui-même) — le comportement actuel (exiger une remise propre affichée par Amazon, D-2026-09-25-16) est confirmé, pas de changement.
+- GAP-2026-09-25-13 (volume Amazon sous le seuil de 30) reste ouvert tel quel, sans cette piste comme solution possible — à retraiter autrement si besoin (ex. plus de marques reconnues au fil du temps, ou mots-clés de recherche Amazon élargis).
+
+**Statut** : Actée (rejetée) le 2026-09-25 — aucun code impacté, cadrage uniquement.
+
+---
+
+### D-2026-09-25-18 — Amazon : pistes retenues pour augmenter le volume sans revenir sur D-2026-09-25-17
+
+**Contexte** : suite à D-2026-09-25-17 (comparaison inter-marchands rejetée), GAP-2026-09-25-13 reste ouvert (volume Amazon à 11 offres, sous le seuil de 30). L'utilisateur a demandé de continuer la réflexion sur « une meilleure manière de scraper Amazon ». 7 pistes proposées, vérifiées réellement sur amazon.fr (Playwright) avant de trancher plutôt que supposées.
+
+**Vérifications réelles effectuées** :
+- **Filtre réduction deviné dans l'URL de recherche par mot-clé** (`p_n_deal_type` sur une recherche `k=...` simple) : **ne fonctionne pas** — résultats strictement identiques avec ou sans le paramètre (mêmes 49 produits, même ratio de remise). Aucune facette « Réductions » dans le panneau de filtres d'une recherche par mot-clé.
+- **Rayon de navigation Amazon dédié Tennis** (`node=340139031`, retrouvé via le breadcrumb d'une fiche produit) : rayon générique aussi bruité que la recherche par mot-clé (entraîneurs, jouets pour animaux, padel mélangé) — pas de gain seul.
+- **Découverte clé** : en descendant au niveau des sous-rayons Amazon (Raquettes `340151031`, Cordages `488345031`, Chaussures — homme `1765284031`), une facette native **« Tous les rabais »** apparaît dans le panneau « Promotions et bonnes affaires » de ces pages, avec un identifiant `p_n_deal_type:26902977031` **global** (même valeur vérifiée fonctionnelle sur les 4 rayons testés, pas propre à un rayon). Combiner `rh=n:<node_id>,p_n_deal_type:26902977031` réduit fortement le nombre de résultats (ex. Raquettes 10 000+ → 3 000+, Cordages 4 000+ → 904) et augmente nettement le ratio de remise réelle (Raquettes : 25/25 produits de l'échantillon avec un prix de référence, contre ~50% en recherche par mot-clé).
+- **Accessoires (sacs)** (`node=340149031`) : facette fonctionnelle mais rayon plus large (40 000+ résultats de base) et qualité pas nettement meilleure qu'aujourd'hui (quelques articles hors tennis mêlés). Pas de nœud dédié retrouvé pour les autres sous-catégories (balles, grips/surgrips).
+- **Textile** : pas de rayon unique — la taxonomie Amazon « Mode » fragmente les vêtements par type de vêtement × genre (ex. « Shorts de tennis homme » a son propre nœud `494287031`, distinct des polos/jupes/robes). Couverture complète nécessiterait d'énumérer un nœud par type, non fait (jugé disproportionné pour ce cadrage).
+- **Coupons Amazon** : aucun trouvé sur les résultats « raquette de tennis » ; **Offres Éclair/Gold Box filtré Sports et loisirs** redirige en réalité vers la même page que les coupons (`/deals?bubble-id=deals-collection-sports-and-outdoors`), 11 produits génériques seulement, 0 tennis. Ces deux pistes écartées, pas de matière.
+- **Pagination** (`&page=2` sur une recherche par mot-clé) : fonctionne réellement, 48 produits nouveaux sur 49 par rapport à la page 1 (quasi aucun recoupement).
+- **Marque Wilson** : confirmée présente dans les résultats Amazon réels (ex. « Wilson Intrigue SE ») alors qu'exclue du filtre marque connue actuel (D-2026-09-25-16) faute d'être vendue chez un autre marchand actif du catalogue (Wilson écarté ailleurs pour blocage anti-bot, GAP différent). Manque à gagner réel identifié.
+
+**Périmètre retenu pour le prochain build (une conversation dédiée)** :
+1. Raquettes, Cordages, Chaussures (homme confirmé, femme à retrouver) : basculer sur rayon + facette « Tous les rabais » (`rh=n:<node_id>,p_n_deal_type:26902977031`) plutôt que la recherche par mot-clé actuelle.
+2. Accessoires, Textile : conserver l'approche actuelle par mot-clé (pas de gain net prouvé ou trop de travail de cadrage supplémentaire pour l'instant), mais lui ajouter la pagination.
+3. Pagination des résultats par mot-clé, pour les catégories qui restent en recherche par mot-clé.
+4. Ajouter Wilson (et vérifier s'il existe d'autres marques tennis notoires dans le même cas) à la liste de marques reconnues — décision technique mineure au moment du build, dans le même esprit que D-2026-09-25-16.
+
+**Hors périmètre de cette conversation** : aucun code écrit — cadrage et vérification uniquement, conformément au protocole. Le nœud « Chaussures femme », l'éventuelle extension à un nœud par type de vêtement pour le textile, et le détail des sélecteurs/URLs définitifs seront vérifiés au fil de l'eau pendant le build (même pratique que les autres marchands, GAP-2026-09-24-03).
+
+**Statut** : Actée le 2026-09-25.

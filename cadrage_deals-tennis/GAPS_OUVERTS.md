@@ -1,6 +1,6 @@
 # Points ouverts
 
-## GAP-2026-09-25-14 — Amazon : comparer le prix Amazon au prix barré déjà connu chez d'autres marchands (OUVERT, structurant)
+## GAP-2026-09-25-14 — Amazon : comparer le prix Amazon au prix barré déjà connu chez d'autres marchands (CLOS, rejeté)
 
 Suite à D-2026-09-25-16 (filtre marque connue) : le volume Amazon réel après filtrage est tombé à 11 offres (sous le seuil de 30 de D-2026-09-24-04), en grande partie parce que la majorité des fiches Amazon sur ces mots-clés n'ont pas de remise propre affichée par Amazon lui-même (154/233 fiches candidates exclues pour cette raison au dernier passage, filtre inchangé depuis le premier build). L'utilisateur a proposé une piste : pour Amazon spécifiquement, ingérer aussi les fiches sans remise propre, et calculer une "réduction" en comparant le prix Amazon au prix de référence (`original_price`) déjà connu pour le même article chez un autre marchand (via le rapprochement produit, `product_id`), plutôt que d'exiger un prix barré publié par Amazon lui-même.
 
@@ -9,19 +9,23 @@ Suite à D-2026-09-25-16 (filtre marque connue) : le volume Amazon réel après 
 - Le rapprochement produit (`product_id`) se fait aujourd'hui *pendant* l'upsert d'une offre Amazon — il faudrait pouvoir interroger le prix de référence d'un autre marchand *avant*, ce qui suppose une correspondance fiable de modèle/couleur/variante (risque de comparer deux variantes différentes du même article, ex. couleurs différentes, et d'afficher une réduction trompeuse).
 - Que faire quand aucun autre marchand n'a l'article (`product_id` non trouvé) : revenir au comportement actuel (skip) ou afficher sans réduction ?
 
-**Bloquant sur** : rien dans l'immédiat — décision reportée explicitement par l'utilisateur à une nouvelle conversation dédiée de cadrage, pas enchaînée avec le filtre marque de cette conversation.
+**Résolution (2026-09-25, D-2026-09-25-17)** : rejeté après discussion élargie à toute la logique du site — l'utilisateur a reconfirmé que deals-tennis reste centré sur les vraies promotions, pas un comparateur de prix. Comparer Amazon à un autre marchand ne serait pas non plus une "vraie promo" (rien publié par Amazon lui-même). Comportement actuel (D-2026-09-25-16, remise propre exigée) inchangé.
 
-**Statut** : ouvert au 2026-09-25.
+**Statut** : clos (rejeté) le 2026-09-25.
 
 ---
 
-## GAP-2026-09-25-13 — Amazon : volume sous le seuil de 30 après le filtre marque connue (OUVERT, mineur, assumé)
+## GAP-2026-09-25-13 — Amazon : volume sous le seuil de 30 après le filtre marque connue (OUVERT, plan de build cadré)
 
 Suite à D-2026-09-25-16 : le filtre marque connue (dynamique, basé sur les marques déjà présentes chez les autres marchands) fait tomber le volume Amazon de 42 à 11 offres actives sur le passage de vérification du 2026-09-25 — sous le seuil de 30 articles tennis actifs acté en D-2026-09-24-04 (seuil qualifié de révisable dès l'origine). Décomposition réelle du tri sur ce passage : 233 fiches candidates → 154 sans remise réelle, 39 sans le mot "tennis", 3 hors tennis, 26 marque non reconnue, 11 retenues.
 
-**Bloquant sur** : rien dans l'immédiat — l'utilisateur a choisi explicitement la priorité qualité/source sur volume pour ce marchand (voir D-2026-09-25-16), en connaissance du chiffre réel. Le volume peut remonter naturellement à mesure que d'autres marchands ajoutent des marques reconnues à la liste de référence dynamique, ou si GAP-2026-09-25-14 (comparaison inter-marchands) est repris plus tard.
+La piste de comparaison inter-marchands (GAP-2026-09-25-14) a été explicitement rejetée le 2026-09-25 (D-2026-09-25-17) — ne plus la proposer comme solution.
 
-**Statut** : ouvert au 2026-09-25.
+**Résolution cadrée (2026-09-25, D-2026-09-25-18)** : 7 pistes alternatives vérifiées réellement sur amazon.fr (Playwright). Retenues pour le prochain build : rayon Amazon + facette native « Tous les rabais » (`rh=n:<node_id>,p_n_deal_type:26902977031`, ID global vérifié sur 4 rayons) pour raquettes/cordages/chaussures (gain net prouvé) ; pagination des résultats (`&page=2`, fonctionne réellement) pour toutes les catégories restées en recherche par mot-clé (accessoires, textile) ; ajout de Wilson (et marques tennis notoires similaires) à la liste de marques reconnues. Voir D-2026-09-25-18 pour le détail complet des vérifications et des pistes écartées.
+
+**Bloquant sur** : rien — cadrage terminé, prêt pour le build (nouvelle conversation dédiée, une étape de build à la fois). Reste à retrouver au fil du build : le nœud Amazon "Chaussures femme" (seul "Chaussures homme" retrouvé en cadrage), et les sélecteurs/URLs définitifs des rayons retenus.
+
+**Statut** : ouvert au 2026-09-25 (cadrage terminé, build à faire).
 
 ---
 
