@@ -101,6 +101,7 @@ interface ShopifyProduct {
   handle: string;
   vendor: string;
   product_type: string;
+  body_html: string | null;
   variants: ShopifyVariant[];
   images: { src: string }[];
 }
@@ -182,7 +183,7 @@ async function main() {
     const model = extractModel(title, brand, typeInfo.category);
     const color = extractColor(title);
     const gender = extractGender(title);
-    const ageGroup = extractAgeGroup(title, typeInfo.category);
+    const ageGroup = extractAgeGroup(title, typeInfo.category, product.body_html ?? undefined);
     const imageUrl = product.images[0]?.src ?? null;
     const discountPercentage = Math.round(((comparePrice - price) / comparePrice) * 100);
     const affiliateUrl = `${MERCHANT_WEBSITE}/products/${product.handle}`;

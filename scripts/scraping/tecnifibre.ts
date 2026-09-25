@@ -8,6 +8,12 @@
 // "HTTP + parsing" acté, juste appliqué à une réponse structurée plutôt qu'à du
 // HTML, ce qui est plus robuste. Aucune clause anti-scraping dans les CGU.
 //
+// Découverte D-2026-09-25-19 (GAP-2026-09-25-15, étape 2) : contrairement aux
+// 6 autres marchands, ce script n'appelait jamais extractGender/extractAgeGroup
+// ni n'écrivait ces colonnes — corrigé ici (même logique de fusion ON CONFLICT
+// que tennis-point-fr.ts), en plus de la lecture de body_html comme second
+// signal d'âge (le "T-Fight Club 25" cité dans le GAP est un produit Tecnifibre).
+//
 // Une seule collection ciblée : `outlet-articles-de-tennis`. Vérifié réellement
 // (2026-09-24) que c'est la seule collection Tecnifibre où les articles ont un
 // vrai `compare_at_price` (prix barré) — les collections catalogue "normales"
@@ -17,7 +23,12 @@
 // jamais en promo au moment de la vérification (accepté à 0 article, comme pour
 // Babolat/D-2026-09-24-05 — pas de sélecteur cordage forcé).
 import { neon } from "@neondatabase/serverless";
-import { extractColor, extractModel } from "../../lib/product-matching.ts";
+import {
+  extractAgeGroup,
+  extractColor,
+  extractGender,
+  extractModel,
+} from "../../lib/product-matching.ts";
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is not set");
@@ -67,6 +78,7 @@ interface ShopifyProduct {
   title: string;
   handle: string;
   product_type: string;
+  body_html: string | null;
   variants: ShopifyVariant[];
   images: { src: string }[];
 }
@@ -145,6 +157,8 @@ async function main() {
 
     const model = extractModel(title, MERCHANT_NAME, typeInfo.category);
     const color = extractColor(title);
+    const gender = extractGender(title);
+    const ageGroup = extractAgeGroup(title, typeInfo.category, product.body_html ?? undefined);
     const imageUrl = product.images[0]?.src;
     if (!imageUrl) {
       skippedNoDiscount += 1; // pas de champ dédié, mais même effet : offre incomplète ignorée
@@ -155,10 +169,13 @@ async function main() {
     const affiliateUrl = `${MERCHANT_WEBSITE}/products/${product.handle}`;
 
     const [upsertedProduct] = await sql`
-      INSERT INTO products (brand, model, category)
-      VALUES (${MERCHANT_NAME}, ${model}, ${typeInfo.category})
+      INSERT INTO products (brand, model, category, gender, age_group)
+      VALUES (${MERCHANT_NAME}, ${model}, ${typeInfo.category}, ${gender}, ${ageGroup})
       ON CONFLICT (LOWER(brand), LOWER(model), category)
-      DO UPDATE SET brand = EXCLUDED.brand
+      DO UPDATE SET
+        brand = EXCLUDED.brand,
+        gender = CASE WHEN products.gender = 'non_determine' THEN EXCLUDED.gender ELSE products.gender END,
+        age_group = CASE WHEN products.age_group = 'adulte' AND EXCLUDED.age_group = 'enfant' THEN 'enfant' ELSE products.age_group END
       RETURNING id
     `;
 

@@ -184,10 +184,17 @@ export function extractGender(title: string): Gender {
  * enfant est considéré adulte par défaut. Pour la catégorie raquettes
  * (D-2026-09-25-19), une taille de manche en pouces junior (19/21/23/25/26)
  * vaut aussi indication enfant, en l'absence de tout mot-clé.
+ *
+ * `description` (D-2026-09-25-19, étape 2) : second signal optionnel — le
+ * texte de la description produit (ex. `body_html` Shopify) est simplement
+ * concaténé au titre avant application des mêmes motifs, plutôt que traité
+ * séparément. Gratuit pour Tecnifibre/Tennis Point FR (déjà dans le payload
+ * JSON récupéré).
  */
-export function extractAgeGroup(title: string, category?: string): AgeGroup {
-  if (CHILD_PATTERN.test(title)) return "enfant";
-  if (category === "raquettes" && RACQUET_JUNIOR_SIZE_PATTERN.test(title)) return "enfant";
+export function extractAgeGroup(title: string, category?: string, description?: string): AgeGroup {
+  const text = description ? `${title} ${description}` : title;
+  if (CHILD_PATTERN.test(text)) return "enfant";
+  if (category === "raquettes" && RACQUET_JUNIOR_SIZE_PATTERN.test(text)) return "enfant";
   return "adulte";
 }
 
