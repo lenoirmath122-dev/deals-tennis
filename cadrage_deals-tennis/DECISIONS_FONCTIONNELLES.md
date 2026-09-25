@@ -679,3 +679,23 @@ L'utilisateur revient sur ce refus et demande explicitement d'utiliser scrape.do
 **Conséquence acceptée** : Babolat peut retomber à 0 offre active en base tant qu'aucune promo réelle n'existe sur le site — cohérent avec le principe "Tennisdeals = du bon plan", au prix d'un volume de catalogue potentiellement nul pour ce marchand.
 
 **Statut** : Actée et corrigée le 2026-09-25, dans la même conversation que la découverte (branche `feat/scraping-babolat`, PR #48 déjà ouverte). Vérifié réellement : `npx tsc --noEmit` clean, requête de nettoyage exécutée contre la base Neon de prod avec vérification du nombre de lignes affectées (301 trouvées, 301 expirées), script temporaire de nettoyage supprimé après usage.
+
+---
+
+### D-2026-09-25-10 — Chantier SEO/GEO : plan en 7 blocs, ordre acté, un bloc par conversation
+
+**Contexte** : Reprise du chantier « SEO / accessibilité » (D-2026-09-25-07) dans une nouvelle conversation, l'utilisateur se déclarant totalement novice sur le sujet et demandant un cadrage explicite avant tout code. Objectif clarifié par question posée : référencement Google **et** référencement dans les IA génératives (ChatGPT, Perplexity, Claude...) — pas seulement le partage social.
+
+**Plan proposé et confirmé explicitement par l'utilisateur** (« on fait tous ces blocs, un bloc à la fois ») :
+
+1. **Fondations techniques** : `robots.txt`, `sitemap.xml`, métadonnées par page (actuellement seule la page racine a un titre/description fixes dans `app/layout.tsx`).
+2. **Données structurées (Schema.org / JSON-LD)** : balisage `Product`/`Offer` sur les fiches — sert à la fois les rich snippets Google (prix affiché dans les résultats) et les IA génératives (faits structurés à citer).
+3. **URLs canoniques / contenu dupliqué** : le catalogue génère de nombreuses variantes d'URL (filtres catégorie/sexe/âge/tri/recherche) pour un même contenu — à clarifier pour Google et les IA.
+4. **Ouverture aux robots IA** : décision explicite à prendre sur l'autorisation des crawlers d'IA (GPTBot, ClaudeBot, PerplexityBot, Google-Extended...) via `robots.txt`.
+5. **`llms.txt`** : convention récente (non standardisée officiellement) résumant le site pour les IA à la racine du domaine.
+6. **Performance / Core Web Vitals** : audit de vitesse de chargement (critère de classement Google), décision de chantier dédié ou non selon le résultat de l'audit.
+7. **Open Graph** : métadonnées de partage social (aperçus Twitter/X, Facebook, WhatsApp) — bonus peu coûteux une fois le bloc 1 fait, hors objectif principal mais mentionné par Claude Code et accepté dans le périmètre global.
+
+**Modalités actées** : un bloc = une conversation dédiée de build, mise à jour des fichiers de suivi (`ETAT_ACTUEL.md`/`GAPS_OUVERTS.md`/`JOURNAL_SESSIONS.md`) et changement de conversation systématique à la fin de chaque bloc — cohérent avec le protocole général (une étape de build par conversation), pas une règle spécifique à ce chantier.
+
+**Statut** : Actée le 2026-09-25. Cadrage du plan global uniquement — aucune décision de détail tranchée pour chaque bloc (ex. quels crawlers IA autoriser au bloc 4) : à traiter dans la conversation dédiée à chaque bloc, avant tout code, conformément au protocole.

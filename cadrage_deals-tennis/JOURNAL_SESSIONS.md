@@ -7,6 +7,16 @@
 > Sessions du 2026-09-24 (Sport Outlet FR) à 2026-09-24 (pré-étape tri prix) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-24-sportoutlet_a_pre-etape-tri.md` (même règle, condensation du 2026-09-25).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
 
+## 2026-09-25 (session) — Cadrage chantier SEO/GEO : plan en 7 blocs (D-2026-09-25-10)
+
+- Reprise (« On reprend sur le SEO, gros cadrage avant de commencer car je suis totalement novice »). Protocole de reprise suivi (ETAT_ACTUEL.md → GAPS_OUVERTS.md).
+- État git au démarrage : travail non commité obsolète trouvé sur `feat/scraping-sport2000` (modifs dupliquant le renommage Tennisdeals déjà mergé, PR #47) — vérifié réellement identique/obsolète (`git diff origin/master`), confirmation explicite demandée à l'utilisateur avant nettoyage (`git restore` + `checkout master` + `pull`), `scripts/scraping/babolat.ts` (non suivi, chantier en cours dans un autre worktree) laissé intact.
+- Objectif clarifié par question posée : référencement Google **et** dans les IA génératives (pas seulement partage social).
+- Plan en 7 blocs proposé (fondations techniques, données structurées Schema.org/JSON-LD, URLs canoniques, ouverture robots IA, `llms.txt`, performance, Open Graph), expliqué en langage accessible (utilisateur novice). Confirmé explicitement par l'utilisateur : tous les blocs, un par conversation, mise à jour des fichiers de suivi et changement de conversation à chaque fois. **D-2026-09-25-10 actée** (plan global uniquement, aucune décision de détail par bloc).
+- Aucun code construit — cadrage uniquement, conforme au protocole.
+- `ETAT_ACTUEL.md`, `GAPS_OUVERTS.md` (nouveau GAP-2026-09-25-07) mis à jour.
+- Prochaine étape : nouvelle conversation dédiée au bloc 1 (fondations techniques — `robots.txt`, `sitemap.xml`, métadonnées par page), à confirmer explicitement en début de session.
+
 ## 2026-09-25 (session) — Correction scraping local Babolat : abandon de l'ingestion à 0% (D-2026-09-25-09)
 
 - Reprise directe (question de l'utilisateur, pas de `/clear` explicite en tête de conversation) : "sur l'ajout de babolat, on a des prix barrés qui sont les mêmes que les prix en réduction avec affiché -0%".
