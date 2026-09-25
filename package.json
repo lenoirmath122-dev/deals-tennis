@@ -19,6 +19,7 @@
     "scrape:babolat": "node --env-file=.env.local scripts/scraping/babolat.ts",
     "scrape:tennis-point-fr": "node --env-file=.env.local scripts/scraping/tennis-point-fr.ts",
     "scrape:head": "node --env-file=.env.local scripts/scraping/head.ts",
+    "scrape:amazon": "node --env-file=.env.local scripts/scraping/amazon.ts",
     "test": "node --env-file=.env.local node_modules/vitest/vitest.mjs run",
     "test:unit": "node node_modules/vitest/vitest.mjs run tests/unit",
     "test:e2e": "node --env-file=.env.local node_modules/@playwright/test/cli.js test"
