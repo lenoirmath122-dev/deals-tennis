@@ -149,9 +149,12 @@ export function extractModel(
 export type Gender = "homme" | "femme" | "mixte" | "non_determine";
 export type AgeGroup = "adulte" | "enfant";
 
-const FEMALE_PATTERN = /\b(femme|fille|lady)\b/i;
-const MALE_PATTERN = /\b(homme|garcon|garçon)\b/i;
-const CHILD_PATTERN = /\b(enfant|junior|jr|kids?|fille|garcon|garçon)\b/i;
+// Pluriel français inclus (D-2026-09-25-11) : Tennis Point FR utilise
+// systématiquement "Hommes"/"Femmes"/"Enfants", que \b seul ne capture pas
+// (la limite de mot échoue entre le radical et le "s" final).
+const FEMALE_PATTERN = /\b(femmes?|filles?|lady)\b/i;
+const MALE_PATTERN = /\b(hommes?|garcons?|garçons?)\b/i;
+const CHILD_PATTERN = /\b(enfants?|junior|jr|kids?|filles?|garcons?|garçons?)\b/i;
 
 /**
  * Extrait le sexe visé par l'article à partir du titre marchand (D-2026-09-25-03,
