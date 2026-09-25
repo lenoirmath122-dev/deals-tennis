@@ -1,5 +1,37 @@
 # Points ouverts
 
+## GAP-2026-09-25-19 — Produits multi-marchands distincts : 10 → 1 (OUVERT)
+
+Point de départ chiffré du chantier de rapprochement produit multi-niveaux
+(`cadrage_deals-tennis/CADRAGE_rapprochement-multi-niveaux.md`).
+
+Nombre de produits présents chez **2 marchands distincts ou plus, avec des
+offres actives** (`GROUP BY product_id HAVING COUNT(DISTINCT merchant_id) >= 2`,
+distinct de la métrique « produits avec 2+ offres actives tous marchands
+confondus » citée en GAP-2026-09-25-18, qui reste à 445 après retrait
+ProTennis) : **10 avant le retrait de ProTennis → 1 après**. C'est cette
+métrique-ci, pas les 445, qui mesure si la comparaison entre marchands —
+l'un des deux différenciateurs du site — fonctionne réellement.
+
+Cause : le rapprochement actuel repose sur une clé texte
+`LOWER(brand)|LOWER(model)|category` dérivée du titre nettoyé, qui varie
+trop d'un marchand à l'autre (ordre des mots, année, poids, mentions
+commerciales) pour matcher entre marchands.
+
+**Reste à faire** : chantier R0 à R5 décrit dans
+`CADRAGE_rapprochement-multi-niveaux.md` (diagnostic, jeu de référence,
+référentiel de modèles, capture à l'ingestion, moteur en mode fantôme,
+bascule). Objectif : précision ≥ 95 % sur « même modèle », couverture
+multi-marchands mesurée à chaque étape contre ce point de départ (1).
+
+**Bloquant sur** : ordre global révisé au §10 du document de cadrage —
+attend le retrait définitif de ProTennis et le trigger `price_observations`
+(tous deux déjà en cours), R0 non démarré (feu vert explicite requis).
+
+**Statut** : ouvert au 2026-09-25.
+
+---
+
 ## GAP-2026-09-25-18 — Retrait de ProTennis : inventaire, export, expiration faits ; reste la suppression définitive (OUVERT)
 
 Suite à D-2026-09-25-20. Étapes 1 à 3 faites et vérifiées réellement le 2026-09-25 (voir `JOURNAL_SESSIONS.md` pour le détail).

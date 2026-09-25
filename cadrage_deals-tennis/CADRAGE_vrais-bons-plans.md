@@ -160,6 +160,30 @@ Les seuils sont des points de départ, à ajuster. Le mécanisme de quarantaine 
 
 ---
 
+### Phase 4-bis — Amorçage des prix de référence au lancement (conception uniquement)
+
+**À réaliser après** la mise en place du scraping automatisé (Phase 2) et du rapprochement produit multi-niveaux (R5, voir `CADRAGE_rapprochement-multi-niveaux.md`). Rien à construire dans l'immédiat — cette section cadre l'objectif et les sources autorisées pour quand le chantier démarrera.
+
+**Objectif :** pouvoir afficher un verdict dès le lancement du site, sans attendre les 30 jours d'historique interne requis par la Phase 4.
+
+**Sources autorisées, par ordre de préférence :**
+1. Prix hors promo publiés sur les sites des marques (Babolat, Head, Tecnifibre), via les articles au statut `tracked` (D-2026-09-25-21) : prix public conseillé.
+2. Prix hors promo du même modèle chez un autre marchand — nécessite le rapprochement multi-niveaux (R5).
+3. API officielle payante Keepa pour Amazon, seulement si Amazon reste dans le périmètre : décision humaine, coût à estimer avant tout usage.
+4. Toute autre source, seulement via une API officielle dont les conditions autorisent explicitement cet usage commercial. Ces conditions doivent être vérifiées et documentées avant de proposer la source.
+
+**Exclu sans accord juridique explicite préalable :** scraper l'historique de prix d'Idealo, de Ledenicheur, ou de tout autre comparateur — conditions d'utilisation et droit des bases de données.
+
+**Règles :**
+- Stockage dans une table séparée `external_price_references` (modèle, source, prix, date, type de référence) — **jamais** dans `price_observations`, qui reste réservée à notre propre historique observé (principe P1).
+- Utilisée uniquement en secours, quand l'historique interne n'atteint pas les seuils de confiance de la Phase 4.
+- Affichage explicite de la source (« prix conseillé par la marque », « prix chez X »), visuellement distinct du badge basé sur notre historique.
+- Abandon automatique produit par produit dès que son historique interne atteint les seuils de la Phase 4 — la source externe ne prend jamais le pas sur une donnée interne suffisante.
+
+**Hors périmètre de cette section :** le design détaillé de l'affichage, l'implémentation, et la décision sur Keepa/Amazon (à trancher le moment venu).
+
+---
+
 ### Phase 5 — Supervision
 
 **Livrables :**
