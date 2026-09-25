@@ -1,5 +1,26 @@
 # Points ouverts
 
+## GAP-2026-09-25-07 — Chantier SEO/GEO : 6 blocs de build restants après le cadrage du plan global (OUVERT)
+
+Suite à D-2026-09-25-10 : plan en 7 blocs acté (fondations techniques, données structurées, URLs canoniques, ouverture robots IA, `llms.txt`, performance, Open Graph), un bloc par conversation dédiée.
+
+**Reste à faire, dans l'ordre** :
+1. Fondations techniques (`robots.txt`, `sitemap.xml`, métadonnées par page) — prochaine étape.
+2. Données structurées (Schema.org / JSON-LD Product/Offer).
+3. URLs canoniques / contenu dupliqué (filtres catalogue).
+4. Ouverture aux robots IA (GPTBot, ClaudeBot, PerplexityBot, Google-Extended...) — décision explicite à prendre, pas encore tranchée.
+5. `llms.txt`.
+6. Performance / Core Web Vitals.
+7. Open Graph (partage social).
+
+Chaque bloc doit être cadré en détail (décisions structurantes propres, ex. quels crawlers IA autoriser) avant tout code, conformément au protocole général.
+
+**Bloquant sur** : rien — chantier en cours, prochaine conversation dédiée au bloc 1.
+
+**Statut** : ouvert au 2026-09-25.
+
+---
+
 ## GAP-2026-09-25-06 — Babolat : mots-clés sexe anglophones ("Men"/"Women") non reconnus par le lexique extractGender (OUVERT, mineur)
 
 Découvert en vérifiant le build Babolat (voir `ETAT_ACTUEL.md`) : la catégorie chaussures utilise des titres anglophones (« Jet Mach 4 All Court Men », « Jet Tere 2 Clay Women ») alors que le lexique partagé `extractGender`/`extractAgeGroup` (`lib/product-matching.ts`, D-2026-09-25-03) ne reconnaît que des mots français (`femme|fille|lady`, `homme|garcon|garçon`). Conséquence : ces articles retombent sur `gender = non_determine` alors que le sexe est en réalité connu depuis le titre marchand (à la différence des catégories textile/accessoires du même site, qui utilisent « Homme »/« Femme » en français et sont bien détectées).
