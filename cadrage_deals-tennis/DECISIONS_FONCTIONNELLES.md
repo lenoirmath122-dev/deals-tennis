@@ -738,6 +738,23 @@ L'utilisateur revient sur ce refus et demande explicitement d'utiliser scrape.do
 
 ---
 
+### D-2026-09-25-13 — Chantier SEO/GEO, bloc 2 (données structurées JSON-LD Product/Offer) : décisions cadrées et actées
+
+**Contexte** : Reprise du chantier SEO/GEO sur le bloc 2 du plan en 7 blocs (D-2026-09-25-10, bloc 1 terminé en D-2026-09-25-12), conformément au protocole (cadrage explicite avant tout code, un bloc = une conversation).
+
+**Décisions soumises et confirmées par l'utilisateur avant code** :
+1. **Périmètre des pages** : uniquement la page détail deal (`/deal/[dealId]`), pas le catalogue dans ce bloc — sur recommandation explicite (valeur SEO/GEO la plus forte, scope vérifiable proprement ; l'utilisateur a demandé conseil plutôt que de trancher lui-même, confirmé ensuite explicitement).
+2. **Structure de l'Offer** : un seul `Offer` (le deal effectivement affiché sur la page), pas d'`AggregateOffer` résumant le multi-marchand ni de tableau d'`Offer` par marchand — les autres offres du même article restent visibles dans le HTML de la page mais hors JSON-LD.
+3. **`seller`** : le marchand réel (ex. « Tennis Point FR »), pas Tennisdeals — cohérent avec le rôle d'agrégateur/affilié du site (le clic redirige vers le marchand via `/go/[dealId]`).
+
+**Décision mineure tranchée seule** : `seller` ne porte que `name` (pas d'URL) — `MerchantSummary`/`DEAL_CARD_FIELDS` (`lib/deals.ts`) n'exposent pas `website_url` sur les requêtes catalogue/détail partagées ; l'ajouter aurait élargi la portée du changement au-delà de ce bloc pour un gain marginal (`url` est optionnel sur `schema.org/Organization`).
+
+**Hors périmètre de ce bloc** (traité dans les blocs suivants du plan) : `ItemList` catalogue, URLs canoniques/contenu dupliqué des filtres, ouverture aux robots IA, `llms.txt`, performance, Open Graph.
+
+**Statut** : Actée et construite le 2026-09-25 (branche `feat/seo-jsonld-produit`, PR #54). Vérifié réellement : `npx tsc --noEmit`, `npm run lint`, `npm run build` clean, `npm run test:unit` (43 tests) passent, serveur de production local démarré et JSON-LD extrait/parsé depuis une vraie page de la base Neon de prod (deal Tennis Point FR multi-marchand — prix, marque, vendeur, URL canonique corrects).
+
+---
+
 ### D-2026-09-25-15 — Sous-catégories d'accessoires : modélisation, liste et périmètre du backfill (cadrage uniquement)
 
 **Contexte** : demande explicite de l'utilisateur (« ajouter des catégories, notamment dans accessoires, pour séparer les sacs, les balles, antivibrateurs, etc. »). Traité comme décision structurante (nouveau champ, impact sur les 7 scripts de scraping déjà écrits + le workflow n8n ProTennis + le filtre catalogue), cadrée explicitement avant tout code, conformément au protocole. Numérotée -15 (et non -14) pour éviter une collision : D-2026-09-25-14 est déjà pris par une autre conversation en cours en parallèle sur le chantier SEO/GEO (bloc 3), qui avait laissé le répertoire de travail principal dans un état de conflit git non résolu (`git stash` interrompu) au moment de démarrer cette conversation — ce chantier a donc été isolé dans un nouveau git worktree dédié (`feat/souscategories-accessoires`) sans toucher au travail de l'autre session.

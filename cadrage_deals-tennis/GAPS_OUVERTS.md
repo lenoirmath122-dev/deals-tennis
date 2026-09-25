@@ -1,8 +1,8 @@
 # Points ouverts
 
-## GAP-2026-09-25-10 — Sous-catégories d'accessoires : cadrage fait, reste tout le build (OUVERT)
+## GAP-2026-09-25-11 — Sous-catégories d'accessoires : cadrage fait, reste tout le build (OUVERT)
 
-Suite à D-2026-09-25-15 : décisions de principe actées (nouveau champ `deals.subcategory` nullable, liste `sacs`/`balles`/`antivibrateurs`/`grips_surgrips`/`accessoires_cordage`, `NULL` pour le reste, backfill complet). Aucun code écrit dans cette conversation (cadrage uniquement).
+Suite à D-2026-09-25-15 : décisions de principe actées (nouveau champ `deals.subcategory` nullable, liste `sacs`/`balles`/`antivibrateurs`/`grips_surgrips`/`accessoires_cordage`, `NULL` pour le reste, backfill complet). Aucun code écrit dans cette conversation (cadrage uniquement). Numéroté -11 (et non -10) pour éviter une collision : GAP-2026-09-25-10 est déjà pris (conflit de nom Tennisdeals), mergé sur `master` entretemps par une autre session parallèle.
 
 **Reste à faire, dans l'ordre (une étape de build par conversation, comme pour le chantier sexe/âge)** :
 1. Migration (`deals.subcategory VARCHAR` + `CHECK` limité aux 5 valeurs ou `NULL`, index si utile au filtre).
@@ -13,6 +13,21 @@ Suite à D-2026-09-25-15 : décisions de principe actées (nouveau champ `deals.
 6. UI du filtre secondaire (pills sous-catégorie, visibles uniquement quand « Accessoires » est sélectionné, incluant une option « Autres accessoires » pour `subcategory IS NULL`).
 
 **Bloquant sur** : rien — chantier tout juste cadré, prochaine conversation dédiée à l'étape 1.
+
+**Statut** : ouvert au 2026-09-25.
+
+---
+
+## GAP-2026-09-25-10 — Conflit de nom : un site existant s'appelle déjà « tennisdeals » (OUVERT)
+
+Le renommage de la marque affichée « Deals Tennis » → « Tennisdeals » (D-2026-09-25-07, PR #47, 2026-09-25) a été fait avant de vérifier qu'aucun autre site n'utilisait déjà ce nom. L'utilisateur a signalé le 2026-09-25 qu'un site nommé « tennisdeals » existe déjà. Périmètre du renommage initial rappelé : uniquement la marque affichée (header/footer, métadonnées de page, pages réglementaires, `package.json`) — l'URL Vercel (`deals-tennis.vercel.app`) et le nom du dépôt GitHub n'ont pas changé, donc rien d'irréversible côté infra.
+
+Trois options soumises à l'utilisateur le 2026-09-25, décision explicitement reportée (« note-le simplement pour le moment ») :
+1. Revenir à « Deals Tennis » (annule PR #47).
+2. Choisir un nouveau nom (à définir, vérifier sa disponibilité avant adoption).
+3. Garder « Tennisdeals » quand même si le site existant n'est pas un vrai concurrent direct.
+
+**Bloquant sur** : rien dans l'immédiat côté code/infra. À trancher avant toute nouvelle communication publique sous ce nom (ex. avant de solliciter de nouveaux programmes d'affiliation sous cette marque) pour éviter d'accumuler des surfaces à renommer.
 
 **Statut** : ouvert au 2026-09-25.
 
@@ -38,14 +53,14 @@ Suite à D-2026-09-25-11 : le lexique partagé `extractGender`/`extractAgeGroup`
 
 ---
 
-## GAP-2026-09-25-07 — Chantier SEO/GEO : 5 blocs de build restants après le bloc 1 (OUVERT)
+## GAP-2026-09-25-07 — Chantier SEO/GEO : 4 blocs de build restants après le bloc 2 (OUVERT)
 
-Suite à D-2026-09-25-10 : plan en 7 blocs acté (fondations techniques, données structurées, URLs canoniques, ouverture robots IA, `llms.txt`, performance, Open Graph), un bloc par conversation dédiée. Bloc 1 terminé et vérifié (D-2026-09-25-12, PR #52).
+Suite à D-2026-09-25-10 : plan en 7 blocs acté (fondations techniques, données structurées, URLs canoniques, ouverture robots IA, `llms.txt`, performance, Open Graph), un bloc par conversation dédiée. Bloc 1 terminé et vérifié (D-2026-09-25-12, PR #52). Bloc 2 terminé et vérifié (D-2026-09-25-13, PR #54).
 
 **Reste à faire, dans l'ordre** :
 1. ~~Fondations techniques (`robots.txt`, `sitemap.xml`, métadonnées par page)~~ — fait (D-2026-09-25-12).
-2. Données structurées (Schema.org / JSON-LD Product/Offer) — prochaine étape.
-3. URLs canoniques / contenu dupliqué (filtres catalogue).
+2. ~~Données structurées (Schema.org / JSON-LD Product/Offer sur `/deal/[dealId]`)~~ — fait (D-2026-09-25-13). `ItemList` catalogue non traité (hors périmètre acté de ce bloc, pas un gap ouvert en soi).
+3. URLs canoniques / contenu dupliqué (filtres catalogue) — prochaine étape.
 4. Ouverture aux robots IA (GPTBot, ClaudeBot, PerplexityBot, Google-Extended...) — décision explicite à prendre, pas encore tranchée.
 5. `llms.txt`.
 6. Performance / Core Web Vitals.
@@ -53,7 +68,7 @@ Suite à D-2026-09-25-10 : plan en 7 blocs acté (fondations techniques, donnée
 
 Chaque bloc doit être cadré en détail (décisions structurantes propres, ex. quels crawlers IA autoriser) avant tout code, conformément au protocole général.
 
-**Bloquant sur** : rien — chantier en cours, prochaine conversation dédiée au bloc 1.
+**Bloquant sur** : rien — chantier en cours, prochaine conversation dédiée au bloc 3.
 
 **Statut** : ouvert au 2026-09-25.
 
