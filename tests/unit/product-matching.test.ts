@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { extractColor, extractModel, normalizeProductKey } from "@/lib/product-matching";
+import {
+  extractAgeGroup,
+  extractColor,
+  extractModel,
+  normalizeProductKey,
+} from "@/lib/product-matching";
 
 describe("extractModel", () => {
   it("retire le préfixe de catégorie et la marque pour une raquette", () => {
@@ -157,6 +162,46 @@ describe("extractColor", () => {
   it("combine plusieurs couleurs dans l'ordre d'apparition, sans doublon", () => {
     expect(extractColor("Barricade 14 Homme Blanc Bleu")).toBe("Blanc Bleu");
     expect(extractColor("Barricade 14 Homme White And Black")).toBe("Blanc Noir");
+  });
+});
+
+describe("extractAgeGroup", () => {
+  it("détecte enfant via mot-clé, quelle que soit la catégorie", () => {
+    expect(extractAgeGroup("Raquette de tennis Babolat Pure Aero Junior 26", "raquettes")).toBe(
+      "enfant"
+    );
+    expect(extractAgeGroup("Chaussures de tennis Nike Enfant", "chaussures")).toBe("enfant");
+  });
+
+  it("détecte enfant via taille de manche en pouces pour une raquette sans mot-clé (D-2026-09-25-19)", () => {
+    expect(extractAgeGroup("Raquette de tennis Tecnifibre T-Fight Club 25", "raquettes")).toBe(
+      "enfant"
+    );
+    expect(extractAgeGroup("Raquette de tennis Head Coco 25", "raquettes")).toBe("enfant");
+    expect(extractAgeGroup("Raquette de tennis Babolat Pure Drive 19", "raquettes")).toBe(
+      "enfant"
+    );
+  });
+
+  it("ne déclenche pas la taille en pouces hors catégorie raquettes", () => {
+    expect(extractAgeGroup("Cordage de tennis Luxilon 25", "cordages")).toBe("adulte");
+    expect(extractAgeGroup("Chaussures de tennis Asics 25", "chaussures")).toBe("adulte");
+    expect(extractAgeGroup("Raquette de tennis Babolat Pure Drive 25", undefined)).toBe("adulte");
+  });
+
+  it("reste adulte par défaut pour une raquette sans mot-clé ni taille junior", () => {
+    expect(extractAgeGroup("Raquette de tennis Babolat Pure Drive 100", "raquettes")).toBe(
+      "adulte"
+    );
+    expect(extractAgeGroup("Raquette de tennis Head Radical Pro 2023", "raquettes")).toBe(
+      "adulte"
+    );
+  });
+
+  it("ne matche pas un nombre imbriqué dans un plus grand nombre", () => {
+    expect(extractAgeGroup("Raquette de tennis Wilson Blade 98 v9 125", "raquettes")).toBe(
+      "adulte"
+    );
   });
 });
 

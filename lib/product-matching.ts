@@ -156,6 +156,13 @@ const FEMALE_PATTERN = /\b(femmes?|filles?|lady)\b/i;
 const MALE_PATTERN = /\b(hommes?|garcons?|garçons?)\b/i;
 const CHILD_PATTERN = /\b(enfants?|junior|jr|kids?|filles?|garcons?|garçons?)\b/i;
 
+// Tailles de manche en pouces standard du secteur pour les raquettes juniors
+// (19/21/23/25/26 ; 27+ = adulte). Souvent la seule indication d'âge dans le
+// titre marchand, sans mot-clé enfant/junior (D-2026-09-25-19). Scopée à la
+// catégorie raquettes : un nombre isolé dans ce jeu n'a pas le même sens dans
+// les autres catégories (jauge de cordage, pointure, etc.).
+const RACQUET_JUNIOR_SIZE_PATTERN = /\b(19|21|23|25|26)\b/;
+
 /**
  * Extrait le sexe visé par l'article à partir du titre marchand (D-2026-09-25-03,
  * lexique vérifié sur les titres réels de prod). `mixte` si les deux groupes de
@@ -174,10 +181,14 @@ export function extractGender(title: string): Gender {
 /**
  * Extrait la tranche d'âge visée par l'article à partir du titre marchand
  * (D-2026-09-25-03). Pas de valeur `non_determine` : un titre sans mot-clé
- * enfant est considéré adulte par défaut.
+ * enfant est considéré adulte par défaut. Pour la catégorie raquettes
+ * (D-2026-09-25-19), une taille de manche en pouces junior (19/21/23/25/26)
+ * vaut aussi indication enfant, en l'absence de tout mot-clé.
  */
-export function extractAgeGroup(title: string): AgeGroup {
-  return CHILD_PATTERN.test(title) ? "enfant" : "adulte";
+export function extractAgeGroup(title: string, category?: string): AgeGroup {
+  if (CHILD_PATTERN.test(title)) return "enfant";
+  if (category === "raquettes" && RACQUET_JUNIOR_SIZE_PATTERN.test(title)) return "enfant";
+  return "adulte";
 }
 
 export interface ProductKey {

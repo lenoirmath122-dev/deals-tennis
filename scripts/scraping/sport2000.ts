@@ -256,7 +256,7 @@ async function main() {
       const model = extractModel(title, brand, config.dbCategory);
       const color = extractColor(title);
       const gender = extractGender(title);
-      const ageGroup = extractAgeGroup(title);
+      const ageGroup = extractAgeGroup(title, config.dbCategory);
       const discountPercentage = Math.round(
         ((hit.initial_price - hit.price) / hit.initial_price) * 100
       );
