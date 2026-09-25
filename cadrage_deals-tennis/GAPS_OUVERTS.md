@@ -1,27 +1,32 @@
 # Points ouverts
 
-## GAP-2026-09-25-18 — Retrait de ProTennis : inventaire fait, reste l'export/l'expiration/la suppression (OUVERT)
+## GAP-2026-09-25-18 — Retrait de ProTennis : inventaire, export, expiration faits ; reste la suppression définitive (OUVERT)
 
-Suite à D-2026-09-25-20 : inventaire complet réalisé le 2026-09-25 (voir `JOURNAL_SESSIONS.md` pour le détail des vérifications réelles contre le code et la base Neon de prod).
+Suite à D-2026-09-25-20. Étapes 1 à 3 faites et vérifiées réellement le 2026-09-25 (voir `JOURNAL_SESSIONS.md` pour le détail).
 
-**Inventaire (résumé, détail complet dans le journal de session)** :
+**Inventaire (étape 1, complété par la recherche complémentaire demandée par l'utilisateur)** :
 - **Code ProTennis-spécifique** : `scripts/automation/n8n-protennis-ingestion-workflow.json`, `scripts/automation/n8n-protennis-ingestion-README.md`.
-- **SQL générique, PAS spécifique à ProTennis** (à ne pas toucher pour ce retrait) : `scripts/automation/n8n-eviction-cron.sql` — mécanisme d'éviction horaire par `expires_at`, écrit pour le MVP (T031) mais jamais utilisé par le workflow ProTennis réel (qui fait sa propre éviction par diff d'URL, D-2026-09-22-03). Potentiellement orphelin (aucun autre marchand ne passe par n8n aujourd'hui) mais hors périmètre de ce retrait.
-- **Contrats génériques, PAS spécifiques à ProTennis** (à ne pas toucher) : `cadrage_deals-tennis/contracts/ingestion-contract.md`, `catalog-query-api.md`, `redirection-api.md` — aucune mention de ProTennis, s'appliquent à tous les marchands.
-- **Mentions documentaires à mettre à jour** : `app/affiliation/page.tsx` (« marchands partenaires (actuellement ProTennis) »), commentaires de code dans `scripts/scraping/tennispro.ts`/`sportsystem.ts`/`tecnifibre.ts` (références historiques, pas fonctionnelles — peuvent rester ou être nettoyées à la marge), `cadrage_deals-tennis/DECISIONS_FONCTIONNELLES.md`/`ETAT_ACTUEL.md`/`GAPS_OUVERTS.md`/`JOURNAL_SESSIONS.md`/archives (historique, à ne pas réécrire — ce sont des décisions actées, pas du code).
-- **Test fragile découvert** : `tests/contract/deal-detail.test.ts` s'appuie sur un produit "Pure Aero" réellement multi-marchand en prod (ProTennis + Tennis-Point) pour vérifier le tri par prix des autres offres — dépend de ProTennis. Une fois ProTennis passé en `expired`/supprimé, ce test doit être revérifié (le produit ciblé peut ne plus avoir 2+ offres actives, comme déjà documenté en GAP-2026-09-25-03 pour une raison différente).
-- **Base de données (vérifié réellement contre Neon prod, 2026-09-25)** : 1 ligne `merchants` (`ProTennis`, id `9bcb1729-926d-4462-b949-57f991e08673`), **1508 deals** actifs, **12 click_events** liés à ces deals, **1489 produits** qui deviendraient orphelins (uniquement liés à ProTennis) si les deals étaient supprimés, **18 produits** partagés avec au moins un autre marchand actif (garderaient leurs autres offres).
+- **`scripts/automation/n8n-eviction-cron.sql`** : générique (éviction horaire par `expires_at`, écrit pour le MVP T031), jamais utilisé par le workflow ProTennis réel (qui fait sa propre éviction par diff d'URL, D-2026-09-22-03). Hors périmètre de ce retrait, mais **acté comme code mort à supprimer lors de la reconstruction n8n (Phase 2, D-2026-09-25-23)** — aucun autre marchand ne passe par n8n aujourd'hui.
+- **Contrats génériques** (`ingestion-contract.md`, `catalog-query-api.md`, `redirection-api.md`) : aucune mention de ProTennis, inchangés.
+- **Recherche complémentaire (variantes de casse/nom de domaine/slug, `.env.example`, assets/logos, sitemap, métadonnées SEO)** : rien de plus trouvé. Pas de variable d'environnement ProTennis-spécifique (`.env.example` ne contient que `DATABASE_URL`), pas de logo/asset dédié (les placeholders `public/placeholders/*.svg` sont génériques par catégorie, pas par marchand), `app/sitemap.ts` est entièrement dynamique (aucune URL ProTennis en dur).
+- **Mention documentaire mise à jour** : `app/affiliation/page.tsx` (« marchands partenaires (actuellement ProTennis) ») — **non corrigée dans cette conversation**, à faire lors de la suppression définitive (étape 4) puisque le texte reste correct tant que la ligne `merchants` existe encore (offres seulement `expired`, pas supprimées).
+- **Test fragile corrigé** : `tests/contract/deal-detail.test.ts` sélectionnait un produit "Pure Aero" par titre exact, supposé rester multi-marchand (ProTennis + Tennis-Point) indéfiniment. Remplacé par une sélection dynamique du premier produit ayant réellement 2+ offres actives de marchands différents au moment du test (`GROUP BY product_id HAVING COUNT(DISTINCT merchant_id) >= 2`), sans dépendre d'un titre ni d'un marchand précis. Vérifié réellement contre la prod (après le passage en `expired` de l'étape 3) : 4/4 tests passent. `tsc`/lint/build clean.
+- **Base de données avant retrait (vérifié réellement, 2026-09-25)** : 1 ligne `merchants` (`ProTennis`, id `9bcb1729-926d-4462-b949-57f991e08673`), 1508 deals actifs, 12 click_events liés, 1489 produits qui deviendraient orphelins, 18 produits partagés avec au moins un autre marchand actif (au sens large, tous statuts confondus).
 
-**Reste à faire, dans l'ordre (une étape de build par conversation, D-2026-09-25-20)** :
-2. Export d'archive CSV des `deals`/`products`/`click_events` ProTennis.
-3. Passage des 1508 deals ProTennis en `expired`/`is_active=false` (retrait immédiat du site).
-4. Suppression définitive en migration (après validation utilisateur) : deals, produits orphelins (1489), `click_events` (12), ligne `merchants` — puis suppression du code/docs ProTennis-spécifiques listés ci-dessus.
-5. Vérification que `/go/[dealId]` sur une ancienne offre ProTennis redirige proprement (`/?notification=deal-expired`, mécanisme déjà existant pour toute offre expirée — à confirmer réellement sur un cas ProTennis après l'étape 3).
-6. Mise à jour de `ETAT_ACTUEL.md`.
+**Export d'archive (étape 2, fait)** : 5 fichiers CSV dans `cadrage_deals-tennis/archive/protennis-retrait-2026-09-25/` (`merchant.csv`, `deals.csv` — 1508 lignes, `products_orphelins.csv` — 1489 lignes, `products_partages.csv` — 18 lignes, `click_events.csv` — 12 lignes), ~850 Ko au total. Gardé dans le dépôt (volume négligeable, cohérent avec la convention `cadrage_deals-tennis/archive/` déjà utilisée pour les autres archives de suivi) plutôt qu'hors dépôt.
 
-**Bloquant sur** : validation explicite de l'utilisateur sur cet inventaire avant de passer à l'étape 2 (export).
+**Passage en `expired` (étape 3, fait et vérifié réellement)** :
+- 1508/1508 deals ProTennis passés à `status='expired', is_active=false` en base Neon de prod. 0 deal ProTennis encore `active` après l'opération.
+- Vérifié en HTTP sur `https://deals-tennis.vercel.app` : aucune occurrence de « protennis » sur l'accueil, sur `?category=textile`, ni sur `?category=raquettes&page=1`. `/go/[dealId]` et `/deal/[dealId]` sur un ancien dealId ProTennis réel redirigent tous les deux proprement vers `/?notification=deal-expired` (307), pas d'erreur.
+- **Effet de bord attendu, pas un bug** : `app/sitemap.xml` (ISR, `revalidate=1h`, Bloc 1 SEO D-2026-09-25-12) contient encore une entrée pour ce dealId juste après le changement — se corrigera automatiquement à la prochaine revalidation (dans l'heure), pas d'action requise.
+- **Nombre de produits multi-marchands** (métrique de référence citée par l'utilisateur, définition = produits avec 2+ offres actives, `COUNT(*) >= 2` sur `product_id`, tous marchands confondus) : **455 avant → 445 après** le retrait ProTennis (reconstruction de l'état "avant" vérifiée par requête directe, en recombinant les deals ProTennis désormais expirés — mais tous actifs avant cette session — avec l'état actuel des 8 autres marchands). Chute bien plus faible qu'attendue au premier calcul (une métrique intermédiaire "produits avec offres d'au moins 2 marchands distincts" était tombée de 10 à 1, mais ce n'est pas la définition utilisée par l'utilisateur pour son point de référence 455 — signalé ici pour éviter toute confusion future entre les deux métriques).
 
-**Statut** : ouvert au 2026-09-25 — étape 1 (inventaire) faite, en attente de validation.
+**Reste à faire (étape 4, après validation utilisateur)** :
+4. Suppression définitive en migration : deals ProTennis (1508, déjà `expired`), produits orphelins (1489), `click_events` (12), ligne `merchants` — puis suppression du code ProTennis-spécifique (workflow n8n JSON + README) et correction de `app/affiliation/page.tsx`.
+
+**Bloquant sur** : validation explicite de l'utilisateur avant l'étape 4 (suppression définitive, migration).
+
+**Statut** : ouvert au 2026-09-25 — étapes 1 à 3 faites et vérifiées réellement en prod, en attente de validation avant l'étape 4.
 
 ---
 

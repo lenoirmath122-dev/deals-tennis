@@ -927,4 +927,6 @@ Voir `CADRAGE_vrais-bons-plans.md` section 6.3 pour le texte de référence.
 
 Voir `CADRAGE_vrais-bons-plans.md` section 6.4 pour le texte de référence.
 
+**Complément (2026-09-25, pendant l'inventaire ProTennis GAP-2026-09-25-18)** : `scripts/automation/n8n-eviction-cron.sql` (mécanisme générique d'éviction horaire par `expires_at`, jamais utilisé par le workflow ProTennis réel) est confirmé orphelin — acté comme code mort à supprimer lors de ce build.
+
 **Statut** : Actée (confirmée explicitement par l'utilisateur). Cadrage uniquement — aucun code construit dans cette conversation.

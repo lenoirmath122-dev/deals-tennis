@@ -23,13 +23,24 @@ describe("getDealDetail contract", () => {
   });
 
   it("returns the deal with its other active offers for the same article, cheapest first", async () => {
-    // Titre precis (pas un simple '%Pure Aero%') : c'est le seul article Pure Aero
-    // reellement rattache a plusieurs marchands (ProTennis + Tennis-Point) en prod.
-    // Sans ce filtrage precis, un LIMIT 1 sans ORDER BY est non deterministe et peut
-    // retomber sur une offre Pure Aero mono-marchand selon l'ordre physique des lignes
-    // (deja observe apres des UPDATE reels via le workflow n8n).
+    // Selection dynamique d'un produit reellement multi-marchands au moment du test
+    // (pas un titre fige) : le catalogue evolue (expiration/desactivation d'offres),
+    // un titre precis fini toujours par ne plus avoir 2+ offres actives (voir
+    // GAP-2026-09-25-03, cas ProTennis+Tennis-Point "Pure Aero" ayant motive ce fix).
+    const [multiMerchantProduct] = await sql.query(
+      `SELECT product_id FROM deals
+       WHERE status = 'active' AND is_active = true AND product_id IS NOT NULL
+       GROUP BY product_id
+       HAVING COUNT(DISTINCT merchant_id) >= 2
+       LIMIT 1`
+    );
+    expect(multiMerchantProduct).toBeDefined();
+
     const [deal] = await sql.query(
-      `SELECT id FROM deals WHERE title ILIKE '%Pure Aero Cordée 2023%' AND status = 'active' LIMIT 1`
+      `SELECT id FROM deals
+       WHERE product_id = $1 AND status = 'active' AND is_active = true
+       LIMIT 1`,
+      [multiMerchantProduct.product_id]
     );
     expect(deal).toBeDefined();
 
