@@ -547,3 +547,19 @@ L'utilisateur revient sur ce refus et demande explicitement d'utiliser scrape.do
 4. **Lieu d'insertion en base** (décision mineure, tranchée sans nouvelle question — cohérente avec tous les marchands déjà intégrés) : réutilisation intégrale du schéma existant (`merchants`/`deals`/`products`), comme ProTennis et Sport Outlet FR. Pas de nouvelle table : ces 8 marchands sont des sources d'offres tennis de plus, pas un modèle de données différent.
 
 **Statut** : Actée. Aucun code construit dans cette conversation (cadrage/vérifications uniquement). Ceci clôt le cadrage technique de GAP-2026-09-24-02 pour les 3 marchands qui manquaient (Sport 2000/Babolat/Amazon) ; les 5 autres marchands actionnables (Tecnifibre, Tennis Point FR, Head, Tennispro.fr, SportSystem) ont déjà leurs sélecteurs de base identifiés dans D-2026-09-24-03/04. Prochaine étape : premier build (script(s) de scraping local), à confirmer explicitement en début de prochaine conversation — pas enchaîné dans celle-ci (une étape de build par conversation).
+
+---
+
+### D-2026-09-25-01 — Nouveau filtre catalogue « sexe / âge », principe et sourcing tranchés
+
+**Contexte** : L'utilisateur veut ajouter des dimensions de filtrage catalogue supplémentaires (sexe, âge adulte/enfant), en parallèle d'une autre conversation active sur le scraping (`scripts/scraping/tennispro.ts` en cours, non lié à ce cadrage). Aucun champ sexe/âge n'existe dans `data-model.md` (`deals`/`products`), et aucun marchand déjà scrapé (ProTennis, Tecnifibre) ne fournit cette donnée comme champ structuré distinct du titre.
+
+**Décision (questions posées explicitement à l'utilisateur, réponses actées)** :
+1. **Nature** : filtres/facettes (homme/femme/mixte, adulte/enfant), combinables avec les filtres catégorie existants — pas une option du dropdown de tri (`SORT_OPTIONS`), qui reste dédié à un ordre (prix, date, réduction).
+2. **Source de la donnée** : extraction heuristique depuis le titre scrappé (même logique que `extractColor`/`extractModel` dans `lib/product-matching.ts`), **croisée avec le champ marchand quand il existe** (ex. une catégorie marchand explicite homme/femme/enfant prime sur l'heuristique titre si disponible).
+3. **Emplacement modèle** : sur `products` (attribut de l'article rapproché multi-marchands), pas sur `deals` — cohérent avec `brand`/`model` déjà présents sur `products`.
+4. **Périmètre catégories** : toutes les catégories (`raquettes`, `cordages`, `chaussures`, `textile`, `accessoires`) ; les catégories peu concernées (cordages, accessoires) resteront très majoritairement "non déterminé"/"mixte" en pratique, pas d'exclusion en dur.
+
+**Non tranché à ce stade (reporté à la/aux conversation(s) de build)** : liste exacte des valeurs autorisées (ex. `homme`/`femme`/`mixte`/`enfant` vs `adulte`/`enfant` séparé du sexe — deux dimensions ou une seule ?), mots-clés précis de l'heuristique d'extraction par catégorie, migration SQL exacte, rétro-application (backfill) sur les ~1500+ offres déjà en prod, UI exacte du sélecteur de filtre (emplacement, combinaison avec la recherche groupée par article).
+
+**Statut** : Actée (principe et sourcing). Cadrage uniquement dans cette conversation — aucun code construit, pas de migration appliquée. Découpage en étapes de build proposé dans `GAPS_OUVERTS.md` (GAP-2026-09-25-01), à traiter dans une conversation dédiée séparée de celle en cours sur le scraping, une étape à la fois.
