@@ -1,5 +1,20 @@
 # Points ouverts
 
+## GAP-2026-09-25-10 — Conflit de nom : un site existant s'appelle déjà « tennisdeals » (OUVERT)
+
+Le renommage de la marque affichée « Deals Tennis » → « Tennisdeals » (D-2026-09-25-07, PR #47, 2026-09-25) a été fait avant de vérifier qu'aucun autre site n'utilisait déjà ce nom. L'utilisateur a signalé le 2026-09-25 qu'un site nommé « tennisdeals » existe déjà. Périmètre du renommage initial rappelé : uniquement la marque affichée (header/footer, métadonnées de page, pages réglementaires, `package.json`) — l'URL Vercel (`deals-tennis.vercel.app`) et le nom du dépôt GitHub n'ont pas changé, donc rien d'irréversible côté infra.
+
+Trois options soumises à l'utilisateur le 2026-09-25, décision explicitement reportée (« note-le simplement pour le moment ») :
+1. Revenir à « Deals Tennis » (annule PR #47).
+2. Choisir un nouveau nom (à définir, vérifier sa disponibilité avant adoption).
+3. Garder « Tennisdeals » quand même si le site existant n'est pas un vrai concurrent direct.
+
+**Bloquant sur** : rien dans l'immédiat côté code/infra. À trancher avant toute nouvelle communication publique sous ce nom (ex. avant de solliciter de nouveaux programmes d'affiliation sous cette marque) pour éviter d'accumuler des surfaces à renommer.
+
+**Statut** : ouvert au 2026-09-25.
+
+---
+
 ## GAP-2026-09-25-09 — Head : items génériques non tennis-exclusifs retenus depuis la page textile (OUVERT, mineur)
 
 Découvert en vérifiant le build Head (voir `ETAT_ACTUEL.md`) : la page `shop-sportswear/summer` ciblée pour le textile (page "Tennis and Padel" du marchand, vérifiée 100% tennis sur l'échantillon parcouru au cadrage) contient au moins un article générique sans indice tennis explicite dans son titre — « HEAD Bandana », retenu en base (catégorie textile). Le filet de sécurité multi-sports (exclusion padel/squash/badminton/pickleball) ne peut pas l'exclure, n'ayant aucun mot-clé d'autre sport non plus.
