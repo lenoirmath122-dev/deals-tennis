@@ -45,12 +45,17 @@ via `n8n execute` contre la vraie page ProTennis et la vraie base Neon de produc
    ajoutée par la migration `002_deals_unique_merchant_url.sql` et la table `products`
    de la migration `003_products.sql`. Le modèle (`model`) utilisé pour le rapprochement
    produit et la couleur (`color`, migration `004_deals_color.sql`) sont calculés dans
-   l'étape de parsing (miroir JS de `lib/product-matching.ts`, `extractModel` et
-   `extractColor` — **à garder synchronisé manuellement**, ce workflow n8n ne peut pas
-   importer le code TypeScript du repo). `extractModel` retire désormais aussi la
-   couleur du titre (D-2026-09-23-06) : la couleur reste un attribut par offre, pas une
-   clé d'identité produit — deux couleurs du même modèle restent le même article.
-   `affiliate_url` = URL produit ProTennis directe
+   l'étape de parsing (miroir JS de `lib/product-matching.ts`, `extractModel`,
+   `extractColor`, `extractGender` et `extractAgeGroup` — **à garder synchronisé
+   manuellement**, ce workflow n8n ne peut pas importer le code TypeScript du repo).
+   `extractModel` retire désormais aussi la couleur du titre (D-2026-09-23-06) : la
+   couleur reste un attribut par offre, pas une clé d'identité produit — deux couleurs
+   du même modèle restent le même article. `gender`/`age_group` (D-2026-09-25-01 à -04,
+   GAP-2026-09-25-01 point 4) sont portés par `products`, pas `deals` — la requête CTE
+   applique la même règle de réconciliation que `scripts/backfill-gender-age.ts` :
+   `gender` n'est écrasé que s'il vaut encore `non_determine`, `age_group` ne peut passer
+   que de `adulte` à `enfant` (jamais l'inverse), aucune des deux valeurs n'est jamais
+   dégradée par une offre ultérieure moins précise. `affiliate_url` = URL produit ProTennis directe
    (pas de lien d'affiliation, ce marchand n'a pas de programme d'affiliation actif —
    D-2026-09-21-15). Résout GAP-2026-09-22-11 : chaque offre insérée/mise à jour par ce
    workflow est désormais rattachée à `product_id`, sans dépendre d'un backfill manuel.
