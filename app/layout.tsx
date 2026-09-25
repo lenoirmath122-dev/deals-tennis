@@ -11,8 +11,8 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: {
-    default: "Deals Tennis — Bons plans raquettes, cordages, chaussures et textile",
-    template: "%s | Deals Tennis",
+    default: "Tennisdeals — Bons plans raquettes, cordages, chaussures et textile",
+    template: "%s | Tennisdeals",
   },
   description:
     "Le catalogue des meilleures promotions sur le matériel de tennis : raquettes, cordages, chaussures, textile et accessoires, sélectionnés et mis à jour en continu.",

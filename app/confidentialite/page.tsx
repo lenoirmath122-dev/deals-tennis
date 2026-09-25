@@ -11,7 +11,7 @@ export default function ConfidentialitePage() {
       <section>
         <h2>Aucun compte, aucune donnée personnelle collectée directement</h2>
         <p>
-          Deals Tennis ne propose pas de création de compte et ne demande à l&apos;utilisateur
+          Tennisdeals ne propose pas de création de compte et ne demande à l&apos;utilisateur
           aucune information personnelle (nom, email, adresse) pour consulter le site ou utiliser
           la recherche.
         </p>
@@ -21,7 +21,7 @@ export default function ConfidentialitePage() {
         <h2>Statistiques de clic anonymes</h2>
         <p>
           Lorsqu&apos;un utilisateur clique sur une offre pour être redirigé vers le site
-          marchand, Deals Tennis enregistre une statistique associée à cette offre : le type
+          marchand, Tennisdeals enregistre une statistique associée à cette offre : le type
           d&apos;appareil utilisé (mobile, tablette, ordinateur) et, le cas échéant, la page interne
           du site depuis laquelle le clic a eu lieu. Cette statistique n&apos;est reliée à aucun
           identifiant permettant de reconnaître un utilisateur individuel (pas d&apos;adresse IP
@@ -32,7 +32,7 @@ export default function ConfidentialitePage() {
       <section>
         <h2>Cookies et traceurs</h2>
         <p>
-          À ce jour, Deals Tennis n&apos;installe aucun cookie de mesure d&apos;audience ni aucun
+          À ce jour, Tennisdeals n&apos;installe aucun cookie de mesure d&apos;audience ni aucun
           traceur publicitaire tiers. Cette page sera mise à jour si un tel outil venait à être
           ajouté, avec le recueil du consentement requis par la réglementation en vigueur.
         </p>
@@ -52,7 +52,7 @@ export default function ConfidentialitePage() {
         <h2>Liens vers les sites marchands</h2>
         <p>
           Une fois redirigé vers un site marchand, l&apos;utilisateur est soumis à la politique de
-          confidentialité de ce site tiers, indépendante de celle de Deals Tennis.
+          confidentialité de ce site tiers, indépendante de celle de Tennisdeals.
         </p>
       </section>
 

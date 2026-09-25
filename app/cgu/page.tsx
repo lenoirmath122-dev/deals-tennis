@@ -11,9 +11,9 @@ export default function CguPage() {
       <section>
         <h2>Objet du site</h2>
         <p>
-          Deals Tennis est un site qui référence et compare des offres promotionnelles sur du
+          Tennisdeals est un site qui référence et compare des offres promotionnelles sur du
           matériel de tennis (raquettes, cordages, chaussures, textile, accessoires) proposées par
-          des sites marchands tiers. Deals Tennis ne vend aucun produit directement : cliquer sur
+          des sites marchands tiers. Tennisdeals ne vend aucun produit directement : cliquer sur
           une offre redirige l&apos;utilisateur vers le site du marchand concerné, où la
           transaction, si elle a lieu, se déroule intégralement.
         </p>
@@ -30,7 +30,7 @@ export default function CguPage() {
       <section>
         <h2>Informations affichées</h2>
         <p>
-          Les prix, réductions, disponibilités et descriptions affichés sur Deals Tennis
+          Les prix, réductions, disponibilités et descriptions affichés sur Tennisdeals
           proviennent des sites marchands référencés et sont fournis à titre indicatif. Ils
           peuvent évoluer ou devenir caducs (prix modifié, rupture de stock, offre expirée) entre
           le moment où l&apos;offre a été relevée et le moment où l&apos;utilisateur consulte le
@@ -42,10 +42,10 @@ export default function CguPage() {
       <section>
         <h2>Responsabilité</h2>
         <p>
-          Deals Tennis n&apos;intervient à aucun moment dans la vente, la livraison, le paiement
+          Tennisdeals n&apos;intervient à aucun moment dans la vente, la livraison, le paiement
           ou le service après-vente des produits achetés sur les sites marchands référencés. Ces
           transactions sont exclusivement régies par les conditions générales de vente du marchand
-          concerné. Deals Tennis ne saurait être tenu responsable d&apos;un litige survenant entre
+          concerné. Tennisdeals ne saurait être tenu responsable d&apos;un litige survenant entre
           un utilisateur et un marchand.
         </p>
       </section>
