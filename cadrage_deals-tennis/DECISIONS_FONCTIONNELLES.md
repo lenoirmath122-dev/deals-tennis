@@ -563,3 +563,39 @@ L'utilisateur revient sur ce refus et demande explicitement d'utiliser scrape.do
 **Non tranché à ce stade (reporté à la/aux conversation(s) de build)** : liste exacte des valeurs autorisées (ex. `homme`/`femme`/`mixte`/`enfant` vs `adulte`/`enfant` séparé du sexe — deux dimensions ou une seule ?), mots-clés précis de l'heuristique d'extraction par catégorie, migration SQL exacte, rétro-application (backfill) sur les ~1500+ offres déjà en prod, UI exacte du sélecteur de filtre (emplacement, combinaison avec la recherche groupée par article).
 
 **Statut** : Actée (principe et sourcing). Cadrage uniquement dans cette conversation — aucun code construit, pas de migration appliquée. Découpage en étapes de build proposé dans `GAPS_OUVERTS.md` (GAP-2026-09-25-01), à traiter dans une conversation dédiée séparée de celle en cours sur le scraping, une étape à la fois.
+
+---
+
+### D-2026-09-25-02 — Filtre sexe/âge : modélisation en deux colonnes séparées
+
+**Contexte** : Suite à D-2026-09-25-01 (point 1 de GAP-2026-09-25-01). Question posée explicitement : deux colonnes indépendantes (sexe, âge) ou une seule dimension combinée ?
+
+**Décision** : deux colonnes séparées sur `products` — `gender` (`homme`/`femme`/`mixte`/`non_determine`) et `age_group` (`adulte`/`enfant`/`non_determine`), indépendantes l'une de l'autre. Permet de filtrer sur l'âge seul sans présumer du sexe (ex. un article enfant peut rester `gender = non_determine`).
+
+**Statut** : Actée le 2026-09-25. Reste à trancher (GAP-2026-09-25-01) : mots-clés de l'heuristique, migration+backfill, intégration n8n, UI.
+
+---
+
+### D-2026-09-25-03 — Filtre sexe/âge : lexique de l'heuristique d'extraction, vérifié sur les titres réels de prod
+
+**Contexte** : Suite à D-2026-09-25-02 (point 2 de GAP-2026-09-25-01). Échantillon réel interrogé sur les 1927 offres de prod avant de figer un lexique (même démarche que `extractColor`) :
+- `chaussures` : 339/344 titres portent homme/femme ; `textile` : 516/564 (48 restants = articles unisexes : chaussettes, casquettes, manchons) ; `raquettes` : 37/455 (uniquement junior/enfant, sauf « Evo Drive Femme ») ; `accessoires` : 10/291 (sacs à dos enfant) ; `cordages` : 0/273.
+- Mots anglais (`men`/`women`/`boy`) quasi absents des titres réels (marchands français) et risqués en faux positifs sans limite de mot stricte (`men` matchait « ELEMENT », « Menthe », « Tournament ») — écartés du lexique.
+
+**Décision (lexique retenu, mots entiers insensibles à la casse)** :
+- `gender` : `femme` si le titre contient `femme`, `fille` ou `lady` ; `homme` si le titre contient `homme` ou `garçon`/`garcon` ; `mixte` si les deux groupes sont présents ; `non_determine` sinon.
+- `age_group` : `enfant` si le titre contient `enfant`, `junior`, `jr`, `kids`/`kid`, `fille` ou `garçon`/`garcon` ; `adulte` par défaut sinon (pas de valeur `non_determine` pour l'âge — un article sans mot-clé enfant est considéré adulte).
+
+**Statut** : Actée le 2026-09-25. Reste à trancher (GAP-2026-09-25-01) : migration+backfill, intégration n8n, UI.
+
+---
+
+### D-2026-09-25-04 — Filtre sexe/âge : règle de réconciliation quand un même produit regroupe plusieurs offres
+
+**Contexte** : Suite à D-2026-09-25-03, en conversation de build (migration + backfill, point 3 de GAP-2026-09-25-01). `gender`/`age_group` vivent sur `products`, mais l'heuristique s'applique par titre d'offre (`deals.title`) — un même produit peut regrouper plusieurs offres marchandes avec des titres différents. Question posée explicitement : que faire si deux offres du même produit donnent des valeurs différentes ? L'utilisateur a soulevé un risque plus profond : que le rapprochement produit actuel (`brand`+`model`+`category`) fusionne à tort un article junior et sa version adulte sous le même `product_id`.
+
+**Vérification réelle avant décision** : script de lecture seule exécuté contre la prod (135 produits avec ≥2 offres rattachées) — **0 désaccord gender, 0 désaccord age_group** trouvé. Cause : `extractModel` (`lib/product-matching.ts`) ne retire pas les mots « Junior »/« Jr » du titre, donc une variante junior produit un texte de modèle différent de la version adulte et devient déjà un `products` distinct — le risque soulevé ne se matérialise pas avec l'extraction actuelle.
+
+**Décision (règle de robustesse pour les backfills/upserts futurs, y compris n8n)** : lors du calcul de `gender`/`age_group` d'un produit à partir des offres qui lui sont rattachées, la première valeur déterminée rencontrée fait foi et n'est jamais écrasée ensuite par une valeur différente. Si un vrai conflit apparaît un jour (nouvelle offre avec un titre donnant une valeur différente d'une valeur déjà déterminée), il est **loggé** pour investigation manuelle plutôt que résolu silencieusement (pas d'écrasement automatique, pas de valeur `mixte`/`non_determine` forcée par le système).
+
+**Statut** : Actée le 2026-09-25. Reste à construire dans cette même conversation : migration SQL, backfill vérifié sur la prod.

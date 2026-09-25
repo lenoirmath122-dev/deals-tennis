@@ -1,5 +1,15 @@
 # Points ouverts
 
+## GAP-2026-09-25-03 — Tests contrat dépendants de données de prod volatiles (OUVERT, mineur)
+
+Découvert en vérifiant `npm test` avant le commit du backfill sexe/âge (aucun rapport avec ce backfill, confirmé par `git stash` — mêmes échecs sans les changements en cours) : 3 tests échouent car ils dépendent de données réelles précises en prod plutôt que de données de test isolées — `tests/contract/catalog-query.test.ts` (recherche groupée "Pure Aero") et `tests/contract/deal-detail.test.ts` (autres offres du même article) supposent qu'un produit "Pure Aero" a encore 2+ offres actives en base ; vérifié réellement (requête directe) : ce n'est plus le cas aujourd'hui (0 produit Pure Aero avec 2+ offres actives), probablement du fait du scraping quotidien (expiration/désactivation d'offres). Même catégorie de fragilité déjà rencontrée et corrigée une fois en GAP-2026-09-23-01 (effet de bord découvert) — la correction précédente ciblait un titre précis plutôt que des données générées, mais reste vulnérable à la même dérive dans le temps.
+
+**Bloquant sur** : rien dans l'immédiat — échec isolé à `npm test` (CI utilise `npm run test:unit`, qui ne touche pas la prod et reste vert). Mais fragilise la confiance dans la suite de tests contrat au fil du temps.
+
+**Statut** : ouvert au 2026-09-25.
+
+---
+
 ## GAP-2026-09-25-02 — Répétition de la marque dans le titre pour un produit Tennispro.fr (OUVERT, mineur)
 
 Découvert en vérifiant le build Tennispro.fr (voir `ETAT_ACTUEL.md`) : le produit « Sac de tennis Mouratoglou Apparel Mouratoglou Training Gym » (marque `Mouratoglou Apparel`, catégorie accessoires) a la marque qui apparaît deux fois dans le titre — une fois insérée par le script (convention `${label} ${brand} ...`), une fois déjà présente dans le nom scrappé du produit (`SAC MOURATOGLOU TRAINING GYM`, le mot « Mouratoglou » y figurant nativement, sans être le nom de marque complet `Mouratoglou Apparel`). Vérifié réellement : cas isolé (1/673 offres Tennispro.fr), pas un problème systémique — recherche sur toute la base ne trouve aucune autre offre où la chaîne de marque complète apparaît deux fois dans le titre.
@@ -12,17 +22,17 @@ Découvert en vérifiant le build Tennispro.fr (voir `ETAT_ACTUEL.md`) : le prod
 
 ## GAP-2026-09-25-01 — Filtre catalogue « sexe / âge » : décisions de cadrage restantes avant le premier build (OUVERT)
 
-Suite à D-2026-09-25-01 (principe et sourcing actés). Reste à trancher, dans une conversation dédiée, avant tout code — pas enchaîné dans la conversation de cadrage :
+Suite à D-2026-09-25-01. Reste à trancher, dans une conversation dédiée de build, avant tout code :
 
-1. **Modélisation exacte** : deux colonnes distinctes sur `products` (`gender` : `homme`/`femme`/`mixte`/`non_determine`, `age_group` : `adulte`/`enfant`/`non_determine`) ou une seule dimension combinée ? À trancher explicitement avec l'utilisateur (question directe), pas déduit.
-2. **Mots-clés de l'heuristique d'extraction** par catégorie (ex. « junior »/« enfant »/tailles enfant pour l'âge ; « femme »/« homme »/lexique marketing marchand pour le sexe) — à vérifier réellement sur un échantillon de titres de prod avant de figer, comme fait pour `extractColor`.
-3. **Migration + backfill** : nouvelle(s) colonne(s) sur `products`, script de backfill sur les offres déjà en prod (~1500+), vérifié réellement (échantillon contrôlé manuellement, pas juste "le script a tourné sans erreur").
+1. ~~Modélisation exacte~~ — résolu par D-2026-09-25-02 (deux colonnes séparées `gender`/`age_group` sur `products`).
+2. ~~Mots-clés de l'heuristique d'extraction~~ — résolu par D-2026-09-25-03 (lexique vérifié sur les titres réels de prod).
+3. ~~Migration + backfill~~ — résolu le 2026-09-25 (D-2026-09-25-04 pour la règle de réconciliation). Migration `005_products_gender_age.sql`, `lib/product-matching.ts` (`extractGender`/`extractAgeGroup`), `scripts/backfill-gender-age.ts`. Vérifié réellement en prod : 2845 produits mis à jour, 0 conflit, répartition contrôlée par échantillon (cordages 276/276 non_determine, chaussures femme/homme bien couverts, raquettes junior détectées via "Jr"/"Enfant"). Lint/build clean ; `npm test` révèle 3 échecs préexistants sans rapport (voir GAP-2026-09-25-03). PR #41 (branche `cadrage/filtre-sexe-age-suite`, la branche `cadrage/filtre-sexe-age` initiale ayant déjà été squash-mergée sous PR #40 en cours de route — commits ré-appliqués sur une branche fraîche depuis `origin/master`).
 4. **Intégration workflow n8n ProTennis** : comme pour `product_id` (GAP-2026-09-22-11) et la couleur (D-2026-09-23-06), le miroir JS du workflow n8n devra être mis à jour en parallèle du code TypeScript pour que les nouvelles offres ProTennis soient aussi classées, pas seulement le backfill.
 5. **UI du filtre** : emplacement (à côté du filtre catégorie existant ?), comportement en mode recherche groupée par article, libellés exacts affichés.
 
-**Ordre suggéré** (à confirmer avec l'utilisateur en début de conversation de build, pas décidé ici) : modélisation → heuristique + migration + backfill → intégration n8n → UI.
+**Ordre suggéré** (à confirmer avec l'utilisateur en début de conversation de build) : ~~migration + backfill~~ → intégration n8n → UI.
 
-**Statut** : ouvert au 2026-09-25.
+**Statut** : ouvert au 2026-09-25 (points 1-3 résolus, points 4-5 restent à construire, un par conversation).
 
 ---
 
