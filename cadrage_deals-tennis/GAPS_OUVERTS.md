@@ -15,7 +15,7 @@ Suite à D-2026-09-25-16 (filtre marque connue) : le volume Amazon réel après 
 
 ---
 
-## GAP-2026-09-25-13 — Amazon : volume sous le seuil de 30 après le filtre marque connue (OUVERT, plan de build cadré)
+## GAP-2026-09-25-13 — Amazon : volume sous le seuil de 30 après le filtre marque connue (RÉSOLU)
 
 Suite à D-2026-09-25-16 : le filtre marque connue (dynamique, basé sur les marques déjà présentes chez les autres marchands) fait tomber le volume Amazon de 42 à 11 offres actives sur le passage de vérification du 2026-09-25 — sous le seuil de 30 articles tennis actifs acté en D-2026-09-24-04 (seuil qualifié de révisable dès l'origine). Décomposition réelle du tri sur ce passage : 233 fiches candidates → 154 sans remise réelle, 39 sans le mot "tennis", 3 hors tennis, 26 marque non reconnue, 11 retenues.
 
@@ -23,9 +23,9 @@ La piste de comparaison inter-marchands (GAP-2026-09-25-14) a été explicitemen
 
 **Résolution cadrée (2026-09-25, D-2026-09-25-18)** : 7 pistes alternatives vérifiées réellement sur amazon.fr (Playwright). Retenues pour le prochain build : rayon Amazon + facette native « Tous les rabais » (`rh=n:<node_id>,p_n_deal_type:26902977031`, ID global vérifié sur 4 rayons) pour raquettes/cordages/chaussures (gain net prouvé) ; pagination des résultats (`&page=2`, fonctionne réellement) pour toutes les catégories restées en recherche par mot-clé (accessoires, textile) ; ajout de Wilson (et marques tennis notoires similaires) à la liste de marques reconnues. Voir D-2026-09-25-18 pour le détail complet des vérifications et des pistes écartées.
 
-**Bloquant sur** : rien — cadrage terminé, prêt pour le build (nouvelle conversation dédiée, une étape de build à la fois). Reste à retrouver au fil du build : le nœud Amazon "Chaussures femme" (seul "Chaussures homme" retrouvé en cadrage), et les sélecteurs/URLs définitifs des rayons retenus.
+**Résolution (2026-09-25, PR #61)** : build fait et vérifié réellement contre la base Neon de prod. Le nœud "Chaussures femme" retrouvé en cours de build (1765106031). Résultat : 37 offres actives (contre 11 avant), au-dessus du seuil de 30. Voir `ETAT_ACTUEL.md` pour le détail complet (répartition par catégorie, vérifications).
 
-**Statut** : ouvert au 2026-09-25 (cadrage terminé, build à faire).
+**Statut** : résolu le 2026-09-25.
 
 ---
 
