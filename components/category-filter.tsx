@@ -4,10 +4,14 @@ import { buildCatalogHref } from "@/lib/catalog-url";
 
 export function CategoryFilter({
   active,
+  gender,
+  ageGroup,
   sort,
   q,
 }: {
   active: string;
+  gender: string;
+  ageGroup: string;
   sort: CatalogSort;
   q: string;
 }) {
@@ -24,7 +28,7 @@ export function CategoryFilter({
         return (
           <Link
             key={category}
-            href={buildCatalogHref({ category, sort, q })}
+            href={buildCatalogHref({ category, gender, age_group: ageGroup, sort, q })}
             role="tab"
             aria-selected={isActive}
             className={`shrink-0 whitespace-nowrap rounded-full px-4 py-1.5 text-sm transition-colors ${

@@ -22,12 +22,16 @@ export function Pagination({
   currentPage,
   totalPages,
   category,
+  gender,
+  ageGroup,
   sort,
   q,
 }: {
   currentPage: number;
   totalPages: number;
   category: string;
+  gender: string;
+  ageGroup: string;
   sort: CatalogSort;
   q: string;
 }) {
@@ -40,7 +44,7 @@ export function Pagination({
   return (
     <nav aria-label="Pagination" className="flex items-center justify-center gap-2 py-8">
       <Link
-        href={buildCatalogHref({ category, sort, q, page: currentPage - 1 })}
+        href={buildCatalogHref({ category, gender, age_group: ageGroup, sort, q, page: currentPage - 1 })}
         aria-disabled={currentPage <= 1}
         className={`rounded-md px-3 py-1.5 text-sm ${
           currentPage <= 1
@@ -59,7 +63,7 @@ export function Pagination({
         ) : (
           <Link
             key={page}
-            href={buildCatalogHref({ category, sort, q, page })}
+            href={buildCatalogHref({ category, gender, age_group: ageGroup, sort, q, page })}
             aria-current={page === currentPage ? "page" : undefined}
             className={`rounded-md px-3 py-1.5 text-sm ${
               page === currentPage
@@ -73,7 +77,7 @@ export function Pagination({
       )}
 
       <Link
-        href={buildCatalogHref({ category, sort, q, page: currentPage + 1 })}
+        href={buildCatalogHref({ category, gender, age_group: ageGroup, sort, q, page: currentPage + 1 })}
         aria-disabled={currentPage >= totalPages}
         className={`rounded-md px-3 py-1.5 text-sm ${
           currentPage >= totalPages

@@ -599,3 +599,23 @@ L'utilisateur revient sur ce refus et demande explicitement d'utiliser scrape.do
 **Décision (règle de robustesse pour les backfills/upserts futurs, y compris n8n)** : lors du calcul de `gender`/`age_group` d'un produit à partir des offres qui lui sont rattachées, la première valeur déterminée rencontrée fait foi et n'est jamais écrasée ensuite par une valeur différente. Si un vrai conflit apparaît un jour (nouvelle offre avec un titre donnant une valeur différente d'une valeur déjà déterminée), il est **loggé** pour investigation manuelle plutôt que résolu silencieusement (pas d'écrasement automatique, pas de valeur `mixte`/`non_determine` forcée par le système).
 
 **Statut** : Actée le 2026-09-25. Reste à construire dans cette même conversation : migration SQL, backfill vérifié sur la prod.
+
+---
+
+### D-2026-09-25-05 — Filtre sexe/âge : UI (emplacement, structure, comportement)
+
+**Contexte** : Suite à D-2026-09-25-04 (code + déploiement n8n faits). Point 5 de GAP-2026-09-25-01 — construction de l'UI du filtre catalogue, décisions structurantes posées explicitement avant le build :
+
+1. **Emplacement** : nouvelle ligne dédiée sous le filtre catégorie existant (même famille visuelle que `CategoryFilter`, pas fusionnée sur la même ligne, pas un dropdown séparé façon tri).
+2. **Structure** : deux filtres indépendants (sexe, âge), pas un contrôle combiné — cohérent avec les deux colonnes distinctes `products.gender`/`products.age_group` (D-2026-09-25-02), combinables librement (ex. « Femme » + « Enfant »).
+3. **Deals sans `product_id`** : exclus dès qu'un filtre sexe ou âge (autre que "Tous") est actif — `gender`/`age_group` vivent sur `products`, pas sur `deals`, un deal non rapproché n'a pas de valeur connue.
+4. **Libellés sexe** : Tous / Homme / Femme / Mixte (les 3 valeurs de `gender` autres que `non_determine`).
+5. **Valeurs `non_determine`/absentes** : exclues du résultat dès qu'un filtre sexe ou âge est actif (même logique que le point 3 — LEFT JOIN products, la condition sur `p.gender`/`p.age_group` exclut naturellement les NULL).
+
+**Décision mineure tranchée seule (âge)** : libellés Âge = Tous / Adulte / Enfant, mapping direct des deux valeurs de `age_group` (aucune ambiguïté, pas soumis explicitement).
+
+**Implémentation** : `lib/filters.ts` (`CatalogGenderFilter`/`CatalogAgeGroupFilter`, `GENDER_LABELS`/`AGE_GROUP_LABELS`, `isValidGender`/`isValidAgeGroup`), `lib/catalog-url.ts` (`gender`/`age_group` dans `CatalogQueryState`), `lib/deals.ts` (`LEFT JOIN products p ON d.product_id = p.id` ajouté conditionnellement dans `getCatalogDeals`/`getGroupedCatalogDeals`, conditions `p.gender = $x`/`p.age_group = $y`), nouveau composant `components/gender-age-filter.tsx` (deux rangées de pills, même style que `CategoryFilter`), propagation des deux nouveaux paramètres d'URL à travers tous les composants qui construisent un `buildCatalogHref` (`CategoryFilter`, `SortDropdown`, `SearchBar`, `Pagination`, `NotificationBanner`).
+
+**Vérifié réellement** : lint/build/`npm test` clean (3 échecs préexistants sans rapport, voir GAP-2026-09-25-03) ; 4 nouveaux tests contrat sur `getCatalogDeals` (filtre gender seul, filtre age_group seul, exclusion des deals sans `product_id`, combinaison avec le filtre catégorie) passent contre la prod ; vérification navigateur (Playwright) sur le catalogue de prod local : clic "Femme" met à jour l'URL (`?gender=femme`) et les résultats (textile femme uniquement), combinaison avec "Enfant" fonctionne (`?gender=femme&age_group=enfant`, articles "fille"/"Enfant"), le mode recherche groupée préserve les filtres actifs (`?gender=femme&age_group=enfant&q=Babolat`), l'état vide affiche le message + lien de réinitialisation existant (`/`, remet tout à zéro), layout mobile (390×844) vérifié.
+
+**Statut** : Actée et construite le 2026-09-25.

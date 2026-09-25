@@ -15,10 +15,14 @@ interface SuggestionCategory {
 export function SearchBar({
   defaultValue,
   category,
+  gender,
+  ageGroup,
   sort,
 }: {
   defaultValue: string;
   category: string;
+  gender: string;
+  ageGroup: string;
   sort: CatalogSort;
 }) {
   const router = useRouter();
@@ -50,7 +54,9 @@ export function SearchBar({
 
   function runSearch(query: string, searchCategory: string) {
     setShowSuggestions(false);
-    router.push(buildCatalogHref({ category: searchCategory, sort, q: query }));
+    router.push(
+      buildCatalogHref({ category: searchCategory, gender, age_group: ageGroup, sort, q: query })
+    );
   }
 
   function resetToCategoryLevel(next: string) {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isValidCategory, sanitizeSearchQuery } from "@/lib/filters";
+import { isValidCategory, isValidGender, isValidAgeGroup, sanitizeSearchQuery } from "@/lib/filters";
 
 describe("isValidCategory", () => {
   it("accepts 'all'", () => {
@@ -23,6 +23,44 @@ describe("isValidCategory", () => {
     expect(isValidCategory("")).toBe(false);
     expect(isValidCategory(null)).toBe(false);
     expect(isValidCategory(undefined)).toBe(false);
+  });
+});
+
+describe("isValidGender", () => {
+  it("accepts 'all' and each known gender value", () => {
+    expect(isValidGender("all")).toBe(true);
+    expect(isValidGender("homme")).toBe(true);
+    expect(isValidGender("femme")).toBe(true);
+    expect(isValidGender("mixte")).toBe(true);
+  });
+
+  it("rejects an unknown gender string, including non_determine", () => {
+    expect(isValidGender("non_determine")).toBe(false);
+    expect(isValidGender("DROP TABLE deals")).toBe(false);
+  });
+
+  it("rejects empty, null and undefined values", () => {
+    expect(isValidGender("")).toBe(false);
+    expect(isValidGender(null)).toBe(false);
+    expect(isValidGender(undefined)).toBe(false);
+  });
+});
+
+describe("isValidAgeGroup", () => {
+  it("accepts 'all' and each known age group value", () => {
+    expect(isValidAgeGroup("all")).toBe(true);
+    expect(isValidAgeGroup("adulte")).toBe(true);
+    expect(isValidAgeGroup("enfant")).toBe(true);
+  });
+
+  it("rejects an unknown age group string", () => {
+    expect(isValidAgeGroup("senior")).toBe(false);
+  });
+
+  it("rejects empty, null and undefined values", () => {
+    expect(isValidAgeGroup("")).toBe(false);
+    expect(isValidAgeGroup(null)).toBe(false);
+    expect(isValidAgeGroup(undefined)).toBe(false);
   });
 });
 
