@@ -203,6 +203,32 @@ describe("extractAgeGroup", () => {
       "adulte"
     );
   });
+
+  it("détecte enfant via mot-clé présent uniquement dans la description (D-2026-09-25-19, étape 2)", () => {
+    expect(
+      extractAgeGroup(
+        "Sac de tennis Tecnifibre Team",
+        "accessoires",
+        "<p>Sac de tennis conçu pour les joueurs <strong>junior</strong>.</p>"
+      )
+    ).toBe("enfant");
+  });
+
+  it("détecte enfant via taille en pouces présente uniquement dans la description, catégorie raquettes", () => {
+    expect(
+      extractAgeGroup(
+        "Raquette de tennis Tecnifibre TFight",
+        "raquettes",
+        "<p>Manche 25, cordée d'origine.</p>"
+      )
+    ).toBe("enfant");
+  });
+
+  it("ignore la description quand elle est absente ou undefined", () => {
+    expect(extractAgeGroup("Raquette de tennis Babolat Pure Drive 100", "raquettes", undefined)).toBe(
+      "adulte"
+    );
+  });
 });
 
 describe("normalizeProductKey", () => {

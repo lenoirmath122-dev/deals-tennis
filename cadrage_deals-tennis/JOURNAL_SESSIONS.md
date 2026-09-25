@@ -19,6 +19,19 @@
 - `GAPS_OUVERTS.md` (GAP-2026-09-25-15, étape 1 marquée faite), `ETAT_ACTUEL.md` mis à jour.
 - Prochaine étape : étape 2 (lecture `body_html` Tecnifibre/Tennis Point FR, gratuite) ou étape 3 (backfill prod, périmètre à confirmer) — à confirmer explicitement en début de prochaine conversation, conformément au protocole (une étape de build par conversation).
 
+## 2026-09-25 (session) — GAP-2026-09-25-15 étape 2 : description produit comme second signal d'âge
+
+- Reprise (« On reprend étape 2 »). Protocole de reprise suivi (ETAT_ACTUEL.md → GAPS_OUVERTS.md → dernière entrée du journal ci-dessus, qui confirmait sans ambiguïté l'étape 2 comme suite).
+- Décision structurante soumise avant code : comment combiner titre + description dans `extractAgeGroup` — concaténation puis mêmes motifs existants (choisi) vs. vérification séparée avec log distinct. Utilisateur a choisi la concaténation.
+- `lib/product-matching.ts` : `extractAgeGroup(title, category?, description?)` — troisième paramètre optionnel, `title + " " + description` scanné par les motifs déjà en place (mot-clé enfant/junior toutes catégories, taille en pouces raquettes uniquement). Comportement inchangé sans `description`.
+- **Découverte en cours d'étape, signalée et soumise avant correction** : `scripts/scraping/tecnifibre.ts` n'appelait jamais `extractGender`/`extractAgeGroup` et n'écrivait pas les colonnes `gender`/`age_group` du tout (contrairement aux 6 autres scripts marchand) — écart avec l'hypothèse implicite du GAP (que l'étape 1 avait déjà branché ce marchand). Or le « T-Fight Club 25 » cité comme exemple réel du GAP est un produit Tecnifibre : sans ce branchement, l'étape 1 ne le corrigeait pas réellement. Question posée à l'utilisateur (corriger maintenant vs. nouveau gap séparé) — utilisateur a choisi de corriger dans cette même étape. `tecnifibre.ts` mis à jour : import + calcul `gender`/`ageGroup`, colonnes ajoutées à `INSERT INTO products` avec la même logique de fusion `ON CONFLICT` que `tennis-point-fr.ts` (gender écrasé seulement si `non_determine`, age_group écrasé seulement `adulte`→`enfant`).
+- `scripts/scraping/tennis-point-fr.ts` : ajout de `body_html` à l'interface `ShopifyProduct`, passé en 3e argument à `extractAgeGroup`.
+- 3 tests unitaires ajoutés dans `tests/unit/product-matching.test.ts` : mot-clé enfant uniquement dans la description, taille en pouces uniquement dans la description (catégorie raquettes), description absente/undefined sans effet.
+- Vérifié réellement : `npx tsc --noEmit`, `npm run lint`, `npm run build` clean ; `npm test` (charge `.env.local`) : 75/78 tests passent, les 3 échecs restants (`catalog-query.test.ts`, `deal-detail.test.ts`) confirmés pré-existants et sans rapport avec ce changement (même résultat avec `git stash` sur les fichiers modifiés avant de relancer ces deux fichiers seuls — dérive de données de fixture "Pure Aero" en prod).
+- Aucune donnée de test créée/modifiée en base — changement de code pur, aucun script de scraping relancé dans cette conversation.
+- `GAPS_OUVERTS.md` (GAP-2026-09-25-15, étape 2 marquée faite), `ETAT_ACTUEL.md` mis à jour.
+- Prochaine étape : étape 3 (backfill prod, périmètre à confirmer) ou étape 4 (extension aux 6 autres marchands) — à confirmer explicitement en début de prochaine conversation.
+
 ## 2026-09-25 (session) — Cadrage raquettes juniors mal classées `adulte` (D-2026-09-25-19, GAP-2026-09-25-15)
 
 - Reprise (`/clear`). Signalement de l'utilisateur : raquette Tecnifibre « T-Fight Club 25 » catégorisée adulte alors qu'elle est enfant (mentionné dans la description). Protocole de reprise suivi (INDEX.md → ETAT_ACTUEL.md → GAPS_OUVERTS.md → dernière entrée du journal).
