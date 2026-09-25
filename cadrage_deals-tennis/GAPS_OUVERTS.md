@@ -1,5 +1,21 @@
 # Points ouverts
 
+## GAP-2026-09-25-01 — Filtre catalogue « sexe / âge » : décisions de cadrage restantes avant le premier build (OUVERT)
+
+Suite à D-2026-09-25-01 (principe et sourcing actés). Reste à trancher, dans une conversation dédiée, avant tout code — pas enchaîné dans la conversation de cadrage :
+
+1. **Modélisation exacte** : deux colonnes distinctes sur `products` (`gender` : `homme`/`femme`/`mixte`/`non_determine`, `age_group` : `adulte`/`enfant`/`non_determine`) ou une seule dimension combinée ? À trancher explicitement avec l'utilisateur (question directe), pas déduit.
+2. **Mots-clés de l'heuristique d'extraction** par catégorie (ex. « junior »/« enfant »/tailles enfant pour l'âge ; « femme »/« homme »/lexique marketing marchand pour le sexe) — à vérifier réellement sur un échantillon de titres de prod avant de figer, comme fait pour `extractColor`.
+3. **Migration + backfill** : nouvelle(s) colonne(s) sur `products`, script de backfill sur les offres déjà en prod (~1500+), vérifié réellement (échantillon contrôlé manuellement, pas juste "le script a tourné sans erreur").
+4. **Intégration workflow n8n ProTennis** : comme pour `product_id` (GAP-2026-09-22-11) et la couleur (D-2026-09-23-06), le miroir JS du workflow n8n devra être mis à jour en parallèle du code TypeScript pour que les nouvelles offres ProTennis soient aussi classées, pas seulement le backfill.
+5. **UI du filtre** : emplacement (à côté du filtre catégorie existant ?), comportement en mode recherche groupée par article, libellés exacts affichés.
+
+**Ordre suggéré** (à confirmer avec l'utilisateur en début de conversation de build, pas décidé ici) : modélisation → heuristique + migration + backfill → intégration n8n → UI.
+
+**Statut** : ouvert au 2026-09-25.
+
+---
+
 ## GAP-2026-09-24-03 — Scraping local : sélecteurs/URLs restants à vérifier au fil de l'eau (OUVERT)
 
 Le cadrage technique acté (D-2026-09-24-03/04/05) n'a figé des sélecteurs/URLs précis que pour Sport 2000, Babolat et Amazon. Pour Tecnifibre (traité en premier, voir ci-dessous), aucune URL/sélecteur n'avait été vérifié à l'avance — la vérification réelle (robots.txt, structure Shopify, volumes de remise par collection) a été faite directement en début de conversation de build, plutôt que dans une conversation de cadrage séparée. Il reste probablement la même situation pour Tennis Point FR, Head, Tennispro.fr, SportSystem : à vérifier réellement au moment de construire chaque script (pas de suppositions), pas besoin de conversation de cadrage dédiée si la vérification est rapide.
