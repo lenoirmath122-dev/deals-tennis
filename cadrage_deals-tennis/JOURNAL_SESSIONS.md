@@ -139,3 +139,17 @@
 - **D-2026-09-25-18 actée** : périmètre mixte retenu — rayon+facette pour raquettes/cordages/chaussures (gain net prouvé), mot-clé+pagination conservés pour accessoires/textile (pas de gain net prouvé ou nœud Amazon trop fragmenté côté textile), Wilson à ajouter aux marques reconnues. `GAP-2026-09-25-13` mis à jour avec le plan de build détaillé.
 - Aucun code de build construit dans cette conversation — cadrage et vérification uniquement, conforme au protocole. Poursuite de la branche/PR #60 existante (`docs/cadrage-rejet-comparateur-prix`, encore ouverte).
 - Prochaine étape : nouvelle conversation dédiée pour le build (script Amazon révisé), à confirmer explicitement en début de session.
+
+## 2026-09-25 (session, non journalisée à l'époque) — Build du trigger `price_observations` (D-2026-09-25-22, GAP-2026-09-25-20)
+
+- Session dont le code a été commité (`8104cf4`, migration `006_price_observations.sql` + `scripts/setup-price-observations.ts`) mais sans entrée journal à l'époque — reconstituée le 2026-09-26 à partir de `ETAT_ACTUEL.md`/`GAPS_OUVERTS.md` pour ne pas casser la continuité.
+- Migration + trigger construits et vérifiés bout en bout sur une branche Neon dédiée (créée/détruite via `neonctl`) : idempotence par jour, jour calculé en heure de Paris, `expired` n'écrit rien, `ON DELETE CASCADE` fonctionnel. Application en prod volontairement laissée en attente d'un feu vert explicite de l'utilisateur.
+
+## 2026-09-26 (session) — Application du trigger `price_observations` en prod (GAP-2026-09-25-20)
+
+- Reprise (`/clear`). Protocole de reprise suivi (ETAT_ACTUEL.md → GAPS_OUVERTS.md → dernière entrée journal). État trouvé : trigger prêt et vérifié sur Neon, bloqué sur validation utilisateur avant prod.
+- Feu vert demandé et obtenu explicitement (AskUserQuestion) avant toute action en prod.
+- Vérifié avant application que la table/fonction n'existaient pas déjà en prod. `node --env-file=.env.local scripts/setup-price-observations.ts` exécuté contre la base Neon de prod : table, index, fonction, trigger créés sans erreur.
+- Vérifié réellement après application : `UPDATE` réel sur un deal actif existant (prix inchangé, `updated_at` seulement) → ligne `price_observations` créée avec le vrai prix/prix de référence de ce deal. Pas de donnée de test à nettoyer (donnée réelle légitime).
+- `GAPS_OUVERTS.md` (GAP-2026-09-25-20 résolu), `ETAT_ACTUEL.md` mis à jour.
+- Prochaine étape : à confirmer explicitement — pistes ouvertes non priorisées (raquettes juniors étape 4/5, SEO/GEO bloc 4, sous-catégories accessoires) plus la suite de R3 du cadrage « vrais bons plans » (statut `tracked`, non construit).

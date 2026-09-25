@@ -1,6 +1,6 @@
 # Points ouverts
 
-## GAP-2026-09-25-20 — Trigger `price_observations` prêt et vérifié sur Neon, en attente d'application en prod (OUVERT)
+## GAP-2026-09-25-20 — Trigger `price_observations` appliqué et vérifié en prod (RÉSOLU)
 
 Suite à D-2026-09-25-22 (Phase 1 de `CADRAGE_vrais-bons-plans.md`, précisée par l'ordre global révisé en D-2026-09-25-24). Migration `scripts/migrations/006_price_observations.sql` + script d'application dédié `scripts/setup-price-observations.ts` (pas via `scripts/migrate.ts`, dont le découpage naïf du SQL sur `;\n` casserait le corps de fonction PL/pgSQL `$$ ... $$`).
 
@@ -14,9 +14,11 @@ Suite à D-2026-09-25-22 (Phase 1 de `CADRAGE_vrais-bons-plans.md`, précisée p
 
 **Non testé, hors périmètre actuel** : le chemin `status = 'tracked'` (le trigger le gère déjà, `NEW.status IN ('active', 'tracked')`, conforme à D-2026-09-25-22) — impossible à tester aujourd'hui, `tracked` n'est pas encore une valeur autorisée par la contrainte `deals.status_check` (`'active', 'expired', 'invalid'` seulement). L'ajout du statut `tracked` fait partie de R3 (`lib/ingest.ts` + réécriture des scripts, D-2026-09-25-24), pas de cette étape — pas de scope creep sur la contrainte aujourd'hui.
 
-**Bloquant sur** : arrêt explicitement demandé par l'utilisateur avant application en prod (contrairement au retrait ProTennis, où l'application en prod était incluse dans la même instruction). Feu vert requis avant d'exécuter `node --env-file=.env.local scripts/setup-price-observations.ts` contre la prod.
+**Résolution (2026-09-26)** : feu vert donné par l'utilisateur. `node --env-file=.env.local scripts/setup-price-observations.ts` exécuté contre la base Neon de prod — table `price_observations`, index, fonction `record_price_observation()` et trigger `trg_deals_price_observation` créés sans erreur (aucun des trois n'existait déjà, vérifié avant application). Vérifié réellement après application : un `UPDATE` réel sur un deal actif existant (même prix, `updated_at` seulement) a bien créé une ligne `price_observations` avec le vrai prix/prix de référence de ce deal — pas une donnée de test, rien à nettoyer.
 
-**Statut** : ouvert au 2026-09-25 — prêt, vérifié sur Neon, en attente de validation avant prod.
+**Non testé, hors périmètre actuel** : le chemin `status = 'tracked'` reste non testable, ce statut n'étant pas encore une valeur autorisée par `deals.status_check` (fait partie de R3, D-2026-09-25-24, hors périmètre de cette étape).
+
+**Statut** : résolu le 2026-09-26 — trigger en production, actif sur tout futur INSERT/UPDATE de `deals`.
 
 ---
 
