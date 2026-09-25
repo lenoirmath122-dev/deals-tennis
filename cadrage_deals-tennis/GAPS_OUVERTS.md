@@ -1,5 +1,23 @@
 # Points ouverts
 
+## GAP-2026-09-25-10 — Sous-catégories d'accessoires : cadrage fait, reste tout le build (OUVERT)
+
+Suite à D-2026-09-25-15 : décisions de principe actées (nouveau champ `deals.subcategory` nullable, liste `sacs`/`balles`/`antivibrateurs`/`grips_surgrips`/`accessoires_cordage`, `NULL` pour le reste, backfill complet). Aucun code écrit dans cette conversation (cadrage uniquement).
+
+**Reste à faire, dans l'ordre (une étape de build par conversation, comme pour le chantier sexe/âge)** :
+1. Migration (`deals.subcategory VARCHAR` + `CHECK` limité aux 5 valeurs ou `NULL`, index si utile au filtre).
+2. Fonction d'extraction (`lib/product-matching.ts`, ex. `extractAccessorySubcategory`) avec le lexique vérifié en cadrage (voir D-2026-09-25-15 pour le détail par sous-catégorie et les volumes réels constatés sur les 611 offres accessoires actives de prod).
+3. Script de backfill (`scripts/backfill-accessory-subcategory.ts`) sur les offres déjà en base.
+4. Mise à jour des 7 scripts de scraping déjà écrits (Tecnifibre, Tennispro.fr, SportSystem, Sport 2000, Babolat, Tennis Point FR, Head) pour peupler `subcategory` dès l'ingestion.
+5. Mise à jour du workflow n8n ProTennis (miroir JS de la fonction d'extraction + upsert, même mécanisme que GAP-2026-09-25-01 point 4 — nécessitera aussi un redéploiement par l'utilisateur sur la VM Oracle, pas d'accès SSH pour Claude Code).
+6. UI du filtre secondaire (pills sous-catégorie, visibles uniquement quand « Accessoires » est sélectionné, incluant une option « Autres accessoires » pour `subcategory IS NULL`).
+
+**Bloquant sur** : rien — chantier tout juste cadré, prochaine conversation dédiée à l'étape 1.
+
+**Statut** : ouvert au 2026-09-25.
+
+---
+
 ## GAP-2026-09-25-09 — Head : items génériques non tennis-exclusifs retenus depuis la page textile (OUVERT, mineur)
 
 Découvert en vérifiant le build Head (voir `ETAT_ACTUEL.md`) : la page `shop-sportswear/summer` ciblée pour le textile (page "Tennis and Padel" du marchand, vérifiée 100% tennis sur l'échantillon parcouru au cadrage) contient au moins un article générique sans indice tennis explicite dans son titre — « HEAD Bandana », retenu en base (catégorie textile). Le filet de sécurité multi-sports (exclusion padel/squash/badminton/pickleball) ne peut pas l'exclure, n'ayant aucun mot-clé d'autre sport non plus.
