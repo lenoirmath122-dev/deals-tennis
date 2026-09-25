@@ -6,6 +6,16 @@
 > Sessions du 2026-09-23 (pages réglementaires) au 2026-09-23 (suggestions groupées par catégorie) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-23-reglementaire_a_suggestions-categorie.md` (même règle, condensation du 2026-09-24).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
 
+## 2026-09-25 (session) — Scraping local Tennispro.fr (GAP-2026-09-24-02, GAP-2026-09-25-02)
+
+- Reprise (`/clear`) : marchand confirmé explicitement en début de session (Tennispro.fr, prochain de l'ordre acté après Tecnifibre).
+- `robots.txt` vérifié réellement : `Crawl-delay: 60` pour `User-agent: *`, pages `/outlet/*.html` et pagination `?p=` autorisées. Sitemap examiné pour trouver les 7 pages outlet par catégorie (raquettes/cordages/chaussures/vêtements/accessoires/sacs/balles), structure HTML (Magento 1 SSR) vérifiée réellement par téléchargement direct (`curl`) plutôt que supposée — regex d'extraction validées sur les 7 catégories avant d'écrire le script définitif.
+- **Incident cours de route** : le `fetch` natif de Node bloqué (403 Cloudflare) dès la première requête réelle du script, alors que `curl` avec le même User-Agent passait systématiquement sur la même URL. Soumis explicitement à l'utilisateur comme décision structurante (catégorie de risque proche de Wilson/PerimeterX, mais blocage non systématique puisque `curl` seul passe) plutôt que tranché seul. L'utilisateur a choisi d'adapter le script pour shell out vers `curl` (pas de spoofing supplémentaire, robots.txt autorise déjà ces pages).
+- Script `scripts/scraping/tennispro.ts` exécuté réellement contre la base Neon de prod : 673 offres insérées/mises à jour (raquettes 125, cordages 125, chaussures 125, textile 116, accessoires 182), `product_id` peuplé à 100%, 12 fiches hors tennis exclues (filtre multi-sports, un produit badminton trouvé mélangé dans la page accessoires). Lint/build/typecheck clean.
+- Vérification d'idempotence lancée une deuxième fois, interrompue par le système après 2 catégories sur 7 (mémoire faible sur la machine, pas un bug) — aucun doublon constaté sur la portion rejouée. Soumis à l'utilisateur : a jugé cette vérification partielle suffisante plutôt que de relancer le passage complet.
+- **Conflit de working directory découvert en fin de session** : une deuxième conversation travaillait en parallèle sur le même répertoire git (chantier « Filtre catalogue sexe/âge », branche `cadrage/filtre-sexe-age`), avec des changements non commités mélangés dans le même dossier de travail (package.json, lib/product-matching.ts, etc.) au moment de committer. Résolu sans toucher au travail de l'autre session : nouveau worktree git isolé (`git worktree add`) créé à partir d'`origin/master`, fichiers propres à cette étape copiés/récrits dedans, commit/push/PR faits depuis ce worktree.
+- `ETAT_ACTUEL.md`, `GAPS_OUVERTS.md` (nouveau GAP-2026-09-25-02, mineur, répétition de marque dans un titre) mis à jour.
+
 ## 2026-09-24 (session 1) — Marchands supplémentaires : Sport Outlet FR, compte Awin actif (GAP-2026-09-24-01)
 
 - Reprise de session (`/clear`). L'utilisateur demande « peut-on ajouter les articles de Sport Outlet FR ? » — sans autre contexte initial.
