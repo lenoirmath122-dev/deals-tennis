@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-25 (Cadrage filtre « sexe / âge », D-2026-09-25-01 à -03 — principe/sourcing/modélisation/lexique actés, aucun code)
+**Dernière mise à jour** : 2026-09-25 (Filtre « sexe / âge » : migration + backfill construits et vérifiés en prod, D-2026-09-25-04)
 
 > Détail complet du MVP (`tasks.md` T001-T034), du chantier « Déploiement production », du chantier « CI + protection de branche » et du chantier « Automatisation n8n / ProTennis » (build initial, hébergement permanent, rapprochement produit, élargissement à toutes les catégories tennis) archivé tel quel dans `archive/ETAT_ACTUEL_detail_2026-09-22.md`. Chantiers du 2026-09-23 (recherche centrée article → fix lien retour accueil) archivés tels quels dans `archive/ETAT_ACTUEL_detail_2026-09-23-recherche_a_retour-accueil.md` (seuil 150 lignes, condensé le 2026-09-24). Résumé ci-dessous.
 
@@ -45,13 +45,12 @@ Next.js 16.3.5 (App Router), React 19, TypeScript, Tailwind CSS v4, PostgreSQL (
   - **Tecnifibre (2026-09-24, PR #38, résout une partie de GAP-2026-09-24-02, ouvre GAP-2026-09-24-03)** : premier script construit et vérifié bout en bout. Boutique Shopify SSR : sélecteurs/URLs jamais figés à l'avance (contrairement à Sport 2000/Babolat/Amazon) — vérifiés réellement en début de conversation plutôt qu'en cadrage séparé. Utilise l'endpoint JSON public Shopify (`/collections/outlet-articles-de-tennis/products.json`) plutôt que du parsing HTML — seule collection du site avec de vraies remises actives (vérifié empiriquement, 159/168 articles en promo contre ~0 sur les collections catalogue normales). `scripts/scraping/tecnifibre.ts` (`npm run scrape:tecnifibre`). Vérifié réellement : 159 offres réelles insérées en base de prod (raquettes 23, textile 126, accessoires 10 — pas de chaussures, Tecnifibre n'en vend pas ; pas de cordages en promo actuellement, comme Babolat), `product_id` peuplé à 100%, script relancé deux fois sans doublon (upsert idempotent), éviction testée, lint/build clean, visible en prod (recherche "tecnifibre" confirmée).
   - **Prochain marchand** : Tennispro.fr, dans une nouvelle conversation dédiée (une étape de build par conversation).
 
-## Chantier « Filtre catalogue sexe / âge » (nouveau, D-2026-09-25-01 à -03, cadrage en cours)
+## Chantier « Filtre catalogue sexe / âge » (en cours, D-2026-09-25-01 à -04)
 
-- Principe et sourcing actés (2026-09-25) : filtres/facettes combinables avec les filtres catégorie existants (pas une option de tri), donnée extraite par heuristique du titre croisée avec le champ marchand quand il existe, portée sur `products` (pas `deals`), toutes catégories concernées.
-- Modélisation actée (D-2026-09-25-02) : deux colonnes séparées sur `products` — `gender` (`homme`/`femme`/`mixte`/`non_determine`) et `age_group` (`adulte`/`enfant`/`non_determine`).
-- Lexique de l'heuristique acté (D-2026-09-25-03), vérifié sur les 1927 titres réels de prod : `gender` sur `femme`/`fille`/`lady` → femme, `homme`/`garçon` → homme ; `age_group` sur `enfant`/`junior`/`jr`/`kids`/`fille`/`garçon` → enfant, sinon adulte par défaut. Couverture réelle par catégorie : chaussures 339/344, textile 516/564 (unisexe pour le reste), raquettes 37/455 (junior uniquement), accessoires 10/291, cordages 0/273.
-- Reste à trancher avant tout code (GAP-2026-09-25-01) : migration + backfill sur la prod, intégration au workflow n8n ProTennis, UI du filtre. Aucun code construit.
-- Conversation en parallèle du scraping local (Tennispro.fr) — même répertoire de travail git ; docs de cadrage commitées séparément sur `cadrage/filtre-sexe-age` (PR #40) pour ne pas mélanger avec le travail Tennispro non commité.
+- Principe, sourcing, modélisation (deux colonnes `products.gender`/`products.age_group`) et lexique heuristique actés (D-2026-09-25-01 à -03) — voir `DECISIONS_FONCTIONNELLES.md`.
+- **Migration + backfill construits et vérifiés (2026-09-25, D-2026-09-25-04)** : migration `005_products_gender_age.sql` (colonnes + contraintes CHECK + index). `lib/product-matching.ts` : `extractGender`/`extractAgeGroup` (mêmes conventions que `extractColor`). `scripts/backfill-gender-age.ts` (`npm run db:backfill-gender-age`) : règle de réconciliation actée en D-2026-09-25-04 (première valeur déterminée gagne par produit, conflit loggé plutôt qu'écrasé silencieusement). Vérifié réellement sur la prod : investigation préalable (135 produits multi-offres, 0 conflit gender/age constaté avec l'extraction actuelle — un article junior garde un texte de modèle distinct de la version adulte, `extractModel` ne retirant pas "Junior"/"Jr"), puis backfill exécuté (2845 produits mis à jour, 0 conflit), échantillon contrôlé manuellement (cordages 276/276 non_determine, chaussures/textile bien couverts homme/femme, raquettes junior détectées). Lint/build clean.
+- Reste à construire (GAP-2026-09-25-01, un par conversation) : intégration au workflow n8n ProTennis (miroir JS), UI du filtre.
+- Conversation en parallèle du scraping local (Tennispro.fr) — même répertoire de travail git ; commit du filtre sexe/âge isolé du travail Tennispro non commité (package.json partagé, split manuel du commit).
 
 ## Feuille de route (actée le 2026-09-23, ordre confirmé par l'utilisateur)
 
