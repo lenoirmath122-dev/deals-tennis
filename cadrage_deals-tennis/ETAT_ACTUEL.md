@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-25 (Scraping local Head, PR #53 ; Chantier SEO/GEO bloc 1 - fondations techniques, D-2026-09-25-12 ; Scraping local Tennis Point FR, D-2026-09-25-11 ; nettoyage des 3 marchands seed fictifs restés actifs en prod depuis le MVP ; filtre « sexe / âge » : UI construite et vérifiée, D-2026-09-25-05 — ne reste que le déploiement n8n par l'utilisateur)
+**Dernière mise à jour** : 2026-09-25 (Chantier SEO/GEO bloc 3 - URLs canoniques catalogue, D-2026-09-25-14 ; Scraping local Head, PR #53 ; Chantier SEO/GEO bloc 1 - fondations techniques, D-2026-09-25-12 ; Scraping local Tennis Point FR, D-2026-09-25-11 ; nettoyage des 3 marchands seed fictifs restés actifs en prod depuis le MVP ; filtre « sexe / âge » : UI construite et vérifiée, D-2026-09-25-05 — ne reste que le déploiement n8n par l'utilisateur)
 
 > Détail complet du MVP (`tasks.md` T001-T034), du chantier « Déploiement production », du chantier « CI + protection de branche » et du chantier « Automatisation n8n / ProTennis » (build initial, hébergement permanent, rapprochement produit, élargissement à toutes les catégories tennis) archivé tel quel dans `archive/ETAT_ACTUEL_detail_2026-09-22.md`. Chantiers du 2026-09-23 (recherche centrée article → fix lien retour accueil) archivés tels quels dans `archive/ETAT_ACTUEL_detail_2026-09-23-recherche_a_retour-accueil.md` (seuil 150 lignes, condensé le 2026-09-24). Résumé ci-dessous.
 
@@ -63,14 +63,14 @@ Next.js 16.3.5 (App Router), React 19, TypeScript, Tailwind CSS v4, PostgreSQL (
 - **Chantier « Filtre sexe/âge » quasi clos** : reste uniquement le déploiement du workflow n8n sur la VM Oracle par l'utilisateur (point 4, voir ci-dessus) — aucun point de code restant.
 - Conversation en parallèle du scraping local (Tennispro.fr) — même répertoire de travail git ; commit du filtre sexe/âge isolé du travail Tennispro non commité (package.json partagé, split manuel du commit). PR #41 (branche `cadrage/filtre-sexe-age-suite`) : la branche `cadrage/filtre-sexe-age` d'origine avait déjà été squash-mergée (PR #40, D-2026-09-25-01 seulement) pendant que cette conversation construisait par-dessus — commits D-2026-09-25-02/-03/-04 ré-appliqués (cherry-pick) sur une branche fraîche depuis `origin/master` avant de pousser, conformément au protocole.
 
-## Chantier « SEO / GEO » (bloc 1/7 terminé, D-2026-09-25-12 ; accessibilité repoussée hors périmètre pour l'instant)
+## Chantier « SEO / GEO » (bloc 3/7 terminé, D-2026-09-25-14 ; bloc 2 traité en parallèle dans une PR distincte non encore mergée ; accessibilité repoussée hors périmètre pour l'instant)
 
 - **Préalable traité (2026-09-25, D-2026-09-25-07)** : renommage de la marque affichée « Deals Tennis » → « Tennisdeals » (header/footer, métadonnées de page, 4 pages réglementaires, `package.json`) — périmètre restreint, URL Vercel et nom du dépôt GitHub inchangés. Vérifié réellement (lint/build clean, rendu HTTP réel, 0 occurrence résiduelle de l'ancien nom). PR #47.
 - **Plan global cadré (2026-09-25, D-2026-09-25-10)** : objectif clarifié (référencement Google **et** dans les IA génératives), 7 blocs actés, un bloc par conversation dédiée de build.
 - **Bloc 1 — Fondations techniques, terminé (2026-09-25, D-2026-09-25-12, PR #52)** : `app/robots.ts` (tout autorisé sauf `/go/`, redirection de tracking affilié sans contenu), `app/sitemap.ts` (dynamique, `revalidate` 1h, pages fixes + une entrée par offre active issue de la table `deals`), descriptions ajoutées aux 4 pages réglementaires qui n'avaient qu'un titre. URL canonique : `deals-tennis.vercel.app` (pas de domaine perso). Vérifié réellement : build clean, sitemap testé en local contre la base Neon de prod (5706 URL = 5701 offres actives + 5 pages fixes, confirmé par `COUNT(*)` SQL direct), `robots.txt` et balises meta vérifiés par `curl`.
-- **Reste à faire, blocs 2 à 7** :
-  2. Données structurées (Schema.org / JSON-LD Product/Offer)
-  3. URLs canoniques / contenu dupliqué (filtres catalogue)
+- **Bloc 2 — Données structurées JSON-LD Product/Offer, construit et vérifié dans une conversation parallèle (2026-09-25, D-2026-09-25-13, branche `feat/seo-jsonld-produit`, PR #54 — statut de merge à recontrôler à la prochaine reprise, ne pas supposer mergée)** : `<script type="application/ld+json">` sur `app/deal/[dealId]/page.tsx` uniquement, `Product`/`Offer` unique par deal, `seller` = marchand réel.
+- **Bloc 3 — URLs canoniques / contenu dupliqué des filtres catalogue, terminé (2026-09-25, D-2026-09-25-14, branche `feat/seo-canonical-catalogue`)** : `<link rel="canonical">` fixe vers l'URL racine (`https://deals-tennis.vercel.app`) sur `app/(catalog)/page.tsx`, quelle que soit la combinaison de paramètres (`category`/`sort`/`gender`/`age_group`/`q`/`page`) — `export const metadata` statique, pas de `generateMetadata`. Construit sur une branche fraîche depuis `origin/master` plutôt que de continuer sur la branche du bloc 2, dont la PR #54 était encore ouverte (protocole : jamais ajouter de commits à une branche sans vérifier son statut de merge). Vérifié réellement : tsc/lint/build clean, 4 combinaisons de paramètres interrogées en HTTP local (`/`, `?category=raquettes`, `?sort=price_asc&page=2`, `?gender=femme&age_group=enfant&q=nike`) — canonical identique et présent dans les 4 cas. Périmètre limité au catalogue (la page détail deal a déjà une URL unique par article, pas de duplication à traiter).
+- **Reste à faire, blocs 4 à 7** :
   4. Ouverture aux robots IA (GPTBot, ClaudeBot, PerplexityBot, Google-Extended...)
   5. `llms.txt`
   6. Performance / Core Web Vitals
@@ -86,7 +86,7 @@ Next.js 16.3.5 (App Router), React 19, TypeScript, Tailwind CSS v4, PostgreSQL (
 
 ## Prochaine étape
 
-Chantier « SEO / GEO » : bloc 2 (Données structurées Schema.org / JSON-LD Product/Offer), dans une nouvelle conversation dédiée, à confirmer explicitement en début de session (voir D-2026-09-25-10 pour le plan complet des 7 blocs).
+Chantier « SEO / GEO » : bloc 4 (ouverture aux robots IA), dans une nouvelle conversation dédiée, à confirmer explicitement en début de session (voir D-2026-09-25-10 pour le plan complet des 7 blocs). Vérifier au préalable le statut de merge de la PR #54 (bloc 2) et de cette étape (bloc 3, branche `feat/seo-canonical-catalogue`).
 
 Suite du scraping local gratuit toujours en attente (en parallèle) : Tecnifibre (fait, PR #38) → Tennispro.fr (fait, PR #42) → SportSystem (fait, PR #44) → Sport 2000 (fait, PR #46) → Babolat (fait, PR #48) → Tennis Point FR (fait, PR #50) → Head (fait, PR #53) → **Amazon** (dernier marchand actionnable). Un marchand par conversation.
 

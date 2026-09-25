@@ -735,3 +735,18 @@ L'utilisateur revient sur ce refus et demande explicitement d'utiliser scrape.do
 **Hors périmètre de ce bloc** (traité dans les blocs suivants du plan) : données structurées Schema.org, URLs canoniques pour le contenu dupliqué des filtres catalogue, ouverture aux robots IA, `llms.txt`, performance, Open Graph.
 
 **Statut** : Actée et construite le 2026-09-25 (branche `feat/seo-fondations-techniques`, PR #52). Vérifié réellement : `npx tsc --noEmit` et `npm run lint` clean, `npm run build` clean (`robots.txt`/`sitemap.xml` générés), serveur de production local testé via `curl` (`robots.txt` conforme, `sitemap.xml` avec 5706 URL = 5701 offres actives + 5 pages fixes, compte confirmé par une requête `COUNT(*)` SQL directe sur la base Neon de prod), balises `<title>`/`<meta name="description">` vérifiées sur `/affiliation`.
+---
+
+### D-2026-09-25-14 — Chantier SEO/GEO, bloc 3 (URLs canoniques / contenu dupliqué des filtres catalogue) : décision cadrée et actée
+
+**Contexte** : Reprise du chantier SEO/GEO sur le bloc 3 du plan en 7 blocs (D-2026-09-25-10, bloc 1 terminé en D-2026-09-25-12 ; bloc 2 — données structurées JSON-LD — traité en parallèle dans une PR distincte non encore mergée au moment de ce bloc, D-2026-09-25-13). La page catalogue (`app/(catalog)/page.tsx`) est accessible via de nombreuses combinaisons de paramètres d'URL (`category`, `sort`, `gender`, `age_group`, `q`, `page`) qui affichent toutes un sous-ensemble du même contenu — risque de duplication de contenu / dilution aux yeux des moteurs de recherche.
+
+**Décision soumise et confirmée par l'utilisateur avant code (choix entre 3 options)** : `<link rel="canonical">` fixe vers l'URL racine (`https://deals-tennis.vercel.app`, sans paramètres), quelle que soit la combinaison de filtres/tri/recherche/pagination active. Écarté : canonical par filtre indexable (plus de valeur SEO potentielle mais plus de décisions de détail à trancher, ex. quels filtres indexer et ajouter au sitemap) ; `meta robots noindex` sur les URLs à paramètres (empêche l'indexation plutôt que de consolider vers l'original). Cohérent avec le sitemap du bloc 1 (D-2026-09-25-12), qui n'expose déjà que l'URL racine et les pages fixes, jamais de variante filtrée.
+
+**Implémentation** : `export const metadata: Metadata = { alternates: { canonical: SITE_URL } }` ajouté statiquement dans `app/(catalog)/page.tsx` (pas de `generateMetadata` nécessaire, la valeur ne dépend jamais des `searchParams`). Périmètre volontairement limité à la page catalogue — la page détail deal (`/deal/[dealId]`) a déjà une URL unique par article, aucun paramètre de filtre, donc pas de duplication à traiter dans ce bloc.
+
+**Hors périmètre de ce bloc** (traité dans les blocs suivants du plan) : ouverture aux robots IA, `llms.txt`, performance, Open Graph.
+
+**Isolation de branche** : ce bloc a été construit sur une branche fraîche depuis `origin/master` (`feat/seo-canonical-catalogue`) plutôt que de continuer sur `feat/seo-jsonld-produit` — la PR #54 (bloc 2) était encore ouverte/non mergée au moment de commencer ce bloc, conformément au protocole (jamais ajouter de commits à une branche/PR sans vérifier son statut de merge, et un bloc = une PR distincte comme pour les blocs 1 et 2).
+
+**Statut** : Actée et construite le 2026-09-25. Vérifié réellement : `npx tsc --noEmit`, `npm run lint`, `npm run build` clean ; serveur local (port 3000, déjà démarré par une autre session parallèle sur le même code) interrogé en HTTP sur 4 combinaisons de paramètres (`/`, `/?category=raquettes`, `/?sort=price_asc&page=2`, `/?gender=femme&age_group=enfant&q=nike`) — `<link rel="canonical" href="https://deals-tennis.vercel.app">` identique et présent dans les 4 cas.

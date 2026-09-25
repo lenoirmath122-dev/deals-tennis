@@ -7,6 +7,16 @@
 > Sessions du 2026-09-24 (Sport Outlet FR) à 2026-09-24 (pré-étape tri prix) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-24-sportoutlet_a_pre-etape-tri.md` (même règle, condensation du 2026-09-25).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
 
+## 2026-09-25 (session) — Chantier SEO/GEO bloc 3 : URLs canoniques / contenu dupliqué des filtres catalogue (D-2026-09-25-14, branche `feat/seo-canonical-catalogue`)
+
+- Reprise (« On reprend le bloc 3 ? »). Protocole de reprise suivi (ETAT_ACTUEL.md → GAPS_OUVERTS.md → mémoire méthode de travail).
+- Décision structurante soumise via question à choix multiples : stratégie de canonicalisation des pages catalogue filtrées (`category`/`sort`/`gender`/`age_group`/`q`/`page`) — canonical fixe vers la racine retenu (recommandé) plutôt que canonical par filtre indexable ou `meta robots noindex`.
+- Construit : `export const metadata = { alternates: { canonical: SITE_URL } }` sur `app/(catalog)/page.tsx`.
+- **Collision de working directory partagé détectée avant commit (même schéma que D-2026-09-25-08/-11)** : la PR #54 (bloc 2, branche `feat/seo-jsonld-produit`) était encore ouverte/non mergée — conformément au protocole (vérifier le statut de merge avant d'ajouter des commits), le changement a été déplacé (`git stash`) vers une branche fraîche `feat/seo-canonical-catalogue` depuis `origin/master`. Conflit sur `DECISIONS_FONCTIONNELLES.md` au stash pop (le fichier de master ne contenait pas encore l'entrée du bloc 2, PR #54 non mergée) résolu en ne gardant que la nouvelle entrée D-2026-09-25-14, sans dépendre de l'entrée bloc 2. `ETAT_ACTUEL.md`/`GAPS_OUVERTS.md` mis à jour en partant de la version `origin/master` (sans le détail bloc 2, qui réapparaîtra au merge de PR #54).
+- Vérifié réellement : `tsc`/`lint`/`build` clean, serveur local (port 3000, déjà démarré par une autre session parallèle) interrogé en HTTP sur 4 combinaisons de paramètres — canonical identique et présent dans les 4 cas.
+- Un répertoire `scratch_tmp/` untracked (2 fichiers `.mjs`, non liés à cette étape) est apparu pendant la manipulation de stash — laissé tel quel, non commité, cause probable : résidu d'une autre session parallèle déjà présent avant cette conversation.
+- Prochaine étape : bloc 4 (ouverture aux robots IA), nouvelle conversation — vérifier le statut de merge de PR #54 et de cette branche avant de commencer.
+
 ## 2026-09-25 (session) — Chantier SEO/GEO bloc 1 : fondations techniques (D-2026-09-25-12, PR #52)
 
 - Reprise (« on fait le bloc 1 du SEO ? »). Protocole de reprise suivi (ETAT_ACTUEL.md → GAPS_OUVERTS.md → dernière entrée du journal → diff de D-2026-09-25-10/GAP-2026-09-25-07 pour le détail des 7 blocs).
