@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-25 (Scraping local Head, PR #53 ; Chantier SEO/GEO bloc 1 - fondations techniques, D-2026-09-25-12 ; Scraping local Tennis Point FR, D-2026-09-25-11 ; nettoyage des 3 marchands seed fictifs restés actifs en prod depuis le MVP ; filtre « sexe / âge » : UI construite et vérifiée, D-2026-09-25-05 — ne reste que le déploiement n8n par l'utilisateur)
+**Dernière mise à jour** : 2026-09-25 (Cadrage sous-catégories accessoires, D-2026-09-25-15 ; Scraping local Head, PR #53 ; Chantier SEO/GEO bloc 1 - fondations techniques, D-2026-09-25-12 ; Scraping local Tennis Point FR, D-2026-09-25-11 ; nettoyage des 3 marchands seed fictifs restés actifs en prod depuis le MVP ; filtre « sexe / âge » : UI construite et vérifiée, D-2026-09-25-05 — ne reste que le déploiement n8n par l'utilisateur)
 
 > Détail complet du MVP (`tasks.md` T001-T034), du chantier « Déploiement production », du chantier « CI + protection de branche » et du chantier « Automatisation n8n / ProTennis » (build initial, hébergement permanent, rapprochement produit, élargissement à toutes les catégories tennis) archivé tel quel dans `archive/ETAT_ACTUEL_detail_2026-09-22.md`. Chantiers du 2026-09-23 (recherche centrée article → fix lien retour accueil) archivés tels quels dans `archive/ETAT_ACTUEL_detail_2026-09-23-recherche_a_retour-accueil.md` (seuil 150 lignes, condensé le 2026-09-24). Résumé ci-dessous.
 
@@ -76,6 +76,13 @@ Next.js 16.3.5 (App Router), React 19, TypeScript, Tailwind CSS v4, PostgreSQL (
   6. Performance / Core Web Vitals
   7. Open Graph (partage social)
 - Chaque bloc reste une conversation dédiée — décisions de détail propres à chaque bloc pas encore tranchées (ex. quels crawlers IA autoriser). Accessibilité mentionnée mais pas re-confirmée dans le périmètre de cette reprise — à clarifier si/quand ce chantier est repris.
+
+## Chantier « Sous-catégories accessoires » (cadré, D-2026-09-25-15, aucun code construit)
+
+- Demande explicite : séparer sacs/balles/antivibrateurs/etc. au sein de la catégorie « accessoires », trop générale (611 offres actives, aucune sous-distinction).
+- Modélisation actée : nouveau champ `deals.subcategory` (nullable, rempli uniquement pour `category = 'accessoires'`) — pas d'éclatement de la catégorie de premier niveau. Liste : `sacs`, `balles`, `antivibrateurs`, `grips_surgrips`, `accessoires_cordage` (réservée, 0 article actuellement), `NULL` pour le reste (exposé comme « Autres accessoires » côté UI). Lexique vérifié réellement sur les 611 offres accessoires actives de prod : sacs 300, balles 59, antivibrateurs 33, grips/surgrips 77, non classés 142. Backfill complet retenu (offres déjà en base + les 7 scripts de scraping déjà écrits + le workflow n8n ProTennis, tous à mettre à jour). Voir `DECISIONS_FONCTIONNELLES.md` (D-2026-09-25-15) et `GAPS_OUVERTS.md` (GAP-2026-09-25-11) pour le détail.
+- Isolé dans un git worktree dédié (`feat/souscategories-accessoires`) après avoir trouvé le répertoire de travail principal dans un état de conflit git non résolu (chantier SEO/GEO bloc 3 d'une autre session en cours, `git stash` interrompu) — n'a pas touché à ce travail.
+- **Prochaine étape** : nouvelle conversation dédiée pour la migration + le lexique définitif + le backfill (GAP-2026-09-25-11, étapes 1-3), une étape de build à la fois.
 
 ## Feuille de route (actée le 2026-09-23, ordre confirmé par l'utilisateur)
 
