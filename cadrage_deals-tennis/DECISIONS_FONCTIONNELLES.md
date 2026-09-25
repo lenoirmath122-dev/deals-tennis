@@ -796,3 +796,17 @@ Total 611 = 300+59+33+77+0+142, cohérent. Les motifs exacts (regex) seront affi
 **Hors périmètre de cette conversation** : aucun code écrit (ni migration, ni script) — cadrage uniquement, conformément au protocole (une étape de build par conversation). Le build (migration + lexique définitif + backfill + mise à jour des 7 scripts + miroir n8n + UI filtre) est réparti sur une ou plusieurs conversations dédiées suivantes, à l'identique du déroulé du chantier sexe/âge (D-2026-09-25-01 à -05).
 
 **Statut** : Actée (cadrage) le 2026-09-25, aucun code construit.
+
+---
+
+### D-2026-09-25-16 — Amazon : filtre marque connue (référence dynamique) au lieu du fallback « Générique »
+
+**Contexte** : suite au chantier scraping local (Amazon terminé, D-2026-09-24-04), l'utilisateur a signalé en prod des articles hors sujet remontés par le scraping Amazon — au-delà du seul cas déjà documenté (GAP-2026-09-25-12, décoration de gâteau « tennis »). Traité comme décision structurante (change le comportement d'insertion du script, impacte le volume Amazon déjà en base), cadrée explicitement avant tout code.
+
+**Décisions soumises et confirmées par l'utilisateur avant code** :
+1. **Source de la liste de marques de référence** : dynamique — marques réellement présentes en base (`deals.brand`, tous marchands hors Amazon, offres actives) au moment du scraping, pas une liste figée dans le script. Choisi plutôt qu'une liste statique (`KNOWN_BRANDS`, existante mais devenue le mécanisme d'étiquetage) pour rester à jour automatiquement à mesure que de nouveaux marchands/marques sont ajoutés.
+2. **Sort du générique** : une offre Amazon dont le titre ne commence par aucune marque de cette liste de référence est désormais **exclue** (pas insérée), au lieu d'être conservée avec `brand = 'Générique'` comme précédemment. Assumé par l'utilisateur : réduit le volume Amazon (42→22 sur l'échantillon du dernier passage réel, 20 offres en `Générique` sur 42), reste au-dessus du seuil de 30 articles (D-2026-09-24-04) selon les passages.
+
+**Implémentation** : `scripts/scraping/amazon.ts` — `fetchKnownBrands()` (nouvelle requête `SELECT DISTINCT d.brand FROM deals d JOIN merchants m ON m.id = d.merchant_id WHERE m.slug != 'amazon' AND d.status = 'active' AND d.is_active = true AND d.brand IS NOT NULL AND d.brand <> 'Générique'`, résultat trié côté JS par longueur décroissante pour préférer les correspondances les plus spécifiques — `ORDER BY LENGTH()` a dû être retiré de la requête SQL, `SELECT DISTINCT` de Postgres exige que toute expression d'`ORDER BY` figure dans la liste de sélection, découvert en exécutant réellement le script). `extractAmazonBrand` retourne désormais `string | null` (`null` = marque non reconnue) au lieu d'un fallback `'Générique'`. Ancienne liste statique `KNOWN_BRANDS` supprimée. Offre exclue comptée séparément (`skippedUnknownBrand`) dans le résumé de fin de passage. Le mécanisme d'éviction déjà existant (offres actives non revues à ce passage → `expired`/`is_active=false`) traite automatiquement les offres déjà en base à `brand = 'Générique'` : elles ne seront plus jamais "revues" par le prochain passage, donc évincées naturellement, sans script de nettoyage ponctuel séparé.
+
+**Statut** : Actée le 2026-09-25.

@@ -48,10 +48,10 @@
 // réellement mélangés aux résultats "raquette de tennis").
 //
 // Pas de page produit à visiter pour la marque (contrairement à SportSystem) :
-// extractAmazonBrand compare le titre à une liste de marques connues
-// (KNOWN_BRANDS, voir plus bas) plutôt que de prendre le premier mot du titre —
-// approche naïve essayée puis abandonnée en cours de build, voir la note
-// détaillée à côté de KNOWN_BRANDS.
+// extractAmazonBrand compare le titre à une liste de marques connues plutôt
+// que de prendre le premier mot du titre — approche naïve essayée puis
+// abandonnée en cours de build (voir plus bas), remplacée depuis par un filtre
+// d'exclusion sur marque reconnue (D-2026-09-25-16, voir plus bas).
 //
 // Tag d'affiliation Amazon Partenaires (AMAZON_ASSOCIATE_TAG, .env.local,
 // jamais committé) ajouté en paramètre `?tag=` sur chaque lien — sans lui,
@@ -84,50 +84,25 @@ const OTHER_SPORTS_PATTERN =
   /padel|squash|badminton|pickleball|tennis\s+de\s+table|ping.?pong|tischtennis/i;
 const TENNIS_WORD_PATTERN = /tennis/i;
 
-// Marques réellement observées sur amazon.fr (2026-09-25, plusieurs mots-clés) plus
-// quelques marques tennis notoires absentes de cet échantillon mais déjà vues chez
-// d'autres marchands de ce chantier (Babolat, Yonex, Tecnifibre, Dunlop, Prince).
-// Découverte en cours de build : prendre le premier mot du titre comme marque
-// (première version de ce script) produit des faux positifs massifs sur les fiches
-// de petits vendeurs sans marque affichée en tête — le titre commence alors par un
-// mot générique du produit ("Lot", "Support", "Polo", "Robe", "Jupes"...), pas une
+// Filtre marque (D-2026-09-25-16) : suite à des articles hors sujet remontés par
+// l'utilisateur sur le catalogue en prod (ex. GAP-2026-09-25-12, décoration de
+// gâteau "tennis"), décision de ne garder qu'une offre Amazon si sa marque est
+// reconnue — reconnue = déjà présente parmi les offres actives des autres
+// marchands du catalogue au moment du scraping (requête dynamique, voir
+// fetchKnownBrands ci-dessous), pas une liste figée dans ce fichier. Une offre
+// dont aucune marque connue n'est trouvée en tête du titre est exclue
+// (auparavant : conservée avec `brand = 'Générique'` — ce comportement a été
+// explicitement abandonné par l'utilisateur au profit d'un filtrage plus strict
+// "à la source", quitte à réduire le volume Amazon).
+//
+// Découverte en cours du tout premier build de ce script (historique, toujours
+// valable pour le principe de correspondance) : prendre le premier mot du titre
+// comme marque produit des faux positifs massifs sur les fiches de petits
+// vendeurs sans marque affichée en tête — le titre commence alors par un mot
+// générique du produit ("Lot", "Support", "Polo", "Robe", "Jupes"...), pas une
 // marque. Sur les 42 offres du premier passage réel, 18/42 (43%) avaient une
-// "marque" absurde de ce type — pas un cas isolé, corrigé avant tout envoi.
-// Liste vérifiée contre les titres réels, non exhaustive par construction (comme
-// COLOR_WORD_MAP) : une marque non reconnue retombe sur "Générique" plutôt que sur
-// un mot du titre pris au hasard.
-const KNOWN_BRANDS = [
-  "Amazon Basics",
-  "Pro's Pro",
-  "New Balance",
-  "Under Armour",
-  "Donic-Schildkröt",
-  "Wilson",
-  "Babolat",
-  "Yonex",
-  "Tecnifibre",
-  "Dunlop",
-  "Prince",
-  "Head",
-  "Nike",
-  "Adidas",
-  "Puma",
-  "Asics",
-  "Lacoste",
-  "Joma",
-  "Luxilon",
-  "Solinco",
-  "Gamma",
-  "Tourna",
-  "Senston",
-  "JOOLA",
-  "AGPTEK",
-  "ZMDMAH",
-  "Gamecourt",
-  "HIRALIY",
-  "BOOSTEADY",
-  "Bezioner",
-] as const;
+// "marque" absurde de ce type — corrigé par une comparaison à une liste de
+// marques connues (`startsWith`) plutôt qu'un mot pris au hasard.
 
 interface CategoryConfig {
   keyword: string;
@@ -150,14 +125,30 @@ interface ScrapedProduct {
   originalPrice: number;
 }
 
-function extractAmazonBrand(title: string): string {
+async function fetchKnownBrands(): Promise<string[]> {
+  const rows = await sql`
+    SELECT DISTINCT d.brand
+    FROM deals d
+    JOIN merchants m ON m.id = d.merchant_id
+    WHERE m.slug != ${MERCHANT_SLUG}
+      AND d.status = 'active'
+      AND d.is_active = true
+      AND d.brand IS NOT NULL
+      AND d.brand <> 'Générique'
+  `;
+  return rows
+    .map((row) => row.brand as string)
+    .sort((a, b) => b.length - a.length);
+}
+
+function extractAmazonBrand(title: string, knownBrands: string[]): string | null {
   const normalized = title.trim().toLowerCase();
-  for (const brand of KNOWN_BRANDS) {
+  for (const brand of knownBrands) {
     if (normalized.startsWith(brand.toLowerCase())) {
       return brand;
     }
   }
-  return "Générique";
+  return null;
 }
 
 async function scrapeKeyword(page: Page, keyword: string): Promise<ScrapedProduct[]> {
@@ -226,12 +217,16 @@ async function main() {
     RETURNING id
   `;
 
+  const knownBrands = await fetchKnownBrands();
+  console.log(`${knownBrands.length} marque(s) connue(s) chargée(s) depuis la base (référence dynamique).`);
+
   let browser: Browser | undefined;
   let inserted = 0;
   let skippedNoDiscount = 0;
   let skippedOtherSport = 0;
   let skippedNotTennis = 0;
   let skippedUnparsable = 0;
+  let skippedUnknownBrand = 0;
   const seenUrls: string[] = [];
 
   try {
@@ -268,7 +263,12 @@ async function main() {
           continue;
         }
 
-        const brand = extractAmazonBrand(product.title);
+        const brand = extractAmazonBrand(product.title, knownBrands);
+        if (brand === null) {
+          skippedUnknownBrand += 1;
+          continue;
+        }
+
         const affiliateUrl = `${MERCHANT_WEBSITE}/dp/${product.asin}?tag=${ASSOCIATE_TAG}`;
         const model = extractModel(product.title, brand, config.dbCategory);
         const color = extractColor(product.title);
@@ -328,7 +328,7 @@ async function main() {
   console.log(
     `${inserted} offre(s) insérée(s)/mise(s) à jour au total, ${skippedNoDiscount} sans remise réelle, ` +
       `${skippedNotTennis} sans le mot "tennis" dans le titre, ${skippedOtherSport} hors tennis, ` +
-      `${skippedUnparsable} bloc(s) non parsable(s).`
+      `${skippedUnknownBrand} marque non reconnue, ${skippedUnparsable} bloc(s) non parsable(s).`
   );
 
   if (seenUrls.length > 0) {
