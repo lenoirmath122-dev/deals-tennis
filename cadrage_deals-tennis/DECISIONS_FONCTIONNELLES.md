@@ -768,3 +768,31 @@ L'utilisateur revient sur ce refus et demande explicitement d'utiliser scrape.do
 **Isolation de branche** : ce bloc a été construit sur une branche fraîche depuis `origin/master` (`feat/seo-canonical-catalogue`) plutôt que de continuer sur `feat/seo-jsonld-produit` — la PR #54 (bloc 2) était encore ouverte/non mergée au moment de commencer ce bloc, conformément au protocole (jamais ajouter de commits à une branche/PR sans vérifier son statut de merge, et un bloc = une PR distincte comme pour les blocs 1 et 2).
 
 **Statut** : Actée et construite le 2026-09-25. Vérifié réellement : `npx tsc --noEmit`, `npm run lint`, `npm run build` clean ; serveur local (port 3000, déjà démarré par une autre session parallèle sur le même code) interrogé en HTTP sur 4 combinaisons de paramètres (`/`, `/?category=raquettes`, `/?sort=price_asc&page=2`, `/?gender=femme&age_group=enfant&q=nike`) — `<link rel="canonical" href="https://deals-tennis.vercel.app">` identique et présent dans les 4 cas.
+
+---
+
+### D-2026-09-25-15 — Sous-catégories d'accessoires : modélisation, liste et périmètre du backfill (cadrage uniquement)
+
+**Contexte** : demande explicite de l'utilisateur (« ajouter des catégories, notamment dans accessoires, pour séparer les sacs, les balles, antivibrateurs, etc. »). Traité comme décision structurante (nouveau champ, impact sur les 7 scripts de scraping déjà écrits + le workflow n8n ProTennis + le filtre catalogue), cadrée explicitement avant tout code, conformément au protocole. Numérotée -15 (et non -14) pour éviter une collision : D-2026-09-25-14 est déjà pris par une autre conversation en cours en parallèle sur le chantier SEO/GEO (bloc 3), qui avait laissé le répertoire de travail principal dans un état de conflit git non résolu (`git stash` interrompu) au moment de démarrer cette conversation — ce chantier a donc été isolé dans un nouveau git worktree dédié (`feat/souscategories-accessoires`) sans toucher au travail de l'autre session.
+
+**Décisions soumises et confirmées par l'utilisateur avant code** :
+1. **Modélisation** : nouveau champ `deals.subcategory` (nullable), rempli uniquement quand `category = 'accessoires'`. Pas d'éclatement en catégories de premier niveau — le filtre catégorie principal (`raquettes`/`cordages`/`chaussures`/`textile`/`accessoires`) reste inchangé partout où il est déjà utilisé (CHECK constraint, index composites, `CATEGORY_LABELS`), un filtre secondaire apparaît uniquement quand « Accessoires » est sélectionné.
+2. **Liste des sous-catégories** : `sacs`, `balles`, `antivibrateurs`, `grips_surgrips`, `accessoires_cordage` (accessoires liés à la tension du cordage — tensiomètres, pinces à corder — à ne pas confondre avec la catégorie de premier niveau `cordages`, qui désigne le cordage lui-même). Une valeur `NULL` reste possible pour les accessoires qui ne correspondent à aucune de ces sous-catégories (ex. gourdes, casquettes, bandages, médailles, jonc/poignets) — exposée côté UI comme un filtre « Autres accessoires » plutôt que forcée dans une case qui ne lui correspond pas (cohérent avec le point 5 du protocole général).
+3. **Périmètre du backfill** : reclassement complet des offres accessoires déjà en base (pas seulement les nouvelles ingestions) — implique de mettre à jour les 7 scripts de scraping déjà écrits (Tecnifibre, Tennispro.fr, SportSystem, Sport 2000, Babolat, Tennis Point FR, Head) et le workflow n8n ProTennis en plus d'écrire un script de backfill ponctuel, à l'identique du chantier sexe/âge (D-2026-09-25-04).
+
+**Vérification réelle du lexique avant de le figer** (comme pour D-2026-09-25-03) : requête directe sur les 611 offres accessoires actives de la base Neon de prod (script jetable, supprimé après usage). Répartition constatée avec les motifs proposés :
+
+| Sous-catégorie | Motif (première version) | Offres matchées |
+|---|---|---|
+| `sacs` | `sacs?`, `housse raquette` | 300 |
+| `balles` | `balles?`, `balls?` | 59 |
+| `antivibrateurs` | `antivibrateur`, `anti-vibrateur`, `damp`, `vibra-clip` | 33 |
+| `grips_surgrips` | `surgrips?`, `overgrips?`, `grips?` | 77 |
+| `accessoires_cordage` | `tensiomètre`, `pince à corder`, `machine à corder` | 0 (conservée pour l'avenir — aucun article de ce type dans le catalogue actuel, situation identique à d'autres sous-catégories vides déjà rencontrées ailleurs, ex. cordages Sport 2000) |
+| *(aucun, `NULL`)* | — | 142 (gourdes, bandages/genouillères/chevillères, casquettes, jonc/poignets, médailles, produits dérivés Roland Garros, kits de tension de poteaux de filet...) |
+
+Total 611 = 300+59+33+77+0+142, cohérent. Les motifs exacts (regex) seront affinés si besoin en cours de build (même pratique que le lexique sexe/âge), cette vérification sert à confirmer que le découpage proposé correspond à des volumes réels et n'écrase pas silencieusement de la donnée dans une mauvaise case.
+
+**Hors périmètre de cette conversation** : aucun code écrit (ni migration, ni script) — cadrage uniquement, conformément au protocole (une étape de build par conversation). Le build (migration + lexique définitif + backfill + mise à jour des 7 scripts + miroir n8n + UI filtre) est réparti sur une ou plusieurs conversations dédiées suivantes, à l'identique du déroulé du chantier sexe/âge (D-2026-09-25-01 à -05).
+
+**Statut** : Actée (cadrage) le 2026-09-25, aucun code construit.
