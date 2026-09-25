@@ -1,5 +1,15 @@
 # Points ouverts
 
+## GAP-2026-09-25-05 — Sport 2000 : facette sexe Algolia contredisant le libellé produit sur 1 article (OUVERT, mineur)
+
+Découvert en vérifiant le build Sport 2000 (voir `ETAT_ACTUEL.md`) : le produit « Chaussures de tennis ADIDAS Fille Advantage CF I Enfant Garçon » a la facette `gender` Algolia du marchand valant `BEBE GARCON` alors que son propre libellé produit contient « Fille » — contradiction dans les données Sport 2000 elles-mêmes (cause côté marchand, pas une erreur d'extraction). Conséquence : le titre construit contient à la fois « Fille » et « Garçon », l'heuristique (`extractGender`) retombe sur `mixte` plutôt que de trancher.
+
+**Bloquant sur** : rien dans l'immédiat — 1 seul produit concerné sur 165 offres Sport 2000, `mixte` reste une valeur valide du filtre (pas une erreur système), juste potentiellement pas le sexe réel de l'article. Même catégorie que GAP-2026-09-23-04/GAP-2026-09-25-02 (qualité de donnée marchand mineure, isolée).
+
+**Statut** : ouvert au 2026-09-25.
+
+---
+
 ## GAP-2026-09-25-04 — SportSystem : 1 bloc de listing non parsable (OUVERT, mineur)
 
 Découvert en vérifiant le build SportSystem (voir `ETAT_ACTUEL.md`) : sur les ~768 blocs produit rencontrés dans les 8 pages promo tennis, 1 seul n'a pas pu être parsé (`parseProduct` retourne `null` — un des sélecteurs regex url/prix/image n'a pas matché) et a été silencieusement ignoré (`skippedUnparsable`). Cause non investiguée (structure HTML légèrement différente sur cette fiche précise ? champ manquant ?).
