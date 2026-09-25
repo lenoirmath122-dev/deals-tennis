@@ -4,6 +4,9 @@ import type { Metadata } from "next";
 import { getDealDetail } from "@/lib/deals";
 import { formatDiscountBadge, formatFreshnessLabel, formatPrice } from "@/lib/format";
 import { DealImage } from "@/components/deal-image";
+import { CATEGORY_LABELS } from "@/lib/filters";
+import { SITE_URL } from "@/lib/site";
+import type { DealCardData } from "@/types/database";
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -39,6 +42,35 @@ export async function generateMetadata({
   return { title: detail.deal.title };
 }
 
+function buildProductJsonLd(deal: DealCardData) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: deal.title,
+    image: [deal.image_url],
+    brand: {
+      "@type": "Brand",
+      name: deal.brand,
+    },
+    category: CATEGORY_LABELS[deal.category] ?? deal.category,
+    offers: {
+      "@type": "Offer",
+      url: `${SITE_URL}/deal/${deal.id}`,
+      priceCurrency: "EUR",
+      price: deal.discounted_price,
+      availability: "https://schema.org/InStock",
+      itemCondition: "https://schema.org/NewCondition",
+      seller: {
+        "@type": "Organization",
+        name: deal.merchant.name,
+      },
+      ...(deal.expires_at
+        ? { priceValidUntil: deal.expires_at.slice(0, 10) }
+        : {}),
+    },
+  };
+}
+
 export default async function DealDetailPage({
   params,
 }: {
@@ -46,9 +78,16 @@ export default async function DealDetailPage({
 }) {
   const { dealId } = await params;
   const { deal, otherOffers } = await loadDeal(dealId);
+  const jsonLd = buildProductJsonLd(deal);
 
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-4 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <Link href="/" className="mb-6 text-sm text-zinc-500 hover:text-zinc-900">
         ← Retour au catalogue
       </Link>

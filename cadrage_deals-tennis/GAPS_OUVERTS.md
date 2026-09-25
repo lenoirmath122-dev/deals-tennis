@@ -20,14 +20,14 @@ Suite à D-2026-09-25-11 : le lexique partagé `extractGender`/`extractAgeGroup`
 
 ---
 
-## GAP-2026-09-25-07 — Chantier SEO/GEO : 5 blocs de build restants après le bloc 1 (OUVERT)
+## GAP-2026-09-25-07 — Chantier SEO/GEO : 4 blocs de build restants après le bloc 2 (OUVERT)
 
-Suite à D-2026-09-25-10 : plan en 7 blocs acté (fondations techniques, données structurées, URLs canoniques, ouverture robots IA, `llms.txt`, performance, Open Graph), un bloc par conversation dédiée. Bloc 1 terminé et vérifié (D-2026-09-25-12, PR #52).
+Suite à D-2026-09-25-10 : plan en 7 blocs acté (fondations techniques, données structurées, URLs canoniques, ouverture robots IA, `llms.txt`, performance, Open Graph), un bloc par conversation dédiée. Bloc 1 terminé et vérifié (D-2026-09-25-12, PR #52). Bloc 2 terminé et vérifié (D-2026-09-25-13, PR #54).
 
 **Reste à faire, dans l'ordre** :
 1. ~~Fondations techniques (`robots.txt`, `sitemap.xml`, métadonnées par page)~~ — fait (D-2026-09-25-12).
-2. Données structurées (Schema.org / JSON-LD Product/Offer) — prochaine étape.
-3. URLs canoniques / contenu dupliqué (filtres catalogue).
+2. ~~Données structurées (Schema.org / JSON-LD Product/Offer sur `/deal/[dealId]`)~~ — fait (D-2026-09-25-13). `ItemList` catalogue non traité (hors périmètre acté de ce bloc, pas un gap ouvert en soi).
+3. URLs canoniques / contenu dupliqué (filtres catalogue) — prochaine étape.
 4. Ouverture aux robots IA (GPTBot, ClaudeBot, PerplexityBot, Google-Extended...) — décision explicite à prendre, pas encore tranchée.
 5. `llms.txt`.
 6. Performance / Core Web Vitals.
@@ -35,7 +35,7 @@ Suite à D-2026-09-25-10 : plan en 7 blocs acté (fondations techniques, donnée
 
 Chaque bloc doit être cadré en détail (décisions structurantes propres, ex. quels crawlers IA autoriser) avant tout code, conformément au protocole général.
 
-**Bloquant sur** : rien — chantier en cours, prochaine conversation dédiée au bloc 1.
+**Bloquant sur** : rien — chantier en cours, prochaine conversation dédiée au bloc 3.
 
 **Statut** : ouvert au 2026-09-25.
 
