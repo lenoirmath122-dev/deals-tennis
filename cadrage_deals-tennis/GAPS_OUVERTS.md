@@ -1,18 +1,28 @@
 # Points ouverts
 
+## GAP-2026-09-25-02 — Répétition de la marque dans le titre pour un produit Tennispro.fr (OUVERT, mineur)
+
+Découvert en vérifiant le build Tennispro.fr (voir `ETAT_ACTUEL.md`) : le produit « Sac de tennis Mouratoglou Apparel Mouratoglou Training Gym » (marque `Mouratoglou Apparel`, catégorie accessoires) a la marque qui apparaît deux fois dans le titre — une fois insérée par le script (convention `${label} ${brand} ...`), une fois déjà présente dans le nom scrappé du produit (`SAC MOURATOGLOU TRAINING GYM`, le mot « Mouratoglou » y figurant nativement, sans être le nom de marque complet `Mouratoglou Apparel`). Vérifié réellement : cas isolé (1/673 offres Tennispro.fr), pas un problème systémique — recherche sur toute la base ne trouve aucune autre offre où la chaîne de marque complète apparaît deux fois dans le titre.
+
+**Bloquant sur** : rien dans l'immédiat — impact cosmétique sur une seule fiche. Même catégorie que GAP-2026-09-23-04 (qualité de donnée produit mineure).
+
+**Statut** : ouvert au 2026-09-25.
+
+---
+
 ## GAP-2026-09-25-01 — Filtre catalogue « sexe / âge » : décisions de cadrage restantes avant le premier build (OUVERT)
 
-Suite à D-2026-09-25-01 (principe et sourcing actés). Reste à trancher, dans une conversation dédiée, avant tout code — pas enchaîné dans la conversation de cadrage :
+Suite à D-2026-09-25-01. Reste à trancher, dans une conversation dédiée de build, avant tout code :
 
-1. **Modélisation exacte** : deux colonnes distinctes sur `products` (`gender` : `homme`/`femme`/`mixte`/`non_determine`, `age_group` : `adulte`/`enfant`/`non_determine`) ou une seule dimension combinée ? À trancher explicitement avec l'utilisateur (question directe), pas déduit.
-2. **Mots-clés de l'heuristique d'extraction** par catégorie (ex. « junior »/« enfant »/tailles enfant pour l'âge ; « femme »/« homme »/lexique marketing marchand pour le sexe) — à vérifier réellement sur un échantillon de titres de prod avant de figer, comme fait pour `extractColor`.
+1. ~~Modélisation exacte~~ — résolu par D-2026-09-25-02 (deux colonnes séparées `gender`/`age_group` sur `products`).
+2. ~~Mots-clés de l'heuristique d'extraction~~ — résolu par D-2026-09-25-03 (lexique vérifié sur les titres réels de prod).
 3. **Migration + backfill** : nouvelle(s) colonne(s) sur `products`, script de backfill sur les offres déjà en prod (~1500+), vérifié réellement (échantillon contrôlé manuellement, pas juste "le script a tourné sans erreur").
 4. **Intégration workflow n8n ProTennis** : comme pour `product_id` (GAP-2026-09-22-11) et la couleur (D-2026-09-23-06), le miroir JS du workflow n8n devra être mis à jour en parallèle du code TypeScript pour que les nouvelles offres ProTennis soient aussi classées, pas seulement le backfill.
 5. **UI du filtre** : emplacement (à côté du filtre catégorie existant ?), comportement en mode recherche groupée par article, libellés exacts affichés.
 
-**Ordre suggéré** (à confirmer avec l'utilisateur en début de conversation de build, pas décidé ici) : modélisation → heuristique + migration + backfill → intégration n8n → UI.
+**Ordre suggéré** (à confirmer avec l'utilisateur en début de conversation de build) : migration + backfill → intégration n8n → UI.
 
-**Statut** : ouvert au 2026-09-25.
+**Statut** : ouvert au 2026-09-25 (points 1 et 2 résolus en cadrage, points 3-5 restent à construire).
 
 ---
 
