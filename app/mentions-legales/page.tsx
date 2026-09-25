@@ -3,6 +3,8 @@ import { LegalPage } from "@/components/legal-page";
 
 export const metadata: Metadata = {
   title: "Mentions légales",
+  description:
+    "Mentions légales du site Tennisdeals : éditeur, directeur de la publication, hébergeur et informations de contact.",
 };
 
 export default function MentionsLegalesPage() {
