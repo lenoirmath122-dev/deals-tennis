@@ -12,6 +12,7 @@
     "db:backfill-products": "node --env-file=.env.local scripts/backfill-product-ids.ts",
     "db:backfill-colors": "node --env-file=.env.local scripts/backfill-colors.ts",
     "db:backfill-gender-age": "node --env-file=.env.local scripts/backfill-gender-age.ts",
+    "db:backfill-racquet-junior-size": "node --env-file=.env.local scripts/backfill-racquet-junior-size.ts",
     "scrape:tecnifibre": "node --env-file=.env.local scripts/scraping/tecnifibre.ts",
     "scrape:tennispro": "node --env-file=.env.local scripts/scraping/tennispro.ts",
     "scrape:sportsystem": "node --env-file=.env.local scripts/scraping/sportsystem.ts",
