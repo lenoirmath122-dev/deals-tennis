@@ -1,5 +1,15 @@
 # Points ouverts
 
+## GAP-2026-09-25-02 — Répétition de la marque dans le titre pour un produit Tennispro.fr (OUVERT, mineur)
+
+Découvert en vérifiant le build Tennispro.fr (voir `ETAT_ACTUEL.md`) : le produit « Sac de tennis Mouratoglou Apparel Mouratoglou Training Gym » (marque `Mouratoglou Apparel`, catégorie accessoires) a la marque qui apparaît deux fois dans le titre — une fois insérée par le script (convention `${label} ${brand} ...`), une fois déjà présente dans le nom scrappé du produit (`SAC MOURATOGLOU TRAINING GYM`, le mot « Mouratoglou » y figurant nativement, sans être le nom de marque complet `Mouratoglou Apparel`). Vérifié réellement : cas isolé (1/673 offres Tennispro.fr), pas un problème systémique — recherche sur toute la base ne trouve aucune autre offre où la chaîne de marque complète apparaît deux fois dans le titre.
+
+**Bloquant sur** : rien dans l'immédiat — impact cosmétique sur une seule fiche. Même catégorie que GAP-2026-09-23-04 (qualité de donnée produit mineure).
+
+**Statut** : ouvert au 2026-09-25.
+
+---
+
 ## GAP-2026-09-25-01 — Filtre catalogue « sexe / âge » : décisions de cadrage restantes avant le premier build (OUVERT)
 
 Suite à D-2026-09-25-01 (principe et sourcing actés). Reste à trancher, dans une conversation dédiée, avant tout code — pas enchaîné dans la conversation de cadrage :
