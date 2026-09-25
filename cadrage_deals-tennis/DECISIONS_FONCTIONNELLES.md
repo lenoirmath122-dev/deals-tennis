@@ -664,4 +664,18 @@ L'utilisateur revient sur ce refus et demande explicitement d'utiliser scrape.do
 
 **Aucune promotion active retrouvée** sur les 9 pages catégorie au moment de la vérification (comme au 2026-09-24) — `discount_percentage = 0` accepté pour toutes les offres, conformément à D-2026-09-24-05 (prix de référence à retravailler plus tard, explicitement hors périmètre de cette étape).
 
-**Statut** : Actée le 2026-09-25 (décisions mineures documentées a posteriori, pas de question structurante posée). Build réalisé et vérifié dans la même conversation (voir `ETAT_ACTUEL.md`).
+**Statut** : Actée le 2026-09-25 (décisions mineures documentées a posteriori, pas de question structurante posée). Build réalisé et vérifié dans la même conversation (voir `ETAT_ACTUEL.md`). **Traitement "ingéré à 0%" revu et abandonné par D-2026-09-25-09.**
+
+---
+
+### D-2026-09-25-09 — Babolat : abandon du traitement "ingéré à 0% de réduction" (D-2026-09-24-05/D-2026-09-25-08), incohérent avec les autres marchands
+
+**Contexte** : L'utilisateur a remarqué en production que les offres Babolat affichaient un prix barré identique au prix affiché avec un badge « -0% » — conséquence visuelle du choix acté en D-2026-09-24-05 d'ingérer tout le catalogue Babolat même sans promo active, faute de prix de référence. En comparant au traitement des autres marchands (question posée explicitement par l'utilisateur) : Sport 2000 filtre `percent_discount > 0` côté requête (D-2026-09-25-06), Tecnifibre/SportSystem ne parcourent que des collections/pages déjà 100% promotionnelles côté marchand — aucun des trois marchands n'expose jamais de "deal" sans remise réelle. Babolat était la seule exception, parce que le site n'a pas de page promo dédiée et qu'aucune promo n'était active au moment du cadrage.
+
+**Vérifié réellement (2026-09-25)** : les 9 pages catégorie Babolat (`curl` direct sur l'endpoint AJAX `Search-ShowAjax`) ne contiennent toujours, à ce jour, aucun élément de prix barré (`c-price__list` ou équivalent) — confirmé identique à la vérification du 2026-09-24/25 initiale, sur les 9 sous-catégories.
+
+**Décision** : `scripts/scraping/babolat.ts` ne doit plus ingérer une offre sans remise réelle détectée (`comparePrice`/`listPrice` absent ou inférieur/égal au prix courant) — même traitement que Tecnifibre pour ses catégories sans promo (`skippedNoDiscount`, 0 article accepté tant qu'aucune vraie promo n'existe). Le script gagne un sélecteur `c-price__list` (déduit par convention SFCC, non observé en conditions réelles faute de promo active) pour le jour où Babolat lancera une vraie promotion. **Nettoyage de la base de prod** : les 301 offres déjà insérées à `discount_percentage = 0` (D-2026-09-25-08) ont été passées à `status = 'expired'`/`is_active = false` par une requête SQL ponctuelle (hors script, exécutée une fois manuellement) — le garde-fou anti-vidage en masse du script (`seenUrls.length > 0`) empêche `main()` de le faire lui-même puisqu'aucune de ces offres n'est plus "revue" par la nouvelle logique.
+
+**Conséquence acceptée** : Babolat peut retomber à 0 offre active en base tant qu'aucune promo réelle n'existe sur le site — cohérent avec le principe "Tennisdeals = du bon plan", au prix d'un volume de catalogue potentiellement nul pour ce marchand.
+
+**Statut** : Actée et corrigée le 2026-09-25, dans la même conversation que la découverte (branche `feat/scraping-babolat`, PR #48 déjà ouverte). Vérifié réellement : `npx tsc --noEmit` clean, requête de nettoyage exécutée contre la base Neon de prod avec vérification du nombre de lignes affectées (301 trouvées, 301 expirées), script temporaire de nettoyage supprimé après usage.

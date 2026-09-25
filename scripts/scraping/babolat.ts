@@ -9,9 +9,15 @@
 // utilisés ici).
 //
 // Aucune promotion trouvée sur le site au moment de la vérification (comme au
-// 2026-09-24) : `discount_percentage = 0` accepté pour toutes les offres,
-// conformément à la décision D-2026-09-24-05 (prix de référence à retravailler
-// plus tard, hors périmètre de cette étape).
+// 2026-09-24, reconfirmé le 2026-09-25 sur les 8 sous-catégories) : aucun
+// élément de prix barré (`c-price__list` ou équivalent) n'existe dans le
+// balisage tant qu'un produit n'est pas réellement en promo. Contrairement à
+// la première version de ce script (D-2026-09-24-05), on n'ingère PAS les
+// offres sans remise réelle — incohérent avec les autres marchands
+// (Sport 2000/Tecnifibre/SportSystem n'exposent jamais de "deal" à 0%) et
+// produisait un prix barré identique au prix affiché avec un badge "-0%"
+// dans l'UI. Même traitement que Tecnifibre pour ses catégories sans promo :
+// accepté à 0 article tant que Babolat ne fait pas de vraie promotion.
 //
 // Découverte en cours de build (2026-09-25) qui affine la méthode actée en
 // D-2026-09-24-04 ("rendu JS, Playwright nécessaire") : le HTML brut renvoyé
@@ -125,6 +131,7 @@ interface ScrapedProduct {
   url: string;
   name: string;
   price: number;
+  listPrice: number | null;
   image: string | null;
 }
 
@@ -162,6 +169,12 @@ function parseProduct(block: string): ScrapedProduct | null {
   const hrefMatch = block.match(/href="(\/fr\/[^"]+\.html)"/);
   const altMatch = block.match(/class="c-product-tile__tile-image tile-image[^>]*alt="([^"]*)"/);
   const priceMatch = block.match(/class="c-price__value[^"]*"[^>]*content="([\d.]+)"/);
+  // Prix barré : absent du balisage tant qu'aucune promo n'est active (vérifié
+  // réellement le 2026-09-25 sur les 8 sous-catégories, 0 occurrence). Classe
+  // `c-price__list` déduite par convention SFCC (miroir de `c-price__sales`) —
+  // non observée en conditions réelles faute de produit en promo, à confirmer
+  // le jour où Babolat lance une vraie promotion.
+  const listPriceMatch = block.match(/class="c-price__list[^"]*"[^>]*content="([\d.]+)"/);
   const srcsetMatch = block.match(/data-srcset="([^"]+)"/);
 
   if (!hrefMatch || !altMatch || !priceMatch) {
@@ -172,6 +185,7 @@ function parseProduct(block: string): ScrapedProduct | null {
     url: `${MERCHANT_WEBSITE}${hrefMatch[1]}`,
     name: decodeEntities(altMatch[1].trim()).replace(/\s+/g, " "),
     price: parseFloat(priceMatch[1]),
+    listPrice: listPriceMatch ? parseFloat(listPriceMatch[1]) : null,
     image: srcsetMatch ? bestSrcsetUrl(srcsetMatch[1]) : null,
   };
 }
@@ -219,6 +233,7 @@ async function main() {
   let inserted = 0;
   let skippedUnparsable = 0;
   let skippedOtherSport = 0;
+  let skippedNoDiscount = 0;
   const seenUrls: string[] = [];
 
   for (const category of CATEGORIES) {
@@ -233,6 +248,11 @@ async function main() {
         continue;
       }
 
+      if (product.listPrice === null || !Number.isFinite(product.listPrice) || product.listPrice <= product.price) {
+        skippedNoDiscount += 1;
+        continue;
+      }
+
       const title = `${category.label} ${MERCHANT_NAME} ${product.name}`.replace(/\s+/g, " ").trim();
 
       if (OTHER_SPORTS_PATTERN.test(title)) {
@@ -244,9 +264,9 @@ async function main() {
       const color = extractColor(title);
       const gender = extractGender(title);
       const ageGroup = extractAgeGroup(title);
-      // D-2026-09-24-05 : aucune promo active constatée sur le site, ingéré à
-      // 0% de réduction (prix de référence à retravailler plus tard).
       const price = product.price;
+      const listPrice = product.listPrice;
+      const discountPercentage = Math.round(((listPrice - price) / listPrice) * 100);
 
       const [upsertedProduct] = await sql`
         INSERT INTO products (brand, model, category, gender, age_group)
@@ -266,8 +286,8 @@ async function main() {
           color, product_id
         )
         VALUES (
-          ${title}, ${MERCHANT_NAME}, ${category.dbCategory}, ${product.image}, ${price},
-          ${price}, 0, ${merchant.id}, ${product.url}, 'active', true,
+          ${title}, ${MERCHANT_NAME}, ${category.dbCategory}, ${product.image}, ${listPrice},
+          ${price}, ${discountPercentage}, ${merchant.id}, ${product.url}, 'active', true,
           ${color}, ${upsertedProduct.id}
         )
         ON CONFLICT (merchant_id, affiliate_url) DO UPDATE SET
@@ -292,7 +312,7 @@ async function main() {
 
   console.log(
     `${inserted} offre(s) insérée(s)/mise(s) à jour au total, ${skippedUnparsable} non parsable(s), ` +
-      `${skippedOtherSport} hors tennis.`
+      `${skippedNoDiscount} sans remise réelle, ${skippedOtherSport} hors tennis.`
   );
 
   if (seenUrls.length > 0) {

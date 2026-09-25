@@ -7,6 +7,17 @@
 > Sessions du 2026-09-24 (Sport Outlet FR) à 2026-09-24 (pré-étape tri prix) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-24-sportoutlet_a_pre-etape-tri.md` (même règle, condensation du 2026-09-25).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
 
+## 2026-09-25 (session) — Correction scraping local Babolat : abandon de l'ingestion à 0% (D-2026-09-25-09)
+
+- Reprise directe (question de l'utilisateur, pas de `/clear` explicite en tête de conversation) : "sur l'ajout de babolat, on a des prix barrés qui sont les mêmes que les prix en réduction avec affiché -0%".
+- Vérifié : `components/deal-card.tsx` affiche toujours prix barré + badge réduction sans condition sur `discount_percentage > 0` ; `scripts/scraping/babolat.ts` (branche `feat/scraping-babolat`, non mergée, PR #48) ingère volontairement tout le catalogue à `discount_percentage = 0` faute de promo (D-2026-09-24-05/D-2026-09-25-08).
+- L'utilisateur a fait remarquer que les autres marchands n'exposent jamais d'offre sans remise réelle. Comparaison confirmée : Sport 2000 filtre `percent_discount > 0` en requête, Tecnifibre/SportSystem ne parcourent que des sources déjà promotionnelles. Babolat était la seule exception.
+- Décision (question posée, réponse actée) : ne plus ingérer les offres Babolat sans remise réelle (D-2026-09-25-09), plutôt que de cacher le badge côté UI ou de ne rien changer.
+- **Découverte critique en cours de correction** : les 301 offres Babolat à 0% du build initial (D-2026-09-25-08) étaient déjà réellement en base de prod et visibles en direct sur le site (le script écrit directement dans Neon prod, comme tous les scripts de scraping local). Signalé explicitement à l'utilisateur avant toute action sur la prod ; l'utilisateur a choisi le nettoyage SQL immédiat plutôt qu'attendre ou passer par le script.
+- `babolat.ts` modifié : sélecteur `c-price__list` ajouté (vérifié réellement absent sur les 9 pages catégorie, `curl` direct sur l'endpoint AJAX, aucune promo active à ce jour) ; offre sans remise réelle détectée désormais ignorée (`skippedNoDiscount`), même traitement que Tecnifibre. `npx tsc --noEmit` clean.
+- Nettoyage de la base de prod : script ponctuel exécuté puis supprimé, 301 offres Babolat à `discount_percentage = 0` passées à `status = 'expired'`/`is_active = false` (compte vérifié avant et après : 301 trouvées, 301 expirées).
+- Travail fait directement dans le worktree existant `../deals-tennis-babolat` (branche `feat/scraping-babolat`), PR #48 déjà ouverte — commit supplémentaire sur la même PR plutôt qu'une nouvelle branche.
+
 ## 2026-09-25 (session) — Scraping local Babolat (GAP-2026-09-24-02, D-2026-09-25-08, GAP-2026-09-25-06)
 
 - Reprise : marchand confirmé par l'utilisateur en début de message ("on reprend avec le scraping babolat"), cohérent avec l'ordre acté (Sport 2000 fait → Babolat). Protocole de reprise suivi (ETAT_ACTUEL.md → GAPS_OUVERTS.md).
