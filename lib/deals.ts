@@ -1,5 +1,11 @@
 import { sql } from "@/lib/db";
-import { isValidCategory, sanitizeSearchQuery, type CatalogSort } from "@/lib/filters";
+import {
+  isValidCategory,
+  isValidGender,
+  isValidAgeGroup,
+  sanitizeSearchQuery,
+  type CatalogSort,
+} from "@/lib/filters";
 import type { CatalogResponse, DealCardData, DealDetail } from "@/types/database";
 
 const PER_PAGE = 24;
@@ -25,6 +31,8 @@ const DEAL_CARD_FIELDS = `
 
 export interface GetCatalogDealsParams {
   category?: string;
+  gender?: string;
+  age_group?: string;
   sort?: CatalogSort;
   q?: string;
   page?: number;
@@ -75,6 +83,20 @@ export async function getCatalogDeals(
     queryParams.push(params.category);
   }
 
+  let needsProductJoin = false;
+
+  if (params.gender && isValidGender(params.gender) && params.gender !== "all") {
+    conditions.push(`p.gender = $${paramIndex++}`);
+    queryParams.push(params.gender);
+    needsProductJoin = true;
+  }
+
+  if (params.age_group && isValidAgeGroup(params.age_group) && params.age_group !== "all") {
+    conditions.push(`p.age_group = $${paramIndex++}`);
+    queryParams.push(params.age_group);
+    needsProductJoin = true;
+  }
+
   const searchQuery = sanitizeSearchQuery(params.q);
   const searchWords = searchQuery.length > 0 ? searchQuery.split(/\s+/).filter(Boolean) : [];
   if (searchWords.length > 0) {
@@ -88,14 +110,27 @@ export async function getCatalogDeals(
 
   const whereClause = conditions.join(" AND ");
   const isGrouped = searchQuery.length > 0;
+  const productJoin = needsProductJoin ? "LEFT JOIN products p ON d.product_id = p.id" : "";
 
   if (isGrouped) {
-    return getGroupedCatalogDeals({ whereClause, queryParams, page, offset, sort: params.sort });
+    return getGroupedCatalogDeals({
+      whereClause,
+      queryParams,
+      page,
+      offset,
+      sort: params.sort,
+      productJoin,
+    });
   }
 
   const orderByClause = dealsOrderByClause(params.sort);
 
-  const countQuery = `SELECT COUNT(*)::int AS total FROM deals d WHERE ${whereClause}`;
+  const countQuery = `
+    SELECT COUNT(*)::int AS total
+    FROM deals d
+    ${productJoin}
+    WHERE ${whereClause}
+  `;
   const countResult = await sql.query(countQuery, queryParams);
   const total = (countResult[0]?.total as number) || 0;
 
@@ -103,6 +138,7 @@ export async function getCatalogDeals(
     SELECT ${DEAL_CARD_FIELDS}
     FROM deals d
     JOIN merchants m ON d.merchant_id = m.id
+    ${productJoin}
     WHERE ${whereClause}
     ORDER BY ${orderByClause}
     LIMIT ${PER_PAGE} OFFSET ${offset}
@@ -134,18 +170,21 @@ async function getGroupedCatalogDeals({
   page,
   offset,
   sort,
+  productJoin,
 }: {
   whereClause: string;
   queryParams: unknown[];
   page: number;
   offset: number;
   sort?: CatalogSort;
+  productJoin: string;
 }): Promise<CatalogResponse> {
   const groupOrderByClause = groupedDealsOrderByClause(sort);
 
   const countQuery = `
     SELECT COUNT(DISTINCT COALESCE(d.product_id::text, d.id::text))::int AS total
     FROM deals d
+    ${productJoin}
     WHERE ${whereClause}
   `;
   const countResult = await sql.query(countQuery, queryParams);
@@ -166,6 +205,7 @@ async function getGroupedCatalogDeals({
         ) AS rn
       FROM deals d
       JOIN merchants m ON d.merchant_id = m.id
+      ${productJoin}
       WHERE ${whereClause}
     ) sub
     WHERE sub.rn = 1

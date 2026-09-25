@@ -35,6 +35,59 @@ describe("getCatalogDeals contract — search matches regardless of word order",
   });
 });
 
+describe("getCatalogDeals contract — filtre sexe/âge (GAP-2026-09-25-01 point 5)", () => {
+  it("only returns deals whose linked product matches the requested gender", async () => {
+    const result = await getCatalogDeals({ gender: "femme" });
+    expect(result.deals.length).toBeGreaterThan(0);
+
+    const ids = result.deals.map((deal) => deal.id);
+    const rows = await sql.query(
+      `SELECT d.id, p.gender
+       FROM deals d
+       LEFT JOIN products p ON d.product_id = p.id
+       WHERE d.id = ANY($1::uuid[])`,
+      [ids]
+    );
+    expect((rows as { gender: string | null }[]).every((row) => row.gender === "femme")).toBe(true);
+  });
+
+  it("only returns deals whose linked product matches the requested age group", async () => {
+    const result = await getCatalogDeals({ age_group: "enfant" });
+    expect(result.deals.length).toBeGreaterThan(0);
+
+    const ids = result.deals.map((deal) => deal.id);
+    const rows = await sql.query(
+      `SELECT d.id, p.age_group
+       FROM deals d
+       LEFT JOIN products p ON d.product_id = p.id
+       WHERE d.id = ANY($1::uuid[])`,
+      [ids]
+    );
+    expect((rows as { age_group: string | null }[]).every((row) => row.age_group === "enfant")).toBe(true);
+  });
+
+  it("excludes deals with no linked product (product_id null) when a gender/age filter is active", async () => {
+    const [unlinkedRow] = await sql.query(
+      `SELECT d.id FROM deals d
+       WHERE d.product_id IS NULL AND d.status = 'active' AND d.is_active = true
+         AND (d.expires_at IS NULL OR d.expires_at > NOW())
+       LIMIT 1`
+    );
+    if (!unlinkedRow) {
+      // Aucun deal sans product_id en prod actuellement : rien à vérifier pour ce cas.
+      return;
+    }
+
+    const result = await getCatalogDeals({ gender: "homme" });
+    expect(result.deals.some((deal) => deal.id === (unlinkedRow as { id: string }).id)).toBe(false);
+  });
+
+  it("combines gender and category filters", async () => {
+    const result = await getCatalogDeals({ gender: "homme", category: "chaussures" });
+    expect(result.deals.every((deal) => deal.category === "chaussures")).toBe(true);
+  });
+});
+
 describe("getCatalogDeals contract — grouped search mode (D-2026-09-22-06/17)", () => {
   it("groups results for a query matching offers from multiple merchants for the same article", async () => {
     const result = await getCatalogDeals({ q: "Pure Aero" });

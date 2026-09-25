@@ -6,6 +6,15 @@
 > Sessions du 2026-09-23 (pages réglementaires) au 2026-09-23 (suggestions groupées par catégorie) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-23-reglementaire_a_suggestions-categorie.md` (même règle, condensation du 2026-09-24).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
 
+## 2026-09-25 (session) — UI du filtre catalogue sexe/âge (D-2026-09-25-05, GAP-2026-09-25-01 point 5)
+
+- Reprise : marchand/étape suivante non évidente en début de session — soumis explicitement à l'utilisateur (UI du filtre confirmée).
+- Décisions structurantes soumises via question à choix avant tout code (emplacement, structure deux filtres vs combiné, comportement des deals sans `product_id`, libellés, traitement de `non_determine`) — toutes tranchées par l'utilisateur avant le build. Actées en D-2026-09-25-05.
+- **Conflit de working directory à nouveau rencontré** (même schéma que la session Tennispro.fr précédente) : une autre conversation avait des changements non commités sur SportSystem (`package.json`, `scripts/scraping/sportsystem.ts`) qui suivaient les changements de branche dans le répertoire de travail partagé. Résolu en restaurant ces fichiers sur leur branche (`feat/scraping-sportsystem`) via `git stash`, puis en travaillant dans un nouveau `git worktree` dédié (`../deals-tennis-ui-filtre-sexe-age`, branche `feat/ui-filtre-sexe-age`) plutôt que de continuer dans le répertoire partagé — n'a jamais commité ni modifié le travail de l'autre session.
+- Implémentation : `lib/filters.ts`, `lib/catalog-url.ts`, `lib/deals.ts` (JOIN conditionnel `products`), `components/gender-age-filter.tsx` (nouveau), propagation à travers `CategoryFilter`/`SortDropdown`/`SearchBar`/`Pagination`/`NotificationBanner`.
+- Vérifié réellement : lint/build clean, 4 nouveaux tests contrat passent contre la prod, vérification navigateur (Playwright, serveur dev pointant sur la prod) sur desktop et mobile (390×844) — filtres seuls et combinés, mode recherche groupée, état vide, réinitialisation.
+- `ETAT_ACTUEL.md`, `GAPS_OUVERTS.md` mis à jour (GAP-2026-09-25-01 point 5 résolu, gap reste ouvert pour le déploiement n8n restant côté utilisateur).
+
 ## 2026-09-25 (session) — Scraping local Tennispro.fr (GAP-2026-09-24-02, GAP-2026-09-25-02)
 
 - Reprise (`/clear`) : marchand confirmé explicitement en début de session (Tennispro.fr, prochain de l'ordre acté après Tecnifibre).

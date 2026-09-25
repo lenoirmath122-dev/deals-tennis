@@ -36,6 +36,37 @@ export function isValidCategory(value: string | undefined | null): value is Cata
   return value === "all" || (DEAL_CATEGORIES as readonly string[]).includes(value);
 }
 
+export const GENDER_VALUES = ["homme", "femme", "mixte"] as const;
+
+export type CatalogGenderFilter = (typeof GENDER_VALUES)[number] | "all";
+
+export const GENDER_LABELS: Record<CatalogGenderFilter, string> = {
+  all: "Tous",
+  homme: "Homme",
+  femme: "Femme",
+  mixte: "Mixte",
+};
+
+export function isValidGender(value: string | undefined | null): value is CatalogGenderFilter {
+  if (!value) return false;
+  return value === "all" || (GENDER_VALUES as readonly string[]).includes(value);
+}
+
+export const AGE_GROUP_VALUES = ["adulte", "enfant"] as const;
+
+export type CatalogAgeGroupFilter = (typeof AGE_GROUP_VALUES)[number] | "all";
+
+export const AGE_GROUP_LABELS: Record<CatalogAgeGroupFilter, string> = {
+  all: "Tous",
+  adulte: "Adulte",
+  enfant: "Enfant",
+};
+
+export function isValidAgeGroup(value: string | undefined | null): value is CatalogAgeGroupFilter {
+  if (!value) return false;
+  return value === "all" || (AGE_GROUP_VALUES as readonly string[]).includes(value);
+}
+
 export function sanitizeSearchQuery(value: string | undefined | null): string {
   return value?.trim() ?? "";
 }

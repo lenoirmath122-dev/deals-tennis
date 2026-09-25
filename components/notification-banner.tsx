@@ -11,6 +11,8 @@ const MESSAGES: Record<string, string> = {
 export function NotificationBanner({
   type,
   category,
+  gender,
+  age_group,
   sort,
   q,
   page,
@@ -24,7 +26,7 @@ export function NotificationBanner({
   }
 
   function handleDismiss() {
-    router.replace(buildCatalogHref({ category, sort, q, page }));
+    router.replace(buildCatalogHref({ category, gender, age_group, sort, q, page }));
   }
 
   return (

@@ -7,10 +7,14 @@ import { SORT_OPTIONS, type CatalogSort } from "@/lib/filters";
 export function SortDropdown({
   value,
   category,
+  gender,
+  ageGroup,
   q,
 }: {
   value: CatalogSort;
   category: string;
+  gender: string;
+  ageGroup: string;
   q: string;
 }) {
   const router = useRouter();
@@ -19,7 +23,15 @@ export function SortDropdown({
     <select
       value={value}
       onChange={(event) =>
-        router.push(buildCatalogHref({ category, q, sort: event.target.value as CatalogSort }))
+        router.push(
+          buildCatalogHref({
+            category,
+            gender,
+            age_group: ageGroup,
+            q,
+            sort: event.target.value as CatalogSort,
+          })
+        )
       }
       aria-label="Trier les offres"
       className="rounded-md border border-card-border bg-white px-3 py-1.5 text-sm text-zinc-900"
