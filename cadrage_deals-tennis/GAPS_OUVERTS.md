@@ -1,12 +1,37 @@
 # Points ouverts
 
-## GAP-2026-09-25-12 — Amazon : un item de bruit hors sujet retenu malgré le filtre positif "tennis" (OUVERT, mineur)
+## GAP-2026-09-25-14 — Amazon : comparer le prix Amazon au prix barré déjà connu chez d'autres marchands (OUVERT, structurant)
 
-Découvert en vérifiant le build Amazon (voir `ETAT_ACTUEL.md`) : la recherche par mot-clé "accessoire tennis" a remonté « decoration de gateau tennis joyeux anniversaire joueur de tennis » (une décoration de gâteau, pas un article de sport) — le titre contient bien "tennis" plusieurs fois et aucun mot-clé d'autre sport, donc ni le filtre positif ni le filet de sécurité multi-sports ne peuvent l'exclure.
+Suite à D-2026-09-25-16 (filtre marque connue) : le volume Amazon réel après filtrage est tombé à 11 offres (sous le seuil de 30 de D-2026-09-24-04), en grande partie parce que la majorité des fiches Amazon sur ces mots-clés n'ont pas de remise propre affichée par Amazon lui-même (154/233 fiches candidates exclues pour cette raison au dernier passage, filtre inchangé depuis le premier build). L'utilisateur a proposé une piste : pour Amazon spécifiquement, ingérer aussi les fiches sans remise propre, et calculer une "réduction" en comparant le prix Amazon au prix de référence (`original_price`) déjà connu pour le même article chez un autre marchand (via le rapprochement produit, `product_id`), plutôt que d'exiger un prix barré publié par Amazon lui-même.
 
-**Bloquant sur** : rien dans l'immédiat — 1 seul item sur 42 offres Amazon, impact cosmétique isolé. Même catégorie que GAP-2026-09-25-09 (Head, item générique isolé) et les autres gaps de qualité de donnée mineure déjà rencontrés (GAP-2026-09-23-04/GAP-2026-09-25-02/04/05).
+**Pourquoi c'est structurant, pas une simple option de script** :
+- Change la sémantique de `discount_percentage`/`original_price` pour un marchand : plus une remise auto-portée (publiée par le marchand), mais une comparaison inter-marchands.
+- Le rapprochement produit (`product_id`) se fait aujourd'hui *pendant* l'upsert d'une offre Amazon — il faudrait pouvoir interroger le prix de référence d'un autre marchand *avant*, ce qui suppose une correspondance fiable de modèle/couleur/variante (risque de comparer deux variantes différentes du même article, ex. couleurs différentes, et d'afficher une réduction trompeuse).
+- Que faire quand aucun autre marchand n'a l'article (`product_id` non trouvé) : revenir au comportement actuel (skip) ou afficher sans réduction ?
+
+**Bloquant sur** : rien dans l'immédiat — décision reportée explicitement par l'utilisateur à une nouvelle conversation dédiée de cadrage, pas enchaînée avec le filtre marque de cette conversation.
 
 **Statut** : ouvert au 2026-09-25.
+
+---
+
+## GAP-2026-09-25-13 — Amazon : volume sous le seuil de 30 après le filtre marque connue (OUVERT, mineur, assumé)
+
+Suite à D-2026-09-25-16 : le filtre marque connue (dynamique, basé sur les marques déjà présentes chez les autres marchands) fait tomber le volume Amazon de 42 à 11 offres actives sur le passage de vérification du 2026-09-25 — sous le seuil de 30 articles tennis actifs acté en D-2026-09-24-04 (seuil qualifié de révisable dès l'origine). Décomposition réelle du tri sur ce passage : 233 fiches candidates → 154 sans remise réelle, 39 sans le mot "tennis", 3 hors tennis, 26 marque non reconnue, 11 retenues.
+
+**Bloquant sur** : rien dans l'immédiat — l'utilisateur a choisi explicitement la priorité qualité/source sur volume pour ce marchand (voir D-2026-09-25-16), en connaissance du chiffre réel. Le volume peut remonter naturellement à mesure que d'autres marchands ajoutent des marques reconnues à la liste de référence dynamique, ou si GAP-2026-09-25-14 (comparaison inter-marchands) est repris plus tard.
+
+**Statut** : ouvert au 2026-09-25.
+
+---
+
+## GAP-2026-09-25-12 — Amazon : un item de bruit hors sujet retenu malgré le filtre positif "tennis" (RÉSOLU, superseded par le filtre marque)
+
+Découvert en vérifiant le build Amazon (voir `ETAT_ACTUEL.md`) : la recherche par mot-clé "accessoire tennis" a remonté « decoration de gateau tennis joyeux anniversaire joueur de tennis » (une décoration de gâteau, pas un article de sport) — le titre contient bien "tennis" plusieurs fois et aucun mot-clé d'autre sport, donc ni le filtre positif ni le filet de sécurité multi-sports ne pouvaient l'exclure.
+
+**Résolution (2026-09-25, D-2026-09-25-16)** : le nouveau filtre marque connue exclut de fait cet article (aucune marque reconnue en tête d'un titre de décoration de gâteau) — non revérifié individuellement sur ce titre précis (l'article n'est pas revenu dans les résultats de recherche du dernier passage), mais le mécanisme qui l'aurait laissé passer n'existe plus.
+
+**Statut** : résolu le 2026-09-25 par effet de bord de D-2026-09-25-16.
 
 ---
 
