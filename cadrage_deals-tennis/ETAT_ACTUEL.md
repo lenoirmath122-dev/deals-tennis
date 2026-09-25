@@ -95,8 +95,9 @@ Next.js 16.3.5 (App Router), React 19, TypeScript, Tailwind CSS v4, PostgreSQL (
 
 ## Prochaine étape
 
+**Réflexion Amazon/comparaison de prix close (2026-09-25, D-2026-09-25-17)** : la piste GAP-2026-09-25-14 (comparer le prix Amazon aux prix connus chez d'autres marchands) a été élargie en discussion à toute la logique du site (« meilleur prix trouvé » par article, tous marchands, promo ou pas), puis explicitement rejetée par l'utilisateur — deals-tennis reste centré sur les vraies promotions, pas un comparateur de prix. Aucun changement de comportement (Amazon exige toujours sa propre remise, D-2026-09-25-16). GAP-2026-09-25-13 (volume Amazon sous le seuil) reste ouvert sans cette piste comme solution.
+
 Plusieurs pistes ouvertes, aucune priorisée explicitement par l'utilisateur pour l'instant, à confirmer en début de prochaine session :
-- **GAP-2026-09-25-14** (structurant) : cadrer la comparaison de prix Amazon aux prix de référence déjà connus chez d'autres marchands pour le même article (au lieu d'exiger une remise propre à Amazon), qui ferait remonter le volume Amazon au-delà du seuil actuel de 11 offres.
 - Chantier « SEO / GEO » : bloc 4 (ouverture aux robots IA), dans une nouvelle conversation dédiée (voir D-2026-09-25-10 pour le plan complet des 7 blocs). Vérifier au préalable le statut de merge du bloc 3 (branche `feat/seo-canonical-catalogue`).
 - Chantier « Sous-catégories accessoires » (GAP-2026-09-25-11) : migration + lexique définitif + backfill.
 

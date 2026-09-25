@@ -810,3 +810,17 @@ Total 611 = 300+59+33+77+0+142, cohérent. Les motifs exacts (regex) seront affi
 **Implémentation** : `scripts/scraping/amazon.ts` — `fetchKnownBrands()` (nouvelle requête `SELECT DISTINCT d.brand FROM deals d JOIN merchants m ON m.id = d.merchant_id WHERE m.slug != 'amazon' AND d.status = 'active' AND d.is_active = true AND d.brand IS NOT NULL AND d.brand <> 'Générique'`, résultat trié côté JS par longueur décroissante pour préférer les correspondances les plus spécifiques — `ORDER BY LENGTH()` a dû être retiré de la requête SQL, `SELECT DISTINCT` de Postgres exige que toute expression d'`ORDER BY` figure dans la liste de sélection, découvert en exécutant réellement le script). `extractAmazonBrand` retourne désormais `string | null` (`null` = marque non reconnue) au lieu d'un fallback `'Générique'`. Ancienne liste statique `KNOWN_BRANDS` supprimée. Offre exclue comptée séparément (`skippedUnknownBrand`) dans le résumé de fin de passage. Le mécanisme d'éviction déjà existant (offres actives non revues à ce passage → `expired`/`is_active=false`) traite automatiquement les offres déjà en base à `brand = 'Générique'` : elles ne seront plus jamais "revues" par le prochain passage, donc évincées naturellement, sans script de nettoyage ponctuel séparé.
 
 **Statut** : Actée le 2026-09-25.
+
+---
+
+### D-2026-09-25-17 — Rejet de la comparaison de prix inter-marchands : le site reste centré sur les vraies promos
+
+**Contexte** : suite à GAP-2026-09-25-14 (piste : pour Amazon, comparer son prix au prix de référence connu chez un autre marchand plutôt qu'exiger une remise propre à Amazon), la réflexion a été élargie à toute la logique du site (proposition initiale de l'utilisateur) : afficher pour chaque article le meilleur prix trouvé tous marchands confondus (promo ou pas), avec le détail multi-marchand au clic.
+
+**Décision** : rejetée. L'utilisateur a explicitement reconfirmé que deals-tennis est un site de mise en avant de **vraies promotions**, pas un comparateur de prix généraliste — un article moins cher chez un marchand simplement parce qu'il n'y est jamais en promo n'a pas sa place sur le site. Conséquences :
+- Aucun scraping catalogue complet (option B envisagée un temps) — le scraping reste ciblé sur les pages promo/outlet de chaque marchand, comme aujourd'hui.
+- Pas de logique "meilleur prix toutes offres confondues" sur le catalogue ni la page détail — la page détail `/deal/[dealId]` continue d'afficher les autres offres du même article, mais uniquement celles déjà captées (donc déjà des deals, pas des prix catalogue ajoutés pour la comparaison).
+- **GAP-2026-09-25-14 clos par ce rejet** : pour Amazon spécifiquement, comparer son prix à celui d'un autre marchand ne serait pas non plus une "vraie promo" au sens du principe ci-dessus (ce n'est pas une réduction publiée par Amazon lui-même) — le comportement actuel (exiger une remise propre affichée par Amazon, D-2026-09-25-16) est confirmé, pas de changement.
+- GAP-2026-09-25-13 (volume Amazon sous le seuil de 30) reste ouvert tel quel, sans cette piste comme solution possible — à retraiter autrement si besoin (ex. plus de marques reconnues au fil du temps, ou mots-clés de recherche Amazon élargis).
+
+**Statut** : Actée (rejetée) le 2026-09-25 — aucun code impacté, cadrage uniquement.
