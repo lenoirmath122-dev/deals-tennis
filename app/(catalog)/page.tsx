@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getCatalogDeals } from "@/lib/deals";
 import {
   isValidCategory,
@@ -14,6 +15,11 @@ import { SearchBar } from "@/components/search-bar";
 import { SortDropdown } from "@/components/sort-dropdown";
 import { NotificationBanner } from "@/components/notification-banner";
 import { Hero } from "@/components/hero";
+import { SITE_URL } from "@/lib/site";
+
+export const metadata: Metadata = {
+  alternates: { canonical: SITE_URL },
+};
 
 export default async function CatalogPage({
   searchParams,
