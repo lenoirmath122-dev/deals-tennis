@@ -7,6 +7,16 @@
 > Sessions du 2026-09-24 (Sport Outlet FR) à 2026-09-24 (pré-étape tri prix) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-24-sportoutlet_a_pre-etape-tri.md` (même règle, condensation du 2026-09-25).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
 
+## 2026-09-25 (session) — Scraping local Tennis Point FR (D-2026-09-25-11, PR #50)
+
+- Reprise (« On reprend le scraping » → confirmation Tennis Point FR, prochain marchand acté). Protocole de reprise suivi (ETAT_ACTUEL.md → GAPS_OUVERTS.md), vérification indépendante de l'état Babolat en base de prod (0 offre active, cohérent avec D-2026-09-25-09).
+- Vérification réelle du site Tennis Point FR : `robots.txt` révèle une boutique Shopify standard (pas d'Algolia comme noté en D-2026-09-24-04) — endpoint JSON public utilisé, même principe que Tecnifibre.
+- **Découverte + décision soumise** : 3 marchands seed fictifs actifs en prod depuis le MVP (`All4Tennis`, `Extreme Tennis`, `Tennis-Point`) — l'utilisateur a demandé leur suppression immédiate avant de construire le vrai marchand.
+- **Découverte + décision soumise** : lexique sexe/âge ne reconnaissant pas le pluriel français, impact large sur ce marchand — l'utilisateur a choisi d'étendre le lexique partagé (`lib/product-matching.ts`).
+- Script `scripts/scraping/tennis-point-fr.ts` construit et vérifié bout en bout (2427 offres réelles, idempotence, éviction, lint/typecheck/build clean, vérification navigateur).
+- **Incident détecté avant commit** : le répertoire de travail avait basculé sur `cadrage/seo-geo-plan` (session parallèle sur un autre terminal) sans action de ma part. Changements non commités déplacés via `git stash`, rebranché sur `feat/scraping-tennis-point-fr` depuis `origin/master` à jour (incluant le merge SEO/GEO entretemps) — aucune perte. Numérotation de décision corrigée (D-2026-09-25-10 déjà pris par le chantier SEO/GEO parallèle → D-2026-09-25-11).
+- PR #50 ouverte. Prochain marchand : Head.
+
 ## 2026-09-25 (session) — Cadrage chantier SEO/GEO : plan en 7 blocs (D-2026-09-25-10)
 
 - Reprise (« On reprend sur le SEO, gros cadrage avant de commencer car je suis totalement novice »). Protocole de reprise suivi (ETAT_ACTUEL.md → GAPS_OUVERTS.md).

@@ -1,5 +1,15 @@
 # Points ouverts
 
+## GAP-2026-09-25-08 — Miroir JS du workflow n8n ProTennis non resynchronisé après l'extension du lexique sexe/âge au pluriel (OUVERT, mineur)
+
+Suite à D-2026-09-25-11 : le lexique partagé `extractGender`/`extractAgeGroup` (`lib/product-matching.ts`) a été étendu pour reconnaître le pluriel français ("Hommes"/"Femmes"/"Enfants"), découverte en construisant Tennis Point FR. Le workflow n8n ProTennis (`scripts/automation/n8n-protennis-ingestion-workflow.json`) contient un miroir JS de ces mêmes regex (ajouté en D-2026-09-25-04, GAP-2026-09-25-01 point 4) qui n'a pas été mis à jour dans cette conversation (hors périmètre de cette étape).
+
+**Bloquant sur** : rien dans l'immédiat — ProTennis utilise déjà l'extraction avant la découverte de ce gap, le miroir reste fonctionnellement correct pour le singulier (pas de régression), juste pas amélioré pour le pluriel s'il apparaît dans des titres ProTennis. À resynchroniser à la prochaine intervention sur ce workflow (ex. lors du déploiement en attente, voir GAP-2026-09-25-01 point 4).
+
+**Statut** : ouvert au 2026-09-25.
+
+---
+
 ## GAP-2026-09-25-07 — Chantier SEO/GEO : 6 blocs de build restants après le cadrage du plan global (OUVERT)
 
 Suite à D-2026-09-25-10 : plan en 7 blocs acté (fondations techniques, données structurées, URLs canoniques, ouverture robots IA, `llms.txt`, performance, Open Graph), un bloc par conversation dédiée.
