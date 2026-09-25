@@ -7,6 +7,13 @@
 > Sessions du 2026-09-24 (Sport Outlet FR) à 2026-09-24 (pré-étape tri prix) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-24-sportoutlet_a_pre-etape-tri.md` (même règle, condensation du 2026-09-25).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
 
+## 2026-09-25 (session) — Chantier SEO/GEO bloc 2 : données structurées JSON-LD Product/Offer (D-2026-09-25-13, PR #54)
+
+- Reprise (« On reprend le bloc 2 »). Protocole de reprise suivi (ETAT_ACTUEL.md → GAPS_OUVERTS.md → dernière entrée du journal → DECISIONS_FONCTIONNELLES.md pour le détail des 7 blocs).
+- 3 décisions structurantes soumises via question à choix multiples et confirmées : périmètre limité à la page détail deal (pas le catalogue dans ce bloc, sur recommandation explicite), un seul `Offer` (le deal affiché, pas d'`AggregateOffer`/tableau), `seller` = marchand réel (pas Tennisdeals).
+- **Collision de working directory partagé détectée pendant le travail (même schéma que D-2026-09-25-08/-11)** : une session parallèle travaillait sur le marchand Head (`feat/scraping-head`) au moment de créer la branche de ce bloc — `git checkout -b feat/seo-jsonld-produit origin/master` a basculé le répertoire de travail partagé hors de leur branche, faisant disparaître leurs fichiers non commités du disque (untracked `head-*.yml`, `scripts/scraping/head.ts`) au moment de la vérification. Investigation via `git reflog` : leur travail avait en réalité déjà été commité (`34614e4`) juste avant le changement de branche, rien n'a été perdu — branche `feat/scraping-head` intacte, déjà poussée, PR #53 ouverte. Reprise normale du travail sur la branche fraîche de ce bloc.
+- Branche `feat/seo-jsonld-produit` créée depuis `origin/master` à jour. `app/deal/[dealId]/page.tsx` : `<script type="application/ld+json">` avec `Product`/`Offer`, réutilise `CATEGORY_LABELS` (`lib/filters.ts`) et `SITE_URL` (`lib/site.ts`, déjà en place depuis le bloc 1). Vérifié réellement : `tsc`/lint/build clean, 43 tests unitaires passent, serveur de production local démarré, JSON-LD extrait et parsé depuis une vraie page `/deal/[dealId]` de la base Neon de prod (deal Tennis Point FR multi-marchand — prix, marque, vendeur, URL canonique tous corrects). PR #54.
+
 ## 2026-09-25 (session) — Chantier SEO/GEO bloc 1 : fondations techniques (D-2026-09-25-12, PR #52)
 
 - Reprise (« on fait le bloc 1 du SEO ? »). Protocole de reprise suivi (ETAT_ACTUEL.md → GAPS_OUVERTS.md → dernière entrée du journal → diff de D-2026-09-25-10/GAP-2026-09-25-07 pour le détail des 7 blocs).
