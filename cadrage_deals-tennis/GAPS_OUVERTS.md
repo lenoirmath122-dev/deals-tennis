@@ -20,13 +20,13 @@ Suite à D-2026-09-25-11 : le lexique partagé `extractGender`/`extractAgeGroup`
 
 ---
 
-## GAP-2026-09-25-07 — Chantier SEO/GEO : blocs de build restants après le bloc 1 (OUVERT)
+## GAP-2026-09-25-07 — Chantier SEO/GEO : blocs de build restants après le bloc 3 (OUVERT)
 
-Suite à D-2026-09-25-10 : plan en 7 blocs acté (fondations techniques, données structurées, URLs canoniques, ouverture robots IA, `llms.txt`, performance, Open Graph), un bloc par conversation dédiée. Bloc 1 terminé et vérifié (D-2026-09-25-12, PR #52). Bloc 2 (données structurées) construit et vérifié dans une conversation parallèle (D-2026-09-25-13, branche `feat/seo-jsonld-produit`, PR #54 — encore ouverte au moment du bloc 3, statut à recontrôler). Bloc 3 (URLs canoniques) terminé et vérifié (D-2026-09-25-14, branche `feat/seo-canonical-catalogue`).
+Suite à D-2026-09-25-10 : plan en 7 blocs acté (fondations techniques, données structurées, URLs canoniques, ouverture robots IA, `llms.txt`, performance, Open Graph), un bloc par conversation dédiée. Bloc 1 terminé et vérifié (D-2026-09-25-12, PR #52). Bloc 2 (données structurées) terminé et vérifié (D-2026-09-25-13, PR #54, mergée). Bloc 3 (URLs canoniques) terminé et vérifié (D-2026-09-25-14, branche `feat/seo-canonical-catalogue`).
 
 **Reste à faire, dans l'ordre** :
 1. ~~Fondations techniques (`robots.txt`, `sitemap.xml`, métadonnées par page)~~ — fait (D-2026-09-25-12).
-2. ~~Données structurées (Schema.org / JSON-LD Product/Offer)~~ — fait (D-2026-09-25-13, PR #54 à vérifier mergée).
+2. ~~Données structurées (Schema.org / JSON-LD Product/Offer)~~ — fait (D-2026-09-25-13, PR #54, mergée).
 3. ~~URLs canoniques / contenu dupliqué (filtres catalogue)~~ — fait (D-2026-09-25-14) : canonical fixe vers la racine sur la page catalogue.
 4. Ouverture aux robots IA (GPTBot, ClaudeBot, PerplexityBot, Google-Extended...) — décision explicite à prendre, pas encore tranchée. Prochaine étape.
 5. `llms.txt`.
@@ -35,7 +35,7 @@ Suite à D-2026-09-25-10 : plan en 7 blocs acté (fondations techniques, donnée
 
 Chaque bloc doit être cadré en détail (décisions structurantes propres, ex. quels crawlers IA autoriser) avant tout code, conformément au protocole général.
 
-**Bloquant sur** : rien — chantier en cours, prochaine conversation dédiée au bloc 4. Vérifier le statut de merge de la PR #54 (bloc 2) et de la branche `feat/seo-canonical-catalogue` (bloc 3) avant de commencer.
+**Bloquant sur** : rien — chantier en cours, prochaine conversation dédiée au bloc 4. Vérifier le statut de merge de la branche `feat/seo-canonical-catalogue` (bloc 3) avant de commencer.
 
 **Statut** : ouvert au 2026-09-25.
 
