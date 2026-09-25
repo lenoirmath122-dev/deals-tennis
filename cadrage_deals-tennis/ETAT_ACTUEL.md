@@ -102,7 +102,10 @@ Next.js 16.3.5 (App Router), React 19, TypeScript, Tailwind CSS v4, PostgreSQL (
 
 **Build Amazon révisé terminé (2026-09-25, PR #61, résout GAP-2026-09-25-13)** : périmètre mixte rayon+facette (raquettes/cordages/chaussures) / mot-clé+pagination (accessoires/textile) implémenté et vérifié réellement — 37 offres actives, au-dessus du seuil de 30. Voir détail ci-dessus.
 
+**Cadrage raquettes juniors mal classées `adulte` (2026-09-25, D-2026-09-25-19, GAP-2026-09-25-15)** : suite à un signalement de l'utilisateur (Tecnifibre « T-Fight Club 25 », Head « Coco 25 » via Tennis Point FR — raquettes juniors identifiées seulement par leur taille en pouces, sans mot-clé enfant/junior dans le titre). Correction actée en deux volets : heuristique taille en pouces (19/21/23/25/26 = enfant) pour la catégorie raquettes, tous marchands ; lecture de la description produit comme second signal, gratuite pour Tecnifibre/Tennis Point FR (déjà dans le payload Shopify), avec requête HTTP supplémentaire acceptée pour les 6 autres marchands malgré le coût. Aucun code construit dans cette conversation — cadrage uniquement, voir `GAPS_OUVERTS.md` (GAP-2026-09-25-15) pour le détail des étapes de build restantes.
+
 Plusieurs pistes ouvertes, aucune priorisée explicitement par l'utilisateur pour l'instant, à confirmer en début de prochaine session :
+- Chantier « Raquettes juniors mal classées » (GAP-2026-09-25-15) : heuristique taille en pouces + lecture description Tecnifibre/Tennis Point FR (gratuit), puis extension aux 6 autres marchands.
 - Chantier « SEO / GEO » : bloc 4 (ouverture aux robots IA), dans une nouvelle conversation dédiée (voir D-2026-09-25-10 pour le plan complet des 7 blocs). Vérifier au préalable le statut de merge du bloc 3 (branche `feat/seo-canonical-catalogue`).
 - Chantier « Sous-catégories accessoires » (GAP-2026-09-25-11) : migration + lexique définitif + backfill.
 
