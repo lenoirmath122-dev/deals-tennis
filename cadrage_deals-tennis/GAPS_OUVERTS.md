@@ -1,5 +1,15 @@
 # Points ouverts
 
+## GAP-2026-09-25-12 — Amazon : un item de bruit hors sujet retenu malgré le filtre positif "tennis" (OUVERT, mineur)
+
+Découvert en vérifiant le build Amazon (voir `ETAT_ACTUEL.md`) : la recherche par mot-clé "accessoire tennis" a remonté « decoration de gateau tennis joyeux anniversaire joueur de tennis » (une décoration de gâteau, pas un article de sport) — le titre contient bien "tennis" plusieurs fois et aucun mot-clé d'autre sport, donc ni le filtre positif ni le filet de sécurité multi-sports ne peuvent l'exclure.
+
+**Bloquant sur** : rien dans l'immédiat — 1 seul item sur 42 offres Amazon, impact cosmétique isolé. Même catégorie que GAP-2026-09-25-09 (Head, item générique isolé) et les autres gaps de qualité de donnée mineure déjà rencontrés (GAP-2026-09-23-04/GAP-2026-09-25-02/04/05).
+
+**Statut** : ouvert au 2026-09-25.
+
+---
+
 ## GAP-2026-09-25-11 — Sous-catégories d'accessoires : cadrage fait, reste tout le build (OUVERT)
 
 Suite à D-2026-09-25-15 : décisions de principe actées (nouveau champ `deals.subcategory` nullable, liste `sacs`/`balles`/`antivibrateurs`/`grips_surgrips`/`accessoires_cordage`, `NULL` pour le reste, backfill complet). Aucun code écrit dans cette conversation (cadrage uniquement). Numéroté -11 (et non -10) pour éviter une collision : GAP-2026-09-25-10 est déjà pris (conflit de nom Tennisdeals), mergé sur `master` entretemps par une autre session parallèle.
