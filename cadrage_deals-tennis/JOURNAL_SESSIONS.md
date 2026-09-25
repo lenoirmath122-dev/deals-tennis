@@ -8,6 +8,17 @@
 > Sessions du 2026-09-25 (SEO/GEO bloc 1) au 2026-09-25 (lexique sexe/âge, session 11) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-25-seo-bloc1_a_lexique-sexe-age.md` (même règle, condensation du 2026-09-25).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
 
+## 2026-09-25 (session) — GAP-2026-09-25-15 étape 1 : heuristique taille en pouces raquettes juniors
+
+- Reprise (« On reprend »). Protocole de reprise suivi (ETAT_ACTUEL.md → GAPS_OUVERTS.md → dernière entrée du journal). Prochaine étape évidente vu la branche courante (`cadrage/age-junior-raquettes`) et le dernier journal — confirmée explicitement à l'utilisateur par question à choix avant tout code (étape 1 seule de GAP-2026-09-25-15).
+- `lib/product-matching.ts` : `extractAgeGroup(title, category?)` — second paramètre `category` optionnel ajouté, motif `\b(19|21|23|25|26)\b` appliqué uniquement quand `category === "raquettes"`, en plus du motif mot-clé existant (comportement inchangé pour les autres catégories et pour un appel sans catégorie).
+- **Écart avec le cadrage initial découvert en implémentant** : le GAP supposait que l'heuristique s'appliquerait « sans toucher chaque script » ; en pratique il a fallu une ligne par script de scraping pour passer la catégorie à l'appel (le titre seul ne suffit pas à distinguer raquettes/cordages/chaussures pour un nombre isolé comme "25"). Les 6 marchands scriptés (Tennis Point FR, Amazon, SportSystem, Sport 2000, Head, Babolat) mis à jour d'une ligne chacun. `scripts/backfill-gender-age.ts` (script ponctuel déjà exécuté, hors périmètre de cette étape) non touché — compatible grâce au paramètre optionnel.
+- 5 tests unitaires ajoutés dans `tests/unit/product-matching.test.ts`, dont les deux exemples réels signalés par l'utilisateur (Tecnifibre « T-Fight Club 25 », Head « Coco 25 »), un cas hors catégorie raquettes (pas de faux positif), un cas raquette sans mot-clé ni taille junior (reste adulte), un cas de nombre imbriqué dans un plus grand nombre (pas de faux positif sur ex. "125").
+- Vérifié réellement : `npx tsc --noEmit`, `npm run lint`, `npm run build` clean ; `npm test` (charge `.env.local`, base Neon de prod pour les tests contrat) : 72/75 tests passent, les 3 échecs restants (`catalog-query.test.ts`, `deal-detail.test.ts`) confirmés pré-existants et sans rapport avec ce changement (même résultat avec `git stash` sur les fichiers modifiés — dérive de données de fixture "Pure Aero" en prod, pas une régression de cette étape).
+- Aucune donnée de test créée/modifiée en base — changement de code pur, aucun script de scraping relancé dans cette conversation.
+- `GAPS_OUVERTS.md` (GAP-2026-09-25-15, étape 1 marquée faite), `ETAT_ACTUEL.md` mis à jour.
+- Prochaine étape : étape 2 (lecture `body_html` Tecnifibre/Tennis Point FR, gratuite) ou étape 3 (backfill prod, périmètre à confirmer) — à confirmer explicitement en début de prochaine conversation, conformément au protocole (une étape de build par conversation).
+
 ## 2026-09-25 (session) — Cadrage raquettes juniors mal classées `adulte` (D-2026-09-25-19, GAP-2026-09-25-15)
 
 - Reprise (`/clear`). Signalement de l'utilisateur : raquette Tecnifibre « T-Fight Club 25 » catégorisée adulte alors qu'elle est enfant (mentionné dans la description). Protocole de reprise suivi (INDEX.md → ETAT_ACTUEL.md → GAPS_OUVERTS.md → dernière entrée du journal).

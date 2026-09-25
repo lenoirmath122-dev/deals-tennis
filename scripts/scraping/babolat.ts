@@ -263,7 +263,7 @@ async function main() {
       const model = extractModel(title, MERCHANT_NAME, category.dbCategory);
       const color = extractColor(title);
       const gender = extractGender(title);
-      const ageGroup = extractAgeGroup(title);
+      const ageGroup = extractAgeGroup(title, category.dbCategory);
       const price = product.price;
       const listPrice = product.listPrice;
       const discountPercentage = Math.round(((listPrice - price) / listPrice) * 100);
