@@ -619,3 +619,17 @@ L'utilisateur revient sur ce refus et demande explicitement d'utiliser scrape.do
 **Vérifié réellement** : lint/build/`npm test` clean (3 échecs préexistants sans rapport, voir GAP-2026-09-25-03) ; 4 nouveaux tests contrat sur `getCatalogDeals` (filtre gender seul, filtre age_group seul, exclusion des deals sans `product_id`, combinaison avec le filtre catégorie) passent contre la prod ; vérification navigateur (Playwright) sur le catalogue de prod local : clic "Femme" met à jour l'URL (`?gender=femme`) et les résultats (textile femme uniquement), combinaison avec "Enfant" fonctionne (`?gender=femme&age_group=enfant`, articles "fille"/"Enfant"), le mode recherche groupée préserve les filtres actifs (`?gender=femme&age_group=enfant&q=Babolat`), l'état vide affiche le message + lien de réinitialisation existant (`/`, remet tout à zéro), layout mobile (390×844) vérifié.
 
 **Statut** : Actée et construite le 2026-09-25.
+
+---
+
+### D-2026-09-25-06 — Scraping local Sport 2000 : méthode HTTP+Algolia plutôt que Playwright (décision mineure, tranchée seule et documentée)
+
+**Contexte** : D-2026-09-24-03 avait figé la méthode technique pour Sport 2000 comme « Playwright nécessaire » (contenu chargé côté client, squelette HTML vide constaté). En reprenant le build (2026-09-25), inspection réelle du réseau pendant le rendu Playwright : le catalogue est chargé via une requête `POST` vers l'API Algolia (`604535r4dx-dsn.algolia.net`), avec une clé API « search-only » publique exposée dans le bundle JS du site (design normal d'Algolia — cette clé est faite pour être appelée directement par n'importe quel client, lecture seule, pas un contournement d'une protection). Vérifié réellement : la même requête fonctionne à l'identique en `curl` brut, sans session navigateur ni cookies.
+
+**Décision (mineure, tranchée seule)** : interroger directement cet endpoint Algolia en HTTP simple plutôt que piloter Playwright — même principe déjà appliqué à Tecnifibre (endpoint JSON Shopify plutôt que parsing HTML) : plus robuste, plus rapide, cohérent avec le reste des scripts (tous HTTP, aucun autre n'utilise Playwright en exécution). Le risque juridique/contractuel déjà assumé (clause anti-bot CGV Sport 2000, D-2026-09-22-01/D-2026-09-24-03/04/05) est inchangé — même donnée publique, juste un chemin d'accès HTTP direct au lieu d'un rendu navigateur complet.
+
+**Taxonomie confirmée réellement** (family_ids Algolia, une requête par page catégorie visitée) : raquettes-tennis=1693, vetements-tennis=1686, chaussures-tennis=1690, accessoires-tennis/balles-tennis=1692, accessoires-tennis/sacs-tennis=1694, accessoires-tennis/equipements-tennis=1695 (cordages sans taxon dédié, mapping par mot-clé confirmé conforme à D-2026-09-24-05). Le taxon parent « accessoires-tennis » (1691) n'est jamais interrogé directement (regrouperait ses enfants en double).
+
+**Filtrage remise** : `percent_discount > 0` dans la requête Algolia — 0 raquette/balle/sac en promo au moment de la vérification, 97 chaussures + 65 textile + 3 équipements (aucun cordage) retenus. Volume total (165) largement au-dessus du seuil de 30 (D-2026-09-24-04). Contrairement à Babolat (D-2026-09-24-05), pas de besoin d'ingérer à 0% — le volume réel suffit déjà.
+
+**Statut** : Actée le 2026-09-25 (décision mineure documentée a posteriori, pas de question structurante posée — même nature que le choix technique Tecnifibre). Build réalisé et vérifié dans la même conversation (voir `ETAT_ACTUEL.md`).

@@ -6,6 +6,15 @@
 > Sessions du 2026-09-23 (pages réglementaires) au 2026-09-23 (suggestions groupées par catégorie) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-23-reglementaire_a_suggestions-categorie.md` (même règle, condensation du 2026-09-24).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
 
+## 2026-09-25 (session) — Scraping local Sport 2000 (GAP-2026-09-24-02, D-2026-09-25-06, GAP-2026-09-25-05)
+
+- Reprise (`/clear`) : marchand confirmé explicitement en début de session (Sport 2000, prochain de l'ordre acté après SportSystem) — première confirmation par erreur ("Autre marchand"), corrigée immédiatement par l'utilisateur au tour suivant.
+- `robots.txt` re-vérifié réellement (permissif sur les pages utilisées). En pilotant un vrai navigateur (playwright-cli) pour retrouver les URLs exactes des taxons tennis, découverte que le site charge son catalogue via l'API Algolia avec une clé "search-only" publique — la même requête fonctionne en `curl` brut. **Changement de méthode technique par rapport à D-2026-09-24-03** ("Playwright nécessaire") : HTTP+Algolia direct retenu à la place, décision mineure tranchée seule et documentée (D-2026-09-25-06), même nature que le choix JSON Shopify pour Tecnifibre.
+- Taxonomie (family_ids) et mapping cordages/accessoires confirmés réellement en parcourant chaque page catégorie avant d'écrire le script.
+- Script `scripts/scraping/sport2000.ts` exécuté réellement contre la base Neon de prod : 165 offres insérées/mises à jour (chaussures 97, textile 65, accessoires 3 — 0 raquette/balle/sac/cordage en promo actuellement, volume total au-dessus du seuil de 30), `product_id` peuplé à 100%, 6 fiches hors tennis exclues. Idempotence vérifiée (deuxième passage intégral, 0 doublon). Éviction testée réellement avec une offre factice (passée à `expired`, donnée de test supprimée et suppression vérifiée). Lint/build/typecheck clean, vérification visuelle au navigateur (recherche "Gel-Dedicate", image + rapprochement multi-marchand confirmés).
+- 1 contradiction de donnée marchand découverte (facette sexe Algolia vs libellé produit) — mineure, isolée, documentée (GAP-2026-09-25-05).
+- `ETAT_ACTUEL.md`, `GAPS_OUVERTS.md`, `DECISIONS_FONCTIONNELLES.md` (D-2026-09-25-06) mis à jour.
+
 ## 2026-09-25 (session) — UI du filtre catalogue sexe/âge (D-2026-09-25-05, GAP-2026-09-25-01 point 5)
 
 - Reprise : marchand/étape suivante non évidente en début de session — soumis explicitement à l'utilisateur (UI du filtre confirmée).

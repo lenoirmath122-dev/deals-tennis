@@ -15,6 +15,7 @@
     "scrape:tecnifibre": "node --env-file=.env.local scripts/scraping/tecnifibre.ts",
     "scrape:tennispro": "node --env-file=.env.local scripts/scraping/tennispro.ts",
     "scrape:sportsystem": "node --env-file=.env.local scripts/scraping/sportsystem.ts",
+    "scrape:sport2000": "node --env-file=.env.local scripts/scraping/sport2000.ts",
     "test": "node --env-file=.env.local node_modules/vitest/vitest.mjs run",
     "test:unit": "node node_modules/vitest/vitest.mjs run tests/unit",
     "test:e2e": "node --env-file=.env.local node_modules/@playwright/test/cli.js test"
