@@ -1,5 +1,30 @@
 # Points ouverts
 
+## GAP-2026-09-25-18 — Retrait de ProTennis : inventaire fait, reste l'export/l'expiration/la suppression (OUVERT)
+
+Suite à D-2026-09-25-20 : inventaire complet réalisé le 2026-09-25 (voir `JOURNAL_SESSIONS.md` pour le détail des vérifications réelles contre le code et la base Neon de prod).
+
+**Inventaire (résumé, détail complet dans le journal de session)** :
+- **Code ProTennis-spécifique** : `scripts/automation/n8n-protennis-ingestion-workflow.json`, `scripts/automation/n8n-protennis-ingestion-README.md`.
+- **SQL générique, PAS spécifique à ProTennis** (à ne pas toucher pour ce retrait) : `scripts/automation/n8n-eviction-cron.sql` — mécanisme d'éviction horaire par `expires_at`, écrit pour le MVP (T031) mais jamais utilisé par le workflow ProTennis réel (qui fait sa propre éviction par diff d'URL, D-2026-09-22-03). Potentiellement orphelin (aucun autre marchand ne passe par n8n aujourd'hui) mais hors périmètre de ce retrait.
+- **Contrats génériques, PAS spécifiques à ProTennis** (à ne pas toucher) : `cadrage_deals-tennis/contracts/ingestion-contract.md`, `catalog-query-api.md`, `redirection-api.md` — aucune mention de ProTennis, s'appliquent à tous les marchands.
+- **Mentions documentaires à mettre à jour** : `app/affiliation/page.tsx` (« marchands partenaires (actuellement ProTennis) »), commentaires de code dans `scripts/scraping/tennispro.ts`/`sportsystem.ts`/`tecnifibre.ts` (références historiques, pas fonctionnelles — peuvent rester ou être nettoyées à la marge), `cadrage_deals-tennis/DECISIONS_FONCTIONNELLES.md`/`ETAT_ACTUEL.md`/`GAPS_OUVERTS.md`/`JOURNAL_SESSIONS.md`/archives (historique, à ne pas réécrire — ce sont des décisions actées, pas du code).
+- **Test fragile découvert** : `tests/contract/deal-detail.test.ts` s'appuie sur un produit "Pure Aero" réellement multi-marchand en prod (ProTennis + Tennis-Point) pour vérifier le tri par prix des autres offres — dépend de ProTennis. Une fois ProTennis passé en `expired`/supprimé, ce test doit être revérifié (le produit ciblé peut ne plus avoir 2+ offres actives, comme déjà documenté en GAP-2026-09-25-03 pour une raison différente).
+- **Base de données (vérifié réellement contre Neon prod, 2026-09-25)** : 1 ligne `merchants` (`ProTennis`, id `9bcb1729-926d-4462-b949-57f991e08673`), **1508 deals** actifs, **12 click_events** liés à ces deals, **1489 produits** qui deviendraient orphelins (uniquement liés à ProTennis) si les deals étaient supprimés, **18 produits** partagés avec au moins un autre marchand actif (garderaient leurs autres offres).
+
+**Reste à faire, dans l'ordre (une étape de build par conversation, D-2026-09-25-20)** :
+2. Export d'archive CSV des `deals`/`products`/`click_events` ProTennis.
+3. Passage des 1508 deals ProTennis en `expired`/`is_active=false` (retrait immédiat du site).
+4. Suppression définitive en migration (après validation utilisateur) : deals, produits orphelins (1489), `click_events` (12), ligne `merchants` — puis suppression du code/docs ProTennis-spécifiques listés ci-dessus.
+5. Vérification que `/go/[dealId]` sur une ancienne offre ProTennis redirige proprement (`/?notification=deal-expired`, mécanisme déjà existant pour toute offre expirée — à confirmer réellement sur un cas ProTennis après l'étape 3).
+6. Mise à jour de `ETAT_ACTUEL.md`.
+
+**Bloquant sur** : validation explicite de l'utilisateur sur cet inventaire avant de passer à l'étape 2 (export).
+
+**Statut** : ouvert au 2026-09-25 — étape 1 (inventaire) faite, en attente de validation.
+
+---
+
 ## GAP-2026-09-25-15 — Raquettes juniors mal classées `adulte` : correction cadrée, reste tout le code (OUVERT)
 
 Suite à D-2026-09-25-19 : deux exemples réels signalés par l'utilisateur (Tecnifibre « T-Fight Club 25 », Head « Coco 25 » via Tennis Point FR) — raquettes juniors identifiées uniquement par leur taille en pouces (25") dans le nom de gamme, sans mot-clé enfant/junior dans le titre marchand, retombant sur `age_group = adulte` par défaut. Deux corrections actées : heuristique taille en pouces (19/21/23/25/26 = enfant, 27+ = adulte) pour la catégorie raquettes, tous marchands ; lecture de la description produit comme second signal, gratuite pour Tecnifibre/Tennis Point FR (déjà dans le payload Shopify récupéré), avec requête HTTP supplémentaire par produit pour les 6 autres marchands (coût accepté par l'utilisateur).

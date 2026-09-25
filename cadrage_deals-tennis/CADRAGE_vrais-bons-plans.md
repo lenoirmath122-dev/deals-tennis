@@ -212,3 +212,66 @@ Les seuils sont des points de départ, à ajuster. Le mécanisme de quarantaine 
 | 6 | à cadrer | |
 
 Estimations indicatives, à réviser en phase 0.
+
+---
+
+## 6. Amendements post Phase 0 (2026-09-25)
+
+Phase 0 validée par l'utilisateur, avec les changements de périmètre et précisions suivants — actés dans `DECISIONS_FONCTIONNELLES.md` (D-2026-09-25-20 à -23), détail complet là-bas. Résumé ici pour que ce document reste la référence à jour du plan.
+
+### 6.1 Retrait de ProTennis du périmètre (D-2026-09-25-20)
+
+ProTennis est retiré du projet : aucun filtre de vraie remise n'y est appliqué, contraire au positionnement « vrais bons plans ». Le projet se recentre sur les 8 marchands scrapés localement (Tecnifibre, Tennispro.fr, SportSystem, Sport 2000, Babolat, Tennis Point FR, Head, Amazon). ProTennis pourra être réintégré plus tard, une fois son propre filtre de vraie remise construit — ce retrait n'est pas un jugement définitif sur le marchand, seulement un retrait tant qu'il n'est pas conforme au principe P1/P3 de ce cadrage.
+
+Séquence de retrait, arrêt avant toute suppression définitive :
+1. Inventaire complet (code, workflow n8n exporté, SQL, README, contrats, tests, docs, ligne `merchants`, `deals`, `products` orphelins, `click_events` liés) — **cette conversation, aucune suppression**.
+2. Export d'archive (CSV) des `deals`/`products`/`click_events` ProTennis.
+3. Retrait immédiat du site : passage des offres ProTennis en `expired`.
+4. Après validation utilisateur : suppression définitive en migration (deals, produits orphelins, `click_events`, ligne `merchants`), puis suppression du code/docs devenus inutiles.
+5. Vérification que `/go/[dealId]` sur une ancienne offre ProTennis redirige proprement.
+6. Mise à jour de `ETAT_ACTUEL.md`.
+
+Toutes les phases 1 à 6 de ce document (historique de prix, cadence automatique, qualité des données, verdict, supervision, vitrine) s'appliquent désormais aux 8 marchands restants uniquement, jusqu'à réintégration éventuelle de ProTennis.
+
+### 6.2 Décision A.1 — Statut `tracked` pour les articles vus sans remise (D-2026-09-25-21)
+
+Un article vu sans remise (utile pour construire l'historique de prix, cf. section 3 point 3 de la Phase 1) est enregistré comme une ligne `deals` à part entière avec `status='tracked'`, `is_active=false`, `original_price = discounted_price` — **pas** un booléen séparé.
+
+- `tracked` est exclu du site par défaut partout : catalogue, recherche groupée, `/go/[dealId]`, comptages, pages produit. Chaque requête concernée doit être vérifiée et listée explicitement (voir GAP dédié une fois le build commencé).
+- L'éviction (garde-fou 50 %, cf. Phase 2 point 2) s'applique aussi aux offres `tracked` non revues lors d'un passage de scraping.
+- Une offre peut passer de `tracked` à `active` et inversement d'un jour sur l'autre, selon que la remise du jour est réelle ou non.
+
+### 6.3 Phase 1 précisée — historique par trigger (D-2026-09-25-22)
+
+En complément (pas en remplacement) de la fonction d'ingestion partagée (`lib/ingest.ts`) déjà prévue en section 3 Phase 1 : l'écriture de `price_observations` se fait via un **trigger Postgres `AFTER INSERT OR UPDATE` sur `deals`**, qui upsert `(deal_id, jour_observation)` quand `NEW.status IN ('active', 'tracked')`. Une éviction (passage à `expired`) n'écrit rien dans `price_observations` — ce n'est ni un `INSERT` ni un changement de prix observé, c'est une disparition.
+
+- Le jour d'observation est calculé en heure de Paris (pas UTC), pour que la notion de « jour » corresponde à un jour calendaire côté utilisateur/scraping, quelle que soit l'heure d'exécution des scripts.
+- Le trigger doit se déclencher même quand un `ON CONFLICT ... DO UPDATE` ne change aucune valeur (les 8 scripts locaux et le futur ProTennis font tous un upsert quotidien, parfois avec un prix identique au jour précédent) — à vérifier explicitement en construisant le trigger, pas supposé.
+- Tout coût ou risque (performance, verrous) du trigger sur les upserts à fort volume (ex. Tennis Point FR, 2427 offres) doit être signalé avant d'appliquer en prod.
+- Séquence de validation : branche Neon d'abord, application en prod seulement après accord explicite.
+- Une fois le trigger vérifié : migration de `lib/ingest.ts` (fonction d'ingestion partagée) puis des 8 scripts un par un vers cette fonction, capture des articles sans remise (statut `tracked`) pour les 6 marchands où c'est gratuit d'après l'audit de phase 0 (à confirmer marchand par marchand, hors Sport 2000 et hors mode rayon d'Amazon, qui n'exposent pas cette information sans requête supplémentaire).
+
+### 6.4 Phase 2 reconstruite — n8n uniquement orchestrateur (D-2026-09-25-23)
+
+Principe non négociable, tiré directement de la dérive ProTennis (logique de scraping/rapprochement dupliquée dans des nœuds n8n plutôt que dans le code versionné) : **n8n ne fait plus que l'orchestration**. Les 8 scripts TypeScript du dépôt restent l'unique source de vérité pour le scraping, le rapprochement et les calculs. n8n gère uniquement :
+- le planning (lancement de `npm run scrape:<marchand>` sur la VM, horaires étalés) ;
+- le suivi (lecture de `ingestion_runs`) ;
+- les alertes (marchand sans run `success` depuis 36 h, runs `partial`/`failed`).
+
+Livrables (précisent/étendent la Phase 2 de la section 3) :
+- `ingestion_runs` + garde-fou d'éviction à 50 % (inchangé par rapport à la section 3).
+- Scripts exécutables sans intervention (headless, code de sortie non nul en cas d'échec) — déjà en partie vrai pour les scripts Playwright (Head, Amazon), à vérifier explicitement en mode headless pur.
+- Kit d'installation VM (Node, Playwright, dépôt, variables d'environnement, procédure de mise à jour).
+- Workflows n8n exportés en JSON dans le dépôt (comme l'était `n8n-protennis-ingestion-workflow.json`, mais désormais limités au rôle d'orchestrateur).
+- Recommandation sur le mécanisme de lancement des scripts depuis n8n (nœud SSH vers la VM, Execute Command, ou autre), en tenant compte du fait que n8n tourne potentiellement dans Docker sur cette même VM.
+- Liste de vérifications à faire par l'utilisateur sur la VM avant le build : type d'instance (CPU/RAM/architecture), mode d'installation et version de n8n, test de chaque scraper depuis l'IP de la VM (risque de blocage anti-bot, en particulier Amazon).
+
+### 6.5 Ordre de traitement
+
+1. Inventaire ProTennis + archive + passage en `expired` (cette conversation : inventaire uniquement, arrêt pour validation avant l'export/le passage en expired).
+2. Trigger `price_observations`.
+3. Suppression définitive de ProTennis (après validation de l'inventaire/archive).
+4. Statut `tracked` + `lib/ingest.ts`.
+5. Phase 2 n8n reconstruite.
+
+Nouvelle branche partie de `master`, sans toucher aux modifications en pause de GAP-2026-09-25-15 (étape 4, en cours dans le répertoire de travail principal).

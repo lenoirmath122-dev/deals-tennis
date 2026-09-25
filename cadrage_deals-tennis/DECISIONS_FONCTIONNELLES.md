@@ -866,3 +866,65 @@ Total 611 = 300+59+33+77+0+142, cohérent. Les motifs exacts (regex) seront affi
 **Hors périmètre de cette conversation** : aucun code écrit — cadrage uniquement, conformément au protocole. Pas de décision prise sur la stratégie de rapprochement entre le nombre de pouces et le format exact du champ description par marchand (HTML brut vs texte) — à vérifier réellement au moment de chaque build, comme pour les sélecteurs (GAP-2026-09-24-03).
 
 **Statut** : Actée le 2026-09-25.
+
+---
+
+### D-2026-09-25-20 — Retrait de ProTennis du périmètre « vrais bons plans »
+
+**Contexte** : suite à la validation de la Phase 0 du cadrage `CADRAGE_vrais-bons-plans.md` (audit du 2026-09-25), l'utilisateur a demandé le retrait de ProTennis du projet plutôt que de l'inclure dans les phases suivantes tel quel — ProTennis est le seul marchand du catalogue sans aucun filtre de vraie remise (contrairement aux 8 marchands scrapés localement, tous filtrés sur une remise réellement affichée par le marchand), ce qui contredit directement le principe P1/P3 du cadrage. L'utilisateur désactive lui-même le workflow n8n ProTennis avant tout traitement des données par Claude Code.
+
+**Décision** : ProTennis est retiré du périmètre du projet. Le projet se concentre sur les 8 marchands scrapés localement (Tecnifibre, Tennispro.fr, SportSystem, Sport 2000, Babolat, Tennis Point FR, Head, Amazon). Retrait non définitif de principe — ProTennis pourra être réintégré plus tard s'il est doté d'un filtre de vraie remise conforme au reste du catalogue.
+
+**Séquence actée, une étape à la fois, arrêt avant toute suppression définitive** :
+1. Inventaire complet de tout ce qui concerne ProTennis (code, workflow n8n exporté, SQL, README, contrats, tests, docs, ligne `merchants`, `deals`, `products` devenus orphelins, `click_events` liés).
+2. Export d'archive (CSV) des `deals`/`products`/`click_events` ProTennis.
+3. Retrait immédiat du site : passage des offres ProTennis en `expired`.
+4. Après validation de l'utilisateur : suppression définitive en migration (deals, produits orphelins, `click_events`, ligne `merchants`), puis suppression du code/docs devenus inutiles.
+5. Vérification que `/go/[dealId]` sur une ancienne offre ProTennis redirige proprement plutôt que de renvoyer une erreur.
+6. Mise à jour de `ETAT_ACTUEL.md`.
+
+Voir `CADRAGE_vrais-bons-plans.md` section 6.1 pour le texte de référence. Nouvelle branche partie de `master`, sans toucher aux modifications en pause de GAP-2026-09-25-15 étape 4 (isolée dans le répertoire de travail principal).
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur). Cadrage uniquement dans cette entrée — l'étape 1 (inventaire) est traitée dans la même conversation, sans suppression ni modification de données.
+
+---
+
+### D-2026-09-25-21 — Statut `tracked` pour les articles vus sans remise (décision A.1 du cadrage vrais bons plans)
+
+**Contexte** : la collecte de l'historique de prix (Phase 1 de `CADRAGE_vrais-bons-plans.md`) suppose d'enregistrer aussi, là où c'est gratuit, les articles vus sans remise réelle — ces articles n'existent pas aujourd'hui en base (les scripts les filtrent avant insertion). Il fallait trancher le mécanisme de représentation plutôt que de le laisser à l'appréciation du build.
+
+**Décision** : un article vu sans remise est une ligne `deals` normale avec `status='tracked'` (pas un booléen séparé), `is_active=false`, `original_price = discounted_price`. Exclu du site par défaut partout (catalogue, recherche groupée, `/go/[dealId]`, comptages, pages produit) — toutes les requêtes concernées devront être vérifiées et listées explicitement au moment du build. L'éviction (garde-fou 50 %, Phase 2) s'applique aussi aux `tracked` non revus lors d'un passage de scraping. Une offre peut passer de `tracked` à `active` et inversement selon la remise du jour.
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur). Cadrage uniquement — aucun code construit dans cette conversation.
+
+---
+
+### D-2026-09-25-22 — Phase 1 précisée : historique de prix par trigger Postgres `AFTER INSERT OR UPDATE`
+
+**Contexte** : `CADRAGE_vrais-bons-plans.md` (Phase 1, point 2) prévoyait une fonction d'ingestion partagée (`lib/ingest.ts`) centralisant l'upsert `deals` + `price_observations`, appelée par chaque script. L'utilisateur a précisé le mécanisme d'écriture de `price_observations` lui-même.
+
+**Décision** : `price_observations` est alimentée par un trigger Postgres `AFTER INSERT OR UPDATE` sur `deals`, qui upsert `(deal_id, jour)` quand `NEW.status IN ('active', 'tracked')` — une éviction (passage à `expired`) n'écrit rien. Le jour d'observation est calculé en heure de Paris. Le trigger doit se déclencher même quand l'`ON CONFLICT DO UPDATE` de chaque script ne change aucune valeur (prix identique au jour précédent) — à vérifier explicitement pendant le build, pas supposé. Tout coût/risque de performance ou de verrou doit être signalé avant application en prod. Séquence de validation : branche Neon d'abord, prod seulement après accord explicite. La fonction d'ingestion partagée (`lib/ingest.ts`) et la migration des 8 scripts restent prévues ensuite, avec capture des articles sans remise (statut `tracked`, D-2026-09-25-21) pour les marchands où c'est gratuit d'après l'audit de phase 0 — à confirmer marchand par marchand au moment du build, hors Sport 2000 et hors mode rayon d'Amazon.
+
+Voir `CADRAGE_vrais-bons-plans.md` section 6.3 pour le texte de référence.
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur). Cadrage uniquement — aucun code construit dans cette conversation.
+
+---
+
+### D-2026-09-25-23 — Phase 2 reconstruite de zéro : n8n uniquement orchestrateur
+
+**Contexte** : la dérive ProTennis (D-2026-09-25-20) est attribuée explicitement par l'utilisateur au fait que de la logique de scraping/rapprochement avait été recopiée dans des nœuds n8n plutôt que de rester dans le code versionné du dépôt. En reconstruisant l'automatisation n8n pour les 8 marchands restants (chantier initialement listé en D-2026-09-21-09 point 4), ce principe est posé comme non négociable avant tout nouveau build n8n.
+
+**Décision** : n8n ne fait plus que l'orchestration — planning (lancement de `npm run scrape:<marchand>` sur la VM, horaires étalés), suivi (lecture de `ingestion_runs`), alertes (marchand sans run `success` depuis 36 h, runs `partial`/`failed`). Aucune logique de scraping, de rapprochement ou de calcul dans des nœuds n8n : les 8 scripts TypeScript du dépôt restent l'unique source de vérité.
+
+**Livrables actés pour le build à venir** (une conversation dédiée, hors périmètre de cette conversation) :
+- `ingestion_runs` + garde-fou d'éviction à 50 % (Phase 2 de `CADRAGE_vrais-bons-plans.md`, section 3).
+- Scripts exécutables sans intervention (headless, code de sortie non nul en cas d'échec).
+- Kit d'installation VM (Node, Playwright, dépôt, variables d'environnement, procédure de mise à jour).
+- Workflows n8n exportés en JSON dans le dépôt, limités au rôle d'orchestrateur.
+- Recommandation sur le mécanisme de lancement des scripts depuis n8n (SSH vers la VM, Execute Command, ou autre), en tenant compte d'un n8n potentiellement conteneurisé sur cette même VM.
+- Liste de vérifications à faire par l'utilisateur sur la VM avant le build (type d'instance, mode d'installation/version n8n, test de chaque scraper depuis l'IP de la VM — risque de blocage anti-bot, en particulier Amazon).
+
+Voir `CADRAGE_vrais-bons-plans.md` section 6.4 pour le texte de référence.
+
+**Statut** : Actée (confirmée explicitement par l'utilisateur). Cadrage uniquement — aucun code construit dans cette conversation.
