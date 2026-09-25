@@ -11,6 +11,7 @@
     "db:seed": "node --env-file=.env.local scripts/seed.ts",
     "db:backfill-products": "node --env-file=.env.local scripts/backfill-product-ids.ts",
     "db:backfill-colors": "node --env-file=.env.local scripts/backfill-colors.ts",
+    "db:backfill-gender-age": "node --env-file=.env.local scripts/backfill-gender-age.ts",
     "scrape:tecnifibre": "node --env-file=.env.local scripts/scraping/tecnifibre.ts",
     "test": "node --env-file=.env.local node_modules/vitest/vitest.mjs run",
     "test:unit": "node node_modules/vitest/vitest.mjs run tests/unit",

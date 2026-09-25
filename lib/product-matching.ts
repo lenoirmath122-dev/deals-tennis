@@ -146,6 +146,37 @@ export function extractModel(
   return model.replace(/\s+/g, " ").trim();
 }
 
+export type Gender = "homme" | "femme" | "mixte" | "non_determine";
+export type AgeGroup = "adulte" | "enfant";
+
+const FEMALE_PATTERN = /\b(femme|fille|lady)\b/i;
+const MALE_PATTERN = /\b(homme|garcon|garçon)\b/i;
+const CHILD_PATTERN = /\b(enfant|junior|jr|kids?|fille|garcon|garçon)\b/i;
+
+/**
+ * Extrait le sexe visé par l'article à partir du titre marchand (D-2026-09-25-03,
+ * lexique vérifié sur les titres réels de prod). `mixte` si les deux groupes de
+ * mots-clés sont présents, `non_determine` si aucun.
+ */
+export function extractGender(title: string): Gender {
+  const female = FEMALE_PATTERN.test(title);
+  const male = MALE_PATTERN.test(title);
+
+  if (female && male) return "mixte";
+  if (female) return "femme";
+  if (male) return "homme";
+  return "non_determine";
+}
+
+/**
+ * Extrait la tranche d'âge visée par l'article à partir du titre marchand
+ * (D-2026-09-25-03). Pas de valeur `non_determine` : un titre sans mot-clé
+ * enfant est considéré adulte par défaut.
+ */
+export function extractAgeGroup(title: string): AgeGroup {
+  return CHILD_PATTERN.test(title) ? "enfant" : "adulte";
+}
+
 export interface ProductKey {
   brand: string;
   model: string;
