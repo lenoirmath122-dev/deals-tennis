@@ -699,3 +699,21 @@ L'utilisateur revient sur ce refus et demande explicitement d'utiliser scrape.do
 **Modalités actées** : un bloc = une conversation dédiée de build, mise à jour des fichiers de suivi (`ETAT_ACTUEL.md`/`GAPS_OUVERTS.md`/`JOURNAL_SESSIONS.md`) et changement de conversation systématique à la fin de chaque bloc — cohérent avec le protocole général (une étape de build par conversation), pas une règle spécifique à ce chantier.
 
 **Statut** : Actée le 2026-09-25. Cadrage du plan global uniquement — aucune décision de détail tranchée pour chaque bloc (ex. quels crawlers IA autoriser au bloc 4) : à traiter dans la conversation dédiée à chaque bloc, avant tout code, conformément au protocole.
+
+---
+
+### D-2026-09-25-11 — Tennis Point FR : nettoyage de données seed + extension du lexique sexe/âge au pluriel français
+
+**Contexte 1 (nettoyage de données)** : en vérifiant la base de prod avant de créer le vrai marchand Tennis Point FR, découverte de 3 marchands **fictifs** issus du seed MVP initial (2026-09-21) toujours présents et **actifs en production** : `All4Tennis` (3 offres), `Extreme Tennis` (3 offres), `Tennis-Point` (4 offres, collision de nom directe avec le marchand à créer) — toutes avec des URLs d'affiliation factices (`affiliate.example.com`), jamais nettoyées depuis le MVP. Des visiteurs réels ont donc pu voir/cliquer des liens cassés pendant 4 jours.
+
+**Décision** : soumis explicitement à l'utilisateur (3 options : tout nettoyer / nettoyer seulement la collision de nom / ne rien nettoyer). L'utilisateur a choisi de tout nettoyer immédiatement, avant de construire Tennis Point FR. Exécuté : suppression des 10 deals puis des 3 marchands fictifs en base de prod (requêtes SQL ponctuelles, hors script/migration — vérifié réellement, 0 ligne résiduelle après suppression).
+
+**Contexte 2 (lexique sexe/âge)** : les titres Tennis Point FR utilisent systématiquement le pluriel français ("Hommes"/"Femmes"/"Enfants"). Le lexique partagé `extractGender`/`extractAgeGroup` (`lib/product-matching.ts`, D-2026-09-25-03) ne reconnaissait que le singulier — la limite de mot `\b` échoue entre le radical et le "s" final, donc `\bfemme\b` ne matche pas "Femmes". Impact mesuré bien plus large que le cas isolé de GAP-2026-09-25-06 (Babolat, anglais non reconnu) : sans le fix, la quasi-totalité des titres textile/chaussures de ce marchand retombaient sur `non_determine`/`adulte`.
+
+**Décision** : soumis explicitement à l'utilisateur (étendre le lexique partagé vs. accepter `non_determine` et journaliser un nouveau GAP, même traitement que Babolat). L'utilisateur a choisi d'étendre le lexique partagé. `FEMALE_PATTERN`/`MALE_PATTERN`/`CHILD_PATTERN` acceptent désormais un "s" optionnel final. Le pluriel étant un sur-ensemble strict du singulier, aucune régression possible sur les marchands déjà scrapés (tout ce qui matchait avant matche encore). Non répercuté sur le miroir JS du workflow n8n ProTennis dans cette conversation (pas le sujet de cette étape) — à resynchroniser lors d'une prochaine intervention sur ce workflow.
+
+**Contexte 3 (méthode technique Tennis Point FR)** : D-2026-09-24-04 notait "Algolia, rendu JS/Playwright nécessaire" pour ce marchand. Vérifié réellement en début de build (2026-09-25) : `robots.txt` identifie explicitement le site comme une boutique Shopify standard ("Shopify storefront... HTML is crawlable"), pas d'Algolia — la note de cadrage était obsolète ou erronée. CGV vérifiées : aucune clause anti-scraping.
+
+**Décision (mineure, tranchée seule, même nature que les choix techniques Tecnifibre/Sport 2000/Babolat)** : endpoint JSON public Shopify `/collections/<handle>/products.json` utilisé directement (aucun Playwright), cible les deux collections promotionnelles du site (`aktion-10-sale`, `aktion-deal`) plutôt que les pages catégorie tennis (trop fragmentées par marque côté marchand, aucune collection de premier niveau exploitable).
+
+**Statut** : Actée et construite le 2026-09-25 (branche `feat/scraping-tennis-point-fr`, PR #50). Vérifié réellement : 2427 offres réelles en base de prod, `product_id` à 100%, idempotence et éviction testées, lint/typecheck/build clean, vérification navigateur/HTTP (marque « BIDI BADU » trouvée en recherche). Voir `ETAT_ACTUEL.md` pour le détail complet.
