@@ -1,5 +1,15 @@
 # Points ouverts
 
+## GAP-2026-09-25-04 — SportSystem : 1 bloc de listing non parsable (OUVERT, mineur)
+
+Découvert en vérifiant le build SportSystem (voir `ETAT_ACTUEL.md`) : sur les ~768 blocs produit rencontrés dans les 8 pages promo tennis, 1 seul n'a pas pu être parsé (`parseProduct` retourne `null` — un des sélecteurs regex url/prix/image n'a pas matché) et a été silencieusement ignoré (`skippedUnparsable`). Cause non investiguée (structure HTML légèrement différente sur cette fiche précise ? champ manquant ?).
+
+**Bloquant sur** : rien dans l'immédiat — impact d'une seule offre potentiellement manquante sur 768, aucune erreur ni donnée corrompue. Même catégorie que GAP-2026-09-23-04/GAP-2026-09-25-02 (qualité de donnée mineure, isolée).
+
+**Statut** : ouvert au 2026-09-25.
+
+---
+
 ## GAP-2026-09-25-03 — Tests contrat dépendants de données de prod volatiles (OUVERT, mineur)
 
 Découvert en vérifiant `npm test` avant le commit du backfill sexe/âge (aucun rapport avec ce backfill, confirmé par `git stash` — mêmes échecs sans les changements en cours) : 3 tests échouent car ils dépendent de données réelles précises en prod plutôt que de données de test isolées — `tests/contract/catalog-query.test.ts` (recherche groupée "Pure Aero") et `tests/contract/deal-detail.test.ts` (autres offres du même article) supposent qu'un produit "Pure Aero" a encore 2+ offres actives en base ; vérifié réellement (requête directe) : ce n'est plus le cas aujourd'hui (0 produit Pure Aero avec 2+ offres actives), probablement du fait du scraping quotidien (expiration/désactivation d'offres). Même catégorie de fragilité déjà rencontrée et corrigée une fois en GAP-2026-09-23-01 (effet de bord découvert) — la correction précédente ciblait un titre précis plutôt que des données générées, mais reste vulnérable à la même dérive dans le temps.
