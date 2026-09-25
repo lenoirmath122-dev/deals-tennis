@@ -11,7 +11,7 @@ export default function MentionsLegalesPage() {
       <section>
         <h2>Éditeur du site</h2>
         <p>
-          Le site Deals Tennis (accessible à l&apos;adresse deals-tennis.vercel.app) est édité par
+          Le site Tennisdeals (accessible à l&apos;adresse deals-tennis.vercel.app) est édité par
           Mathieu Lenoir, personne physique agissant à titre individuel.
         </p>
         <p>Contact : lenoir.math122@gmail.com</p>
@@ -41,7 +41,7 @@ export default function MentionsLegalesPage() {
       <section>
         <h2>Propriété intellectuelle</h2>
         <p>
-          La structure, le design et le code du site Deals Tennis sont la propriété de son
+          La structure, le design et le code du site Tennisdeals sont la propriété de son
           éditeur. Les images, marques, noms de produits et logos des marchands référencés
           appartiennent à leurs propriétaires respectifs.
         </p>
@@ -50,7 +50,7 @@ export default function MentionsLegalesPage() {
       <section>
         <h2>Liens vers des sites tiers</h2>
         <p>
-          Deals Tennis référence des offres provenant de sites marchands tiers et y redirige
+          Tennisdeals référence des offres provenant de sites marchands tiers et y redirige
           l&apos;utilisateur. L&apos;éditeur n&apos;est pas responsable du contenu, du
           fonctionnement ni des pratiques de ces sites tiers, qui disposent de leurs propres
           mentions légales et conditions d&apos;utilisation.

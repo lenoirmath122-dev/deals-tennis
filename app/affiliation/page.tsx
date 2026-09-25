@@ -9,11 +9,11 @@ export default function AffiliationPage() {
   return (
     <LegalPage title="Affiliation" updated="23 septembre 2026">
       <section>
-        <h2>Comment fonctionne Deals Tennis</h2>
+        <h2>Comment fonctionne Tennisdeals</h2>
         <p>
-          Deals Tennis référence des offres promotionnelles sur du matériel de tennis provenant de
+          Tennisdeals référence des offres promotionnelles sur du matériel de tennis provenant de
           marchands partenaires (actuellement ProTennis) et redirige l&apos;utilisateur vers leur
-          site pour finaliser un éventuel achat. Deals Tennis ne vend aucun produit directement.
+          site pour finaliser un éventuel achat. Tennisdeals ne vend aucun produit directement.
         </p>
       </section>
 
@@ -21,7 +21,7 @@ export default function AffiliationPage() {
         <h2>Liens d&apos;affiliation</h2>
         <p>
           Certains liens présents sur ce site sont des liens d&apos;affiliation : si un utilisateur
-          clique sur une offre puis effectue un achat sur le site du marchand, Deals Tennis peut
+          clique sur une offre puis effectue un achat sur le site du marchand, Tennisdeals peut
           percevoir une commission de la part de ce marchand. Cette commission n&apos;a aucune
           incidence sur le prix payé par l&apos;utilisateur, qui reste identique à celui affiché
           par le marchand.

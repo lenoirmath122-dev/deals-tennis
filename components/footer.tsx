@@ -14,7 +14,7 @@ export function Footer() {
         <p>
           © {new Date().getFullYear()}{" "}
           <Link href="/" className="hover:text-accent">
-            Deals Tennis
+            Tennisdeals
           </Link>
         </p>
         <nav className="flex flex-wrap gap-x-4 gap-y-2">

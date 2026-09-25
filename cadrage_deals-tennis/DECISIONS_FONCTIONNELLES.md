@@ -633,3 +633,19 @@ L'utilisateur revient sur ce refus et demande explicitement d'utiliser scrape.do
 **Filtrage remise** : `percent_discount > 0` dans la requête Algolia — 0 raquette/balle/sac en promo au moment de la vérification, 97 chaussures + 65 textile + 3 équipements (aucun cordage) retenus. Volume total (165) largement au-dessus du seuil de 30 (D-2026-09-24-04). Contrairement à Babolat (D-2026-09-24-05), pas de besoin d'ingérer à 0% — le volume réel suffit déjà.
 
 **Statut** : Actée le 2026-09-25 (décision mineure documentée a posteriori, pas de question structurante posée — même nature que le choix technique Tecnifibre). Build réalisé et vérifié dans la même conversation (voir `ETAT_ACTUEL.md`).
+
+---
+
+### D-2026-09-25-07 — Renommage de la marque affichée : Deals Tennis → Tennisdeals (périmètre restreint)
+
+**Contexte** : Amorcé par l'utilisateur en lien avec le chantier SEO/accessibilité (nom jugé « plus parlant »), traité comme une étape autonome dans une conversation dédiée en parallèle du scraping Babolat. Isolé dans un git worktree dédié (`chore/rename-tennisdeals`) après une première tentative dans le répertoire de travail principal écrasée par un changement de branche de la conversation Babolat (même dossier partagé).
+
+**Périmètre soumis et confirmé explicitement** :
+1. **Inclus** : nom affiché sur le site (header/footer, métadonnées de page `app/layout.tsx`, textes des 4 pages réglementaires — mentions légales, CGU, confidentialité, affiliation) ; champ `name` de `package.json`.
+2. **Exclus** : URL Vercel (`deals-tennis.vercel.app` inchangée — la page mentions légales continue de la citer littéralement), nom du dépôt GitHub (`lenoirmath122-dev/deals-tennis` inchangé).
+
+**Implémentation** : remplacement textuel de toutes les occurrences de « Deals Tennis » par « Tennisdeals » dans `app/layout.tsx` (title/template), `components/footer.tsx`, `app/mentions-legales/page.tsx`, `app/cgu/page.tsx`, `app/confidentialite/page.tsx`, `app/affiliation/page.tsx` ; `package.json` (`name: "deals-tennis"` → `"tennisdeals"`).
+
+**Vérifié réellement** : `npm run lint`/`npm run build` clean ; rendu HTTP réel sur un serveur dev dédié à ce worktree (`curl` sur `/`, `/mentions-legales`, `/cgu`, `/confidentialite`, `/affiliation`) confirmant le nouveau nom affiché et l'absence de toute occurrence résiduelle de « Deals Tennis » dans le code applicatif (`app/`, `components/`).
+
+**Statut** : Actée et construite le 2026-09-25.
