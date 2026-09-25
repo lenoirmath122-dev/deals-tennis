@@ -10,6 +10,8 @@ Point d'entrée et protocole de reprise du projet. À lire dans cet ordre en dé
 ## Documents
 
 - [DECISIONS_FONCTIONNELLES.md](./DECISIONS_FONCTIONNELLES.md) — décisions structurantes numérotées (D-AAAA-MM-JJ-NN).
+- [CADRAGE_vrais-bons-plans.md](./CADRAGE_vrais-bons-plans.md) / [CADRAGE_rapprochement-multi-niveaux.md](./CADRAGE_rapprochement-multi-niveaux.md) — cadrages du chantier en cours (historique de prix, verdict, rapprochement produit multi-niveaux R0-R5).
+- [R0_diagnostic-rapprochement.md](./R0_diagnostic-rapprochement.md) — résultats de l'étape R0 (diagnostic, aucune modification).
 - [spec.md](./spec.md) — spécification fonctionnelle (feature "Tennis Deals Catalog").
 - [plan.md](./plan.md) — plan d'implémentation technique.
 - [data-model.md](./data-model.md) — modèle de données.

@@ -24,12 +24,21 @@ référentiel de modèles, capture à l'ingestion, moteur en mode fantôme,
 bascule). Objectif : précision ≥ 95 % sur « même modèle », couverture
 multi-marchands mesurée à chaque étape contre ce point de départ (1).
 
-**Bloquant sur** : ordre global révisé au §10 du document de cadrage — le
-retrait définitif de ProTennis et le trigger `price_observations` sont
-**tous deux terminés** (voir `ETAT_ACTUEL.md`). R0 non démarré (feu vert
-explicite requis).
+**R0 fait (2026-09-26)** : diagnostic complet, aucune modification —
+voir `R0_diagnostic-rapprochement.md`. Résumé : un seul marchand (Sport
+2000) expose un vrai GTIN/EAN sans requête supplémentaire ; aucun des 8
+scripts ne capture aujourd'hui GTIN/mpn/SKU/quantité unitaire ; 24
+exemples réels de rapprochements manqués trouvés en base, dont 4 pièges
+(versions/tamis/taille junior/genre différents malgré une similarité
+textuelle élevée) confirmant la nécessité de vérifier les attributs
+structurés avant fusion (§3 R2/R3) ; proposition de migration additive
+(`product_families`, colonnes d'attributs nullables sur `products`,
+`mpn`/`unit_quantity`/`unit_type` sur `deals`, `product_merges`).
 
-**Statut** : ouvert au 2026-09-26 — bloquant levé, R0 prêt à démarrer sur
+**Bloquant sur** : R1 (jeu de référence, 50-100 paires proposées par
+Claude Code puis validées par Mathieu) — feu vert explicite requis.
+
+**Statut** : ouvert au 2026-09-26 — R0 terminé, R1 prêt à démarrer sur
 feu vert explicite.
 
 ---
