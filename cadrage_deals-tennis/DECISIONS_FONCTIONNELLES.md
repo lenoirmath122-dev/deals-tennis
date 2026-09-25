@@ -649,3 +649,19 @@ L'utilisateur revient sur ce refus et demande explicitement d'utiliser scrape.do
 **Vérifié réellement** : `npm run lint`/`npm run build` clean ; rendu HTTP réel sur un serveur dev dédié à ce worktree (`curl` sur `/`, `/mentions-legales`, `/cgu`, `/confidentialite`, `/affiliation`) confirmant le nouveau nom affiché et l'absence de toute occurrence résiduelle de « Deals Tennis » dans le code applicatif (`app/`, `components/`).
 
 **Statut** : Actée et construite le 2026-09-25.
+
+---
+
+### D-2026-09-25-08 — Scraping local Babolat : méthode HTTP+AJAX plutôt que Playwright, périmètre accessoires étendu (décisions mineures, tranchées seules et documentées)
+
+**Contexte** : D-2026-09-24-04 avait figé la méthode technique pour Babolat comme « rendu JS, Playwright nécessaire » (placeholders de chargement constatés en HTML brut à l'époque). En reprenant le build (2026-09-25), vérification réelle via `curl` brut (sans navigateur) : les cartes produit complètes (prix, nom, lien) sont en fait déjà présentes dans le HTML retourné par une requête HTTP simple. Le site (Salesforce Commerce Cloud) expose en plus un endpoint de pagination AJAX public non authentifié (`/on/demandware.store/Sites-babolateu-Site/fr_FR/Search-ShowAjax?cgid=...&start=...&sz=...`), vérifié réellement, qui renvoie le même balisage — utilisé directement pour toutes les pages.
+
+**Décision (mineure, tranchée seule)** : interroger cet endpoint AJAX en HTTP simple plutôt que piloter Playwright — même principe déjà appliqué à Tecnifibre (JSON Shopify) et Sport 2000 (Algolia, D-2026-09-25-06) : plus robuste, plus rapide, cohérent avec le reste des scripts. Le risque contractuel déjà assumé (CGU Babolat, D-2026-09-24-01/02/03) est inchangé — même donnée publique, juste un chemin d'accès HTTP direct.
+
+**Pagination réelle découverte en cours de build** : la page HTML statique de chaque catégorie ne montre que le premier lot (24 articles maximum), masquant le reste — vérifié réellement que la catégorie chaussures affiche 24 articles en HTML brut mais en compte réellement 90 une fois toutes les pages AJAX récupérées (`sz=24` par page). Le script pagine systématiquement jusqu'à une page renvoyant moins de 24 articles.
+
+**Périmètre accessoires étendu (décision mineure)** : D-2026-09-24-05 n'avait figé qu'une seule page accessoires (`accessoires-textiles.html`, casquettes/chaussettes/bandeaux/serviettes). En vérifiant la navigation réelle du site, 4 pages accessoires supplémentaires distinctes ont été trouvées et ajoutées, toutes mappées vers la même catégorie interne `accessoires` : grips, surgrips, accessoires raquette (antivibrateurs, housses, etc.), sacs. Décision tranchée seule (même nature que les choix techniques ci-dessus) pour refléter fidèlement le catalogue réel du marchand plutôt que de se limiter arbitrairement à la première page trouvée en cadrage.
+
+**Aucune promotion active retrouvée** sur les 9 pages catégorie au moment de la vérification (comme au 2026-09-24) — `discount_percentage = 0` accepté pour toutes les offres, conformément à D-2026-09-24-05 (prix de référence à retravailler plus tard, explicitement hors périmètre de cette étape).
+
+**Statut** : Actée le 2026-09-25 (décisions mineures documentées a posteriori, pas de question structurante posée). Build réalisé et vérifié dans la même conversation (voir `ETAT_ACTUEL.md`).

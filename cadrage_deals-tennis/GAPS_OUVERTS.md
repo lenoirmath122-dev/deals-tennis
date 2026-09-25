@@ -1,5 +1,15 @@
 # Points ouverts
 
+## GAP-2026-09-25-06 — Babolat : mots-clés sexe anglophones ("Men"/"Women") non reconnus par le lexique extractGender (OUVERT, mineur)
+
+Découvert en vérifiant le build Babolat (voir `ETAT_ACTUEL.md`) : la catégorie chaussures utilise des titres anglophones (« Jet Mach 4 All Court Men », « Jet Tere 2 Clay Women ») alors que le lexique partagé `extractGender`/`extractAgeGroup` (`lib/product-matching.ts`, D-2026-09-25-03) ne reconnaît que des mots français (`femme|fille|lady`, `homme|garcon|garçon`). Conséquence : ces articles retombent sur `gender = non_determine` alors que le sexe est en réalité connu depuis le titre marchand (à la différence des catégories textile/accessoires du même site, qui utilisent « Homme »/« Femme » en français et sont bien détectées).
+
+**Bloquant sur** : rien dans l'immédiat — `non_determine` reste une valeur valide et n'exclut pas l'article du catalogue (filtre sexe/âge optionnel), juste imprécis pour ces fiches. Étendre le lexique partagé à l'anglais est une décision structurante (impacte tous les marchands déjà scrapés, pas seulement Babolat) — hors périmètre de cette étape, non tranchée seule.
+
+**Statut** : ouvert au 2026-09-25.
+
+---
+
 ## GAP-2026-09-25-05 — Sport 2000 : facette sexe Algolia contredisant le libellé produit sur 1 article (OUVERT, mineur)
 
 Découvert en vérifiant le build Sport 2000 (voir `ETAT_ACTUEL.md`) : le produit « Chaussures de tennis ADIDAS Fille Advantage CF I Enfant Garçon » a la facette `gender` Algolia du marchand valant `BEBE GARCON` alors que son propre libellé produit contient « Fille » — contradiction dans les données Sport 2000 elles-mêmes (cause côté marchand, pas une erreur d'extraction). Conséquence : le titre construit contient à la fois « Fille » et « Garçon », l'heuristique (`extractGender`) retombe sur `mixte` plutôt que de trancher.
