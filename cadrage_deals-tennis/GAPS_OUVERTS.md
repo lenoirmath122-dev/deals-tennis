@@ -1,5 +1,15 @@
 # Points ouverts
 
+## GAP-2026-09-25-09 — Head : items génériques non tennis-exclusifs retenus depuis la page textile (OUVERT, mineur)
+
+Découvert en vérifiant le build Head (voir `ETAT_ACTUEL.md`) : la page `shop-sportswear/summer` ciblée pour le textile (page "Tennis and Padel" du marchand, vérifiée 100% tennis sur l'échantillon parcouru au cadrage) contient au moins un article générique sans indice tennis explicite dans son titre — « HEAD Bandana », retenu en base (catégorie textile). Le filet de sécurité multi-sports (exclusion padel/squash/badminton/pickleball) ne peut pas l'exclure, n'ayant aucun mot-clé d'autre sport non plus.
+
+**Bloquant sur** : rien dans l'immédiat — impact d'un article isolé sur 66 offres Head, un bandana reste un accessoire plausible pour le tennis (porté par de nombreux joueurs), pas une donnée fausse à proprement parler. Même catégorie que GAP-2026-09-23-04/GAP-2026-09-25-02/04/05 (qualité de donnée mineure, isolée) — à surveiller si le volume de ce type d'item augmente lors des passages suivants.
+
+**Statut** : ouvert au 2026-09-25.
+
+---
+
 ## GAP-2026-09-25-08 — Miroir JS du workflow n8n ProTennis non resynchronisé après l'extension du lexique sexe/âge au pluriel (OUVERT, mineur)
 
 Suite à D-2026-09-25-11 : le lexique partagé `extractGender`/`extractAgeGroup` (`lib/product-matching.ts`) a été étendu pour reconnaître le pluriel français ("Hommes"/"Femmes"/"Enfants"), découverte en construisant Tennis Point FR. Le workflow n8n ProTennis (`scripts/automation/n8n-protennis-ingestion-workflow.json`) contient un miroir JS de ces mêmes regex (ajouté en D-2026-09-25-04, GAP-2026-09-25-01 point 4) qui n'a pas été mis à jour dans cette conversation (hors périmètre de cette étape).
