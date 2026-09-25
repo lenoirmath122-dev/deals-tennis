@@ -3,6 +3,8 @@ import { LegalPage } from "@/components/legal-page";
 
 export const metadata: Metadata = {
   title: "Conditions générales d'utilisation",
+  description:
+    "Conditions générales d'utilisation de Tennisdeals : objet du site, fonctionnement du référencement des offres et responsabilités.",
 };
 
 export default function CguPage() {

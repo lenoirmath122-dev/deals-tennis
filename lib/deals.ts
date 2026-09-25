@@ -296,3 +296,19 @@ export async function getDealDetail(
 
   return { deal, otherOffers };
 }
+
+export interface SitemapDeal {
+  id: string;
+  updated_at: string;
+}
+
+export async function getActiveDealsForSitemap(): Promise<SitemapDeal[]> {
+  const rows = await sql`
+    SELECT id, updated_at
+    FROM deals
+    WHERE status = 'active'
+      AND is_active = true
+      AND (expires_at IS NULL OR expires_at > NOW())
+  `;
+  return rows as SitemapDeal[];
+}

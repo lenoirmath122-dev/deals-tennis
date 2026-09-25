@@ -3,6 +3,8 @@ import { LegalPage } from "@/components/legal-page";
 
 export const metadata: Metadata = {
   title: "Affiliation",
+  description:
+    "Comment fonctionne l'affiliation sur Tennisdeals : liens vers les marchands partenaires, transparence sur les commissions et indépendance du classement des offres.",
 };
 
 export default function AffiliationPage() {

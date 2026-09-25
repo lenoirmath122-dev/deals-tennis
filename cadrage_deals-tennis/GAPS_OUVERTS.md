@@ -10,13 +10,13 @@ Suite à D-2026-09-25-11 : le lexique partagé `extractGender`/`extractAgeGroup`
 
 ---
 
-## GAP-2026-09-25-07 — Chantier SEO/GEO : 6 blocs de build restants après le cadrage du plan global (OUVERT)
+## GAP-2026-09-25-07 — Chantier SEO/GEO : 5 blocs de build restants après le bloc 1 (OUVERT)
 
-Suite à D-2026-09-25-10 : plan en 7 blocs acté (fondations techniques, données structurées, URLs canoniques, ouverture robots IA, `llms.txt`, performance, Open Graph), un bloc par conversation dédiée.
+Suite à D-2026-09-25-10 : plan en 7 blocs acté (fondations techniques, données structurées, URLs canoniques, ouverture robots IA, `llms.txt`, performance, Open Graph), un bloc par conversation dédiée. Bloc 1 terminé et vérifié (D-2026-09-25-12, PR #52).
 
 **Reste à faire, dans l'ordre** :
-1. Fondations techniques (`robots.txt`, `sitemap.xml`, métadonnées par page) — prochaine étape.
-2. Données structurées (Schema.org / JSON-LD Product/Offer).
+1. ~~Fondations techniques (`robots.txt`, `sitemap.xml`, métadonnées par page)~~ — fait (D-2026-09-25-12).
+2. Données structurées (Schema.org / JSON-LD Product/Offer) — prochaine étape.
 3. URLs canoniques / contenu dupliqué (filtres catalogue).
 4. Ouverture aux robots IA (GPTBot, ClaudeBot, PerplexityBot, Google-Extended...) — décision explicite à prendre, pas encore tranchée.
 5. `llms.txt`.

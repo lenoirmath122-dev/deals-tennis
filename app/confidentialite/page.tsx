@@ -3,6 +3,8 @@ import { LegalPage } from "@/components/legal-page";
 
 export const metadata: Metadata = {
   title: "Politique de confidentialité",
+  description:
+    "Politique de confidentialité de Tennisdeals : absence de compte utilisateur, statistiques de clic anonymes, cookies et sous-traitants techniques (hébergement, base de données).",
 };
 
 export default function ConfidentialitePage() {
