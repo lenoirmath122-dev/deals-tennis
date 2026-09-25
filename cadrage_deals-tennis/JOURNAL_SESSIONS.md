@@ -8,6 +8,15 @@
 > Sessions du 2026-09-25 (SEO/GEO bloc 1) au 2026-09-25 (lexique sexe/âge, session 11) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-25-seo-bloc1_a_lexique-sexe-age.md` (même règle, condensation du 2026-09-25).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
 
+## 2026-09-25 (session) — Cadrage raquettes juniors mal classées `adulte` (D-2026-09-25-19, GAP-2026-09-25-15)
+
+- Reprise (`/clear`). Signalement de l'utilisateur : raquette Tecnifibre « T-Fight Club 25 » catégorisée adulte alors qu'elle est enfant (mentionné dans la description). Protocole de reprise suivi (INDEX.md → ETAT_ACTUEL.md → GAPS_OUVERTS.md → dernière entrée du journal).
+- Investigation : `lib/product-matching.ts` (`extractAgeGroup`) ne cherche que des mots-clés (`enfants?|junior|jr|kids?|filles?|garcons?|garçons?`) dans le titre construit par les scripts, pas dans la description produit réelle. `scripts/scraping/tecnifibre.ts` confirmé : ne récupère/n'utilise que title/product_type/variants/images du JSON Shopify, jamais `body_html`.
+- Deuxième exemple apporté par l'utilisateur en cours de discussion (Head « Coco 25 » via Tennis Point FR) — confirme un schéma général : les raquettes juniors sont souvent nommées uniquement par leur taille en pouces (19/21/23/25/26, convention standard du secteur), invisible dans le titre marchand.
+- Décision structurante soumise en deux temps (question à choix, puis clarification demandée explicitement par l'utilisateur) : heuristique taille en pouces pour la catégorie raquettes (tous marchands) + lecture de la description comme second signal. Portée par coût réseau discutée explicitement : gratuit pour Tecnifibre/Tennis Point FR (Shopify, `body_html` déjà dans le payload récupéré), requête HTTP supplémentaire par produit pour les 6 autres marchands — l'utilisateur a validé l'extension aux 6 autres marchands quand même, mais uniquement dans le cadrage (« on codera dans une prochaine conversation »). **D-2026-09-25-19 actée**.
+- `DECISIONS_FONCTIONNELLES.md` (D-2026-09-25-19), `GAPS_OUVERTS.md` (GAP-2026-09-25-15), `ETAT_ACTUEL.md` mis à jour. Aucun code écrit, cadrage uniquement, conformément au protocole.
+- Prochaine étape : nouvelle conversation dédiée au build de l'étape 1 (heuristique taille en pouces) + éventuellement étape 2 (lecture description Tecnifibre/Tennis Point FR, gratuite) — GAP-2026-09-25-15 pour le détail complet des étapes restantes.
+
 ## 2026-09-25 (session) — Amazon : filtre marque connue (D-2026-09-25-16, GAP-2026-09-25-13/14)
 
 - Reprise (`/clear`). Demande initiale vague (« toutes sortes d'articles qui ne conviennent pas apparaissent sur le site » suite au scraping Amazon) — protocole de reprise suivi (ETAT_ACTUEL.md → GAPS_OUVERTS.md → dernière entrée du journal), puis clarification par questions explicites avant tout code (la première demande d'exemples concrets a débouché directement sur une proposition de l'utilisateur : filtrer sur les marques déjà présentes sur le site).

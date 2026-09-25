@@ -1,5 +1,22 @@
 # Points ouverts
 
+## GAP-2026-09-25-15 — Raquettes juniors mal classées `adulte` : correction cadrée, reste tout le code (OUVERT)
+
+Suite à D-2026-09-25-19 : deux exemples réels signalés par l'utilisateur (Tecnifibre « T-Fight Club 25 », Head « Coco 25 » via Tennis Point FR) — raquettes juniors identifiées uniquement par leur taille en pouces (25") dans le nom de gamme, sans mot-clé enfant/junior dans le titre marchand, retombant sur `age_group = adulte` par défaut. Deux corrections actées : heuristique taille en pouces (19/21/23/25/26 = enfant, 27+ = adulte) pour la catégorie raquettes, tous marchands ; lecture de la description produit comme second signal, gratuite pour Tecnifibre/Tennis Point FR (déjà dans le payload Shopify récupéré), avec requête HTTP supplémentaire par produit pour les 6 autres marchands (coût accepté par l'utilisateur).
+
+**Reste à faire, dans l'ordre (une étape de build par conversation)** :
+1. Heuristique taille en pouces dans `lib/product-matching.ts` (`extractAgeGroup`, scopée à `category = 'raquettes'`) — s'applique automatiquement à tous les marchands déjà scrapés dès qu'elle existe, sans toucher chaque script.
+2. Lecture de la description (`body_html`) dans `scripts/scraping/tecnifibre.ts` et `scripts/scraping/tennis-point-fr.ts` — aucune requête supplémentaire, le champ est déjà dans la réponse JSON récupérée.
+3. Backfill des raquettes déjà en base de prod mal classées (à confirmer explicitement : périmètre — uniquement raquettes, ou aussi vérifier d'autres catégories/marchands touchés par le même défaut de taille — au moment de cette étape).
+4. Extension aux 6 autres marchands (SportSystem, Sport 2000, Babolat, Tennispro.fr, Head, Amazon) : ajouter une requête HTTP supplémentaire par fiche produit retenue pour lire la description — décision de principe déjà actée (D-2026-09-25-19), mais coût/lenteur à vérifier réellement marchand par marchand au moment du build (ex. Tennispro `Crawl-delay: 60`).
+5. Miroir JS du workflow n8n ProTennis (`scripts/automation/n8n-protennis-ingestion-workflow.json`) : ProTennis n'a pas été cité dans les deux exemples signalés, mais le même défaut de taille en pouces s'applique probablement à ses raquettes juniors — à vérifier et resynchroniser si besoin (même schéma que GAP-2026-09-25-08).
+
+**Bloquant sur** : rien — cadrage fait (D-2026-09-25-19), prochaine conversation dédiée à l'étape 1 (+ éventuellement 2, gratuite, même conversation à confirmer).
+
+**Statut** : ouvert au 2026-09-25.
+
+---
+
 ## GAP-2026-09-25-14 — Amazon : comparer le prix Amazon au prix barré déjà connu chez d'autres marchands (CLOS, rejeté)
 
 Suite à D-2026-09-25-16 (filtre marque connue) : le volume Amazon réel après filtrage est tombé à 11 offres (sous le seuil de 30 de D-2026-09-24-04), en grande partie parce que la majorité des fiches Amazon sur ces mots-clés n'ont pas de remise propre affichée par Amazon lui-même (154/233 fiches candidates exclues pour cette raison au dernier passage, filtre inchangé depuis le premier build). L'utilisateur a proposé une piste : pour Amazon spécifiquement, ingérer aussi les fiches sans remise propre, et calculer une "réduction" en comparant le prix Amazon au prix de référence (`original_price`) déjà connu pour le même article chez un autre marchand (via le rapprochement produit, `product_id`), plutôt que d'exiger un prix barré publié par Amazon lui-même.

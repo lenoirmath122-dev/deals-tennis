@@ -850,3 +850,19 @@ Total 611 = 300+59+33+77+0+142, cohérent. Les motifs exacts (regex) seront affi
 **Hors périmètre de cette conversation** : aucun code écrit — cadrage et vérification uniquement, conformément au protocole. Le nœud « Chaussures femme », l'éventuelle extension à un nœud par type de vêtement pour le textile, et le détail des sélecteurs/URLs définitifs seront vérifiés au fil de l'eau pendant le build (même pratique que les autres marchands, GAP-2026-09-24-03).
 
 **Statut** : Actée le 2026-09-25.
+
+---
+
+### D-2026-09-25-19 — Raquettes juniors mal classées `adulte` : détection par taille en pouces + lecture de la description
+
+**Contexte** : l'utilisateur a signalé deux raquettes juniors visibles en prod avec `age_group = adulte` : « T-Fight Club 25 » (Tecnifibre, https://www.tecnifibre.com/products/t-fight-club-25) et « Head Coco 25 » (via Tennis Point FR, https://www.tennis-point.fr/products/head-coco-25-00606604342000-fr). Dans les deux cas, le titre ne contient aucun mot-clé reconnu par `CHILD_PATTERN` (`enfants?|junior|jr|kids?|filles?|garcons?|garçons?`, `lib/product-matching.ts`) — `extractAgeGroup` retombe par défaut sur `adulte`. Le nom de gamme se termine par un nombre (« 25 ») qui correspond en réalité à la taille de la raquette en pouces, une convention standard du secteur (raquettes juniors : 19/21/23/25/26 pouces ; raquettes adultes : 27 pouces et plus) — invisible dans le titre marchand construit par les scripts, mais l'utilisateur a vérifié que l'âge cible est bien précisé dans la description produit de chaque fiche.
+
+**Décision** : correction en deux volets, cumulatifs :
+1. **Heuristique taille en pouces** : pour la catégorie `raquettes` uniquement (un nombre isolé n'a aucun sens pour les autres catégories), un titre contenant un nombre isolé parmi 19/21/23/25/26 est classé `enfant` ; 27 et plus reste `adulte`. Règle simple, appliquée dans `extractAgeGroup` (ou une variante dédiée aux raquettes), donc automatiquement effective pour tous les marchands déjà scrapés sans toucher chaque script individuellement.
+2. **Lecture de la description produit** comme second signal (recherche du même `CHILD_PATTERN` dans la description, pas seulement le titre) — l'utilisateur a confirmé que l'information y est systématiquement présente. Portée décidée par coût réseau :
+   - **Tecnifibre et Tennis Point FR** (boutiques Shopify) : la description (`body_html`) est déjà présente dans la réponse JSON `products.json` déjà récupérée par les scripts (`scripts/scraping/tecnifibre.ts`, `scripts/scraping/tennis-point-fr.ts`) — aucune requête HTTP supplémentaire nécessaire. À coder dans une prochaine conversation.
+   - **Les 6 autres marchands** (SportSystem, Sport 2000, Babolat, Tennispro.fr, Head, Amazon) : la description n'est pas dans les données déjà récupérées — il faudrait une requête HTTP supplémentaire par fiche produit retenue (coût/lenteur variable, ex. Tennispro a un `Crawl-delay: 60`). L'utilisateur a validé cette extension **quand même**, malgré le coût. **Décision actée dans ce cadrage, mais explicitement reportée au code** : rien n'est construit dans cette conversation pour ces 6 marchands — chaque script sera mis à jour dans une prochaine conversation dédiée (une étape de build à la fois, comme pour les autres chantiers).
+
+**Hors périmètre de cette conversation** : aucun code écrit — cadrage uniquement, conformément au protocole. Pas de décision prise sur la stratégie de rapprochement entre le nombre de pouces et le format exact du champ description par marchand (HTML brut vs texte) — à vérifier réellement au moment de chaque build, comme pour les sélecteurs (GAP-2026-09-24-03).
+
+**Statut** : Actée le 2026-09-25.
