@@ -69,6 +69,14 @@ Le rapprochement doit distinguer ces trois cas, et l'affichage doit toujours dir
 | Surgrips, accessoires | Coloris | — | Conditionnement (comparaison à l'unité) |
 | Textile | Taille, coloris | — | Modèle, genre |
 
+**Règle des générations (décision de Mathieu, 2026-09-26, D-2026-09-26-01)** — s'applique à toutes les catégories et prime sur la mention « génération voisine » de la ligne Raquettes :
+
+- Génération **différente et vérifiée des deux côtés** → **produit différent**. Une ancienne génération n'a pas le même prix de référence : elle ne doit pas servir de base au verdict « vrai bon plan ».
+- Génération **inconnue ou non vérifiable d'un côté** → **modèle proche**. Jamais de fusion automatique.
+- **Même modèle** (identique) exige que la génération soit **confirmée des deux côtés**, ou que le modèle n'ait **qu'une seule génération sur le marché**.
+
+Sources de vérification admises : référence fabricant (`mpn`), GTIN, titre, JSON-LD ou fiche marchand. La source retenue est notée pour chaque paire du jeu de référence.
+
 Ces règles vivent dans un fichier de configuration unique et commenté (par exemple `config/matching-rules.ts`).
 
 ## 6. Extraction des attributs
