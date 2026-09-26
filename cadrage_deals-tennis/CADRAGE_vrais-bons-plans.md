@@ -290,46 +290,42 @@ Livrables (précisent/étendent la Phase 2 de la section 3) :
 - Recommandation sur le mécanisme de lancement des scripts depuis n8n (nœud SSH vers la VM, Execute Command, ou autre), en tenant compte du fait que n8n tourne potentiellement dans Docker sur cette même VM.
 - Liste de vérifications à faire par l'utilisateur sur la VM avant le build : type d'instance (CPU/RAM/architecture), mode d'installation et version de n8n, test de chaque scraper depuis l'IP de la VM (risque de blocage anti-bot, en particulier Amazon).
 
-#### Checklist VM Oracle — à faire par Mathieu avant le build de la Phase 2 (préparée le 2026-09-26, aucun code Phase 2 avant ce rapport)
+#### Checklist VM Oracle — résultats (session guidée du 2026-09-26, lecture seule, points 1-4 clos ; point 5 reporté au build)
 
-Connexion de référence connue (GAP-2026-09-22-12) : `ssh opc@145.241.173.33` — Claude Code n'a pas d'accès SSH à cette VM dans les sessions passées (`Permission denied (publickey)`), toutes les commandes ci-dessous sont donc à exécuter par Mathieu et à rapporter (copier-coller la sortie suffit, pas besoin de résumer).
+Connexion de référence (GAP-2026-09-22-12) : `ssh opc@145.241.173.33`, clé `ssh-key-2026-09-22.key` présente en local sur le poste de Mathieu (gitignorée) — **correction du constat précédent** : Claude Code a bien accès SSH à cette VM depuis cette session (l'échec `Permission denied (publickey)` documenté auparavant venait de sessions sans la clé disponible localement, pas d'un blocage de la VM elle-même). Points 1-4 exécutés directement par Claude Code, en lecture seule, résultats bruts ci-dessous.
 
-**1. Type d'instance (CPU / RAM / architecture)**
+**1. Type d'instance (CPU / RAM / architecture) — fait**
 ```
-lscpu | grep -E 'Architecture|CPU\(s\)|Model name'
-free -h
-df -h /
+Architecture: aarch64 (Ampere Neoverse-N1), 1 OCPU
+RAM: 5.5Gi total, 4.1Gi disponible
+Disque / : 30G, 18G disponibles (41% utilisé)
 ```
-Pourquoi : détermine si la VM peut faire tourner Playwright (Head, Amazon — gourmand en RAM, ~500 Mo-1 Go par instance de navigateur) en plus de n8n déjà en place. Oracle Cloud Free Tier propose deux profils très différents (Ampere A1 arm64, ou VM.Standard.E2.1.Micro x86 1 Go RAM) — l'architecture (arm64 vs x86_64) conditionne aussi si les binaires Playwright standards s'installent sans compilation supplémentaire.
+Conclusion : VM Ampere A1 (Free Tier arm64), RAM suffisante pour Playwright (Head, Amazon) en plus de n8n. **Point d'attention retenu** : architecture arm64 → binaires Chromium/Playwright à installer et vérifier spécifiquement pour cette architecture (pas de compilation garantie sans test réel, cf. point 5 reporté).
 
-**2. Mode d'installation et version de n8n**
+**2. Mode d'installation et version de n8n — fait**
 ```
-docker ps --filter name=n8n
-docker exec opc-n8n-1 n8n --version
-docker inspect opc-n8n-1 --format '{{.Config.Image}}'
-cat ~/docker-compose.yml 2>/dev/null || find / -maxdepth 4 -iname "docker-compose*.yml" 2>/dev/null
+Conteneur unique opc-n8n-1, image docker.n8n.io/n8nio/n8n:latest, version 2.40.5
+docker-compose.yml : services n8n + caddy (reverse proxy TLS), volumes montés = n8n_data uniquement (aucun volume vers un dépôt ou l'hôte)
 ```
-Pourquoi : confirme que n8n tourne bien en Docker (déjà supposé d'après les commandes de déploiement connues, `docker restart opc-n8n-1`) et sous quelle image/version exacte — détermine le mécanisme de lancement des scripts (le point du cadrage principal juste au-dessus, « nœud SSH vers la VM, Execute Command, ou autre ») : si n8n est dans un conteneur séparé du reste de la VM, un simple nœud "Execute Command" n8n ne verra pas le dépôt Node installé sur l'hôte, il faudra un nœud SSH vers l'hôte ou monter le dépôt en volume Docker.
+Conclusion : confirme que n8n est isolé dans son propre conteneur, sans accès au filesystem de l'hôte au-delà de ses propres données.
 
-**3. Node.js et dépôt sur l'hôte (hors conteneur n8n)**
+**3. Node.js et dépôt sur l'hôte — fait**
 ```
-node --version
-npm --version
-git --version
-ls -la ~/deals-tennis 2>/dev/null || echo "dépôt absent"
+node, npm, git : absents de l'hôte
+~/deals-tennis : dépôt absent
 ```
-Pourquoi : les 8 scripts (`npm run scrape:<marchand>`) doivent pouvoir tourner directement sur l'hôte (ou dans un conteneur dédié) indépendamment de n8n — vérifie si le kit d'installation VM (livrable déjà acté ci-dessus) part d'une VM vierge ou d'un hôte qui a déjà Node.
+Conclusion : hôte vierge. Le kit d'installation VM (livrable Phase 2) doit tout installer depuis zéro (Node arm64, git, clone du dépôt, `.env.local`).
 
-**4. Accès SSH depuis n8n vers l'hôte (ou alternative)**
+**4. Accès SSH/filesystem depuis le conteneur n8n vers l'hôte — fait**
 ```
-docker exec opc-n8n-1 which ssh
-docker exec opc-n8n-1 ls -la /root/.ssh 2>/dev/null || echo "pas de clé SSH dans le conteneur n8n"
-docker inspect opc-n8n-1 --format '{{json .Mounts}}'
+Binaire ssh présent dans le conteneur (/usr/bin/ssh) mais aucune clé montée (/root/.ssh inaccessible)
+Mounts Docker : uniquement le volume n8n_data (aucun accès au filesystem hôte, aucun dépôt monté)
 ```
-Pourquoi : si n8n tourne dans son propre conteneur Docker, il n'a par défaut ni accès SSH à l'hôte ni au système de fichiers de l'hôte (sauf volume monté explicitement) — cette vérification tranche directement entre les deux mécanismes de lancement possibles (nœud SSH n8n→hôte avec une clé dédiée à créer, vs volume partagé + nœud Execute Command).
+**Décision tranchée** : mécanisme de lancement retenu = **nœud SSH n8n → hôte, avec une clé dédiée à créer et à monter dans le conteneur** (secret/volume Docker). Un `Execute Command` natif n8n ne fonctionnerait pas (aucun accès au filesystem hôte).
 
-**5. Test réel de chaque scraper depuis l'IP de la VM (risque de blocage anti-bot)**
-Depuis l'hôte de la VM (pas depuis la machine locale de Mathieu), avec le dépôt cloné et `.env.local`/`DATABASE_URL` configurés comme en local :
+**5. Test réel de chaque scraper depuis l'IP de la VM (risque anti-bot) — reporté au build de la Phase 2**
+
+Non exécuté dans cette session : nécessite d'installer Node/git, cloner le dépôt et configurer `DATABASE_URL` sur l'hôte, ce qui modifie la VM — hors périmètre de la session de lecture seule. Décision explicite de Mathieu (2026-09-26) : traiter ce point comme la **première tâche concrète du build de la Phase 2** (kit d'installation), pas en anticipé. À ce moment-là, exécuter réellement :
 ```
 npm run scrape:tecnifibre
 npm run scrape:tennispro
@@ -340,9 +336,9 @@ npm run scrape:tennis-point-fr
 npm run scrape:head
 npm run scrape:amazon
 ```
-Pourquoi : l'IP de la VM Oracle est différente de celle utilisée pour tous les builds précédents (machine locale de Mathieu) — les marchands avec protection anti-bot connue (Head : checkpoint Vercel ; Amazon : blocage 503 hors Playwright ; Tennispro.fr : 403 Cloudflare sur `fetch` natif, contourné par `curl`) peuvent se comporter différemment depuis une IP de datacenter cloud (souvent davantage suspectée qu'une IP résidentielle/mobile). Un scraper qui passe en local peut échouer depuis la VM — à constater réellement, pas supposé. Head et Amazon utilisent Playwright : vérifier que `npx playwright install --with-deps chromium` (ou équivalent) s'exécute sans erreur sur l'architecture de la VM (point 1) avant de lancer ces deux scripts.
+Rappel du risque : IP datacenter cloud (souvent davantage suspectée qu'une IP résidentielle) — Head (checkpoint Vercel), Amazon (503 hors Playwright), Tennispro.fr (403 Cloudflare sur `fetch` natif) peuvent se comporter différemment qu'en local. Vérifier `npx playwright install --with-deps chromium` sur arm64 avant Head/Amazon.
 
-**Ce que Claude Code fera de ces résultats** : uniquement une fois ces 5 points rapportés, le build de la Phase 2 (kit d'installation, workflows n8n orchestrateurs, mécanisme de lancement) pourra être cadré précisément — pas avant, conformément à la demande explicite de ne pas coder cette phase tant que ce rapport n'est pas fait.
+**Recommandation sur le mécanisme de lancement (synthèse des points 1-4)** : nœud SSH dédié n8n→hôte (clé à générer spécifiquement pour cet usage, jamais la clé personnelle de Mathieu), scripts lancés via `npm run scrape:<marchand>` depuis le dépôt cloné sur l'hôte. Le kit d'installation VM devra couvrir : installation Node arm64 + git, clone du dépôt, configuration `.env.local`/`DATABASE_URL`, génération de la clé SSH dédiée et son ajout aux `authorized_keys` de l'hôte, montage de cette clé dans le conteneur n8n, puis validation réelle du point 5 ci-dessus avant d'activer les workflows orchestrateurs en production.
 
 ### 6.5 Ordre de traitement
 

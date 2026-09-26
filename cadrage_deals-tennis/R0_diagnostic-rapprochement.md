@@ -21,6 +21,38 @@
 
 ---
 
+## 1bis. Complément — GTIN/EAN sur la page produit avec requête supplémentaire (2026-09-26)
+
+Suite au constat du §1 (« sans requête supplémentaire », un seul marchand exploitable), vérification réelle **avec une requête HTTP supplémentaire par produit**, sur un exemple réel de raquette ou chaussure par marchand (hors Sport 2000, déjà acquis) :
+
+| Marchand | GTIN/EAN disponible sur la fiche produit (requête suppl.) | Preuve |
+|---|---|---|
+| **Tennis Point FR** | **Oui, réel** | JSON-LD `ProductGroup.hasVariant[].gtin` — ex. `"gtin": "3490150200080"` sur la fiche `tecnifibre-tf-40-315-18x20...`, un GTIN distinct par variante (grip) |
+| **Tecnifibre** | **Oui, réel** | JSON-LD `Product.offers[].gtin13` — ex. `"gtin13":"3490150187251"` sur la fiche `tf-x1-v2-305`, un par variante (grip) |
+| **SportSystem** | Non, confirmé sur un 2e exemple | JSON-LD `Product` présent (fiche `speed-mp-auxetic`) mais seulement `sku`/`mpn`, pas de champ `gtin`/`gtin13`/`ean`/`barcode` — cohérent avec le constat §1 (Pro Kennex Q+ 15 Pro) |
+| **Babolat** | Non | JSON-LD `Product` présent (fiche `pure-drive-gen11-spectra-edition-non-cordee`) avec `mpn`/`sku` uniquement, aucun champ GTIN |
+| **Tennispro.fr** | Non | Fiche `raquette-babolat-pure-aero-team-285-gr` : **aucun JSON-LD ni microdata `itemprop="gtin*"`** sur la page — confirme que Magento n'expose pas de GTIN sur ce site en l'état |
+| **Head** | Non testable en requête simple | Requête bloquée dès la première tentative par le checkpoint anti-bot Vercel (HTTP 429, page « Vercel Security Checkpoint ») — nécessiterait Playwright, comme pour le scraping lui-même |
+| **Amazon** | Non testable en requête simple | La requête simple renvoie une page anti-bot Amazon (81 lignes, pas la vraie fiche produit) — nécessiterait Playwright, comme pour le scraping lui-même |
+
+**Conclusion révisée par rapport au §1** : le constat « sans requête supplémentaire » du §1 reste vrai pour la méthode actuelle des scripts (JSON storefront Shopify pour Tennis Point FR/Tecnifibre, qui n'expose pas `barcode`). Mais **avec une requête HTTP supplémentaire par produit vers la fiche produit HTML elle-même**, Tennis Point FR et Tecnifibre exposent un vrai GTIN/EAN via JSON-LD — ce n'était pas visible dans le flux JSON déjà utilisé par les scripts. Cela porte à **3 marchands sur 8** (Sport 2000 + Tennis Point FR + Tecnifibre) la disponibilité d'un GTIN fiable, moyennant un coût de requêtes additionnelles pour ces deux derniers.
+
+**Estimation du coût (nombre de requêtes additionnelles par run), catégories raquettes + chaussures uniquement**, comptage réel sur les offres actives/`tracked` en base de prod (2026-09-26) :
+
+| Marchand | Raquettes | Chaussures | Total requêtes suppl. / run | Gain GTIN ? |
+|---|---|---|---|---|
+| Tennis Point FR | 78 | 455 | **533** | Oui |
+| Tecnifibre | 23 | 0 | **23** | Oui |
+| SportSystem | 109 | 118 | 227 (sans gain) | Non |
+| Babolat | 0 (actuellement) | 0 (actuellement) | 0 (varie selon le jour, cf. D-2026-09-25-09) | Non |
+| Tennispro.fr | 125 | 125 | 250 (sans gain) | Non |
+| Head | 0 (aucune offre raquette/chaussure en base actuellement) | — | — | Non testable |
+| Amazon | 12 | 2 | 14 (sans gain) | Non testable en requête simple |
+
+**Lecture** : si on limitait l'ajout d'une requête GTIN supplémentaire aux seuls marchands où elle apporte un vrai gain (Tennis Point FR, Tecnifibre), le coût serait de **~556 requêtes HTTP additionnelles par run** (533 + 23, sur les volumes actuels — Tennis Point FR domine largement le coût vu son catalogue chaussures). Ajouter la requête pour SportSystem/Babolat/Tennispro.fr/Amazon n'a pas de sens (pas de gain constaté) sauf à vouloir capter d'autres attributs (poids Tennis Point FR déjà gratuit sans requête suppl., cf. §1). Head et Amazon resteraient de toute façon hors de portée sans passer par Playwright (coût bien plus élevé qu'une requête HTTP simple, cf. Phase 2 §6.4 point 5).
+
+---
+
 ## 2. Formats de titres typiques (exemples réels, base de prod du 2026-09-26)
 
 | Marchand | Catégorie | Exemple réel |
@@ -116,6 +148,18 @@ C'est exactement la clé texte décrite en §1 du cadrage (`lower(brand)|lower(m
 **Migration** : un seul fichier SQL additif (`ALTER TABLE ... ADD COLUMN` + `CREATE TABLE product_families` + `CREATE TABLE product_merges`), testé d'abord sur une branche Neon dédiée comme pour `price_observations`, avant application en prod — à construire en R3 (capture à l'ingestion), pas dans cette étape R0.
 
 ---
+
+## 5. Mesure de l'algorithme actuel sur le jeu de 24 exemples (R1, 2026-09-26)
+
+`extractModel(title, brand, category)` (`lib/product-matching.ts`) appliqué aux 24 paires du §3, comparaison des deux modèles extraits en minuscules (c'est exactement la clé `lower(brand)|lower(model)|category` du schéma actuel décrite en §4) : **0 correspondance sur 24**. Attendu par construction — ces 24 paires ont précisément été sélectionnées en §3 parce qu'elles ne partagent pas déjà de `product_id` malgré une similarité de titre ≥ 0.3 ; ce n'est donc pas une mesure de taux de faux négatifs représentative de tout le catalogue, seulement une confirmation que l'algorithme actuel échoue bien sur les cas qu'il était censé rater (aucune surprise), utile comme point de départ chiffré (0%) avant la mesure du nouvel algorithme en R2/R3.
+
+Détail (modèle extrait A / modèle extrait B) : voir le jeu de paires versionné dans `R1_jeu-reference-candidat.csv`, colonnes `titre_complet_a`/`titre_complet_b` (les modèles extraits ne sont pas dupliqués dans le CSV pour rester lisible par Mathieu — à régénérer depuis `lib/product-matching.ts` si besoin d'un audit détaillé).
+
+## 6. Jeu de référence R1 — proposition de paires candidates (2026-09-26)
+
+Fichier `R1_jeu-reference-candidat.csv`, 24 paires (reprise des exemples du §3, prix réels vérifiés en base de prod au 2026-09-26 — 3 paires ont une offre non retrouvée à l'identique aujourd'hui, catalogue tournant quotidien, signalé en note plutôt que des prix inventés). Répartition de la proposition Claude Code : **11 identiques, 8 proches, 5 différents** (dont les 4 pièges déjà identifiés en §3 #3/#4/#11/#16, plus un 5e confirmé en vérifiant les titres réels actuels : #24, dont le titre Tennispro.fr d'origine tronqué en §3 masquait la mention de genre).
+
+Colonne `decision_mathieu` vide, à remplir par Mathieu avant que ce jeu ne serve de test automatisé (§9 du cadrage). Ce jeu de 24 est un point de départ, pas la cible finale de 50-100 paires du §9 — à compléter une fois validé, avant de construire la cascade R2/R3.
 
 ## Arrêt (R0 terminé)
 
