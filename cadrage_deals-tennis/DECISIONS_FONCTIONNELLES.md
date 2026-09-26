@@ -950,3 +950,18 @@ R0 n'est pas démarré : feu vert explicite de l'utilisateur requis après valid
 Voir `CADRAGE_rapprochement-multi-niveaux.md` section 10 pour le texte de référence.
 
 **Statut** : Actée (confirmée explicitement par l'utilisateur). Cadrage uniquement — aucun code construit dans cette conversation.
+
+---
+
+### D-2026-09-26-01 — Rapprochement : règle des générations (§5 de `CADRAGE_rapprochement-multi-niveaux.md`)
+
+**Contexte** : le jeu de référence R1 contient plusieurs paires où deux générations d'un même modèle se font face (Speed MP 2022 / 2026, Pure Drive 98 2023 / Gen11…). Le §5 v0 classait toute « génération voisine » en modèle proche.
+
+**Décision (Mathieu, 2026-09-26)** :
+- génération différente **et** vérifiée des deux côtés → **différent** (une ancienne génération n'a pas le même prix de référence, elle ne doit pas servir de base au verdict bon plan) ;
+- génération inconnue ou non vérifiable d'un côté → **proche** (jamais de fusion automatique) ;
+- **identique** exige que la génération soit confirmée des deux côtés, ou que le modèle n'ait qu'une seule génération sur le marché.
+
+Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnement` ajoutée à la colonne `niveau` du CSV (paires 37 et 38) à la même occasion.
+
+**Statut** : Actée (décision explicite de Mathieu, message du 2026-09-26).
