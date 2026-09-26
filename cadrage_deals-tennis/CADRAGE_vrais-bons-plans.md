@@ -290,6 +290,60 @@ Livrables (précisent/étendent la Phase 2 de la section 3) :
 - Recommandation sur le mécanisme de lancement des scripts depuis n8n (nœud SSH vers la VM, Execute Command, ou autre), en tenant compte du fait que n8n tourne potentiellement dans Docker sur cette même VM.
 - Liste de vérifications à faire par l'utilisateur sur la VM avant le build : type d'instance (CPU/RAM/architecture), mode d'installation et version de n8n, test de chaque scraper depuis l'IP de la VM (risque de blocage anti-bot, en particulier Amazon).
 
+#### Checklist VM Oracle — à faire par Mathieu avant le build de la Phase 2 (préparée le 2026-09-26, aucun code Phase 2 avant ce rapport)
+
+Connexion de référence connue (GAP-2026-09-22-12) : `ssh opc@145.241.173.33` — Claude Code n'a pas d'accès SSH à cette VM dans les sessions passées (`Permission denied (publickey)`), toutes les commandes ci-dessous sont donc à exécuter par Mathieu et à rapporter (copier-coller la sortie suffit, pas besoin de résumer).
+
+**1. Type d'instance (CPU / RAM / architecture)**
+```
+lscpu | grep -E 'Architecture|CPU\(s\)|Model name'
+free -h
+df -h /
+```
+Pourquoi : détermine si la VM peut faire tourner Playwright (Head, Amazon — gourmand en RAM, ~500 Mo-1 Go par instance de navigateur) en plus de n8n déjà en place. Oracle Cloud Free Tier propose deux profils très différents (Ampere A1 arm64, ou VM.Standard.E2.1.Micro x86 1 Go RAM) — l'architecture (arm64 vs x86_64) conditionne aussi si les binaires Playwright standards s'installent sans compilation supplémentaire.
+
+**2. Mode d'installation et version de n8n**
+```
+docker ps --filter name=n8n
+docker exec opc-n8n-1 n8n --version
+docker inspect opc-n8n-1 --format '{{.Config.Image}}'
+cat ~/docker-compose.yml 2>/dev/null || find / -maxdepth 4 -iname "docker-compose*.yml" 2>/dev/null
+```
+Pourquoi : confirme que n8n tourne bien en Docker (déjà supposé d'après les commandes de déploiement connues, `docker restart opc-n8n-1`) et sous quelle image/version exacte — détermine le mécanisme de lancement des scripts (le point du cadrage principal juste au-dessus, « nœud SSH vers la VM, Execute Command, ou autre ») : si n8n est dans un conteneur séparé du reste de la VM, un simple nœud "Execute Command" n8n ne verra pas le dépôt Node installé sur l'hôte, il faudra un nœud SSH vers l'hôte ou monter le dépôt en volume Docker.
+
+**3. Node.js et dépôt sur l'hôte (hors conteneur n8n)**
+```
+node --version
+npm --version
+git --version
+ls -la ~/deals-tennis 2>/dev/null || echo "dépôt absent"
+```
+Pourquoi : les 8 scripts (`npm run scrape:<marchand>`) doivent pouvoir tourner directement sur l'hôte (ou dans un conteneur dédié) indépendamment de n8n — vérifie si le kit d'installation VM (livrable déjà acté ci-dessus) part d'une VM vierge ou d'un hôte qui a déjà Node.
+
+**4. Accès SSH depuis n8n vers l'hôte (ou alternative)**
+```
+docker exec opc-n8n-1 which ssh
+docker exec opc-n8n-1 ls -la /root/.ssh 2>/dev/null || echo "pas de clé SSH dans le conteneur n8n"
+docker inspect opc-n8n-1 --format '{{json .Mounts}}'
+```
+Pourquoi : si n8n tourne dans son propre conteneur Docker, il n'a par défaut ni accès SSH à l'hôte ni au système de fichiers de l'hôte (sauf volume monté explicitement) — cette vérification tranche directement entre les deux mécanismes de lancement possibles (nœud SSH n8n→hôte avec une clé dédiée à créer, vs volume partagé + nœud Execute Command).
+
+**5. Test réel de chaque scraper depuis l'IP de la VM (risque de blocage anti-bot)**
+Depuis l'hôte de la VM (pas depuis la machine locale de Mathieu), avec le dépôt cloné et `.env.local`/`DATABASE_URL` configurés comme en local :
+```
+npm run scrape:tecnifibre
+npm run scrape:tennispro
+npm run scrape:sportsystem
+npm run scrape:sport2000
+npm run scrape:babolat
+npm run scrape:tennis-point-fr
+npm run scrape:head
+npm run scrape:amazon
+```
+Pourquoi : l'IP de la VM Oracle est différente de celle utilisée pour tous les builds précédents (machine locale de Mathieu) — les marchands avec protection anti-bot connue (Head : checkpoint Vercel ; Amazon : blocage 503 hors Playwright ; Tennispro.fr : 403 Cloudflare sur `fetch` natif, contourné par `curl`) peuvent se comporter différemment depuis une IP de datacenter cloud (souvent davantage suspectée qu'une IP résidentielle/mobile). Un scraper qui passe en local peut échouer depuis la VM — à constater réellement, pas supposé. Head et Amazon utilisent Playwright : vérifier que `npx playwright install --with-deps chromium` (ou équivalent) s'exécute sans erreur sur l'architecture de la VM (point 1) avant de lancer ces deux scripts.
+
+**Ce que Claude Code fera de ces résultats** : uniquement une fois ces 5 points rapportés, le build de la Phase 2 (kit d'installation, workflows n8n orchestrateurs, mécanisme de lancement) pourra être cadré précisément — pas avant, conformément à la demande explicite de ne pas coder cette phase tant que ce rapport n'est pas fait.
+
 ### 6.5 Ordre de traitement
 
 1. Inventaire ProTennis + archive + passage en `expired` (cette conversation : inventaire uniquement, arrêt pour validation avant l'export/le passage en expired).

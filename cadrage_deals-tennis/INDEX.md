@@ -5,10 +5,13 @@ Point d'entrée et protocole de reprise du projet. À lire dans cet ordre en dé
 1. [ETAT_ACTUEL.md](./ETAT_ACTUEL.md) — où en est le projet.
 2. [GAPS_OUVERTS.md](./GAPS_OUVERTS.md) — points ouverts non résolus.
 3. Dernière entrée de [JOURNAL_SESSIONS.md](./JOURNAL_SESSIONS.md) — ce qui s'est passé la dernière fois.
+4. **Tant que le chantier « vrais bons plans » / rapprochement multi-niveaux est en cours** (voir GAP-2026-09-25-19) : le §10 « Phasage et impact sur le cadrage principal » de [CADRAGE_rapprochement-multi-niveaux.md](./CADRAGE_rapprochement-multi-niveaux.md) et la section 6 « Amendements post Phase 0 » de [CADRAGE_vrais-bons-plans.md](./CADRAGE_vrais-bons-plans.md) — c'est ce phasage (ordre global révisé, étapes R0-R5) qui détermine la prochaine étape légitime, pas une proposition de pistes ouvertes. Ne jamais proposer une étape hors de cet ordre (ex. R3 avant R0-R2) comme piste valide.
 
 ## Documents
 
 - [DECISIONS_FONCTIONNELLES.md](./DECISIONS_FONCTIONNELLES.md) — décisions structurantes numérotées (D-AAAA-MM-JJ-NN).
+- [CADRAGE_vrais-bons-plans.md](./CADRAGE_vrais-bons-plans.md) / [CADRAGE_rapprochement-multi-niveaux.md](./CADRAGE_rapprochement-multi-niveaux.md) — cadrages du chantier en cours (historique de prix, verdict, rapprochement produit multi-niveaux R0-R5).
+- [R0_diagnostic-rapprochement.md](./R0_diagnostic-rapprochement.md) — résultats de l'étape R0 (diagnostic, aucune modification).
 - [spec.md](./spec.md) — spécification fonctionnelle (feature "Tennis Deals Catalog").
 - [plan.md](./plan.md) — plan d'implémentation technique.
 - [data-model.md](./data-model.md) — modèle de données.
