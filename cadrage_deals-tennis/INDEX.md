@@ -12,6 +12,7 @@ Point d'entrée et protocole de reprise du projet. À lire dans cet ordre en dé
 - [DECISIONS_FONCTIONNELLES.md](./DECISIONS_FONCTIONNELLES.md) — décisions structurantes numérotées (D-AAAA-MM-JJ-NN).
 - [CADRAGE_vrais-bons-plans.md](./CADRAGE_vrais-bons-plans.md) / [CADRAGE_rapprochement-multi-niveaux.md](./CADRAGE_rapprochement-multi-niveaux.md) — cadrages du chantier en cours (historique de prix, verdict, rapprochement produit multi-niveaux R0-R5).
 - [R0_diagnostic-rapprochement.md](./R0_diagnostic-rapprochement.md) — résultats de l'étape R0 (diagnostic, aucune modification).
+- [R1_jeu-reference-candidat.csv](./R1_jeu-reference-candidat.csv) / [R1_mesure.md](./R1_mesure.md) — jeu de référence R1 (38 paires, colonne `decision_mathieu` à remplir) et mesure réelle de l'algorithme actuel.
 - [spec.md](./spec.md) — spécification fonctionnelle (feature "Tennis Deals Catalog").
 - [plan.md](./plan.md) — plan d'implémentation technique.
 - [data-model.md](./data-model.md) — modèle de données.
@@ -26,6 +27,7 @@ Point d'entrée et protocole de reprise du projet. À lire dans cet ordre en dé
 
 - Une étape de build par conversation, jamais plusieurs enchaînées.
 - Toute décision structurante est soumise explicitement avant d'être actée.
+- Question posée à Mathieu = arrêt et attente de la réponse ; jamais « avec l'accord de Mathieu » sans réponse explicite (§0 règle 7 de `CADRAGE_vrais-bons-plans.md`).
 - Chaque étape livrée est vérifiée avec des données réelles, pas seulement des tests unitaires.
 - Flux branche → PR → CI → merge squash. Depuis D-2026-09-23-03 : push de la branche + création de la PR **automatiques** en fin d'étape de build, sans redemander confirmation à chaque fois (le merge, lui, reste manuel — décision de l'utilisateur après revue CI). Toute action git destructrice (reset --hard, push --force, suppression de branche) reste soumise à confirmation explicite au cas par cas.
 

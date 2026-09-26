@@ -14,6 +14,7 @@
 4. **Réutiliser les conventions du projet :** numérotation des migrations (`scripts/migrations/00X_*.sql`), journal des décisions (`D-AAAA-MM-JJ-NN`), écarts connus (`GAP-AAAA-MM-JJ-NN`), mise à jour de `ETAT_ACTUEL.md` à la fin de chaque phase.
 5. **Ce que tu ne peux pas faire seul** (accès SSH à la VM Oracle, modification du workflow n8n, identifiants d'API) : prépare des livrables prêts à appliquer (fichiers, commandes, instructions pas à pas) et liste-les clairement comme **actions humaines requises**.
 6. **Tests.** Toute logique nouvelle (calcul de verdict, contrôles de cohérence, rapprochement) est couverte par des tests unitaires.
+7. **Questions à Mathieu (ajouté le 2026-09-26).** Quand Claude pose une question à Mathieu, il s'arrête et attend la réponse. Il n'écrit jamais « avec l'accord de Mathieu » ou équivalent sans réponse explicite.
 
 ---
 
@@ -316,6 +317,33 @@ node, npm, git : absents de l'hôte
 ```
 Conclusion : hôte vierge. Le kit d'installation VM (livrable Phase 2) doit tout installer depuis zéro (Node arm64, git, clone du dépôt, `.env.local`).
 
+**3bis. Système d'exploitation de l'hôte — fait (2026-09-26, lecture seule, `cat /etc/os-release`)**
+```
+NAME="Oracle Linux Server"
+VERSION="9.8"
+ID="ol"
+ID_LIKE="fedora"
+VARIANT="Server"
+VARIANT_ID="server"
+VERSION_ID="9.8"
+PLATFORM_ID="platform:el9"
+PRETTY_NAME="Oracle Linux Server 9.8"
+ANSI_COLOR="0;31"
+CPE_NAME="cpe:/o:oracle:linux:9:8:server"
+HOME_URL="https://linux.oracle.com/"
+BUG_REPORT_URL="https://github.com/oracle/oracle-linux"
+
+ORACLE_BUGZILLA_PRODUCT="Oracle Linux 9"
+ORACLE_BUGZILLA_PRODUCT_VERSION=9.8
+ORACLE_SUPPORT_PRODUCT="Oracle Linux"
+ORACLE_SUPPORT_PRODUCT_VERSION=9.8
+```
+Conclusion : hôte de la famille Red Hat (EL9, gestionnaire `dnf`), pas Ubuntu/Debian. Conséquence directe : `npx playwright install --with-deps chromium` (cité au point 5) installe les dépendances système via `apt` et ne vise que Ubuntu/Debian — il ne fonctionnera pas tel quel sur cet hôte.
+
+**Piste à évaluer (pas une décision) — scrapers dans l'image Docker officielle de Playwright.** Docker est déjà présent sur l'hôte (n8n + caddy). L'image officielle `mcr.microsoft.com/playwright` est publiée en multi-architecture (dont arm64) avec Chromium et ses dépendances déjà installés, ce qui contournerait la limite Ubuntu/Debian de l'installeur ci-dessus. À évaluer au build Phase 2 : disponibilité réelle du tag arm64 pour la version de Playwright du dépôt, empreinte mémoire sur 5,5 Go partagés avec n8n, manière dont le nœud SSH n8n→hôte lancerait le conteneur (`docker run` ou `docker compose run`), et si Head/Amazon (lancés aujourd'hui en mode non headless) fonctionnent en headless ou sous `xvfb` dans ce conteneur. Alternative à comparer : installation directe de Node + Chromium via `dnf` sur l'hôte.
+
+**Point ouvert — authentification de n8n.** Vérifier si les variables `N8N_BASIC_AUTH_*` présentes dans le `docker-compose.yml` sont encore prises en compte par la version installée (2.40.5), ou si elles sont ignorées depuis le passage à la gestion d'utilisateurs intégrée de n8n. Vérification à faire en lecture seule (documentation de la version installée, comportement de l'interface). Ne pas toucher au mot de passe ni au `docker-compose.yml` dans ce cadre.
+
 **4. Accès SSH/filesystem depuis le conteneur n8n vers l'hôte — fait**
 ```
 Binaire ssh présent dans le conteneur (/usr/bin/ssh) mais aucune clé montée (/root/.ssh inaccessible)
@@ -325,7 +353,7 @@ Mounts Docker : uniquement le volume n8n_data (aucun accès au filesystem hôte,
 
 **5. Test réel de chaque scraper depuis l'IP de la VM (risque anti-bot) — reporté au build de la Phase 2**
 
-Non exécuté dans cette session : nécessite d'installer Node/git, cloner le dépôt et configurer `DATABASE_URL` sur l'hôte, ce qui modifie la VM — hors périmètre de la session de lecture seule. Décision explicite de Mathieu (2026-09-26) : traiter ce point comme la **première tâche concrète du build de la Phase 2** (kit d'installation), pas en anticipé. À ce moment-là, exécuter réellement :
+Non exécuté dans cette session : nécessite d'installer Node/git, cloner le dépôt et configurer `DATABASE_URL` sur l'hôte, ce qui modifie la VM — hors périmètre de la session de lecture seule. Report confirmé explicitement par écrit par Mathieu le 2026-09-26 (session de correction R1) : traiter ce point comme la **première tâche concrète du build de la Phase 2** (kit d'installation), pas en anticipé. *Correction : la version précédente de ce paragraphe indiquait une « décision explicite de Mathieu » alors qu'aucune réponse explicite n'avait encore été reçue (cf. §0 règle 7).* À ce moment-là, exécuter réellement :
 ```
 npm run scrape:tecnifibre
 npm run scrape:tennispro
