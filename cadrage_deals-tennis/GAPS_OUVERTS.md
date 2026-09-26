@@ -35,11 +35,31 @@ structurés avant fusion (§3 R2/R3) ; proposition de migration additive
 (`product_families`, colonnes d'attributs nullables sur `products`,
 `mpn`/`unit_quantity`/`unit_type` sur `deals`, `product_merges`).
 
-**Bloquant sur** : R1 (jeu de référence, 50-100 paires proposées par
-Claude Code puis validées par Mathieu) — feu vert explicite requis.
+**Complément R0 fait (2026-09-26)** : vérification réelle du GTIN/EAN sur
+la page produit (requête HTTP supplémentaire) pour les 7 marchands hors
+Sport 2000 — voir §1bis de `R0_diagnostic-rapprochement.md`. Résultat :
+Tennis Point FR et Tecnifibre exposent un vrai GTIN en JSON-LD sur la
+fiche produit (non visible dans le flux Shopify déjà utilisé par les
+scripts), portant à 3/8 marchands le nombre de sources GTIN fiables.
+SportSystem/Babolat/Tennispro.fr confirmés sans GTIN. Head et Amazon non
+testables sans Playwright (anti-bot dès la requête simple). Coût estimé
+si limité aux raquettes/chaussures et aux 2 marchands avec gain réel :
+~556 requêtes supplémentaires par run (majoritairement Tennis Point FR,
+455 chaussures).
 
-**Statut** : ouvert au 2026-09-26 — R0 terminé, R1 prêt à démarrer sur
-feu vert explicite.
+**R1 fait (2026-09-26)** : CSV de 24 paires candidates généré
+(`R1_jeu-reference-candidat.csv`, reprise des exemples R0 §3, prix réels
+vérifiés en base), avec la proposition Claude Code (11 identiques, 8
+proches, 5 différents) et une colonne `decision_mathieu` vide. Mesure de
+l'algorithme actuel sur ces 24 paires : 0/24 rapprochées (attendu par
+construction, voir §5 de `R0_diagnostic-rapprochement.md`).
+
+**Bloquant sur** : validation par Mathieu du CSV R1 (colonne
+`decision_mathieu`), puis complément du jeu jusqu'à 50-100 paires (§9 du
+cadrage) avant de construire la cascade R2/R3.
+
+**Statut** : ouvert au 2026-09-26 — R0 + complément terminés, CSV R1
+prêt pour validation de Mathieu.
 
 ---
 
