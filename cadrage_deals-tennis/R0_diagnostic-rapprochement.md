@@ -37,6 +37,8 @@ Suite au constat du §1 (« sans requête supplémentaire », un seul marchand e
 
 **Conclusion révisée par rapport au §1** : le constat « sans requête supplémentaire » du §1 reste vrai pour la méthode actuelle des scripts (JSON storefront Shopify pour Tennis Point FR/Tecnifibre, qui n'expose pas `barcode`). Mais **avec une requête HTTP supplémentaire par produit vers la fiche produit HTML elle-même**, Tennis Point FR et Tecnifibre exposent un vrai GTIN/EAN via JSON-LD — ce n'était pas visible dans le flux JSON déjà utilisé par les scripts. Cela porte à **3 marchands sur 8** (Sport 2000 + Tennis Point FR + Tecnifibre) la disponibilité d'un GTIN fiable, moyennant un coût de requêtes additionnelles pour ces deux derniers.
 
+**Constat complémentaire (2026-09-26, session de correction R1)** : les fiches produit Tennispro.fr exposent la **référence fabricant** dans l'objet `dataLayer.push({"product":{... "sku", "mpn"}})` du HTML — ex. `"mpn":"233612"` (Head Speed MP 2022), `"mpn":"281099-WH"` (Head Rip Control, coloris blanc). Vérifié sur 6 fiches (2 Speed MP, 2 Pure Drive 98 — références `101474` et `101551` sous un même titre —, 2 Rip Control). Ce n'est pas un GTIN, mais c'est une vraie référence fabricant (pas un identifiant interne), utilisable pour distinguer deux générations de même titre. Le §1 indiquait « Inconnu » pour Tennispro.fr.
+
 **Estimation du coût (nombre de requêtes additionnelles par run), catégories raquettes + chaussures uniquement**, comptage réel sur les offres actives/`tracked` en base de prod (2026-09-26) :
 
 | Marchand | Raquettes | Chaussures | Total requêtes suppl. / run | Gain GTIN ? |
@@ -149,13 +151,17 @@ C'est exactement la clé texte décrite en §1 du cadrage (`lower(brand)|lower(m
 
 ---
 
-## 5. Mesure de l'algorithme actuel sur le jeu de 24 exemples (R1, 2026-09-26)
+## 5. Mesure de l'algorithme actuel sur le jeu de 24 exemples (R1, 2026-09-26) — REMPLACÉE
+
+> **Remplacée par `R1_mesure.md`** (2026-09-26, session de correction R1) : le 0/24 ci-dessous ne mesurait rien, les 24 paires ayant été choisies parce que l'algorithme les rate. La mesure refaite sur 38 paires, avec des paires témoins que l'algorithme rapproche, est dans `R1_mesure.md`. Section conservée pour l'historique.
 
 `extractModel(title, brand, category)` (`lib/product-matching.ts`) appliqué aux 24 paires du §3, comparaison des deux modèles extraits en minuscules (c'est exactement la clé `lower(brand)|lower(model)|category` du schéma actuel décrite en §4) : **0 correspondance sur 24**. Attendu par construction — ces 24 paires ont précisément été sélectionnées en §3 parce qu'elles ne partagent pas déjà de `product_id` malgré une similarité de titre ≥ 0.3 ; ce n'est donc pas une mesure de taux de faux négatifs représentative de tout le catalogue, seulement une confirmation que l'algorithme actuel échoue bien sur les cas qu'il était censé rater (aucune surprise), utile comme point de départ chiffré (0%) avant la mesure du nouvel algorithme en R2/R3.
 
 Détail (modèle extrait A / modèle extrait B) : voir le jeu de paires versionné dans `R1_jeu-reference-candidat.csv`, colonnes `titre_complet_a`/`titre_complet_b` (les modèles extraits ne sont pas dupliqués dans le CSV pour rester lisible par Mathieu — à régénérer depuis `lib/product-matching.ts` si besoin d'un audit détaillé).
 
-## 6. Jeu de référence R1 — proposition de paires candidates (2026-09-26)
+## 6. Jeu de référence R1 — proposition de paires candidates (2026-09-26) — version initiale, depuis complétée
+
+> **Mis à jour** : le CSV compte désormais 38 paires (corrections, colonnes `niveau`/`piege`/`statut_prix`/`algo_actuel`, paires témoins et pièges supplémentaires) — voir `R1_mesure.md`. Le paragraphe ci-dessous décrit la version initiale à 24 paires.
 
 Fichier `R1_jeu-reference-candidat.csv`, 24 paires (reprise des exemples du §3, prix réels vérifiés en base de prod au 2026-09-26 — 3 paires ont une offre non retrouvée à l'identique aujourd'hui, catalogue tournant quotidien, signalé en note plutôt que des prix inventés). Répartition de la proposition Claude Code : **11 identiques, 8 proches, 5 différents** (dont les 4 pièges déjà identifiés en §3 #3/#4/#11/#16, plus un 5e confirmé en vérifiant les titres réels actuels : #24, dont le titre Tennispro.fr d'origine tronqué en §3 masquait la mention de genre).
 

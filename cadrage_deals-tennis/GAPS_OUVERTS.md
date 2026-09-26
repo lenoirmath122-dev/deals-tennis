@@ -54,12 +54,55 @@ proches, 5 différents) et une colonne `decision_mathieu` vide. Mesure de
 l'algorithme actuel sur ces 24 paires : 0/24 rapprochées (attendu par
 construction, voir §5 de `R0_diagnostic-rapprochement.md`).
 
+**R1 corrigé et complété (2026-09-26, session de correction)** : CSV
+porté à 38 paires — corrections demandées par Mathieu (paire 10 → différent,
+« L » = Lite chez Head ; note de la paire 20 reformulée), prix des paires
+13/15/16 retrouvés en base (les titres du CSV initial avaient été
+reconstruits depuis le modèle et ne correspondaient à aucune offre),
+colonnes `niveau` (offre / variante / modèle), `piege`, `statut_prix`,
+`algo_actuel`, `cle_algo_a`/`cle_algo_b` ajoutées. 8 paires témoins que
+l'algorithme actuel rapproche (les 3 seuls produits inter-marchands en base
++ 5 fusions chez un même marchand) et 6 pièges supplémentaires. Mesure
+réelle de `lib/product-matching.ts` : précision 5/8 (62,5 %), rappel 5/18
+(27,8 %) sur « même modèle » ; faux positifs = générations différentes sous
+un titre identique (Tennispro) et jauge indéterminable. Détail dans
+`R1_mesure.md`.
+
 **Bloquant sur** : validation par Mathieu du CSV R1 (colonne
 `decision_mathieu`), puis complément du jeu jusqu'à 50-100 paires (§9 du
 cadrage) avant de construire la cascade R2/R3.
 
 **Statut** : ouvert au 2026-09-26 — R0 + complément terminés, CSV R1
-prêt pour validation de Mathieu.
+(38 paires, mesuré) prêt pour validation de Mathieu.
+
+---
+
+## GAP-2026-09-26-01 — n8n : `N8N_BASIC_AUTH_*` encore pris en compte en 2.40.5 ? (OUVERT)
+
+Le `docker-compose.yml` de la VM Oracle définit une authentification basique
+via `N8N_BASIC_AUTH_*`. À vérifier (lecture seule) : ces variables sont-elles
+encore lues par la version installée (2.40.5), ou ignorées depuis la gestion
+d'utilisateurs intégrée de n8n ? Si elles sont ignorées, la protection
+réelle de l'interface repose sur autre chose qu'on ne connaît pas encore.
+Ne toucher ni au mot de passe ni au `docker-compose.yml` dans ce cadre.
+Voir §6.4 de `CADRAGE_vrais-bons-plans.md`.
+
+**Statut** : ouvert au 2026-09-26, à traiter au build de la Phase 2 (ou
+avant, sur demande).
+
+---
+
+## GAP-2026-09-26-02 — VM Oracle sous Oracle Linux 9.8 : installation de Playwright à évaluer (OUVERT)
+
+`cat /etc/os-release` (2026-09-26) : Oracle Linux Server 9.8 (famille EL9,
+`dnf`). `npx playwright install --with-deps` ne vise que Ubuntu/Debian et ne
+fonctionnera pas tel quel. Piste à évaluer (pas une décision) : faire
+tourner les scrapers dans l'image Docker officielle de Playwright
+(multi-arch, arm64), Docker étant déjà présent sur l'hôte. Voir §6.4 de
+`CADRAGE_vrais-bons-plans.md` pour les points à évaluer.
+
+**Statut** : ouvert au 2026-09-26, à trancher au build de la Phase 2
+(point 5 de la checklist VM).
 
 ---
 
