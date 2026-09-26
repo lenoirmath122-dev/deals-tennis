@@ -1,5 +1,25 @@
 # Points ouverts
 
+## GAP-2026-09-26-03 — Repérage de nouveaux marchands : en attente du retour cowork (OUVERT)
+
+Suite à D-2026-09-26-02 : repérage de nouveaux marchands tennis lancé par
+Mathieu via Claude cowork (hors de ce dépôt), en parallèle de R1-R2. Prompt
+remis et versionné dans `REPERAGE_marchands_prompt-cowork.md`.
+
+**Reste à faire** : Mathieu rapporte le résultat de cowork dans une nouvelle
+conversation dédiée sur ce dépôt. Chaque candidat retenu (`prioritaire` ou
+`possible`) y sera vérifié réellement avant toute décision — pas d'ajout au
+périmètre sur la seule foi du rapport cowork. Rappel : aucune candidature à
+un programme d'affiliation tant que GAP-2026-09-25-10 (conflit de nom
+« Tennisdeals ») n'est pas tranché.
+
+**Bloquant sur** : retour de Mathieu depuis cowork. La construction de tout
+marchand retenu est elle-même reportée à R3 (voir D-2026-09-26-02).
+
+**Statut** : ouvert au 2026-09-26.
+
+---
+
 ## GAP-2026-09-25-19 — Produits multi-marchands distincts : 10 → 1 (OUVERT)
 
 Point de départ chiffré du chantier de rapprochement produit multi-niveaux

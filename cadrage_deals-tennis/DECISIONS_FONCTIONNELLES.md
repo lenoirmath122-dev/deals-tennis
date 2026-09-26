@@ -965,3 +965,17 @@ Voir `CADRAGE_rapprochement-multi-niveaux.md` section 10 pour le texte de réfé
 Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnement` ajoutée à la colonne `niveau` du CSV (paires 37 et 38) à la même occasion.
 
 **Statut** : Actée (décision explicite de Mathieu, message du 2026-09-26).
+
+---
+
+### D-2026-09-26-02 — Repérage de nouveaux marchands en parallèle de R1-R2, construction reportée à R3
+
+**Contexte** : à l'estimation du nombre d'étapes restantes avant un rapprochement automatique et fiable, Mathieu a proposé de lancer en parallèle (via Claude cowork, hors de ce dépôt) un repérage de nouveaux marchands tennis, pour augmenter la couverture multi-marchands en même temps que le moteur de rapprochement (point de départ chiffré à 1 seul produit présent chez 2+ marchands, GAP-2026-09-25-19). Le repérage de nouveaux marchands est explicitement hors périmètre de `CADRAGE_rapprochement-multi-niveaux.md` (§11).
+
+**Décision** :
+- Le repérage (identification et vérification de candidats, sans code ni compte créé) peut se faire dès maintenant, en parallèle de R1 (complément du jeu de référence) et R2 (référentiel de modèles), via un prompt dédié pour Claude cowork (`REPERAGE_marchands_prompt-cowork.md`).
+- La **construction** de tout nouveau marchand retenu est reportée à la vague **R3** (réécriture des 8 scripts sur `lib/ingest.ts`) — pour ne pas écrire un script avec l'ancien SQL puis le réécrire au nouveau format juste après (même logique que D-2026-09-25-24 pour les 8 scripts existants).
+- **Aucune candidature à un programme d'affiliation** ne doit être déposée sous le nom actuel du site tant que GAP-2026-09-25-10 (conflit de nom « Tennisdeals ») n'est pas tranché.
+- Les critères de tri des candidats (légalité de la collecte, GTIN exposé, recouvrement avec les marques déjà couvertes, méthode technique simple, volume réel) sont documentés dans le prompt cowork lui-même, pas dupliqués ici.
+
+**Statut** : Actée (confirmée explicitement par Mathieu, message du 2026-09-26). Cadrage/documentation uniquement — aucun code construit, aucune candidature déposée.
