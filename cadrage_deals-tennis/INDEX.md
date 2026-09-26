@@ -2,6 +2,7 @@
 
 Point d'entrée et protocole de reprise du projet. À lire dans cet ordre en début de session :
 
+0. Appliquer la section « Choix du modèle » de [CLAUDE.md](../CLAUDE.md) : écrire la ligne « Modèle actuel / Modèle recommandé » au début de la session et avant chaque nouvelle tâche ; en cas d'écart, s'arrêter et demander le changement via /model avant toute action.
 1. [ETAT_ACTUEL.md](./ETAT_ACTUEL.md) — où en est le projet.
 2. [GAPS_OUVERTS.md](./GAPS_OUVERTS.md) — points ouverts non résolus.
 3. Dernière entrée de [JOURNAL_SESSIONS.md](./JOURNAL_SESSIONS.md) — ce qui s'est passé la dernière fois.
