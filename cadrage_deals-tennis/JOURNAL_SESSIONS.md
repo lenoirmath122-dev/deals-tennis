@@ -135,7 +135,7 @@
 
 - Reprise (`/clear`), Opus. Demande 1 : point global du projet vers l'objectif « site quasi autonome » (réponse en conversation, rien de consigné : synthèse d'`ETAT_ACTUEL.md`, des GAPS et des phasages existants).
 - Demande 2 : Mathieu valide tout le CSV R1 et choisit le nom « Bonplantennis ». Branche fraîche `docs/r1-valide-nom-bonplantennis` depuis `origin/master` (#79 mergée).
-- **D-2026-09-27-03** : `decision_mathieu` rempli sur les 38 lignes (proposition acceptée telle quelle), `R1_mesure.md` §7 ajouté. Paire 7 signalée à Mathieu (incohérente avec la règle des générations au vu de la paire 6), non modifiée.
+- **D-2026-09-27-03** : `decision_mathieu` rempli sur les 38 lignes (proposition acceptée telle quelle), `R1_mesure.md` §7 ajouté. Paire 7 signalée à Mathieu (incohérente avec la règle des générations au vu de la paire 6), reclassée « différent » sur sa réponse (14 / 9 / 15, mesure inchangée). Session close à la demande de Mathieu.
 - **D-2026-09-27-04** : vérification de disponibilité en lecture seule — DNS + RDAP (Verisign, AFNIC) : 9 domaines libres ; recherche web : aucun site « Bonplantennis », usage générique « bons plans tennis » chez Tennis Compagnie et Extreme Tennis ; data.inpi.fr via Playwright non headless : 0 marque « bonplantennis », recherche « bon plan tennis » bloquée par Cloudflare (non forcée), EUIPO non consulté. Script Playwright jetable exécuté puis supprimé.
 - GAP-2026-09-25-19 et GAP-2026-09-25-10 mis à jour.
 - Prochaine étape : non déduite ici. Pistes légitimes : renommage de la marque affichée (build, Sonnet), complément du jeu R1 à 50-100 paires (Opus).

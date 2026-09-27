@@ -1011,9 +1011,7 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 
 **Contexte** : `R1_jeu-reference-candidat.csv` (38 paires, règle des générations D-2026-09-26-01 appliquée) attendait la validation de Mathieu (colonne `decision_mathieu`) avant la suite du chantier de rapprochement.
 
-**Décision (Mathieu, 2026-09-27)** : « Je valide tout le CSV R1 » — les 38 propositions de Claude Code sont acceptées sans modification (14 identiques / 10 proches / 14 différents). La mesure de l'algorithme actuel devient la référence : précision 62,5 % (5/8), rappel 35,7 % (5/14), inter-marchands 2/11 (`R1_mesure.md` §7).
-
-**Point laissé ouvert, signalé à Mathieu** : la paire 7 est restée « proche » alors que la vérification de la paire 6 donnerait « différent » selon la règle des générations. Sans effet sur la mesure.
+**Décision (Mathieu, 2026-09-27)** : « Je valide tout le CSV R1 », puis « reclasse [la paire 7] en différent » — les 38 propositions sont acceptées, la paire 7 étant reclassée de « proche » à « différent » (la vérification de la paire 6 établit deux générations différentes, règle D-2026-09-26-01). Répartition finale : 14 identiques / 9 proches / 15 différents. La mesure de l'algorithme actuel devient la référence : précision 62,5 % (5/8), rappel 35,7 % (5/14), inter-marchands 2/11 (`R1_mesure.md` §7).
 
 **Suite prévue par le cadrage (§9, non engagée ici)** : compléter le jeu jusqu'à 50-100 paires avant la cascade R2/R3.
 

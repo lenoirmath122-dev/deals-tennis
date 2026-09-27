@@ -69,9 +69,9 @@ un titre identique (Tennispro) et jauge indéterminable. Détail dans
 `R1_mesure.md`.
 
 **CSV R1 validé tel quel par Mathieu (2026-09-27, D-2026-09-27-03)** :
-38 propositions acceptées, mesure de référence inchangée (précision 5/8,
-rappel 5/14, inter-marchands 2/11). Paire 7 signalée (la règle des
-générations donnerait « différent »), sans effet sur la mesure.
+38 propositions acceptées, paire 7 reclassée « différent » (14 / 9 / 15),
+mesure de référence inchangée (précision 5/8, rappel 5/14,
+inter-marchands 2/11).
 
 **Bloquant sur** : complément du jeu jusqu'à 50-100 paires (§9 du
 cadrage) avant de construire la cascade R2/R3.
