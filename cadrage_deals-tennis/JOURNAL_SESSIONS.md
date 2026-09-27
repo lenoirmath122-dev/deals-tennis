@@ -144,5 +144,5 @@
 
 - Reprise (`/clear`), Opus. Mathieu choisit le complément du jeu R1 (plutôt que le renommage). Branche `docs/r1-complement-jeu` depuis `origin/master` (#80 mergée, rien en retard).
 - 29 paires inter-marchands proposées (15 identiques / 8 proches / 6 différents), vérifiées sur les fiches (SportSystem, Tennis Point FR, Sport 2000, Tecnifibre ; Tennispro à 1 requête/min). Jeu complet : précision 5/8, rappel 5/29, inter-marchands 2/26. `R1_mesure.md` §8.
-- Scripts jetables (`tmp-r1/`, pages en scratchpad) supprimés en fin de session. Deux questions posées à Mathieu (jauge au choix, collection textile) : en attente.
+- Scripts jetables (`tmp-r1/`, pages en scratchpad) supprimés en fin de session. Deux questions tranchées par Mathieu : D-2026-09-27-05 (cordages, jauge différente = proche), D-2026-09-27-06 (textile, identique sauf génération explicitement différente → proche) ; §5 du cadrage mis à jour, paires 54/58/60 → identique (18 / 5 / 6).
 - Prochaine étape : validation des paires 39-67 par Mathieu, puis R2.
