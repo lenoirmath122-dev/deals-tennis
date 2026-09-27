@@ -2,7 +2,7 @@
 
 Point d'entrée et protocole de reprise du projet. À lire dans cet ordre en début de session :
 
-0. Appliquer la section « Choix du modèle » de [CLAUDE.md](../CLAUDE.md) : écrire la ligne « Modèle actuel / Modèle recommandé » au début de la session et avant chaque nouvelle tâche ; en cas d'écart, s'arrêter et demander le changement via /model avant toute action.
+0. Appliquer la section « Choix du modèle » de [CLAUDE.md](../CLAUDE.md) au début de la session et avant chaque nouvelle tâche : si le modèle actuel correspond à la recommandation, l'indiquer en une ligne ; sinon, poser directement une question interactive (pas de texte + arrêt séparés) avant toute action.
 1. [ETAT_ACTUEL.md](./ETAT_ACTUEL.md) — où en est le projet.
 2. [GAPS_OUVERTS.md](./GAPS_OUVERTS.md) — points ouverts non résolus.
 3. Dernière entrée de [JOURNAL_SESSIONS.md](./JOURNAL_SESSIONS.md) — ce qui s'est passé la dernière fois.
@@ -14,6 +14,7 @@ Point d'entrée et protocole de reprise du projet. À lire dans cet ordre en dé
 - [CADRAGE_vrais-bons-plans.md](./CADRAGE_vrais-bons-plans.md) / [CADRAGE_rapprochement-multi-niveaux.md](./CADRAGE_rapprochement-multi-niveaux.md) — cadrages du chantier en cours (historique de prix, verdict, rapprochement produit multi-niveaux R0-R5).
 - [R0_diagnostic-rapprochement.md](./R0_diagnostic-rapprochement.md) — résultats de l'étape R0 (diagnostic, aucune modification).
 - [R1_jeu-reference-candidat.csv](./R1_jeu-reference-candidat.csv) / [R1_mesure.md](./R1_mesure.md) — jeu de référence R1 (38 paires, colonne `decision_mathieu` à remplir) et mesure réelle de l'algorithme actuel.
+- [REPERAGE_marchands_prompt-cowork.md](./REPERAGE_marchands_prompt-cowork.md) — prompt de repérage de nouveaux marchands (Claude cowork, hors dépôt), voir D-2026-09-26-02 et GAP-2026-09-26-03.
 - [spec.md](./spec.md) — spécification fonctionnelle (feature "Tennis Deals Catalog").
 - [plan.md](./plan.md) — plan d'implémentation technique.
 - [data-model.md](./data-model.md) — modèle de données.
