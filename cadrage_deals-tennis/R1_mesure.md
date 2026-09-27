@@ -115,3 +115,9 @@ Vérification des générations (2026-09-26) : ces références se résolvent su
 ## 6. Arrêt
 
 Aucune décision prise sur la suite. Prochaine action attendue : Mathieu remplit `decision_mathieu`. Les chiffres du §3 seront recalculés sur ses décisions, pas sur les propositions de Claude Code.
+
+## 7. Validation (2026-09-27, D-2026-09-27-03)
+
+Mathieu a validé **les 38 propositions telles quelles** (`decision_mathieu` rempli sur toutes les lignes). Aucune décision ne diffère de la proposition : les chiffres du §3 sont donc inchangés et deviennent la mesure de référence — **précision 62,5 % (5/8), rappel 35,7 % (5/14), inter-marchands 2/11**.
+
+Point signalé à Mathieu au moment de la validation : la paire 7 (« proche ») contredit la règle des générations au vu de la vérification faite sur la paire 6 (l'offre Tennis Point FR n'est pas la FX 500 Lite 2026, l'offre SportSystem l'est) ; la règle donnerait « différent ». Sans effet sur les chiffres (paire non rapprochée par l'algorithme, ni « identique » dans un cas comme dans l'autre).

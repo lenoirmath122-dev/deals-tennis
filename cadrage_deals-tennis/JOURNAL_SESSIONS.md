@@ -130,3 +130,12 @@
 - Mesure Tennis Achat (lecture seule, Crawl-delay 60 respecté) : sitemaps des deux sites → ≥ 96,5 % de catalogue commun ; à la demande de Mathieu (« les prix sont les mêmes ? »), 12 paires comparées : prix conseillé identique 12/12, prix de vente identique 8/12, écarts de 3 à 13 % sur 4. Mathieu : garder Tennis Achat, en dernier dans R3, marqué même opérateur.
 - Actées : D-2026-09-27-01 (nom), D-2026-09-27-02 (périmètre R3). GAP-2026-09-26-03 clos et retiré ; GAP-2026-09-25-10 mis à jour (nom restant à choisir). CSV `decision_mathieu` rempli, §5 ajouté au document de vérification. Fichiers temporaires dans le dossier de session uniquement.
 - Prochaine étape : non déduite ici. Pistes légitimes : choix du nouveau nom (GAP-2026-09-25-10), ou reprise du chemin critique R1 (validation du CSV R1 par Mathieu).
+
+## 2026-09-27 (suite 2) — Vue d'ensemble, CSV R1 validé, nom « Bonplantennis »
+
+- Reprise (`/clear`), Opus. Demande 1 : point global du projet vers l'objectif « site quasi autonome » (réponse en conversation, rien de consigné : synthèse d'`ETAT_ACTUEL.md`, des GAPS et des phasages existants).
+- Demande 2 : Mathieu valide tout le CSV R1 et choisit le nom « Bonplantennis ». Branche fraîche `docs/r1-valide-nom-bonplantennis` depuis `origin/master` (#79 mergée).
+- **D-2026-09-27-03** : `decision_mathieu` rempli sur les 38 lignes (proposition acceptée telle quelle), `R1_mesure.md` §7 ajouté. Paire 7 signalée à Mathieu (incohérente avec la règle des générations au vu de la paire 6), non modifiée.
+- **D-2026-09-27-04** : vérification de disponibilité en lecture seule — DNS + RDAP (Verisign, AFNIC) : 9 domaines libres ; recherche web : aucun site « Bonplantennis », usage générique « bons plans tennis » chez Tennis Compagnie et Extreme Tennis ; data.inpi.fr via Playwright non headless : 0 marque « bonplantennis », recherche « bon plan tennis » bloquée par Cloudflare (non forcée), EUIPO non consulté. Script Playwright jetable exécuté puis supprimé.
+- GAP-2026-09-25-19 et GAP-2026-09-25-10 mis à jour.
+- Prochaine étape : non déduite ici. Pistes légitimes : renommage de la marque affichée (build, Sonnet), complément du jeu R1 à 50-100 paires (Opus).
