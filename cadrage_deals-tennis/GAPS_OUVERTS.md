@@ -81,10 +81,15 @@ génération différente écrite = identique). Jeu complet : précision 5/8,
 rappel 5/32 (15,6 %), inter-marchands 2/29 (6,9 %). Détail :
 `R1_mesure.md` §8.
 
-**Bloquant sur** : validation des paires 39-67 par Mathieu, avant R2.
+**Complément validé (2026-09-27, D-2026-09-27-07)** : 67 paires validées
+(32 identiques / 14 proches / 21 différents). Mesure de référence avant
+R2 : précision 5/8, rappel 5/32, inter-marchands 2/29.
 
-**Statut** : ouvert au 2026-09-27 — R0 et R1 (38 paires) validés ;
-complément (67 paires) proposé, en attente de validation ; puis R2.
+**Bloquant sur** : rien pour R1. Prochaine étape : R2 (référentiel v1 et
+règles de tolérance, §10 du cadrage).
+
+**Statut** : ouvert au 2026-09-27 — R0 et R1 (67 paires) validés ; reste
+R2 à R5.
 
 ---
 
