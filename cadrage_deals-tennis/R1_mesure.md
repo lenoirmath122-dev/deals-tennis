@@ -122,7 +122,7 @@ Mathieu a validé **les 38 propositions**, avec un seul reclassement : la paire 
 
 Paire 7 : la vérification faite sur la paire 6 établit que l'offre Tennis Point FR n'est pas la FX 500 Lite 2026 et que l'offre SportSystem l'est ; génération différente vérifiée des deux côtés → « différent » (règle D-2026-09-26-01). Signalé par Claude Code, reclassé sur décision de Mathieu le 2026-09-27.
 
-## 8. Complément du jeu : paires 39 à 67 (2026-09-27, en attente de validation)
+## 8. Complément du jeu : paires 39 à 67 (2026-09-27, validé, voir §9)
 
 > Suite du §9 du cadrage (50 à 100 paires). Lecture seule sur la base Neon de prod et sur les fiches marchands, aucune modification de code applicatif, de base ou de VM.
 
@@ -179,7 +179,7 @@ Causes des 18 nouveaux faux négatifs : la marque et le mot-catégorie en double
 
 ### 8.5 Arrêt
 
-Reste à faire : validation des 29 propositions par Mathieu (question 3). Après validation, les chiffres du §8.2 deviendront la nouvelle mesure de référence avant R2.
+Question 3 tranchée le 2026-09-27 : voir §9.
 
 ### 8.6 Décisions de Mathieu sur les questions 1 et 2 (2026-09-27)
 
@@ -187,3 +187,9 @@ Reste à faire : validation des 29 propositions par Mathieu (question 3). Après
 - **D-2026-09-27-06, textile** : « si c'est exactement le même modèle alors identique, si génération différente explicitement alors proche ». Les paires **54, 58 et 60 passent de « proche » à « identique »**. La paire 59 (édition « RG » écrite d'un seul côté) reste « proche » : ce n'est pas exactement le même modèle, à confirmer. Les sacs (22, 23) ne sont pas concernés.
 - Le §5 de `CADRAGE_rapprochement-multi-niveaux.md` est mis à jour. Aucune paire validée (1-38) ne change de classement.
 - Effet sur la mesure (§8.2) : 32 identiques au lieu de 29, rappel 5/32, inter-marchands 2/29 ; la précision est inchangée.
+
+## 9. Validation du complément (2026-09-27, D-2026-09-27-07)
+
+Mathieu valide **les 29 propositions** telles quelles et confirme « proche » pour la paire 59. Pour les sacs, la règle des générations (D-2026-09-26-01) reste en vigueur, sauf pour exactement le même article : les paires 22 et 23 ne changent pas.
+
+Jeu R1 final : **67 paires validées**, 32 identiques / 14 proches / 21 différents. **Mesure de référence avant R2** : précision **5/8 = 62,5 %**, rappel **5/32 = 15,6 %**, inter-marchands **2/29 = 6,9 %**.
