@@ -136,7 +136,7 @@ Méthode de sélection :
 3. Vérification sur les fiches (référence fabricant, GTIN, JSON-LD, description), avec les sources notées dans la colonne `note`. Tennispro.fr : 10 fiches, une requête par minute (`Crawl-delay: 60`).
 4. `algo_actuel` et les clés sont calculés en exécutant réellement `extractModel` / `normalizeProductKey` de `lib/product-matching.ts`, comme au §2.
 
-Proposition Claude Code : **15 identiques / 8 proches / 6 différents**. Nouveaux types de pièges :
+Proposition Claude Code : **18 identiques / 5 proches / 6 différents** après les décisions D-2026-09-27-05 et -06 (§8.6 ; avant : 15 / 8 / 6). Nouveaux types de pièges :
 
 | Type | Paires |
 |---|---|
@@ -156,12 +156,12 @@ L'algorithme actuel ne rapproche **aucune** des 29 nouvelles paires (clés toute
 | Périmètre | Paires | Identiques | Précision | Rappel |
 |---|---|---|---|---|
 | Jeu validé (1-38, référence du §7) | 38 | 14 | 5/8 = 62,5 % | 5/14 = 35,7 % |
-| **Jeu complet (1-67)** | 67 | 29 | **5/8 = 62,5 %** | **5/29 = 17,2 %** |
-| Inter-marchands seuls | 61 | 26 | 2/3 | **2/26 = 7,7 %** |
+| **Jeu complet (1-67)** | 67 | 32 | **5/8 = 62,5 %** | **5/32 = 15,6 %** |
+| Inter-marchands seuls | 61 | 29 | 2/3 | **2/29 = 6,9 %** |
 
-La précision ne bouge pas (aucun nouveau rapprochement, donc aucun nouveau faux positif). Le rappel baisse parce que le complément ajoute surtout des paires identiques entre marchands, exactement le cas que l'algorithme ne sait pas traiter. Le chiffre « inter-marchands, 2/26 » est le plus proche de la réalité de GAP-2026-09-25-19 (1 seul produit multi-marchands en base).
+La précision ne bouge pas (aucun nouveau rapprochement, donc aucun nouveau faux positif). Le rappel baisse parce que le complément ajoute surtout des paires identiques entre marchands, exactement le cas que l'algorithme ne sait pas traiter. Le chiffre « inter-marchands, 2/29 » est le plus proche de la réalité de GAP-2026-09-25-19 (1 seul produit multi-marchands en base).
 
-Causes des 15 nouveaux faux négatifs : la marque et le mot-catégorie en double côté SportSystem, le poids entre parenthèses (Tennispro), le suffixe de coloris et de genre (Tennis Point FR), l'ordre des mots, la marque différente (Amazon), et les 5 pièges inverses.
+Causes des 18 nouveaux faux négatifs : la marque et le mot-catégorie en double côté SportSystem, le poids entre parenthèses (Tennispro), le suffixe de coloris et de genre (Tennis Point FR), l'ordre des mots, la marque différente (Amazon), et les 5 pièges inverses.
 
 ### 8.3 Constats utiles pour R2/R3 (nouveaux)
 
@@ -171,7 +171,7 @@ Causes des 15 nouveaux faux négatifs : la marque et le mot-catégorie en double
 - La **référence fabricant** a suffi à trancher 13 paires sur 29 (39, 40, 41, 42, 45, 49, 51, 52, 57, 61, 65, 66, 67). Le GTIN d'une taille ne permet pas, à lui seul, de retrouver le modèle par une recherche web (essais infructueux sur 2 GTIN Nike et adidas).
 - **Jauge au choix dans la fiche** : chez SportSystem (et chez Tennispro pour certains cordages), une même fiche vend plusieurs jauges (1,20 à 1,35 mm), au même prix. L'offre en base correspond alors à la fiche, pas à une jauge.
 
-### 8.4 Questions pour Mathieu
+### 8.4 Questions pour Mathieu (1 et 2 tranchées le 2026-09-27, voir §8.6)
 
 1. **Jauge au choix dans la fiche** (paires 63, 65, et 66 côté Tennispro) : quand les deux fiches laissent choisir la jauge à l'achat, la jauge est-elle une **variante** (comme la pointure), ce qui rend la paire « identique » ? Ou faut-il appliquer le §5 à la lettre (jauge non fixée → « proche », comme la paire 25) ? La proposition actuelle est « identique ».
 2. **Collection pour le textile** (paires 54, 58, 60), même question que les sacs (paires 22, 23) : un modèle textile reconduit d'une saison à l'autre sous le même nom, avec d'autres coloris, change-t-il de génération ? La proposition actuelle est « proche » quand la collection n'est pas vérifiable des deux côtés.
@@ -179,4 +179,11 @@ Causes des 15 nouveaux faux négatifs : la marque et le mot-catégorie en double
 
 ### 8.5 Arrêt
 
-Aucune décision prise. Après validation, les chiffres du §8.2 deviendront la nouvelle mesure de référence avant R2.
+Reste à faire : validation des 29 propositions par Mathieu (question 3). Après validation, les chiffres du §8.2 deviendront la nouvelle mesure de référence avant R2.
+
+### 8.6 Décisions de Mathieu sur les questions 1 et 2 (2026-09-27)
+
+- **D-2026-09-27-05, cordages** : « proche quand [les jauges sont] différentes ». Une jauge différente donne désormais « proche », pas « différent ». Quand la même jauge est disponible des deux côtés (jauge au choix dans la fiche), il n'y a pas de jauge différente : les paires 63, 65 et 66 restent « identique ». La paire 64 reste « différent » à cause de la longueur (220 m / 200 m). La paire 25 reste « proche ».
+- **D-2026-09-27-06, textile** : « si c'est exactement le même modèle alors identique, si génération différente explicitement alors proche ». Les paires **54, 58 et 60 passent de « proche » à « identique »**. La paire 59 (édition « RG » écrite d'un seul côté) reste « proche » : ce n'est pas exactement le même modèle, à confirmer. Les sacs (22, 23) ne sont pas concernés.
+- Le §5 de `CADRAGE_rapprochement-multi-niveaux.md` est mis à jour. Aucune paire validée (1-38) ne change de classement.
+- Effet sur la mesure (§8.2) : 32 identiques au lieu de 29, rappel 5/32, inter-marchands 2/29 ; la précision est inchangée.
