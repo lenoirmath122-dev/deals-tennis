@@ -1,33 +1,5 @@
 # Points ouverts
 
-## GAP-2026-09-26-03 — Repérage de nouveaux marchands : en attente du retour cowork (OUVERT)
-
-Suite à D-2026-09-26-02 : repérage de nouveaux marchands tennis lancé par
-Mathieu via Claude cowork (hors de ce dépôt), en parallèle de R1-R2. Prompt
-remis et versionné dans `REPERAGE_marchands_prompt-cowork.md`.
-
-**Retour cowork reçu (2026-09-27)** : `REPERAGE_marchands_resultat-cowork.md`
-(rapport tel quel) et `.csv` (18 candidats). Top 5 vérifié réellement en
-lecture seule le même jour : `REPERAGE_marchands_verification.md`, résultat
-par marchand dans la colonne `verif_claude_code` du CSV. Découvertes : GTIN13
-réel chez Sports Raquettes et Tennis Compagnie (un même GTIN retrouvé chez les
-deux) ; tennisdeals.be édité par Extreme Tennis (voir GAP-2026-09-25-10) ;
-Tennis Achat édité par Tennispro SAS (même société que Tennispro.fr) ;
-Intersport derrière un captcha DataDome.
-
-**Reste à faire** : décisions de Mathieu listées au §4 de
-`REPERAGE_marchands_verification.md` (Tennis Achat doublon ou non, clauses
-Extreme Tennis / Tennis Compagnie, périmètre retenu dans `decision_mathieu`).
-Rappel : aucune candidature à un programme d'affiliation tant que
-GAP-2026-09-25-10 n'est pas tranché.
-
-**Bloquant sur** : décisions de Mathieu. La construction de tout marchand
-retenu est elle-même reportée à R3 (voir D-2026-09-26-02).
-
-**Statut** : ouvert au 2026-09-27 — vérification faite, décisions en attente.
-
----
-
 ## GAP-2026-09-25-19 — Produits multi-marchands distincts : 10 → 1 (OUVERT)
 
 Point de départ chiffré du chantier de rapprochement produit multi-niveaux
@@ -231,9 +203,11 @@ Trois options soumises à l'utilisateur le 2026-09-25, décision explicitement r
 
 **Élément nouveau (2026-09-27, repérage marchands)** : le site existant est `www.tennisdeals.be`, un revendeur de matériel de tennis (« Tennisdeals : Game. Set. Deals. Le matériel de tennis au meilleur prix ! ») édité par **SARL EXTREME TENNIS** (RCS Douai 525076105, [mentions légales](https://www.tennisdeals.be/fr/content/2-mentions-legales)), qui est aussi le candidat n°1 du repérage. L'option 3 ci-dessus (« pas un vrai concurrent direct ») est donc fragilisée. Voir `REPERAGE_marchands_verification.md` §2.
 
-**Bloquant sur** : rien dans l'immédiat côté code/infra. À trancher avant toute nouvelle communication publique sous ce nom (ex. avant de solliciter de nouveaux programmes d'affiliation sous cette marque) pour éviter d'accumuler des surfaces à renommer.
+**Option tranchée (2026-09-27, D-2026-09-27-01)** : option 2, choisir un nouveau nom. Reste à faire : proposer des noms, vérifier leur disponibilité (sites existants, marque, domaine) avant adoption, puis renommer la marque affichée (même périmètre que PR #47).
 
-**Statut** : ouvert au 2026-09-25, complété le 2026-09-27.
+**Bloquant sur** : le choix du nom par Mathieu. Bloque toute candidature d'affiliation (D-2026-09-26-02), dont Intersport via Kwanko (D-2026-09-27-02).
+
+**Statut** : ouvert au 2026-09-25, option tranchée le 2026-09-27, nom restant à choisir.
 
 ---
 

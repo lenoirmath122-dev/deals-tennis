@@ -14,9 +14,9 @@ Point d'entrée et protocole de reprise du projet. À lire dans cet ordre en dé
 - [CADRAGE_vrais-bons-plans.md](./CADRAGE_vrais-bons-plans.md) / [CADRAGE_rapprochement-multi-niveaux.md](./CADRAGE_rapprochement-multi-niveaux.md) — cadrages du chantier en cours (historique de prix, verdict, rapprochement produit multi-niveaux R0-R5).
 - [R0_diagnostic-rapprochement.md](./R0_diagnostic-rapprochement.md) — résultats de l'étape R0 (diagnostic, aucune modification).
 - [R1_jeu-reference-candidat.csv](./R1_jeu-reference-candidat.csv) / [R1_mesure.md](./R1_mesure.md) — jeu de référence R1 (38 paires, colonne `decision_mathieu` à remplir) et mesure réelle de l'algorithme actuel.
-- [REPERAGE_marchands_prompt-cowork.md](./REPERAGE_marchands_prompt-cowork.md) — prompt de repérage de nouveaux marchands (Claude cowork, hors dépôt), voir D-2026-09-26-02 et GAP-2026-09-26-03.
-- [REPERAGE_marchands_resultat-cowork.md](./REPERAGE_marchands_resultat-cowork.md) / [.csv](./REPERAGE_marchands_resultat-cowork.csv) — rapport cowork tel quel (18 candidats) ; le CSV porte les colonnes `verif_claude_code` et `decision_mathieu` (à remplir).
-- [REPERAGE_marchands_verification.md](./REPERAGE_marchands_verification.md) — vérification réelle du top 5 (2026-09-27) et décisions à prendre.
+- [REPERAGE_marchands_prompt-cowork.md](./REPERAGE_marchands_prompt-cowork.md) — prompt de repérage de nouveaux marchands (Claude cowork, hors dépôt), voir D-2026-09-26-02 et D-2026-09-27-02.
+- [REPERAGE_marchands_resultat-cowork.md](./REPERAGE_marchands_resultat-cowork.md) / [.csv](./REPERAGE_marchands_resultat-cowork.csv) — rapport cowork tel quel (18 candidats) ; le CSV porte les colonnes `verif_claude_code` et `decision_mathieu` (remplie pour le top 5).
+- [REPERAGE_marchands_verification.md](./REPERAGE_marchands_verification.md) — vérification réelle du top 5, mesure du recouvrement Tennis Achat / Tennispro.fr (2026-09-27) et décisions prises.
 - [spec.md](./spec.md) — spécification fonctionnelle (feature "Tennis Deals Catalog").
 - [plan.md](./plan.md) — plan d'implémentation technique.
 - [data-model.md](./data-model.md) — modèle de données.

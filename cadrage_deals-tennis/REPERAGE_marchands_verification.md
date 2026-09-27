@@ -50,7 +50,7 @@ Preuves (valeurs relevées le 2026-09-27) :
 - **Tennis Achat** : doublon de Tennispro.fr sur le plan de l'opérateur.
 - **Intersport** : écarté de la collecte directe, à garder comme piste « flux d'affiliation » après GAP-2026-09-25-10.
 
-## 4. Décisions à prendre par Mathieu
+## 4. Décisions à prendre par Mathieu (tranchées, voir fin de section)
 
 1. GAP-2026-09-25-10 : le nouvel élément (tennisdeals.be = Extreme Tennis) change-t-il le choix du nom ?
 2. Tennis Achat : le traiter comme un marchand distinct de Tennispro.fr, ou l'écarter comme doublon d'opérateur ?
@@ -59,3 +59,45 @@ Preuves (valeurs relevées le 2026-09-27) :
 
 Rappels : construction reportée à R3 (D-2026-09-26-02) ; aucune candidature
 d'affiliation tant que GAP-2026-09-25-10 n'est pas tranché.
+
+**Tranchées le 2026-09-27** : voir D-2026-09-27-01 (nouveau nom à choisir) et
+D-2026-09-27-02 (clauses acceptées ; périmètre R3 = Sports Raquettes, Tennis
+Compagnie, Extreme Tennis, puis Tennis Achat en dernier ; Intersport par
+affiliation uniquement).
+
+## 5. Recouvrement Tennis Achat / Tennispro.fr (mesure du 2026-09-27)
+
+Demandée par Mathieu avant de trancher le point 2 du §4. Lecture seule,
+`Crawl-delay: 60` respecté sur chaque site.
+
+**Catalogue** : `/sitemap.xml` des deux sites (non déclaré dans robots.txt,
+mais public). Tennis Achat : 9 883 fiches produit ; Tennispro.fr : 10 656.
+9 535 fiches Tennis Achat sur 9 883 (**96,5 %**) existent sur Tennispro.fr
+sous le même identifiant Magento ou le même nom d'URL. Les 3,5 % restants
+sont surtout des variantes d'écriture du même produit : 96,5 % est une borne
+basse. Les identifiants sont souvent identiques ou décalés de 1 (ex.
+`chaussures-babolat-femme-jet-mach-3-toutes-surfaces` 736579 / 736578).
+
+**Prix** : 12 paires comparées fiche à fiche (dataLayer + « Prix public
+conseillé »), même référence fabricant des deux côtés (suffixe couleur en
+plus chez Tennis Achat).
+
+| Produit | Tennis Achat | Tennispro.fr | Prix conseillé |
+|---|---|---|---|
+| Raquette Babolat Pure Aero Junior 26 2026 | 99 | 99 | 129,95 |
+| Raquette Head Instinct PWR 110 | 139 | 139 | 190,00 |
+| Raquette Wilson Pro Staff 97L Classic | **164** | 169 | 240,00 |
+| Chaussures Mizuno Junior Break Shot 5 | 55 | 55 | 65,00 |
+| Chaussures Babolat Femme Jet Mach 3 | 82 | 82 | 155,00 |
+| Chaussures Babolat Junior Jet Mach 3 | 58 | 58 | 75,00 |
+| Chaussures Yonex AD Accel pieds larges | 109 | 109 | 159,90 |
+| Cordage Luxilon 4G Black 12 m | 18,95 | 18,95 | 26,00 |
+| Polo Mouratoglou Match Paris | 23,95 | 23,95 | 40,00 |
+| Short Joma Iconic | 23,67 | **22,97** | 26,30 |
+| Sac à dos Babolat Junior | 33,70 | **29,88** | 44,95 |
+| T-shirt New Balance Femme Practice | 30,00 | **28,97** | 45,00 |
+
+Lecture : même catalogue, même prix conseillé (12/12), prix de vente
+identique sur 8/12 ; sur les 4 autres, écart de 3 à 13 %, le plus souvent
+en faveur de Tennispro.fr mais pas toujours. Échantillon indicatif (12
+paires), pas une mesure statistique.
