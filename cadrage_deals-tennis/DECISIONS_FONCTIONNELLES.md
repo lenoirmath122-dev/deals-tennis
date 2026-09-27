@@ -1066,3 +1066,20 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 - Les sacs (paires 22 et 23, accessoires) ne sont **pas** concernés : la décision ne vise que le textile.
 
 **Statut** : Actée (réponse explicite de Mathieu du 2026-09-27). §5 du cadrage mis à jour.
+
+---
+
+### D-2026-09-27-07 — Complément du jeu R1 validé ; règle des générations maintenue pour les sacs (GAP-2026-09-25-19)
+
+**Contexte** : 29 paires inter-marchands (39-67) ajoutées au jeu R1 (`R1_mesure.md` §8), après D-2026-09-27-05/06. Deux points restaient ouverts : la paire 59 (polo adidas Freelift Pro « RG » d'un seul côté) et l'extension éventuelle de la règle textile aux sacs (paires 22, 23).
+
+**Décision (Mathieu, 2026-09-27)** :
+- Paire 59 : « ça me va » — **proche** confirmé.
+- Sacs : « Règle des générations (sauf si exactement le même article) » — la règle générale D-2026-09-26-01 s'applique aux sacs ; « identique » seulement pour exactement le même article (même référence). Paires 22 et 23 inchangées (« proche » : références différentes, 40TOUBEIBP / 40TOUNAVBP contre 40TOUWBLBA).
+- Paires 39-67 : « Je valide » — les 29 propositions sont acceptées telles quelles (18 identiques / 5 proches / 6 différents).
+
+**Résultat** : jeu R1 de **67 paires validées** (32 identiques / 14 proches / 21 différents). Nouvelle mesure de référence de l'algorithme actuel : **précision 5/8 (62,5 %), rappel 5/32 (15,6 %), inter-marchands 2/29 (6,9 %)**.
+
+**Suite prévue par le cadrage (§10, non engagée ici)** : R2 — référentiel v1 et règles de tolérance.
+
+**Statut** : Actée (réponses explicites de Mathieu du 2026-09-27).
