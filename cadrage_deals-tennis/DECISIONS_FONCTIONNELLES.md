@@ -1034,3 +1034,35 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 **Reste à faire** : renommage de la marque affichée (même périmètre que PR #47 : header/footer, métadonnées, pages réglementaires, `package.json`), graphie exacte à l'écran à fixer à ce moment-là ; réservation éventuelle d'un domaine (décision et action de Mathieu). Levée du blocage des candidatures d'affiliation (D-2026-09-26-02, dont Intersport/Kwanko) une fois la marque affichée renommée.
 
 **Statut** : Actée (choix explicite de Mathieu du 2026-09-27) ; vérification marque en plusieurs mots à compléter par Mathieu.
+
+---
+
+### D-2026-09-27-05 — Cordages : jauge différente = modèle proche (GAP-2026-09-25-19)
+
+**Contexte** : complément du jeu R1 (`R1_mesure.md` §8.4, question 1). Le §5 de `CADRAGE_rapprochement-multi-niveaux.md` classait la jauge des cordages en « produit différent », et plusieurs marchands vendent plusieurs jauges dans une même fiche (SportSystem, Tennispro).
+
+**Décision (Mathieu, 2026-09-27)** : « Jauge pour les cordages : proche quand différentes. »
+
+**Application** :
+- Jauges différentes → **modèle proche** (plus « produit différent »).
+- Jauge au choix dans la fiche, avec la même jauge disponible des deux côtés → pas de jauge différente → la paire peut être **identique** (paires 63, 65, 66).
+- La longueur (garniture / bobine, 200 m / 220 m) reste un **conditionnement** différent, comparé au mètre (paires 38 et 64 inchangées).
+- Paire 25 (jauge indéterminable) inchangée : « proche ».
+
+**Statut** : Actée (réponse explicite de Mathieu du 2026-09-27). §5 du cadrage mis à jour.
+
+---
+
+### D-2026-09-27-06 — Textile : collection non écrite = identique, génération différente explicite = proche (GAP-2026-09-25-19)
+
+**Contexte** : complément du jeu R1 (`R1_mesure.md` §8.4, question 2). Pour le textile, la règle des générations (D-2026-09-26-01) classait « proche » un modèle dont la collection n'était pas vérifiable des deux côtés.
+
+**Décision (Mathieu, 2026-09-27)** : « si c'est exactement le même modèle alors identique, si génération différente explicitement alors proche ».
+
+**Application au textile** (prime sur D-2026-09-26-01 pour cette catégorie) :
+- Même modèle, sans génération ou collection différente écrite → **identique** (paires 54, 58, 60 reclassées de « proche » à « identique »).
+- Génération ou collection **explicitement différente** → **modèle proche** (plus « produit différent »).
+- Édition spéciale écrite d'un seul côté (paire 59, Freelift Pro « RG ») : pas « exactement le même modèle » → « proche » maintenu, à confirmer par Mathieu.
+- Les sacs (paires 22 et 23, accessoires) ne sont **pas** concernés : la décision ne vise que le textile.
+
+**Statut** : Actée (réponse explicite de Mathieu du 2026-09-27). §5 du cadrage mis à jour.

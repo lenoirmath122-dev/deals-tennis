@@ -64,16 +64,18 @@ Le rapprochement doit distinguer ces trois cas, et l'affichage doit toujours dir
 |---|---|---|---|
 | Raquettes | Grip, coloris, cordée/non cordée | Poids ±10 g, génération voisine | Tamis (98/100…), version Lite/Tour/Team/Plus, raquette junior |
 | Chaussures | Pointure, coloris | Surface (terre battue / toutes surfaces) | Genre, modèle, version large |
-| Cordages | Coloris | — | Jauge, garniture ou bobine (comparaison au mètre) |
+| Cordages | Coloris ; jauge au choix dans la fiche (même jauge disponible des deux côtés) | Jauge différente (D-2026-09-27-05) | Garniture ou bobine, longueur (comparaison au mètre) |
 | Balles | — | — | Conditionnement (comparaison à la balle) |
 | Surgrips, accessoires | Coloris | — | Conditionnement (comparaison à l'unité) |
-| Textile | Taille, coloris | — | Modèle, genre |
+| Textile | Taille, coloris ; collection non écrite (D-2026-09-27-06) | Génération ou collection explicitement différente (D-2026-09-27-06) | Modèle, genre |
 
 **Règle des générations (décision de Mathieu, 2026-09-26, D-2026-09-26-01)** — s'applique à toutes les catégories et prime sur la mention « génération voisine » de la ligne Raquettes :
 
 - Génération **différente et vérifiée des deux côtés** → **produit différent**. Une ancienne génération n'a pas le même prix de référence : elle ne doit pas servir de base au verdict « vrai bon plan ».
 - Génération **inconnue ou non vérifiable d'un côté** → **modèle proche**. Jamais de fusion automatique.
 - **Même modèle** (identique) exige que la génération soit **confirmée des deux côtés**, ou que le modèle n'ait **qu'une seule génération sur le marché**.
+
+**Exceptions (décisions de Mathieu, 2026-09-27)** : pour le **textile**, un même modèle sans génération différente écrite est « identique » et une génération explicitement différente donne « proche » (D-2026-09-27-06) ; pour les **cordages**, une jauge différente donne « proche », pas « différent » (D-2026-09-27-05).
 
 Sources de vérification admises : référence fabricant (`mpn`), GTIN, titre, JSON-LD ou fiche marchand. La source retenue est notée pour chaque paire du jeu de référence.
 

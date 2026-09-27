@@ -74,14 +74,14 @@ mesure de référence inchangée (précision 5/8, rappel 5/14,
 inter-marchands 2/11).
 
 **Complément du jeu fait (2026-09-27, en attente de validation)** : 29
-paires inter-marchands ajoutées (39-67, jeu = 67 paires), proposition 15
-identiques / 8 proches / 6 différents. Jeu complet : précision 5/8, rappel
-5/29 (17,2 %), inter-marchands 2/26 (7,7 %). Deux questions ouvertes pour
-Mathieu (jauge au choix dans la fiche, paires 63/65/66 ; collection pour
-le textile, paires 54/58/60). Détail : `R1_mesure.md` §8.
+paires inter-marchands ajoutées (39-67, jeu = 67 paires), proposition 18
+identiques / 5 proches / 6 différents après D-2026-09-27-05 (cordages :
+jauge différente = proche) et D-2026-09-27-06 (textile : même modèle sans
+génération différente écrite = identique). Jeu complet : précision 5/8,
+rappel 5/32 (15,6 %), inter-marchands 2/29 (6,9 %). Détail :
+`R1_mesure.md` §8.
 
-**Bloquant sur** : validation des paires 39-67 et réponse aux deux
-questions, avant R2.
+**Bloquant sur** : validation des paires 39-67 par Mathieu, avant R2.
 
 **Statut** : ouvert au 2026-09-27 — R0 et R1 (38 paires) validés ;
 complément (67 paires) proposé, en attente de validation ; puis R2.
