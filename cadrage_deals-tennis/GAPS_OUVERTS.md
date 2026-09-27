@@ -86,10 +86,79 @@ rappel 5/32 (15,6 %), inter-marchands 2/29 (6,9 %). Détail :
 R2 : précision 5/8, rappel 5/32, inter-marchands 2/29.
 
 **Bloquant sur** : rien pour R1. Prochaine étape : R2 (référentiel v1 et
-règles de tolérance, §10 du cadrage).
+règles de tolérance, §10 du cadrage). **À traiter pendant R2** : le principe
+de GAP-2026-09-27-02 (il conditionne le format de stockage du référentiel).
 
 **Statut** : ouvert au 2026-09-27 — R0 et R1 (67 paires) validés ; reste
 R2 à R5.
+
+---
+
+## GAP-2026-09-27-01 — Repérer les familles et libellés inconnus du référentiel (OUVERT)
+
+Le référentiel de modèles (§7 de `CADRAGE_rapprochement-multi-niveaux.md`)
+prévoit une « révision à chaque saison », mais rien ne dit comment on sait
+**quoi** ajouter. Une offre dont la famille n'est pas dans le référentiel
+(nouvelle gamme, nouveau nom commercial) n'est pas perdue : elle peut encore
+être rattachée par GTIN ou correspondance approchée, sinon elle devient un
+modèle isolé (rapprochement manqué, jamais faux rapprochement, principe R3).
+Mais sans repérage, ces offres s'accumulent sans être comparées entre
+marchands et la couverture baisse en silence.
+
+À décider : ce qui compte comme « non reconnu » (famille absente, génération
+absente, alias absent), la forme du repérage (rapport listant les termes
+fréquents non reconnus par marque et catégorie, avec le nombre d'offres
+concernées), sa fréquence et un éventuel seuil d'alerte.
+
+**Moment de traitement (le plus cohérent)** :
+- **R2** : rien à construire. Seulement garder en tête que la méthode
+  d'amorçage de la v1 (termes fréquents par marque et catégorie tirés de la
+  base) est la même que celle du futur rapport : la documenter pour pouvoir
+  la réutiliser.
+- **R4 (cadrage)** : le mode fantôme produit pour la première fois la liste
+  réelle des offres non reconnues. C'est là qu'on voit leur volume et leur
+  nature, donc là qu'on tranche les règles ci-dessus sur données réelles.
+- **Phase 5 du cadrage principal (construction)** : le rapport récurrent
+  s'intègre à la supervision (page d'administration, audit hebdomadaire et
+  alerte de §Phase 5 de `CADRAGE_vrais-bons-plans.md`), plutôt qu'un outil à
+  part. Entre R5 et la Phase 5 : rapport lancé à la main lors de la révision
+  de saison.
+
+**Statut** : ouvert au 2026-09-27.
+
+---
+
+## GAP-2026-09-27-02 — Les validations de la file de revue enrichissent-elles le référentiel ? (OUVERT)
+
+Quand Mathieu confirme dans la file de revue qu'une offre appartient à une
+famille connue sous un libellé nouveau (ex. une abréviation propre à un
+marchand), deux options :
+1. **Enrichissement automatique** : le libellé devient un alias de la famille,
+   les offres suivantes sont rattachées sans repasser en revue.
+2. **Enrichissement proposé** : les validations sont accumulées puis
+   proposées en lot pour ajout au référentiel (relecture, comme le reste de
+   la connaissance tennis, §0 du cadrage rapprochement).
+
+Sans l'un ou l'autre, le même cas repasse en revue à chaque run et la charge
+de revue (objectif ~1 h/semaine, Phase 5) augmente avec le temps.
+
+Lien direct avec le stockage : le principe R7 du cadrage rapprochement place
+le référentiel dans des **fichiers de configuration versionnés** (chaque
+modification passe par une PR). L'option 1 écrit dans le référentiel depuis
+l'application, ce qu'un fichier versionné ne permet pas sans passer par une
+table (ou une table d'alias à côté du fichier). L'option 2 est compatible
+avec le fichier.
+
+**Moment de traitement (le plus cohérent)** :
+- **R2 (principe)** : trancher option 1 ou 2 **avant** de figer le format du
+  référentiel, sinon le stockage risque d'être refait en R5.
+- **R5 (construction)** : la file de revue reçoit ses premiers cas ; c'est là
+  que la mécanique retenue est construite.
+- **Phase 5 (interface)** : l'action correspondante (« valider et ajouter
+  l'alias » ou « proposer l'alias ») est ajoutée à la file de revue unique de
+  la page d'administration.
+
+**Statut** : ouvert au 2026-09-27, principe à trancher en R2.
 
 ---
 
