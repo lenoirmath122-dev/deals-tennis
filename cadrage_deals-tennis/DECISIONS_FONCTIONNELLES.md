@@ -979,3 +979,28 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 - Les critères de tri des candidats (légalité de la collecte, GTIN exposé, recouvrement avec les marques déjà couvertes, méthode technique simple, volume réel) sont documentés dans le prompt cowork lui-même, pas dupliqués ici.
 
 **Statut** : Actée (confirmée explicitement par Mathieu, message du 2026-09-26). Cadrage/documentation uniquement — aucun code construit, aucune candidature déposée.
+
+---
+
+### D-2026-09-27-01 — Nom du site : abandon de « Tennisdeals », un nouveau nom sera choisi (GAP-2026-09-25-10)
+
+**Contexte** : la vérification réelle du repérage marchands (`REPERAGE_marchands_verification.md` §2) a établi que `www.tennisdeals.be` est un revendeur de matériel de tennis édité par SARL EXTREME TENNIS, candidat n°1 du repérage. L'option « garder Tennisdeals si ce n'est pas un vrai concurrent » ne tient plus.
+
+**Décision (Mathieu, 2026-09-27, question interactive)** : option 2 de GAP-2026-09-25-10 — **choisir un nouveau nom** (ni retour à « Deals Tennis », ni maintien de « Tennisdeals »). Le nom lui-même n'est pas encore choisi : il fera l'objet d'une étape dédiée (propositions, vérification de disponibilité avant adoption). Le blocage des candidatures d'affiliation (D-2026-09-26-02) reste en vigueur jusqu'à l'adoption du nouveau nom.
+
+**Statut** : Actée (réponse explicite de Mathieu du 2026-09-27). Aucune modification du code ni de la marque affichée à ce stade.
+
+---
+
+### D-2026-09-27-02 — Repérage marchands : périmètre retenu pour R3
+
+**Contexte** : retour du repérage cowork (18 candidats) et vérification réelle du top 5 (`REPERAGE_marchands_verification.md`), complétée le 2026-09-27 par une mesure du recouvrement Tennis Achat / Tennispro.fr (§5 du même document).
+
+**Décision (Mathieu, 2026-09-27, questions interactives)** :
+- **Clauses de propriété intellectuelle** d'Extreme Tennis (« reproduction [...] de tout ou partie des éléments du site [...] interdite ») et de Tennis Compagnie (« toute copie intégrale ou partielle d'une page du site est strictement interdite ») : même catégorie que les clauses déjà acceptées (SportSystem, Head, Sport 2000…), acceptées.
+- **Périmètre R3, dans cet ordre** : Sports Raquettes, Tennis Compagnie, Extreme Tennis, puis **Tennis Achat en dernier**. Tennis Achat est édité par la même société que Tennispro.fr (≥ 96,5 % de catalogue commun, prix barré identique, mais prix de vente différent sur 4 paires sur 12 échantillonnées, écarts de 3 à 13 % dans les deux sens) : construit en déclinaison du script Tennispro.fr et marqué « même opérateur que Tennispro.fr » pour ne pas gonfler la mesure multi-marchands (GAP-2026-09-25-19). La forme exacte de ce marquage est à concevoir en R2/R3.
+- **Extreme Tennis** : collecte via sitemaps + fiches produit (pagination des listings interdite par son robots.txt), à cadrer en R3.
+- **Intersport** : Mathieu a demandé de l'inclure « si on peut contourner les restrictions en attendant l'affiliation ». **Non retenu en collecte directe** : le captcha DataDome est un anti-bot actif, le contourner relève du même risque que Wilson/PerimeterX (art. 323-1 CP, voir GAP-2026-09-23-06), refusé par Claude Code. Seule voie : le flux d'affiliation Kwanko, après adoption du nouveau nom (D-2026-09-27-01).
+- Construction toujours reportée à R3 (D-2026-09-26-02).
+
+**Statut** : Actée (réponses explicites de Mathieu du 2026-09-27), sauf le point Intersport, qui est un refus de Claude Code à confirmer ou discuter par Mathieu.

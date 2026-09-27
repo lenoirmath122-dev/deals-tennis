@@ -121,3 +121,12 @@
 - Vérification en lecture seule (`curl`, Playwright non headless pour Intersport seulement, `Crawl-delay: 60` de Tennis Achat respecté) : GTIN13 chez Sports Raquettes et Tennis Compagnie (GTIN 4570158165839 retrouvé chez les deux), `mpn` chez Extreme Tennis (JSON-LD) et Tennis Achat (dataLayer), Intersport bloqué par DataDome, pagination interdite par le robots.txt d'Extreme Tennis, prix barrés = prix conseillé chez Extreme Tennis et Tennis Achat.
 - Découvertes : tennisdeals.be édité par SARL EXTREME TENNIS (complété dans GAP-2026-09-25-10) ; Tennis Achat édité par Tennispro SAS (même société que Tennispro.fr).
 - GAP-2026-09-26-03 mis à jour. Aucune décision actée : 4 décisions listées pour Mathieu (§4 du document). Fichiers temporaires dans le dossier de session uniquement ; script Playwright jetable supprimé.
+
+## 2026-09-27 (suite) — Décisions sur le repérage marchands, recouvrement Tennis Achat / Tennispro.fr
+
+- Reprise (`/clear`), Opus (décisions à valider par Mathieu). PR #78 constatée mergée, branche fraîche `docs/reperage-decisions` depuis `origin/master`.
+- 4 décisions du §4 soumises (AskUserQuestion). Réponses : nouveau nom à choisir ; Tennis Achat → « mesurer le recouvrement d'abord » ; clauses PI acceptées ; périmètre R3 avec Sports Raquettes, Tennis Compagnie, Extreme Tennis, Tennis Achat, et Intersport « si on peut contourner les restrictions ».
+- Intersport : contournement du captcha DataDome refusé par Claude Code (anti-bot actif, même cas que Wilson) ; seule voie = affiliation Kwanko après le nouveau nom.
+- Mesure Tennis Achat (lecture seule, Crawl-delay 60 respecté) : sitemaps des deux sites → ≥ 96,5 % de catalogue commun ; à la demande de Mathieu (« les prix sont les mêmes ? »), 12 paires comparées : prix conseillé identique 12/12, prix de vente identique 8/12, écarts de 3 à 13 % sur 4. Mathieu : garder Tennis Achat, en dernier dans R3, marqué même opérateur.
+- Actées : D-2026-09-27-01 (nom), D-2026-09-27-02 (périmètre R3). GAP-2026-09-26-03 clos et retiré ; GAP-2026-09-25-10 mis à jour (nom restant à choisir). CSV `decision_mathieu` rempli, §5 ajouté au document de vérification. Fichiers temporaires dans le dossier de session uniquement.
+- Prochaine étape : non déduite ici. Pistes légitimes : choix du nouveau nom (GAP-2026-09-25-10), ou reprise du chemin critique R1 (validation du CSV R1 par Mathieu).
