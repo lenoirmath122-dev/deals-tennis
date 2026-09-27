@@ -1004,3 +1004,33 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 - Construction toujours reportée à R3 (D-2026-09-26-02).
 
 **Statut** : Actée (réponses explicites de Mathieu du 2026-09-27), sauf le point Intersport, qui est un refus de Claude Code à confirmer ou discuter par Mathieu.
+
+---
+
+### D-2026-09-27-03 — Jeu de référence R1 validé tel quel (GAP-2026-09-25-19)
+
+**Contexte** : `R1_jeu-reference-candidat.csv` (38 paires, règle des générations D-2026-09-26-01 appliquée) attendait la validation de Mathieu (colonne `decision_mathieu`) avant la suite du chantier de rapprochement.
+
+**Décision (Mathieu, 2026-09-27)** : « Je valide tout le CSV R1 », puis « reclasse [la paire 7] en différent » — les 38 propositions sont acceptées, la paire 7 étant reclassée de « proche » à « différent » (la vérification de la paire 6 établit deux générations différentes, règle D-2026-09-26-01). Répartition finale : 14 identiques / 9 proches / 15 différents. La mesure de l'algorithme actuel devient la référence : précision 62,5 % (5/8), rappel 35,7 % (5/14), inter-marchands 2/11 (`R1_mesure.md` §7).
+
+**Suite prévue par le cadrage (§9, non engagée ici)** : compléter le jeu jusqu'à 50-100 paires avant la cascade R2/R3.
+
+**Statut** : Actée (réponse explicite de Mathieu du 2026-09-27).
+
+---
+
+### D-2026-09-27-04 — Nouveau nom du site : « Bonplantennis » (GAP-2026-09-25-10)
+
+**Contexte** : D-2026-09-27-01 (abandon de « Tennisdeals », nouveau nom à choisir après vérification de disponibilité).
+
+**Décision (Mathieu, 2026-09-27)** : nouveau nom **« Bonplantennis »**.
+
+**Vérification de disponibilité (Claude Code, 2026-09-27, lecture seule)** :
+- **Domaines** : `bonplantennis.fr`, `.com`, `.net`, `.eu`, `.be`, ainsi que `bon-plan-tennis.fr/.com` et `bonplanstennis.fr/.com` — aucun enregistrement (DNS inexistant partout, RDAP Verisign et AFNIC en 404 pour les `.com`/`.net`/`.fr`). Aucun n'a été réservé.
+- **Sites existants** : aucun site nommé « Bonplantennis ». L'expression « bons plans tennis » est employée comme **intitulé générique** de rubrique promo chez deux marchands du périmètre R3 : Tennis Compagnie (page `/content/27-bon-plan-tennis`) et Extreme Tennis (« Les bons plans »). Aucun usage à titre de marque. Site voisin sans rapport direct : « Le Bon Tennis » (`lebontennis.fr`, mise en relation de joueurs).
+- **Marques** : base INPI (data.inpi.fr, navigateur réel) — **0 marque** pour « bonplantennis ». La recherche « bon plan tennis » (avec espaces) a été bloquée par Cloudflare et n'a pas été forcée ; EUIPO non consulté. **Non vérifié** : existence d'une marque « Bon Plan Tennis » en plusieurs mots, à contrôler par Mathieu dans un navigateur (data.inpi.fr, euipo.europa.eu) avant toute démarche.
+- **À savoir** : nom très descriptif (« bon plan » + « tennis »), donc faiblement distinctif — difficile à protéger comme marque et proche de libellés génériques utilisés par des marchands. Ce n'est pas un conflit, mais une limite.
+
+**Reste à faire** : renommage de la marque affichée (même périmètre que PR #47 : header/footer, métadonnées, pages réglementaires, `package.json`), graphie exacte à l'écran à fixer à ce moment-là ; réservation éventuelle d'un domaine (décision et action de Mathieu). Levée du blocage des candidatures d'affiliation (D-2026-09-26-02, dont Intersport/Kwanko) une fois la marque affichée renommée.
+
+**Statut** : Actée (choix explicite de Mathieu du 2026-09-27) ; vérification marque en plusieurs mots à compléter par Mathieu.

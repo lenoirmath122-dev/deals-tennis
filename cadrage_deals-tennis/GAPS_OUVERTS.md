@@ -68,12 +68,16 @@ réelle de `lib/product-matching.ts` : précision 5/8 (62,5 %), rappel 5/18
 un titre identique (Tennispro) et jauge indéterminable. Détail dans
 `R1_mesure.md`.
 
-**Bloquant sur** : validation par Mathieu du CSV R1 (colonne
-`decision_mathieu`), puis complément du jeu jusqu'à 50-100 paires (§9 du
+**CSV R1 validé tel quel par Mathieu (2026-09-27, D-2026-09-27-03)** :
+38 propositions acceptées, paire 7 reclassée « différent » (14 / 9 / 15),
+mesure de référence inchangée (précision 5/8, rappel 5/14,
+inter-marchands 2/11).
+
+**Bloquant sur** : complément du jeu jusqu'à 50-100 paires (§9 du
 cadrage) avant de construire la cascade R2/R3.
 
-**Statut** : ouvert au 2026-09-26 — R0 + complément terminés, CSV R1
-(38 paires, mesuré) prêt pour validation de Mathieu.
+**Statut** : ouvert au 2026-09-27 — R0 et R1 (38 paires) validés ;
+reste le complément du jeu, puis R2.
 
 ---
 
@@ -205,9 +209,13 @@ Trois options soumises à l'utilisateur le 2026-09-25, décision explicitement r
 
 **Option tranchée (2026-09-27, D-2026-09-27-01)** : option 2, choisir un nouveau nom. Reste à faire : proposer des noms, vérifier leur disponibilité (sites existants, marque, domaine) avant adoption, puis renommer la marque affichée (même périmètre que PR #47).
 
-**Bloquant sur** : le choix du nom par Mathieu. Bloque toute candidature d'affiliation (D-2026-09-26-02), dont Intersport via Kwanko (D-2026-09-27-02).
+**Nom choisi (2026-09-27, D-2026-09-27-04)** : « Bonplantennis ». Disponibilité vérifiée : domaines `.fr`/`.com`/`.net`/`.eu`/`.be` libres, aucun site ni marque INPI « bonplantennis ». Non vérifié : marque « Bon Plan Tennis » en plusieurs mots (recherche INPI bloquée par Cloudflare, EUIPO non consulté) — à contrôler par Mathieu dans un navigateur. Nom descriptif, faiblement distinctif (voir la décision).
 
-**Statut** : ouvert au 2026-09-25, option tranchée le 2026-09-27, nom restant à choisir.
+**Reste à faire** : renommer la marque affichée (même périmètre que PR #47), étape de build dédiée ; réservation éventuelle d'un domaine par Mathieu.
+
+**Bloquant sur** : le renommage. Bloque toujours toute candidature d'affiliation (D-2026-09-26-02), dont Intersport via Kwanko (D-2026-09-27-02).
+
+**Statut** : ouvert au 2026-09-25, nom choisi le 2026-09-27, renommage restant à faire.
 
 ---
 
