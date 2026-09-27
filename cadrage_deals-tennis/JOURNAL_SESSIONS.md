@@ -139,3 +139,10 @@
 - **D-2026-09-27-04** : vérification de disponibilité en lecture seule — DNS + RDAP (Verisign, AFNIC) : 9 domaines libres ; recherche web : aucun site « Bonplantennis », usage générique « bons plans tennis » chez Tennis Compagnie et Extreme Tennis ; data.inpi.fr via Playwright non headless : 0 marque « bonplantennis », recherche « bon plan tennis » bloquée par Cloudflare (non forcée), EUIPO non consulté. Script Playwright jetable exécuté puis supprimé.
 - GAP-2026-09-25-19 et GAP-2026-09-25-10 mis à jour.
 - Prochaine étape : non déduite ici. Pistes légitimes : renommage de la marque affichée (build, Sonnet), complément du jeu R1 à 50-100 paires (Opus).
+
+## 2026-09-27 (suite 3) — Complément du jeu R1 (paires 39-67)
+
+- Reprise (`/clear`), Opus. Mathieu choisit le complément du jeu R1 (plutôt que le renommage). Branche `docs/r1-complement-jeu` depuis `origin/master` (#80 mergée, rien en retard).
+- 29 paires inter-marchands proposées (15 identiques / 8 proches / 6 différents), vérifiées sur les fiches (SportSystem, Tennis Point FR, Sport 2000, Tecnifibre ; Tennispro à 1 requête/min). Jeu complet : précision 5/8, rappel 5/29, inter-marchands 2/26. `R1_mesure.md` §8.
+- Scripts jetables (`tmp-r1/`, pages en scratchpad) supprimés en fin de session. Deux questions posées à Mathieu (jauge au choix, collection textile) : en attente.
+- Prochaine étape : validation des paires 39-67 par Mathieu, puis R2.

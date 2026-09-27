@@ -73,11 +73,18 @@ un titre identique (Tennispro) et jauge indéterminable. Détail dans
 mesure de référence inchangée (précision 5/8, rappel 5/14,
 inter-marchands 2/11).
 
-**Bloquant sur** : complément du jeu jusqu'à 50-100 paires (§9 du
-cadrage) avant de construire la cascade R2/R3.
+**Complément du jeu fait (2026-09-27, en attente de validation)** : 29
+paires inter-marchands ajoutées (39-67, jeu = 67 paires), proposition 15
+identiques / 8 proches / 6 différents. Jeu complet : précision 5/8, rappel
+5/29 (17,2 %), inter-marchands 2/26 (7,7 %). Deux questions ouvertes pour
+Mathieu (jauge au choix dans la fiche, paires 63/65/66 ; collection pour
+le textile, paires 54/58/60). Détail : `R1_mesure.md` §8.
+
+**Bloquant sur** : validation des paires 39-67 et réponse aux deux
+questions, avant R2.
 
 **Statut** : ouvert au 2026-09-27 — R0 et R1 (38 paires) validés ;
-reste le complément du jeu, puis R2.
+complément (67 paires) proposé, en attente de validation ; puis R2.
 
 ---
 
