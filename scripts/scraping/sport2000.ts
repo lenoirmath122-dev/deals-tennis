@@ -31,13 +31,21 @@
 // Sport 2000 a un volume de vraies remises suffisant (171 articles constatés
 // sur chaussures/textile/équipements au moment de la vérification), donc pas
 // besoin de forcer l'ingestion à 0%.
+//
+// R3.6 (`cadrage_deals-tennis/R3_cadrage.md`) : réécrit pour passer par
+// `lib/ingest.ts` (upsert products/deals, statut active/tracked, exclusions,
+// sous-catégorie, unité, corrections de marque, éviction avec garde-fou 50 %).
+// Capture ajoutée sans requête supplémentaire : Algolia expose le code-barres
+// (`ean` -> `gtin`, vérifié le 2026-09-28) et la référence marchand (`ref` ->
+// `merchant_sku`) ; `raw_attributes` garde tailles, facette genre, couleur et
+// attributs Algolia. Le filtre `percent_discount > 0` reste côté Algolia
+// (R3-Q3 : on ne change pas ce que le script récupère, réponse de Mathieu le
+// 2026-09-28) : seuls les hits à prix initial <= prix qui passent quand même le
+// filtre sont gardés en `status='tracked'` au lieu d'être ignorés ; le
+// catalogue complet reste pour la Phase 4-bis.
 import { neon } from "@neondatabase/serverless";
-import {
-  extractAgeGroup,
-  extractColor,
-  extractGender,
-  extractModel,
-} from "../../lib/product-matching.ts";
+import { evictMerchantOffers, ingestOffer } from "../../lib/ingest.ts";
+import type { DealCategory } from "../../types/database.ts";
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is not set");
@@ -81,7 +89,7 @@ const GENDER_FACET_HINTS: Record<string, string | null> = {
 
 interface CategoryConfig {
   familyId: number;
-  dbCategory: string;
+  dbCategory: DealCategory;
   label: string; // préfixe canonique inséré dans le titre construit
   knownPrefixes: string[]; // variantes de préfixe déjà présentes dans les libellés marchand (évite la duplication)
 }
@@ -142,6 +150,11 @@ interface AlgoliaHit {
   percent_discount: number;
   gender: string;
   image: string;
+  ref?: string;
+  ean?: string;
+  color?: string;
+  sizes?: string[];
+  attributes?: Record<string, string>[];
   product_links: { sport2000?: string };
   families?: string[];
 }
@@ -211,9 +224,12 @@ async function main() {
     RETURNING id
   `;
 
-  let inserted = 0;
-  let skippedNoDiscount = 0;
+  let active = 0;
+  let tracked = 0;
+  let skippedInvalid = 0;
+  let skippedNoImage = 0;
   let skippedOtherSport = 0;
+  const excluded: Record<string, number> = {};
   const seenUrls: string[] = [];
 
   const requests: { config: CategoryConfig | null; familyId: number; label: string }[] = [
@@ -234,13 +250,8 @@ async function main() {
       const config = req.config ?? resolveEquipementConfig(hit);
       const relativeUrl = hit.product_links?.sport2000;
 
-      if (
-        !relativeUrl ||
-        !Number.isFinite(hit.price) ||
-        !Number.isFinite(hit.initial_price) ||
-        hit.initial_price <= hit.price
-      ) {
-        skippedNoDiscount += 1;
+      if (!relativeUrl || !Number.isFinite(hit.price)) {
+        skippedInvalid += 1;
         continue;
       }
 
@@ -252,76 +263,60 @@ async function main() {
         continue;
       }
 
-      const brand = hit.brand.trim();
-      const model = extractModel(title, brand, config.dbCategory);
-      const color = extractColor(title);
-      const gender = extractGender(title);
-      const ageGroup = extractAgeGroup(title, config.dbCategory);
-      const discountPercentage = Math.round(
-        ((hit.initial_price - hit.price) / hit.initial_price) * 100
-      );
-      const image = hit.image ? `${IMAGE_HOST}${hit.image}` : null;
+      if (!hit.image) {
+        skippedNoImage += 1;
+        continue;
+      }
 
-      const [upsertedProduct] = await sql`
-        INSERT INTO products (brand, model, category, gender, age_group)
-        VALUES (${brand}, ${model}, ${config.dbCategory}, ${gender}, ${ageGroup})
-        ON CONFLICT (LOWER(brand), LOWER(model), category)
-        DO UPDATE SET
-          brand = EXCLUDED.brand,
-          gender = CASE WHEN products.gender = 'non_determine' THEN EXCLUDED.gender ELSE products.gender END,
-          age_group = CASE WHEN products.age_group = 'adulte' AND EXCLUDED.age_group = 'enfant' THEN 'enfant' ELSE products.age_group END
-        RETURNING id
-      `;
+      const outcome = await ingestOffer(sql, {
+        title,
+        brand: hit.brand.trim(),
+        category: config.dbCategory,
+        imageUrl: `${IMAGE_HOST}${hit.image}`,
+        originalPrice: hit.initial_price,
+        discountedPrice: hit.price,
+        merchantId: merchant.id,
+        affiliateUrl: url,
+        gtin: hit.ean?.trim() || null,
+        merchantSku: hit.ref?.trim() || null,
+        rawAttributes: {
+          sizes: hit.sizes ?? null,
+          gender: hit.gender ?? null,
+          color: hit.color ?? null,
+          attributes: hit.attributes ?? null,
+        },
+      });
 
-      await sql`
-        INSERT INTO deals (
-          title, brand, category, image_url, original_price, discounted_price,
-          discount_percentage, merchant_id, affiliate_url, status, is_active,
-          color, product_id
-        )
-        VALUES (
-          ${title}, ${brand}, ${config.dbCategory}, ${image}, ${hit.initial_price},
-          ${hit.price}, ${discountPercentage}, ${merchant.id}, ${url}, 'active', true,
-          ${color}, ${upsertedProduct.id}
-        )
-        ON CONFLICT (merchant_id, affiliate_url) DO UPDATE SET
-          title = EXCLUDED.title,
-          brand = EXCLUDED.brand,
-          image_url = EXCLUDED.image_url,
-          original_price = EXCLUDED.original_price,
-          discounted_price = EXCLUDED.discounted_price,
-          discount_percentage = EXCLUDED.discount_percentage,
-          status = 'active',
-          is_active = true,
-          color = EXCLUDED.color,
-          product_id = EXCLUDED.product_id,
-          updated_at = NOW()
-      `;
+      if (!outcome.inserted) {
+        excluded[outcome.reason] = (excluded[outcome.reason] ?? 0) + 1;
+        console.log(`  exclu (${outcome.reason}) : ${title}`);
+        continue;
+      }
 
       seenUrls.push(url);
-      inserted += 1;
+      if (outcome.status === "active") active += 1;
+      else tracked += 1;
       categoryCount += 1;
     }
     console.log(`  ${categoryCount} offre(s) retenue(s) pour ${req.label}.`);
   }
 
+  const excludedTotal = Object.values(excluded).reduce((sum, n) => sum + n, 0);
   console.log(
-    `${inserted} offre(s) insérée(s)/mise(s) à jour au total, ${skippedNoDiscount} sans remise réelle, ` +
-      `${skippedOtherSport} hors tennis.`
+    `${active} offre(s) active(s), ${tracked} offre(s) suivie(s) sans remise (tracked), ` +
+      `${excludedTotal} exclue(s) ${JSON.stringify(excluded)}, ${skippedInvalid} sans URL/prix, ` +
+      `${skippedNoImage} sans image, ${skippedOtherSport} hors tennis.`
   );
 
-  if (seenUrls.length > 0) {
-    const evicted = await sql`
-      UPDATE deals
-      SET status = 'expired', is_active = false, updated_at = NOW()
-      WHERE merchant_id = ${merchant.id}
-        AND is_active = true
-        AND NOT (affiliate_url = ANY(${seenUrls}))
-      RETURNING id
-    `;
-    console.log(`${evicted.length} offre(s) Sport 2000 expirée(s) (disparue(s) des catégories tennis en promo).`);
-  } else {
+  // Éviction : garde-fous (0 URL vue, moins de la moitié des offres connues
+  // revues) dans `evictMerchantOffers` (R3-Q5).
+  const eviction = await evictMerchantOffers(sql, merchant.id, seenUrls);
+  if (eviction.guard === "aucune_url_vue") {
     console.log("Aucune offre vue ce passage : éviction ignorée (garde-fou anti-vidage en masse).");
+  } else if (eviction.guard === "moins_de_moitie") {
+    console.log("Moins de la moitié des offres connues revues : éviction ignorée (garde-fou 50 %).");
+  } else {
+    console.log(`${eviction.evicted} offre(s) Sport 2000 expirée(s) (disparue(s) des catégories tennis en promo).`);
   }
 }
 
