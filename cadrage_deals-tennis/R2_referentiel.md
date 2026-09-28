@@ -102,6 +102,8 @@ Les deux fichiers de familles reprennent le type `FamilyEntry` de `model-familie
 
 ### 7.4 Questions pour Mathieu (Q13-Q20)
 
+> **Réponses : D-2026-09-28-03 (2026-09-28).** Questions gardées telles que posées jusqu'au report.
+
 **Q13 — Chaussures de ville** (Stan Smith, Breaknet, Grand Court, Advantage, Tommy Hilfiger, génériques Amazon) : les garder dans le catalogue (sans famille, jamais rapprochées), ou les exclure à l'ingestion (R3) comme hors tennis ? Proposé : **exclure**.
 
 **Q14 — Numéro de génération des chaussures** : Barricade 13 / 14 ou Gel-Challenger 14 / 15 suivent la règle des générations standard, comme les raquettes (différente et écrite des deux côtés → **différent** ; absente d'un côté → proche). Proposé : **standard**. L'alternative est la règle textile (génération différente → proche).

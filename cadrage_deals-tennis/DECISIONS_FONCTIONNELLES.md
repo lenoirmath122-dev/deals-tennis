@@ -1135,3 +1135,32 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 - Anomalies à filtrer en R3 (ajoutées à `R2_referentiel.md` §4) : JOOLA.
 
 **Statut** : Actée et reportée (2026-09-28, session Sonnet, spec = cette décision). Les 5 vérifications de Q9 ont été faites réellement (web) : Lacoste L23 L = Tecnifibre L23 Light ; Synthetic Gut Force ≠ Synthetic Gut ; Wilson Element = Luxilon Element ; Gosen Eggpower = Sidewinder (même cordage, fusionnés en une famille) ; RF 01 Future = version adulte allégée (pas junior). **R2 clos pour les raquettes et les cordages.** La passe R2 chaussures + accessoires suit (Q10, GAP-2026-09-25-11).
+
+### D-2026-09-28-03 — Réponses aux questions R2 chaussures et accessoires (Q13-Q20)
+
+**Contexte** : passe R2 chaussures + accessoires (Q10 de D-2026-09-28-02), proposée et mergée (PR #88) avant la revue ; fichiers marqués « PROPOSITION », non consommés par le code. Revue faite question par question (AskUserQuestion, 2026-09-28). Questions détaillées : `R2_referentiel.md` §7.4.
+
+**Décisions (Mathieu, 2026-09-28)** :
+
+- **Q13 — Chaussures de ville** (Stan Smith, Breaknet, Grand Court, Advantage, Tommy Hilfiger, génériques Amazon) : **exclues à l'ingestion** (R3), comme hors tennis.
+- **Q14 — Numéro des chaussures** (Barricade 13 / 14, Gel-Challenger 14 / 15, Rush Pro 4.5 / 5) : génération, **règle standard** (D-2026-09-26-01) : différente et écrite des deux côtés → différent ; écrite d'un seul côté → proche. Cohérent avec la paire R1 33 (Mirage 100 / 100 II, différent), inchangée.
+- **Q15 — Éditions des chaussures** : éditions joueur (Pegula, Zverev, Tsitsipas, Sabalenka, Alcaraz, Medvedev) et événement ou coloris nommé (Wimbledon, RG, Open d'Australie, Night Energy) = **même modèle** (Q7) ; **Premium / PRM = proche** (matériaux parfois différents).
+- **Q16 — Cas à vérifier sur les fiches** : laissés `a_confirmer` (jamais rapprochés en attendant), **vérifiés dans une session où le réseau est ouvert** : adidas Barricade Leather 13 et ASMC Barricade ; Babolat Jet Tere 2 Premium (si c'est un Premium : proche, Q15) ; Babolat SFX 4 / SFX Evo ; Nike GP Challenge 1 / 1.5 / Pro ; Diadora « S. Challenge » ; Lotto « SPD » / « PRT » ; Nike « FO ».
+- **Q17 — Balles** : niveau Stage 1 / 2 / 3 = **différent** ; tube, bipack, carton, sachet, baril = **lot**, prix affiché **à la balle** (Q12), jamais de « meilleur prix » entre deux conditionnements ; Dunlop « ATP » (tube de 4) / « ATP Tour » (tube de 3) **à vérifier sur les fiches** ; balles géantes (« Giant 9 Ball », « Mid 5 Ball ») **restent dans la sous-catégorie balles**, enregistrées en **version à part** (« Giant », « Mid ») pour ne jamais être rapprochées d'une balle de jeu (précaution de Claude Code : « Giant 9 Ball Atp » contient l'alias « atp »).
+- **Q18 — Grips et antivibrateurs** : grip de remplacement ≠ surgrip (**différent**) ; x3 / x12 / x30 / x60 = **lot**, prix **à la pièce** ; Babolat Aero / Drive / Strike / Sonic / Custom Damp : **à vérifier sur les fiches** (versions ou coloris).
+- **Q19 — Sacs** : famille = **gamme** ; type (thermobag, sac à dos, duffle, housse, tote) et contenance (RH6 / 9 / 12, litres, S / M / L) = **différent** ; collection et année = **règle standard**, identique seulement pour la même référence (D-2026-09-27-07). Sacs Babolat Pure Aero / Pure Drive / Pure Strike = **trois sacs différents** (versions).
+- **Q20 — Sous-catégories d'accessoires** :
+  - **lexique v2 adopté** (`config/accessory-subcategories.ts` : préfixe du titre, puis exclusions, puis mots-clés), remplace le lexique v1 de D-2026-09-25-15 ;
+  - **nouvelle sous-catégorie `protection_soins`** (64 offres : genouillères, chevillères, coudières, bande kinésio, semelles) : 6e valeur de `deals.subcategory` (modifie la liste de D-2026-09-25-15) ;
+  - **textile porté** (casquettes, visières, poignets, bandeaux, chaussettes : 58 offres) **déplacé vers la catégorie textile** ;
+  - **hors sujet** (médailles, mug, cahier, décoration, t-shirt cadeau, tapis de yoga : 18 offres) **exclu à l'ingestion** ;
+  - le reste (matériel de terrain et mini-raquettes, accessoires de raquette, gourdes et serviettes) reste en « Autres accessoires ».
+
+**À reporter (session desktop Sonnet, réseau ouvert ; spec = cette décision)** :
+- `config/model-families-chaussures.ts` : statut « validé » dans l'en-tête ; `editions` Premium distinguées (proche) ; `SHOE_LIFESTYLE_MARKERS` documentés comme liste d'exclusion (Q13) ; cas Q16 vérifiés sur les fiches et tranchés (ou laissés `a_confirmer` avec la source consultée).
+- `config/model-families-accessoires.ts` : statut « validé » ; balles `Giant` / `Mid` en versions à part ; ATP / ATP Tour, Damp, et les autres familles `a_confirmer` (Resi Pro, Players Pro Feel, Pro Overgrip) vérifiés sur les fiches ; sacs Pure en versions (confirmé).
+- `config/accessory-subcategories.ts` : statut « validé » ; `protection_soins` ajouté au type et aux règles ; règles « textile porté → catégorie textile » et « hors sujet → exclusion » ajoutées (avec leurs motifs) ; `OTHER_ACCESSORIES_GROUPS` mis à jour.
+- `config/matching-rules.ts` : chaussures, édition `variante` sauf Premium `proche` ; accessoires, attributs `niveau` (balles, différent), `typeGrip` (différent), unités balle / pièce.
+- `R2_referentiel.md` §7.4 : réponses à la place des questions ; GAP-2026-09-25-11 : liste des sous-catégories et étapes R3 mises à jour (6 valeurs, déplacement textile, exclusions) ; liste des exclusions à l'ingestion regroupée pour R3 (JOOLA, chaussures de ville, hors sujet accessoires).
+
+**Statut** : Actée (réponses explicites de Mathieu du 2026-09-28), sauf les cas « à vérifier sur les fiches » (Q16, Q17 ATP, Q18 Damp). R2 sera clos pour toutes les catégories une fois le report fait et ces cas tranchés ; ensuite R3.
