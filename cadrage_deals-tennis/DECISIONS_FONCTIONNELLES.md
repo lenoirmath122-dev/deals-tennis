@@ -1100,3 +1100,38 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 **Suite** : stockage des alias proposés (petite table ou export) et action « proposer l'alias » à construire en R5 / Phase 5 (moments déjà prévus par le GAP).
 
 **Statut** : Actée (réponse explicite de Mathieu du 2026-09-28).
+
+### D-2026-09-28-02 — Réponses aux questions R2 (Q1-Q12) : règles de tolérance et référentiel v1
+
+**Contexte** : R2 proposé (PR #85, mergée) avec 11 questions (Q1-Q6 dans `config/matching-rules.ts`, Q7-Q11 dans `R2_referentiel.md`). Une 12e question a été ajoutée pendant la revue : les lots et les cadeaux, vus dans les titres réels. Revue faite une par une, réponses explicites de Mathieu (AskUserQuestion, 2026-09-28).
+
+**Décisions (Mathieu, 2026-09-28)** :
+
+- **Q1 — Poids des raquettes** : même poids = même modèle ; écart ≤ 10 g = proche ; > 10 g = différent. **Un poids écrit dans le nom du modèle compte comme un écart de poids ordinaire** (proposition initiale refusée) : T-Fight 300 / 305 et Tempo 270 / 275 = proche ; T-Fight 255 / 270 = différent. Aucune paire R1 ne change (paire 12 : même poids).
+- **Q2 — Plan de cordage et longueur (raquettes)** : **proche** tous les deux (proposition initiale « différent » refusée). « Même modèle avec un plan de cordage différent. » Pure Drive / Pure Drive + = proche. **Paire R1 n° 45 reclassée « différent » → « proche »** (Radical Pro 2023 16x19 / 18x20, validée « différent » le 2026-09-27, contradiction signalée à Mathieu avant de noter la réponse) : jeu R1 = 32 identiques / 15 proches / 20 différents.
+- **Q3 — Surface des chaussures** (toutes surfaces / Clay) : proche.
+- **Q4 — Garniture / bobine** : produits différents ; prix au mètre affiché sur les deux ; jamais de « meilleur prix » entre garniture et bobine.
+- **Q5 — Pression des balles, contenance des sacs** (RH6 / RH12) : différent tous les deux.
+- **Q6 — Textile, mention écrite d'un seul côté** : **année ou collection → identique** (paire R1 58) ; **édition spéciale nommée (RG, Wimbledon, US Open…) → proche** (paire R1 59). Remplace la proposition « proche dans tous les cas », qui contredisait la paire 58.
+- **Q7 — Éditions et coloris (raquettes, cordages)** : une édition ou un coloris sans caractéristique différente sur la fiche = **même modèle** (Spectra, Wimbledon, White, LTD rouge, Black Code Fire / Lime…). Cas particuliers : Pure Aero **Rafa = édition** ; **Rafa Origin = version** (produit différent) ; T-Fight **300 IG = édition** ; Evo Drive **Femme = coloris**, poids comparé avec la règle Q1.
+- **Q8 — Regroupements provisoires** : **une famille par ligne** (Boost Aero / Boost Drive / Boost Strike ; chaque ligne junior Babolat et Head ; chaque raquette loisir Head et Wilson).
+- **Q9 — Correspondances** : Head **Hawk Tour Rpet = version « Tour Rpet » à part**. **Cinq cas à vérifier sur les fiches avant de trancher** (réponse de Mathieu ; non faits : la politique réseau de la session bloque les sites marchands) :
+  1. Lacoste « L23 L » (SportSystem) = Tecnifibre « Lacoste L23 Light » ?
+  2. Babolat « Synthetic Gut Force » ≠ « Synthetic Gut » ? (fiches Tennispro)
+  3. « Wilson Element 1,25 mm » (Amazon) = cordage Luxilon ?
+  4. Gosen « Eggpower (sidewinder) » et « Sidewinder » : même cordage ? (fiches Tennispro, 2 conditionnements chacun ; Mathieu a d'abord répondu « deux cordages différents », puis est revenu dessus : à vérifier)
+  5. Wilson « RF 01 Future » : version junior ou légère de « RF 01 » ? (fiches SportSystem)
+  En attendant : `a_confirmer`, et **jamais de rapprochement** entre les deux côtés (principe R3).
+- **Q10 — Périmètre** : **passe R2 suivante** pour le référentiel **chaussures** et les **sous-catégories d'accessoires** (GAP-2026-09-25-11), avant R3. **Pas de référentiel pour le textile** (règle textile D-2026-09-27-06 appliquée au nom de modèle lu dans le titre).
+- **Q11 — Marques sans famille** (Senston, Amazon Basics, offres inactives) : hors référentiel, toujours « nouveau modèle ». **JOOLA = raquette de tennis de table**, hors sujet : à filtrer à l'ingestion (R3).
+- **Q12 — Lots et cadeaux** : **lot de N articles identiques** (« Pack de 2 raquettes ») = **produit différent**, prix à l'unité affiché, jamais de « meilleur prix » entre un lot et l'unité ; **article + cadeau** (« 6 cordages offerts », « sac offert ») = **même modèle**, cadeau indiqué sur l'offre.
+
+**À reporter (session Sonnet, spec = cette décision)** :
+- `config/matching-rules.ts` : raquettes `plan_cordage` et `longueur` → `proche` ; attribut `edition` → `variante` (raquettes, cordages) ; règle `textile` : distinguer année / collection écrite d'un seul côté (→ identique) et édition spéciale (→ proche) ; attributs communs `lot` → `different` (prix à l'unité) et `cadeau` → `variante` ; notes Q1-Q6 remplacées par la règle retenue.
+- `config/model-families.ts` : poids retirés des `versions` quand ils sont dans le nom (T-Fight, TF-X1, Tempo, T-Fit, Fire, Ki 5, Beast, Tour Carbon, Neon, Skulls, Black Ace, Q+ Tour Pro…), à comparer par la règle Q1 ; plans de cordage et « + » retirés des `versions` (Pure Strike, Pure Drive, Pure Aero, Radical, CX, TF-40, Blade) ; Rafa, 300 IG, Femme passés en `editions` ; Black Code → `observe` ; cinq regroupements éclatés ; Hawk « Tour Rpet » en version ; Gosen Eggpower et Sidewinder séparés en deux familles `a_confirmer` jusqu'à vérification ; notes « à confirmer » tranchées retirées.
+- `R1_jeu-reference-candidat.csv` : paire 45 → proche (`decision_mathieu` et `note` datées) ; `R1_mesure.md` : répartition 32 / 15 / 20.
+- `R2_referentiel.md` : §5 remplacé par le rappel des réponses et des 5 vérifications en attente.
+- `CADRAGE_rapprochement-multi-niveaux.md` §5 : règles ajoutées (plan de cordage et longueur proches, lots, cadeaux, éditions, textile année / édition).
+- Anomalies à filtrer en R3 (ajoutées à `R2_referentiel.md` §4) : JOOLA.
+
+**Statut** : Actée (réponses explicites de Mathieu du 2026-09-28), sauf les 5 vérifications de Q9. R2 est clos pour les raquettes et les cordages une fois le report fait et les 5 vérifications tranchées. La passe R2 chaussures + accessoires suit.
