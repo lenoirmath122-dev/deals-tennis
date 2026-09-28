@@ -133,11 +133,18 @@ détail complet dans `DECISIONS_FONCTIONNELLES.md` D-2026-09-28-03 et
 
 **R2 clos pour toutes les catégories.**
 
-**Bloquant sur** : rien. Prochaine étape : **R3** (capture à l'ingestion),
-voir aussi GAP-2026-09-25-11 (sous-catégories d'accessoires, étapes 1 à 4).
+**R3 cadré et validé (2026-09-28, D-2026-09-28-04)** : `R3_cadrage.md`.
+Capture sur l'offre (`deals`), enrichissement par fiche une fois par offre
+(R3.12), `tracked` limité à ce que chaque script voit déjà, exclusions déjà
+en base passées en `invalid`, garde-fou d'éviction 50 % avancé en R3.2,
+filtre UI des sous-catégories en R3.13. Découpage R3.1 à R3.13, une étape
+par conversation (Sonnet).
+
+**Bloquant sur** : rien. Prochaine étape : **R3.1** (migration additive +
+audit des requêtes du site, branche Neon), voir aussi GAP-2026-09-25-11.
 
 **Statut** : ouvert au 2026-09-28 — R0, R1, R2 faits pour toutes les
-catégories ; reste R3 à R5.
+catégories, R3 cadré ; reste R3.1 à R3.13, puis R4 et R5.
 
 ---
 
@@ -320,9 +327,11 @@ Suite à D-2026-09-25-15 : décisions de principe actées (champ `deals.subcateg
 5. ~~Mise à jour du workflow n8n ProTennis~~ — **close, obsolète** (2026-09-26) : ProTennis retiré définitivement, plus de workflow n8n ProTennis dans le dépôt.
 6. UI du filtre secondaire (pills sous-catégorie, visibles uniquement quand « Accessoires » est sélectionné, incluant une option « Autres accessoires » pour `subcategory IS NULL`).
 
-**Bloquant sur** : rien — R0-R2 du chantier de rapprochement multi-niveaux sont faits (voir GAP-2026-09-25-19). Attend le démarrage de R3.
+**Placement dans R3** (D-2026-09-28-04, `R3_cadrage.md` §3) : étape 1 en R3.1 (migration), étape 2 en R3.2 (`lib/ingest.ts`, et non `lib/product-matching.ts` seul), étape 3 en R3.3 (backfill : offres exclues passées en `status='invalid'`, pas supprimées), étape 4 en R3.4 à R3.11, étape 6 en R3.13 (sans bloquer R4).
 
-**Statut** : ouvert au 2026-09-28 — cadré et validé (référentiel v2), étape 5 close (obsolète), reste 1-4 et 6 en R3.
+**Bloquant sur** : rien — R0-R2 faits, R3 cadré et validé (voir GAP-2026-09-25-19). Attend R3.1.
+
+**Statut** : ouvert au 2026-09-28 — cadré et validé (référentiel v2, placement R3), étape 5 close (obsolète), reste 1-4 et 6 en R3.
 
 ---
 
