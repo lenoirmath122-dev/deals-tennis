@@ -329,9 +329,11 @@ Suite à D-2026-09-25-15 : décisions de principe actées (champ `deals.subcateg
 
 **Placement dans R3** (D-2026-09-28-04, `R3_cadrage.md` §3) : étape 1 en R3.1 (migration), étape 2 en R3.2 (`lib/ingest.ts`, et non `lib/product-matching.ts` seul), étape 3 en R3.3 (backfill : offres exclues passées en `status='invalid'`, pas supprimées), étape 4 en R3.4 à R3.11, étape 6 en R3.13 (sans bloquer R4).
 
-**Bloquant sur** : rien — R0-R2 faits, R3 cadré et validé (voir GAP-2026-09-25-19). Attend R3.1.
+**Étape 2 faite (2026-09-28)** : `resolveCategory`/`checkExclusion` dans `lib/ingest.ts`, à partir de `SUBCATEGORY_RULES` (lexique v2) seul — pas de lookup dans les familles `ACCESSORY_FAMILIES` (leur champ `subcategory` reste redondant avec les règles par motif pour l'instant ; pas de gain mesuré à l'utiliser en plus, et cela aurait demandé une résolution d'alias proche du moteur R4, hors périmètre R3). Les deux actions R3 (déplacement textile, exclusion hors sujet) et les exclusions chaussures de ville/JOOLA sont couvertes.
 
-**Statut** : ouvert au 2026-09-28 — cadré et validé (référentiel v2, placement R3), étape 5 close (obsolète), reste 1-4 et 6 en R3.
+**Bloquant sur** : rien — R0-R2 faits, R3 cadré et validé (voir GAP-2026-09-25-19). Étape 2 faite, attend R3.3 (étape 3) pour le backfill.
+
+**Statut** : ouvert au 2026-09-28 — cadré et validé (référentiel v2, placement R3), étapes 1, 2 et 5 faites, reste 3 (R3.3), 4 (R3.4-R3.11) et 6 (R3.13).
 
 ---
 
