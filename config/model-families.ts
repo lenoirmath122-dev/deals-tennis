@@ -1,0 +1,810 @@
+/**
+ * Référentiel de familles de modèles (R2, v1 — PROPOSITION, raquettes et cordages).
+ *
+ * Source : §7 de `cadrage_deals-tennis/CADRAGE_rapprochement-multi-niveaux.md`.
+ * Méthode d'amorçage et questions ouvertes : `cadrage_deals-tennis/R2_referentiel.md`.
+ *
+ * Statut : proposé par Claude Code le 2026-09-28 à partir des titres réels en
+ * base (toutes offres, actives ou non), à valider par Mathieu. Aucun code ne
+ * lit encore ce fichier : il sera consommé par le moteur en R4.
+ * Les alias proposés par la file de revue y sont ajoutés en lot, après
+ * validation (D-2026-09-28-01) : jamais d'écriture depuis l'application.
+ *
+ * Conventions :
+ * - `aliases` sont écrits sous forme normalisée : minuscules, accents retirés,
+ *   tirets / barres / soulignés remplacés par un espace, espaces multiples
+ *   réduits. Le « + » est conservé (Pure Drive + ≠ Pure Drive).
+ * - Une famille se reconnaît par l'alias le plus long trouvé dans le titre
+ *   (« blade feel » l'emporte sur « blade »). `excludes` liste les alias
+ *   d'autres familles qui contiennent celui-ci, pour mémoire.
+ * - `versions` : déclinaisons au niveau « modèle » à l'intérieur de la famille.
+ *   Deux versions différentes = produit différent (§5 : tamis, Lite / Tour /
+ *   Team / Plus, plan de cordage, junior). Sans version écrite = version
+ *   standard de la famille.
+ * - `generations` : seulement les correspondances **observées** (dans un même
+ *   titre, ou vérifiées sur une fiche en R1 — source indiquée). Rien n'est
+ *   déduit de mémoire : une génération absente ici est « inconnue » et la
+ *   règle des générations (D-2026-09-26-01) s'applique.
+ * - `editions` : séries spéciales ou coloris nommés (voir question Q7 de
+ *   `R2_referentiel.md`).
+ * - `statut` : `observe` (vu tel quel en base) ou `a_confirmer` (hypothèse
+ *   de Claude Code signalée dans `notes`).
+ */
+
+import type { DealCategory } from "@/types/database";
+
+export interface Generation {
+  /** Libellé canonique (ex. « Gen 11 »). */
+  label: string;
+  /** Marqueurs rencontrés dans les titres, normalisés. */
+  markers: string[];
+  /** Année commerciale, seulement si observée avec le marqueur. */
+  year?: number;
+  /** Où la correspondance a été observée. */
+  source: string;
+}
+
+export interface FamilyEntry {
+  brand: string;
+  category: DealCategory;
+  family: string;
+  aliases: string[];
+  versions?: string[];
+  generations?: Generation[];
+  editions?: string[];
+  /** Ligne junior : l'âge est un attribut « différent » (COMMON_ATTRIBUTES). */
+  junior?: boolean;
+  excludes?: string[];
+  statut: "observe" | "a_confirmer";
+  notes?: string[];
+}
+
+/**
+ * Marques enregistrées sous un autre nom en base. La famille reste rattachée
+ * à la marque du fabricant du produit.
+ */
+export const BRAND_ALIASES: Record<string, { canonical: string; note: string }> = {
+  "wilson/cordages/luxilon": {
+    canonical: "Luxilon",
+    note: "Amazon enregistre les cordages Luxilon sous la marque Wilson (propriétaire de Luxilon). Paires R1 66 et 67.",
+  },
+  "tecnifibre/raquettes/lacoste": {
+    canonical: "Lacoste",
+    note: "Raquette Lacoste L23 fabriquée par Tecnifibre, enregistrée sous Tecnifibre chez un marchand et Lacoste chez un autre.",
+  },
+  sportsystem: {
+    canonical: "(marque lue dans le titre)",
+    note: "Marque mal extraite : « SPORTSYSTEM Babolat Evo Aero Lite Gén2 ». Anomalie de données, voir R2_referentiel.md.",
+  },
+};
+
+export const MODEL_FAMILIES: FamilyEntry[] = [
+  // ───────────────────────────── RAQUETTES — Babolat ─────────────────────────────
+  {
+    brand: "Babolat",
+    category: "raquettes",
+    family: "Pure Aero",
+    aliases: ["pure aero", "pureaero"],
+    versions: ["98", "+", "Lite", "S Lite", "Team", "Rafa", "Rafa Origin"],
+    generations: [
+      { label: "Gen 9", markers: ["gen 9", "gen9"], year: 2026, source: "titres « Pure Aero 98 Gen 9 2026 », « Pure Aero Lite Gén 9 2026 »" },
+    ],
+    excludes: ["pure aero junior", "evo aero", "boost aero", "aero junior"],
+    statut: "observe",
+    notes: [
+      "« Rafa » et « Rafa Origin » classés en versions (spécifications propres) plutôt qu'en éditions : à confirmer (Q7).",
+    ],
+  },
+  {
+    brand: "Babolat",
+    category: "raquettes",
+    family: "Pure Drive",
+    aliases: ["pure drive", "puredrive"],
+    versions: ["98", "+", "107", "Lite", "S Lite", "Team"],
+    generations: [
+      { label: "Gen 11", markers: ["gen 11", "gen11"], year: 2025, source: "titres « Pure Drive 98 Gén 11 2025 », « Pure Drive Gen 11 2025 »" },
+    ],
+    editions: ["Spectra Edition", "Wimbledon"],
+    excludes: ["evo drive", "boost drive", "drive junior"],
+    statut: "observe",
+    notes: [
+      "« S-Lite » et « S Lite » : même version. « Pure Drive + » = version rallongée (écrit dans le titre).",
+      "Paire R1 29 : deux générations (réf. 101551 Gen11, 101474 2023) sous le même titre « Pure Drive 98 (305 Gr) » ; seule la référence fabricant les sépare.",
+    ],
+  },
+  {
+    brand: "Babolat",
+    category: "raquettes",
+    family: "Pure Strike",
+    aliases: ["pure strike", "purestrike"],
+    versions: ["97", "98 16x19", "98 18x20", "100 16x19", "100 16x20", "18x20", "Lite", "Team"],
+    generations: [
+      { label: "Gen 4", markers: ["gen 4", "gen4"], source: "R1 paire 5 : réf. 101576 / GTIN 3324922083345 = Pure Strike 100 16/20 Gen4 (babolat.com)" },
+    ],
+    excludes: ["evo strike", "boost strike"],
+    statut: "observe",
+    notes: [
+      "Plan de cordage écrit « 16/19 », « 16x19 » ou « 16*19 » selon le marchand.",
+      "« Pure Strike 18x20 » sans tamis : tamis inconnu, à rapprocher au mieux en « proche ».",
+    ],
+  },
+  {
+    brand: "Babolat",
+    category: "raquettes",
+    family: "Evo Aero",
+    aliases: ["evo aero"],
+    versions: ["Lite"],
+    generations: [{ label: "Gen 2", markers: ["gen2", "gen 2"], source: "titres « Evo Aero Lite Gen2 »" }],
+    editions: ["Pink"],
+    statut: "observe",
+  },
+  {
+    brand: "Babolat",
+    category: "raquettes",
+    family: "Evo Drive",
+    aliases: ["evo drive"],
+    versions: ["115", "Lite", "Tour", "Femme"],
+    generations: [{ label: "Gen 2", markers: ["gen2", "gen 2"], source: "titres « Evo Drive Gen2 Cordée »" }],
+    editions: ["White"],
+    statut: "observe",
+    notes: ["« Femme » (270 g) classée en version : à confirmer, peut-être seulement un coloris."],
+  },
+  {
+    brand: "Babolat",
+    category: "raquettes",
+    family: "Evo Strike",
+    aliases: ["evo strike"],
+    generations: [{ label: "Gen 2", markers: ["gen2", "gen 2"], source: "titres « Evo Strike Gen2 Cordée »" }],
+    statut: "observe",
+    notes: [
+      "Deux poids vus : 280 g « (new) » et 290 g. Écart de 10 g sans version écrite : cas d'école pour Q1 et la règle des générations.",
+    ],
+  },
+  {
+    brand: "Babolat",
+    category: "raquettes",
+    family: "Boost",
+    aliases: ["boost"],
+    versions: ["Aero", "Drive", "Strike"],
+    editions: ["White", "Pink", "Wimbledon"],
+    statut: "a_confirmer",
+    notes: [
+      "Gamme loisir cordée. Proposé : une famille « Boost » avec Aero / Drive / Strike en versions. Alternative : trois familles.",
+    ],
+  },
+  {
+    brand: "Babolat",
+    category: "raquettes",
+    family: "Pure Aero Junior",
+    aliases: ["pure aero junior", "aero junior"],
+    versions: ["25", "26"],
+    generations: [{ label: "Gen 9", markers: ["gen9", "gen 9"], source: "titre « Pure Aero Junior 26 Gen9 »" }],
+    junior: true,
+    statut: "observe",
+  },
+  {
+    brand: "Babolat",
+    category: "raquettes",
+    family: "Drive Junior",
+    aliases: ["drive junior"],
+    versions: ["23", "24", "25"],
+    editions: ["Red"],
+    junior: true,
+    statut: "observe",
+  },
+  {
+    brand: "Babolat",
+    category: "raquettes",
+    family: "Junior (Wimbledon, Carlitos, B Fly, Ballfighter)",
+    aliases: ["carlitos junior", "b fly", "ballfighter", "junior wimbledon"],
+    versions: ["19", "21", "25"],
+    junior: true,
+    statut: "a_confirmer",
+    notes: ["Regroupement provisoire des petites lignes junior Babolat, à éclater si besoin. Une offre par ligne en base."],
+  },
+
+  // ───────────────────────────── RAQUETTES — Head ─────────────────────────────
+  {
+    brand: "Head",
+    category: "raquettes",
+    family: "Speed",
+    aliases: ["speed"],
+    versions: ["MP", "MP L", "MP UL", "Pro", "Team", "Team UL", "Tour", "Elite", "Pro Legend"],
+    generations: [
+      { label: "2022", markers: ["2022"], year: 2022, source: "titres « Speed Pro 2022 », « Speed Team 2022 » ; R1 paire 28 (réf. 233612)" },
+      { label: "2026", markers: ["2026"], year: 2026, source: "titres « Speed MP 2026 » ; R1 paire 30 (réf. 232026S)" },
+      { label: "Auxetic", markers: ["auxetic"], source: "titres « Speed MP Auxetic », « Speed Team UL Auxetic » — année non écrite" },
+    ],
+    excludes: ["graphene touch speed"],
+    statut: "observe",
+    notes: [
+      "« Speed Team » vu à 270 g et à 285 g : deux générations probables sous un même titre (Q1).",
+      "« Auxetic » : génération non datée dans les titres. Ne pas lui associer d'année sans vérification.",
+    ],
+  },
+  {
+    brand: "Head",
+    category: "raquettes",
+    family: "Graphene Touch Speed",
+    aliases: ["graphene touch speed"],
+    versions: ["XTR"],
+    statut: "observe",
+    notes: ["Ancienne génération de Speed vendue sous son nom d'époque. Famille séparée proposée pour éviter tout rapprochement avec « Speed »."],
+  },
+  {
+    brand: "Head",
+    category: "raquettes",
+    family: "Radical",
+    aliases: ["radical"],
+    versions: ["MP", "MP 18x20", "Pro", "Pro 18x20", "Team", "Team L"],
+    generations: [
+      { label: "2021 (Graphene 360+)", markers: ["graphene 360+", "2021"], year: 2021, source: "titre « Graphene 360+ Radical Pro (2021) »" },
+      { label: "2023", markers: ["2023"], year: 2023, source: "titre « Radical Team 2023 »" },
+      { label: "2025", markers: ["2025"], year: 2025, source: "titres « Radical MP 2025 », « Radical Team L 2025 »" },
+    ],
+    editions: ["Palm Tree Crew"],
+    excludes: ["junior radical"],
+    statut: "observe",
+    notes: ["« Graphene 360+ » est à la fois un préfixe de génération et un alias : il ne doit pas créer de famille à part."],
+  },
+  {
+    brand: "Head",
+    category: "raquettes",
+    family: "Extreme",
+    aliases: ["extreme"],
+    versions: ["MP", "MP L", "Pro", "Team", "Elite"],
+    generations: [{ label: "2024", markers: ["2024"], year: 2024, source: "titres « Extreme MP 2024 », R1 paire 41" }],
+    excludes: ["extreme junior"],
+    statut: "observe",
+    notes: ["« MP Lite » (Tennispro) = « MP L » (Tennis Point FR) : alias de version."],
+  },
+  {
+    brand: "Head",
+    category: "raquettes",
+    family: "Boom",
+    aliases: ["boom"],
+    versions: ["MP", "MP L", "MP UL", "Pro", "Team L", "Elite"],
+    generations: [
+      { label: "2024", markers: ["2024"], year: 2024, source: "titres « Boom MP 2024 », « Boom Pro 2024 »" },
+      { label: "2025 Neon", markers: ["neon 2025"], year: 2025, source: "R1 paire 2 (réf. 231655 = Boom MP L Neon 2025)" },
+    ],
+    editions: ["Alternate", "Neon"],
+    excludes: ["boom junior"],
+    statut: "observe",
+  },
+  {
+    brand: "Head",
+    category: "raquettes",
+    family: "Gravity",
+    aliases: ["gravity"],
+    versions: ["MP", "MP L", "Pro", "Team", "Tour"],
+    generations: [
+      { label: "2023", markers: ["2023"], year: 2023, source: "titre « Gravity MP (2023) »" },
+      { label: "Auxetic 2.0", markers: ["auxetic 2.0", "auxetic 2 0"], source: "titres « Gravity MP Auxetic 2.0 » — année non écrite" },
+    ],
+    statut: "observe",
+  },
+  {
+    brand: "Head",
+    category: "raquettes",
+    family: "Instinct",
+    aliases: ["instinct"],
+    versions: ["MP", "Team L"],
+    generations: [{ label: "2025", markers: ["2025"], year: 2025, source: "titres « Instinct MP 2025 »" }],
+    statut: "observe",
+  },
+  {
+    brand: "Head",
+    category: "raquettes",
+    family: "Prestige",
+    aliases: ["prestige"],
+    versions: ["MP"],
+    statut: "observe",
+  },
+  {
+    brand: "Head",
+    category: "raquettes",
+    family: "Squared",
+    aliases: ["squared"],
+    statut: "observe",
+  },
+  {
+    brand: "Head",
+    category: "raquettes",
+    family: "Loisir (Ti, MX Spark, IG Challenge)",
+    aliases: ["ti s2", "ti s6", "mx spark", "ig challenge"],
+    statut: "a_confirmer",
+    notes: ["Raquettes loisir, une offre chacune. Regroupement provisoire : chaque alias devrait sans doute être sa propre famille."],
+  },
+  {
+    brand: "Head",
+    category: "raquettes",
+    family: "Junior (Novak, Coco, Paw, Extreme / Radical / Boom Junior)",
+    aliases: ["novak", "coco", "paw junior", "extreme junior", "junior radical", "boom junior"],
+    versions: ["17", "19", "21", "23", "25"],
+    junior: true,
+    statut: "a_confirmer",
+    notes: [
+      "À éclater par ligne (Novak, Coco…) si Mathieu le souhaite. R1 paire 11 : Novak 19 ≠ Novak 25 (taille = version).",
+      "R1 paire 46 : « Novak 23 » Amazon contre « Novak 23 » Tennis Point FR classée « proche » (génération inconnue).",
+    ],
+  },
+
+  // ───────────────────────────── RAQUETTES — Wilson ─────────────────────────────
+  {
+    brand: "Wilson",
+    category: "raquettes",
+    family: "Blade",
+    aliases: ["blade"],
+    versions: ["98 16x19", "98 18x20", "98L", "100L", "104", "101 Team"],
+    generations: [
+      { label: "V8", markers: ["v8"], source: "titre « Blade 100L V8 »" },
+      { label: "V9", markers: ["v9"], source: "titres « Blade 98 16X19 V9 »" },
+      { label: "V10", markers: ["v10"], source: "titre « Blade 101 Team V10 »" },
+    ],
+    editions: ["Bright Neon Green"],
+    excludes: ["blade feel"],
+    statut: "observe",
+  },
+  {
+    brand: "Wilson",
+    category: "raquettes",
+    family: "Blade Feel",
+    aliases: ["blade feel"],
+    versions: ["Team 103", "RXT 105"],
+    statut: "observe",
+    notes: ["Gamme loisir distincte de Blade (piège de nom voisin)."],
+  },
+  {
+    brand: "Wilson",
+    category: "raquettes",
+    family: "Clash",
+    aliases: ["clash"],
+    versions: ["100", "100 Pro", "100L", "100UL", "Team 103"],
+    generations: [
+      { label: "V2", markers: ["v2.0", "v2 0", "v2"], source: "titres « Clash 100 V2.0 »" },
+      { label: "V3", markers: ["v3"], source: "titres « Clash 100 V3 » ; R1 paire 3 (V2 ≠ V3)" },
+    ],
+    editions: ["Noir", "Bright Neon Pink"],
+    statut: "observe",
+    notes: ["« Clash 100 L » = « Clash 100L » ; « UL » = ultra léger."],
+  },
+  {
+    brand: "Wilson",
+    category: "raquettes",
+    family: "Pro Staff",
+    aliases: ["pro staff"],
+    versions: ["97", "97L", "97UL", "X", "Team Classic"],
+    generations: [{ label: "V14", markers: ["v14"], source: "titres « Pro Staff 97 V14 » ; R1 paire 1" }],
+    excludes: ["pro staff precision"],
+    statut: "observe",
+  },
+  {
+    brand: "Wilson",
+    category: "raquettes",
+    family: "Pro Staff Precision",
+    aliases: ["pro staff precision"],
+    versions: ["RXT 105"],
+    statut: "observe",
+    notes: ["Gamme loisir (Amazon) distincte de Pro Staff."],
+  },
+  {
+    brand: "Wilson",
+    category: "raquettes",
+    family: "Ultra",
+    aliases: ["ultra"],
+    versions: ["100", "100L", "100UL", "99 Pro", "26 (junior)"],
+    generations: [
+      { label: "V4", markers: ["v4.0", "v4 0", "v4"], source: "titres « Ultra 100 V4.0 »" },
+      { label: "V5", markers: ["v5"], source: "titres « Ultra 100 V5 »" },
+    ],
+    editions: ["Desert", "Roland Garros 2026"],
+    statut: "observe",
+    notes: ["« Ultra 26 V5 » est une raquette junior : la taille 26 la sépare des versions adultes."],
+  },
+  {
+    brand: "Wilson",
+    category: "raquettes",
+    family: "Burn",
+    aliases: ["burn"],
+    versions: ["100", "100 LS", "100 ULS"],
+    generations: [{ label: "V5", markers: ["v5", "v 5"], source: "titres « Burn 100 LS V 5 »" }],
+    statut: "observe",
+  },
+  {
+    brand: "Wilson",
+    category: "raquettes",
+    family: "Shift",
+    aliases: ["shift"],
+    versions: ["99", "99L"],
+    generations: [{ label: "V1", markers: ["v1"], source: "titres « Shift 99 V1 »" }],
+    editions: ["Roland Garros Night Session", "US Open Edition Limitée"],
+    statut: "observe",
+  },
+  {
+    brand: "Wilson",
+    category: "raquettes",
+    family: "RF 01",
+    aliases: ["rf 01", "rf01"],
+    versions: ["Future"],
+    statut: "observe",
+    notes: ["« RF 01 Future » classée en version (junior probable) : à confirmer."],
+  },
+  {
+    brand: "Wilson",
+    category: "raquettes",
+    family: "Loisir (Pro Open, Hyper, Six.One, Fusion, Intrigue, Tour Slam, Impact)",
+    aliases: ["pro open", "hyper 2.3", "six one", "fusion xl", "intrigue", "tour slam", "impact"],
+    statut: "a_confirmer",
+    notes: ["Raquettes loisir, surtout Amazon. Regroupement provisoire : chaque alias devrait être sa propre famille. « Intrigue Jr 19 » est junior."],
+  },
+  {
+    brand: "Wilson",
+    category: "raquettes",
+    family: "Roland Garros Elite (junior)",
+    aliases: ["roland garros elite"],
+    versions: ["23"],
+    junior: true,
+    statut: "observe",
+  },
+
+  // ───────────────────────────── RAQUETTES — Tecnifibre ─────────────────────────────
+  {
+    brand: "Tecnifibre",
+    category: "raquettes",
+    family: "T-Fight",
+    aliases: ["t fight", "tfight"],
+    versions: ["255", "270", "280", "285", "300", "305", "315", "300S", "305S", "315S", "300 IG"],
+    generations: [
+      { label: "Isoflex / ISO", markers: ["isoflex", "iso"], source: "titres « T-Fight 300 Isoflex », « T-Fight 315 ISO » — année non écrite" },
+      { label: "2025", markers: ["2025"], year: 2025, source: "titres « T-Fight 300 2025 »" },
+    ],
+    excludes: ["t fight club", "t fight team", "t fight tour"],
+    statut: "observe",
+    notes: [
+      "Le nombre est la version (poids nominal), pas un poids de fiche : T-Fight 300 et 305 sont deux modèles différents, même si l'écart est de 5 g. Voir Q1.",
+      "« 300 IG » = édition Iga Swiatek : version ou édition, voir Q7.",
+    ],
+  },
+  {
+    brand: "Tecnifibre",
+    category: "raquettes",
+    family: "TF-X1",
+    aliases: ["tf x1", "tfx1"],
+    versions: ["255", "270", "275", "300", "305"],
+    generations: [{ label: "V2", markers: ["v2"], source: "titres « TF X1 270 V2 », « Tf-x1 V2 270 » ; R1 paire 12" }],
+    statut: "observe",
+    notes: ["Ordre des mots variable : « TF X1 270 V2 » = « Tf-x1 V2 270 » (R1 paire 12, identique)."],
+  },
+  {
+    brand: "Tecnifibre",
+    category: "raquettes",
+    family: "Tempo",
+    aliases: ["tempo"],
+    versions: ["255", "265", "270", "275", "285"],
+    generations: [{ label: "V2", markers: ["v2"], source: "titres « Tempo 270 V2 »" }],
+    excludes: ["tempo iga"],
+    statut: "observe",
+  },
+  {
+    brand: "Tecnifibre",
+    category: "raquettes",
+    family: "Tempo Iga (junior)",
+    aliases: ["tempo iga"],
+    versions: ["19", "24"],
+    junior: true,
+    statut: "observe",
+  },
+  {
+    brand: "Tecnifibre",
+    category: "raquettes",
+    family: "T-Fit",
+    aliases: ["t fit"],
+    versions: ["275", "290", "275 Speed"],
+    generations: [{ label: "2023", markers: ["2023"], year: 2023, source: "titres « T-fit 275 2023 »" }],
+    statut: "observe",
+  },
+  {
+    brand: "Tecnifibre",
+    category: "raquettes",
+    family: "TF-40",
+    aliases: ["tf 40", "tf40"],
+    versions: ["315 16x19", "315 18x20"],
+    statut: "observe",
+  },
+  {
+    brand: "Tecnifibre",
+    category: "raquettes",
+    family: "Fire",
+    aliases: ["fire"],
+    versions: ["255", "270", "285", "300", "305S"],
+    statut: "observe",
+  },
+  {
+    brand: "Tecnifibre",
+    category: "raquettes",
+    family: "T-Fight junior (Club, Team, Tour)",
+    aliases: ["t fight club", "t fight team", "t fight tour"],
+    versions: ["Club 17", "Club 19", "Club 23", "Club 25", "Team 24", "Team 25", "Team 26", "Tour 25", "Tour 26"],
+    junior: true,
+    statut: "observe",
+  },
+  {
+    brand: "Lacoste",
+    category: "raquettes",
+    family: "L23",
+    aliases: ["l23"],
+    versions: ["L", "Light"],
+    statut: "a_confirmer",
+    notes: ["« L23 L » (Lacoste) et « L23 Light » (Tecnifibre) : même version probable, à confirmer."],
+  },
+
+  // ───────────────────────────── RAQUETTES — Dunlop ─────────────────────────────
+  {
+    brand: "Dunlop",
+    category: "raquettes",
+    family: "CX",
+    aliases: ["cx"],
+    versions: ["200", "200 LS", "200 OS", "200 Tour 16x19", "200 Tour 18x20", "400", "400 Tour", "Team 100"],
+    statut: "observe",
+    notes: ["R1 paire 8 : « CX Team 100 » des deux côtés, classée « proche » (génération introuvable)."],
+  },
+  {
+    brand: "Dunlop",
+    category: "raquettes",
+    family: "FX",
+    aliases: ["fx"],
+    versions: ["500", "500 LS", "500 Lite", "500 Super Lite", "500 Tour", "700"],
+    generations: [{ label: "2026", markers: ["2026"], year: 2026, source: "titres « FX 500 Lite 2026 » ; R1 paire 6 (réf. 10369906, plan 16x18)" }],
+    statut: "observe",
+    notes: ["R1 paires 6 et 7 : « FX 500 Lite » sans année ≠ « FX 500 Lite 2026 » (génération antérieure, plan 16x19)."],
+  },
+  {
+    brand: "Dunlop",
+    category: "raquettes",
+    family: "SX",
+    aliases: ["sx", "sx300"],
+    versions: ["300", "300 LS", "300 Lite", "300 Tour", "Team 100"],
+    generations: [{ label: "2025", markers: ["2025"], year: 2025, source: "titres « SX300 2025 »" }],
+    statut: "observe",
+    notes: ["« SX300 » (collé) = « Sx 300 » : la normalisation doit séparer lettres et chiffres."],
+  },
+  {
+    brand: "Dunlop",
+    category: "raquettes",
+    family: "LX",
+    aliases: ["lx"],
+    versions: ["800", "1000"],
+    statut: "observe",
+  },
+  {
+    brand: "Dunlop",
+    category: "raquettes",
+    family: "Tristorm",
+    aliases: ["tristorm"],
+    versions: ["Pro 100 Lite", "Team 100"],
+    statut: "observe",
+  },
+
+  // ───────────────────────────── RAQUETTES — Prince, Pro Kennex, Yonex ─────────────────────────────
+  {
+    brand: "Prince",
+    category: "raquettes",
+    family: "Beast",
+    aliases: ["beast"],
+    versions: ["100 265", "100 280", "100 300"],
+    editions: ["LTD rouge", "Pink"],
+    statut: "observe",
+    notes: ["« Beast 100 (265g) » = « Beast 100 265 LTD » ? Édition LTD : voir Q7."],
+  },
+  {
+    brand: "Prince",
+    category: "raquettes",
+    family: "Tour Carbon",
+    aliases: ["tour carbon"],
+    versions: ["100 275", "100 290", "100 P", "100L"],
+    statut: "observe",
+  },
+  { brand: "Prince", category: "raquettes", family: "Warrior", aliases: ["warrior"], versions: ["100"], statut: "observe" },
+  { brand: "Prince", category: "raquettes", family: "Ripcord", aliases: ["ripcord"], versions: ["100"], statut: "observe" },
+  { brand: "Prince", category: "raquettes", family: "O3 Legacy", aliases: ["o3 legacy"], versions: ["105"], statut: "observe" },
+  { brand: "Prince", category: "raquettes", family: "Neon", aliases: ["neon"], versions: ["275", "290"], statut: "observe" },
+  { brand: "Prince", category: "raquettes", family: "Skulls", aliases: ["skulls"], versions: ["275", "290"], statut: "observe" },
+  {
+    brand: "Prince",
+    category: "raquettes",
+    family: "Ace Face (junior)",
+    aliases: ["ace face"],
+    versions: ["19", "25", "26"],
+    junior: true,
+    statut: "observe",
+  },
+  {
+    brand: "Pro Kennex",
+    category: "raquettes",
+    family: "Ki 5",
+    aliases: ["ki 5", "ki5"],
+    versions: ["260", "270"],
+    statut: "observe",
+  },
+  {
+    brand: "Pro Kennex",
+    category: "raquettes",
+    family: "Black Ace",
+    aliases: ["black ace"],
+    versions: ["105", "285", "300", "Pro"],
+    statut: "observe",
+  },
+  {
+    brand: "Pro Kennex",
+    category: "raquettes",
+    family: "Q+",
+    aliases: ["q+"],
+    versions: ["15 Light", "15 Pro", "Tour", "Tour Pro 315", "Tour Pro 325"],
+    statut: "observe",
+  },
+  {
+    brand: "Yonex",
+    category: "raquettes",
+    family: "VCore",
+    aliases: ["vcore"],
+    versions: ["Alpha L"],
+    statut: "observe",
+  },
+
+  // ───────────────────────────── CORDAGES — Babolat ─────────────────────────────
+  {
+    brand: "Babolat",
+    category: "cordages",
+    family: "RPM",
+    aliases: ["rpm"],
+    versions: ["Blast", "Soft", "Rough", "Power", "Team", "Hurricane"],
+    statut: "observe",
+    notes: [
+      "« RPM Hurricane » = ancien « Pro Hurricane Tour » (écrit dans un titre Tennispro) : alias de version « pro hurricane tour ». R1 paire 65.",
+      "Chaque version est un cordage différent (Blast ≠ Soft). Longueur (6 / 12 / 100 / 200 m) = conditionnement, jamais une version.",
+    ],
+  },
+  {
+    brand: "Babolat",
+    category: "cordages",
+    family: "Addixion+",
+    aliases: ["addixion+", "addixion +", "addixion"],
+    statut: "observe",
+  },
+  { brand: "Babolat", category: "cordages", family: "Xcel", aliases: ["xcel"], statut: "observe" },
+  { brand: "Babolat", category: "cordages", family: "Xalt", aliases: ["xalt"], statut: "observe" },
+  { brand: "Babolat", category: "cordages", family: "Xplore", aliases: ["xplore"], statut: "observe" },
+  { brand: "Babolat", category: "cordages", family: "Touch VS", aliases: ["touch vs"], statut: "observe" },
+  { brand: "Babolat", category: "cordages", family: "Pro Last", aliases: ["pro last"], statut: "observe" },
+  { brand: "Babolat", category: "cordages", family: "Magic Force", aliases: ["magic force"], statut: "observe" },
+  {
+    brand: "Babolat",
+    category: "cordages",
+    family: "Synthetic Gut",
+    aliases: ["synthetic gut"],
+    versions: ["Force"],
+    statut: "a_confirmer",
+    notes: ["« Synthetic Gut Force » classé en version (produit différent) : à confirmer."],
+  },
+
+  // ───────────────────────────── CORDAGES — Head ─────────────────────────────
+  {
+    brand: "Head",
+    category: "cordages",
+    family: "Hawk",
+    aliases: ["hawk"],
+    versions: ["Touch", "Power", "Tour"],
+    statut: "observe",
+    notes: ["« Hawk Tour Rpet » : « Rpet » (polyester recyclé) traité comme partie du nom de la version Tour, à confirmer."],
+  },
+  {
+    brand: "Head",
+    category: "cordages",
+    family: "Lynx",
+    aliases: ["lynx"],
+    versions: ["Touch", "Tour"],
+    statut: "observe",
+  },
+  { brand: "Head", category: "cordages", family: "Sonic Pro", aliases: ["sonic pro"], statut: "observe" },
+  { brand: "Head", category: "cordages", family: "Velocity MLT", aliases: ["velocity mlt", "velocity"], statut: "observe" },
+  { brand: "Head", category: "cordages", family: "Reflex MLT", aliases: ["reflex mlt", "reflex"], statut: "observe" },
+  {
+    brand: "Head",
+    category: "cordages",
+    family: "Rip Control",
+    aliases: ["rip control"],
+    statut: "observe",
+    notes: ["R1 paires 25 et 38 : jauge souvent absente du titre, garniture / bobine à lire dans la longueur."],
+  },
+  { brand: "Head", category: "cordages", family: "Intellitour", aliases: ["intellitour"], statut: "observe" },
+  { brand: "Head", category: "cordages", family: "Challenge", aliases: ["challenge"], statut: "observe" },
+  { brand: "Head", category: "cordages", family: "Synthetic Gut PPS", aliases: ["synthetic gut pps"], statut: "observe" },
+
+  // ───────────────────────────── CORDAGES — Luxilon ─────────────────────────────
+  {
+    brand: "Luxilon",
+    category: "cordages",
+    family: "Alu Power",
+    aliases: ["big banger alu power", "alu power"],
+    versions: ["Rough", "Soft", "Spin"],
+    editions: ["Black"],
+    statut: "observe",
+    notes: [
+      "« Alu Power » = « Big Banger Alu Power » (R1 paires 63 et 66, identiques).",
+      "« Black » traité comme coloris (R1 paire 32, identique).",
+      "« Alu Power 125 » (Amazon) : 125 = jauge 1,25 mm, pas une version.",
+    ],
+  },
+  {
+    brand: "Luxilon",
+    category: "cordages",
+    family: "4G",
+    aliases: ["4g"],
+    versions: ["Soft", "Rough"],
+    editions: ["Black"],
+    statut: "observe",
+    notes: ["R1 paire 67 : l'offre Amazon indique « Rouleau de 2 mètres » pour une bobine, titre non fiable sur la longueur."],
+  },
+  { brand: "Luxilon", category: "cordages", family: "Big Banger Original", aliases: ["big banger original"], statut: "observe" },
+  { brand: "Luxilon", category: "cordages", family: "Eco", aliases: ["eco"], versions: ["Rough", "Spin"], statut: "observe" },
+  { brand: "Luxilon", category: "cordages", family: "Adrenaline", aliases: ["adrenaline"], statut: "observe" },
+  {
+    brand: "Luxilon",
+    category: "cordages",
+    family: "Element",
+    aliases: ["element"],
+    statut: "a_confirmer",
+    notes: ["Vu sous la marque Wilson (« Wilson Element ») : cordage Luxilon, à confirmer."],
+  },
+
+  // ───────────────────────────── CORDAGES — autres marques ─────────────────────────────
+  {
+    brand: "Gosen",
+    category: "cordages",
+    family: "Sidewinder",
+    aliases: ["sidewinder", "eggpower sidewinder", "eggpower"],
+    statut: "a_confirmer",
+    notes: ["« Eggpower (sidewinder) » et « Sidewinder » vus séparément chez le même marchand : même cordage ou deux produits ? À confirmer."],
+  },
+  { brand: "Gosen", category: "cordages", family: "G Tour", aliases: ["g tour"], versions: ["1", "2", "3"], statut: "observe" },
+  { brand: "Gosen", category: "cordages", family: "Micro Super", aliases: ["micro super"], statut: "observe" },
+  { brand: "Gosen", category: "cordages", family: "Polybreak", aliases: ["polybreak"], statut: "observe" },
+  { brand: "Gosen", category: "cordages", family: "Polylon Comfort", aliases: ["polylon comfort", "polylon"], statut: "observe" },
+  { brand: "Gosen", category: "cordages", family: "Tecgut Multi CX", aliases: ["tecgut multi cx", "tecgut"], statut: "observe" },
+  {
+    brand: "Gosen",
+    category: "cordages",
+    family: "Umishima AK",
+    aliases: ["umishima ak", "umishima"],
+    versions: ["Control", "Pro Multi", "Pro Multi CX"],
+    statut: "observe",
+  },
+  { brand: "Dunlop", category: "cordages", family: "Explosive", aliases: ["explosive"], versions: ["Bite", "Spin", "Tour"], statut: "observe" },
+  {
+    brand: "Tecnifibre",
+    category: "cordages",
+    family: "Black Code",
+    aliases: ["black code"],
+    editions: ["Fire", "Lime"],
+    statut: "a_confirmer",
+    notes: ["« Fire » et « Lime » traités comme des coloris : à confirmer."],
+  },
+  { brand: "Tecnifibre", category: "cordages", family: "4S", aliases: ["4s"], statut: "observe" },
+  { brand: "Tecnifibre", category: "cordages", family: "TGV", aliases: ["tgv"], statut: "observe" },
+  {
+    brand: "West Gut",
+    category: "cordages",
+    family: "MT",
+    aliases: ["mt"],
+    versions: ["14 Polyflex", "17 Poly Black", "18 Poly Black Penta", "19 Plus Power", "20 Hexa Spin"],
+    statut: "observe",
+  },
+  { brand: "Wilson", category: "cordages", family: "Sensation", aliases: ["sensation"], versions: ["Control"], statut: "observe" },
+  { brand: "Wilson", category: "cordages", family: "Revolve Spin", aliases: ["revolve spin", "revolve"], statut: "observe" },
+  { brand: "Wilson", category: "cordages", family: "NXT", aliases: ["nxt"], statut: "observe" },
+  { brand: "Kirschbaum", category: "cordages", family: "Max Power", aliases: ["max power"], versions: ["Rough"], statut: "observe" },
+  { brand: "Prince", category: "cordages", family: "Synthetic Gut Duraflex", aliases: ["synthetic gut duraflex", "duraflex"], statut: "observe" },
+  { brand: "Pro's Pro", category: "cordages", family: "Black Force", aliases: ["black force"], statut: "observe" },
+  { brand: "Yonex", category: "cordages", family: "PolyTour", aliases: ["polytour", "poly tour"], versions: ["Pro"], statut: "observe" },
+];

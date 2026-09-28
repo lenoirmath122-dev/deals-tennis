@@ -85,12 +85,17 @@ rappel 5/32 (15,6 %), inter-marchands 2/29 (6,9 %). Détail :
 (32 identiques / 14 proches / 21 différents). Mesure de référence avant
 R2 : précision 5/8, rappel 5/32, inter-marchands 2/29.
 
-**Bloquant sur** : rien pour R1. Prochaine étape : R2 (référentiel v1 et
-règles de tolérance, §10 du cadrage). **À traiter pendant R2** : le principe
-de GAP-2026-09-27-02 (il conditionne le format de stockage du référentiel).
+**R2 proposé (2026-09-28)** : principe de GAP-2026-09-27-02 tranché
+(D-2026-09-28-01, référentiel en fichier versionné) ; règles de tolérance
+`config/matching-rules.ts` (Q1-Q6) et référentiel de familles
+`config/model-families.ts` (raquettes et cordages, Q7-Q11 dans
+`R2_referentiel.md`).
 
-**Statut** : ouvert au 2026-09-27 — R0 et R1 (67 paires) validés ; reste
-R2 à R5.
+**Bloquant sur** : validation de Mathieu sur Q1-Q11, qui clôt R2. Ensuite
+R3 (capture à l'ingestion, §10 du cadrage).
+
+**Statut** : ouvert au 2026-09-28 — R0 et R1 validés, R2 proposé en
+attente de validation ; reste R3 à R5.
 
 ---
 
@@ -128,7 +133,7 @@ concernées), sa fréquence et un éventuel seuil d'alerte.
 
 ---
 
-## GAP-2026-09-27-02 — Les validations de la file de revue enrichissent-elles le référentiel ? (OUVERT)
+## GAP-2026-09-27-02 — Les validations de la file de revue enrichissent-elles le référentiel ? (OUVERT — principe tranché)
 
 Quand Mathieu confirme dans la file de revue qu'une offre appartient à une
 famille connue sous un libellé nouveau (ex. une abréviation propre à un
@@ -158,7 +163,9 @@ avec le fichier.
   l'alias » ou « proposer l'alias ») est ajoutée à la file de revue unique de
   la page d'administration.
 
-**Statut** : ouvert au 2026-09-27, principe à trancher en R2.
+**Statut** : principe tranché le 2026-09-28 (D-2026-09-28-01) : option 2,
+enrichissement proposé en lot, référentiel en fichier versionné. Reste ouvert
+pour la construction (R5) et l'interface (Phase 5).
 
 ---
 

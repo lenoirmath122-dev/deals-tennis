@@ -111,3 +111,14 @@
 - Deux manques constatés, absents de tout document : repérage des familles/libellés inconnus du référentiel, et effet des validations de la file de revue sur le référentiel. Notés à la demande de Mathieu : GAP-2026-09-27-01 et GAP-2026-09-27-02, avec le moment de traitement jugé le plus cohérent (R2 pour le principe du 2, R4 pour le cadrage du 1, R5 et Phase 5 pour la construction). Renvoi ajouté dans GAP-2026-09-25-19.
 - Journal condensé (seuil 150 lignes) : sessions du 2026-09-25 archivées telles quelles.
 - Prochaine étape : R2, dans une nouvelle conversation (décision de Mathieu). Question encore ouverte : intégrer ou non les sous-catégories d'accessoires (GAP-2026-09-25-11) à R2.
+
+## 2026-09-28 (session) — R2 démarré : GAP-2026-09-27-02 tranché, fichier de règles v1 proposé
+
+- Reprise (`/clear`). Modèle actuel = recommandé (Opus, conception R2).
+- GAP-2026-09-27-02 tranché par Mathieu (AskUserQuestion) : option 2, enrichissement proposé en lot (D-2026-09-28-01). Le référentiel reste un fichier versionné.
+- `config/matching-rules.ts` créé : §5 du cadrage et décisions D-2026-09-26-01, D-2026-09-27-05/06/07 traduites en configuration (rôle variante / proche / différent par attribut, tolérance poids ±10 g, règle des générations standard / textile, unité de comparaison, seuils de confiance laissés vides jusqu'à R4). Aucun code ne le lit encore. `tsc` et `eslint` propres (après `next typegen`, erreur `LayoutProps` préexistante due aux types non générés).
+- Questions ouvertes Q1-Q6 écrites dans le fichier (poids, plan de cordage/longueur, surface chaussures, garniture/bobine au mètre, pression/contenance, génération écrite d'un seul côté en textile). Arrêt en attente de validation.
+- Blocage : pas d'accès à la base (ni `DATABASE_URL`, ni connecteur Neon, 401). Le référentiel de familles v1 (amorçage par termes fréquents par marque et catégorie) attend cet accès.
+- **Suite (même session)** : accès à la base rétabli (connecteur Neon). `config/model-families.ts` construit à partir des titres réels (raquettes et cordages, toutes offres) : 101 familles (58 raquettes, 43 cordages), 10 `a_confirmer`, générations uniquement observées avec leur source.
+- Reprise après interruption : le fichier était resté non commité et `R2_referentiel.md`, cité dans son en-tête, n'existait pas. Fichier commité, puis vérifié par sondage en base (12 écritures citées retrouvées, anomalies de marque confirmées), `tsc`/`eslint` propres. `R2_referentiel.md` écrit : contenu, méthode, hors périmètre, anomalies de marque à corriger en R3 (SPORTSYSTEM, HEAD/Head, Luxilon sous Wilson, L23 sous Tecnifibre), questions Q7-Q11 (éditions, regroupements provisoires, correspondances à confirmer, périmètre chaussures/textile/accessoires, marques sans famille). Taux de reconnaissance par alias non mesuré (prévu en R4).
+- Arrêt R2 : en attente de Mathieu sur Q1-Q11.
