@@ -78,6 +78,17 @@
 - **`R2_referentiel.md`** §5 remplacé par le rappel des réponses (dont le détail des 5 vérifications) ; §1 (compteurs), §3 et §6 mis à jour. `CADRAGE_rapprochement-multi-niveaux.md` §5 réécrit (v1 validée : plan de cordage/longueur proches, lots, cadeaux, éditions, textile année/édition).
 - **R2 clos pour les raquettes et les cordages.** Reste : passe R2 chaussures + sous-catégories d'accessoires (Q10), avant R3.
 
+## 2026-09-28 (session) — R3.3 : backfill des offres déjà en base
+
+- Reprise (« on reprend », pas de piste donnée). Prochaine étape déduite d'`ETAT_ACTUEL.md`/`R3_cadrage.md` : R3.3. Modèle actuel = recommandé (Sonnet, exécution d'une spec déjà validée).
+- Branche locale stale (`docs/r3-2-ingest`, PR #94 déjà mergée) resynchronisée sur `master`, nouvelle branche `docs/r3-3-backfill`.
+- Avant de commencer, Mathieu signale un run CI échoué (« la 215 ») : run `master` après le merge #94, `next/font/google` incapable de résoudre `fonts.gstatic.com` pendant `npm run build`. Diagnostiqué comme un flake réseau du runner (diff de #94 sans rapport avec les polices, run PR identique réussi 2 minutes avant) plutôt qu'une régression — confirmé par Mathieu (relance demandée), `gh run rerun` : passé au vert.
+- `scripts/backfill-r3-3.ts` construit, réutilisant les fonctions de `lib/ingest.ts` (R3.2) : `correctBrand`, `checkExclusion`, `resolveCategory`, `extractUnitInfo`. Relink de `product_id` ajouté (absent du cadrage initial, nécessaire dès qu'une correction de marque/catégorie change le modèle extrait du titre par `extractModel`, qui retire le nom de marque du titre) : upsert `products` par (brand, model, category) comme le fait déjà `lib/ingest.ts` pour l'ingestion normale, en conservant le `gender`/`age_group` du produit déjà relié (hors périmètre R3.3, déjà backfillés séparément).
+- **Découverte en cours de build** : `lib/ingest.ts` importe ses dépendances via l'alias `@/...`, résolu par Next/vitest mais pas par `node` lancé directement sans bundler (première fois qu'un script en dehors de Next/vitest consomme ce fichier). Corrigé en imports relatifs avec extension explicite (déjà autorisé par `tsconfig.json`, `allowImportingTsExtensions`), sans toucher à la logique. `tsc`/`eslint`/`test:unit` repassés propres après correction.
+- Vérifié d'abord sur une branche Neon dédiée (`test-r3-3-backfill`, créée puis supprimée via le connecteur Neon) : 4639 offres examinées (hors `status='invalid'`), 29 → `invalid`, 177 marques corrigées, 50 déplacées vers textile, 311 sous-catégories, 228 quantités unitaires, 56 relinks produit, 3881 inchangées. Échantillons contrôlés (exclusions, casquettes/chaussettes déplacées, Wilson Element→Luxilon, HEAD→Head, 0 incohérence catégorie deal/produit après relink). Mathieu confirme l'application en prod : résultats identiques.
+- Fichiers de suivi mis à jour (`ETAT_ACTUEL.md`, `R3_cadrage.md` §3, ce journal). `package.json` : entrée `db:backfill-r3-3` ajoutée (convention des backfills précédents).
+- Prochaine étape : R3.13 (filtre sous-catégories UI, faisable en session cloud) ou R3.4-R3.11 (réécriture des scripts, réseau marchand requis), au choix de Mathieu.
+
 ## 2026-09-28 (session cloud, suite) — Passe R2 chaussures + accessoires proposée
 
 - Reprise dans la session cloud après merge de la PR #87 (desktop) ; branche repartie de `master`. Modèle actuel = recommandé (Opus, conception R2). Proposé de faire cette passe dans une nouvelle session desktop (réseau non bloqué, une étape par conversation) : Mathieu a choisi de continuer ici.
