@@ -1083,3 +1083,20 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 **Suite prévue par le cadrage (§10, non engagée ici)** : R2 — référentiel v1 et règles de tolérance.
 
 **Statut** : Actée (réponses explicites de Mathieu du 2026-09-27).
+
+---
+
+### D-2026-09-28-01 — Les validations de revue proposent des alias, sans les ajouter automatiquement (GAP-2026-09-27-02)
+
+**Contexte** : début de R2. Le format de stockage du référentiel de familles dépend de ce que deviennent les libellés nouveaux validés dans la file de revue (GAP-2026-09-27-02).
+
+**Décision (Mathieu, 2026-09-28)** : option 2, **enrichissement proposé**.
+- Une validation en revue rattache **uniquement l'offre concernée** à la famille (rattachement tracé, `product_merges`).
+- Le libellé nouveau est **noté comme alias proposé**. Les propositions sont présentées **en lot** à Mathieu, puis ajoutées au référentiel après validation, comme le reste de la connaissance tennis (§0 du cadrage rapprochement).
+- Le référentiel reste un **fichier de configuration versionné** (principe R7) : aucune écriture dans le référentiel depuis l'application.
+
+**Raison** : un alias est une règle générale (il s'applique à toutes les offres futures) alors qu'une validation porte sur un seul cas ; un alias ambigu (ex. « PA ») créerait des faux rapprochements en série, contraire au principe R3. Coût accepté : quelques offres au même libellé repassent en revue entre deux ajouts au fichier.
+
+**Suite** : stockage des alias proposés (petite table ou export) et action « proposer l'alias » à construire en R5 / Phase 5 (moments déjà prévus par le GAP).
+
+**Statut** : Actée (réponse explicite de Mathieu du 2026-09-28).

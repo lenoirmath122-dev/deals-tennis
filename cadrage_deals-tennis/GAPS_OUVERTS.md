@@ -128,7 +128,7 @@ concernées), sa fréquence et un éventuel seuil d'alerte.
 
 ---
 
-## GAP-2026-09-27-02 — Les validations de la file de revue enrichissent-elles le référentiel ? (OUVERT)
+## GAP-2026-09-27-02 — Les validations de la file de revue enrichissent-elles le référentiel ? (OUVERT — principe tranché)
 
 Quand Mathieu confirme dans la file de revue qu'une offre appartient à une
 famille connue sous un libellé nouveau (ex. une abréviation propre à un
@@ -158,7 +158,9 @@ avec le fichier.
   l'alias » ou « proposer l'alias ») est ajoutée à la file de revue unique de
   la page d'administration.
 
-**Statut** : ouvert au 2026-09-27, principe à trancher en R2.
+**Statut** : principe tranché le 2026-09-28 (D-2026-09-28-01) : option 2,
+enrichissement proposé en lot, référentiel en fichier versionné. Reste ouvert
+pour la construction (R5) et l'interface (Phase 5).
 
 ---
 
