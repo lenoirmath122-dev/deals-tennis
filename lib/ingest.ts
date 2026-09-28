@@ -388,7 +388,7 @@ export async function upsertDeal(sql: Sql, deal: PreparedDeal, productId: string
 }
 
 export type IngestOutcome =
-  | { inserted: true }
+  | { inserted: true; status: "active" | "tracked" }
   | { inserted: false; reason: ExclusionReason };
 
 /** Prépare puis écrit une offre. Un script appelle cette fonction une fois par article vu. */
@@ -400,7 +400,7 @@ export async function ingestOffer(sql: Sql, offer: RawOffer): Promise<IngestOutc
 
   const productId = await upsertProduct(sql, prepared.deal);
   await upsertDeal(sql, prepared.deal, productId);
-  return { inserted: true };
+  return { inserted: true, status: prepared.deal.status };
 }
 
 export type EvictionGuard = "aucune_url_vue" | "moins_de_moitie";

@@ -331,7 +331,9 @@ Suite à D-2026-09-25-15 : décisions de principe actées (champ `deals.subcateg
 
 **Étape 2 faite (2026-09-28)** : `resolveCategory`/`checkExclusion` dans `lib/ingest.ts`, à partir de `SUBCATEGORY_RULES` (lexique v2) seul — pas de lookup dans les familles `ACCESSORY_FAMILIES` (leur champ `subcategory` reste redondant avec les règles par motif pour l'instant ; pas de gain mesuré à l'utiliser en plus, et cela aurait demandé une résolution d'alias proche du moteur R4, hors périmètre R3). Les deux actions R3 (déplacement textile, exclusion hors sujet) et les exclusions chaussures de ville/JOOLA sont couvertes.
 
-**Bloquant sur** : rien — R0-R2 faits, R3 cadré et validé (voir GAP-2026-09-25-19). Étape 2 faite, attend R3.3 (étape 3) pour le backfill.
+**Étape 4, avancement** : Tecnifibre fait en R3.4 (2026-09-28) ; restent Tennis Point FR, Sport 2000, SportSystem, Babolat, Tennispro.fr, Head, Amazon (R3.5-R3.11).
+
+**Bloquant sur** : rien — R0-R2 faits, R3 cadré et validé (voir GAP-2026-09-25-19). Étapes 1 à 3 faites, étape 4 en cours.
 
 **Statut** : ouvert au 2026-09-28 — cadré et validé (référentiel v2, placement R3), étapes 1, 2 et 5 faites, reste 3 (R3.3), 4 (R3.4-R3.11) et 6 (R3.13).
 
