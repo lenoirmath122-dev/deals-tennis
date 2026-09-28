@@ -117,9 +117,12 @@ junior. `tsc`/`eslint` propres. Paire R1 45 reportée dans le CSV et
 `config/accessory-subcategories.ts` (lexique v2 mesuré). Questions
 Q13-Q20 : `R2_referentiel.md` §7.
 
-**Bloquant sur** : réponses de Mathieu sur Q13-Q20, puis report (session
-Sonnet) et vérification des cas `a_confirmer` sur les fiches (réseau non
-bloqué). Ensuite R3.
+**Réponses actées (2026-09-28, D-2026-09-28-03)** : Q13-Q20 tranchées,
+sauf les cas à vérifier sur les fiches (Q16, ATP / ATP Tour, Damp).
+
+**Bloquant sur** : report de D-2026-09-28-03 dans les fichiers et
+vérification des cas `a_confirmer` sur les fiches (session desktop Sonnet,
+réseau ouvert). Ensuite R3.
 
 **Statut** : ouvert au 2026-09-28 — R0, R1 et R2 raquettes/cordages
 faits ; R2 chaussures/accessoires proposé, en attente de validation ;
