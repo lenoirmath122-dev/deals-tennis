@@ -1,13 +1,16 @@
 /**
- * Référentiel de familles de modèles — accessoires (R2, passe 2 — PROPOSITION).
+ * Référentiel de familles de modèles — accessoires (R2, passe 2).
  *
  * Source : §7 du cadrage rapprochement, Q10 de D-2026-09-28-02. Méthode et
- * questions Q17-Q20 : `cadrage_deals-tennis/R2_referentiel.md` §7.
+ * questions Q17-Q20 : `cadrage_deals-tennis/R2_referentiel.md` §7. Réponses
+ * de Mathieu : D-2026-09-28-03.
  *
- * Statut : proposé par Claude Code le 2026-09-28 à partir des titres réels en
- * base (429 offres accessoires), à valider par Mathieu. Aucune fiche marchand
- * consultée (réseau bloqué dans la session cloud). Aucun code ne le lit
- * encore (R4).
+ * Statut : validé par Mathieu (D-2026-09-28-03, 2026-09-28), à partir des
+ * titres réels en base (429 offres accessoires). Les cas `a_confirmer`
+ * (ATP/ATP Tour, Resi Pro, Players Pro Feel, Pro Overgrip, Damp, sacs Pure)
+ * ont été vérifiés sur les fiches marchand/fabricant (session desktop,
+ * réseau ouvert, 2026-09-28) ; voir les notes de chaque famille. Aucun code
+ * ne le lit encore (R4).
  *
  * Seules les sous-catégories **comparables d'un marchand à l'autre** ont des
  * familles : balles, grips / surgrips, antivibrateurs, sacs. Chaque famille
@@ -58,8 +61,11 @@ export const ACCESSORY_FAMILIES: AccessoryFamilyEntry[] = [
     subcategory: "balles",
     family: "ATP",
     aliases: ["atp tour", "atp"],
-    statut: "a_confirmer",
-    notes: ["« ATP » (tube de 4) et « ATP Tour » (tube de 3) : même balle ou deux balles ? À vérifier (Q17)."],
+    excludes: ["giant", "mid ball"],
+    statut: "observe",
+    notes: [
+      "Q17 vérifié (2026-09-28, fiches produit tennispro.fr) : « ATP » (carton de 18 tubes de 4) et « ATP Tour » (tube de 3, carton de 24 tubes de 3) portent la même description technique mot pour mot (tissu HD Pro Cloth, cœur HD Pro Core) — même balle, seul le conditionnement change (attribut `conditionnement`/`lot`, différent, prix comparé à la balle).",
+    ],
   },
   { brand: "Dunlop", category: "accessoires", subcategory: "balles", family: "Tour Performance", aliases: ["tour performance"], statut: "observe" },
   {
@@ -71,6 +77,18 @@ export const ACCESSORY_FAMILIES: AccessoryFamilyEntry[] = [
     versions: ["Stage 1", "Stage 2", "Stage 3"],
     statut: "observe",
     notes: ["Chaque Stage est une balle différente (pression et taille) : version, jamais rapprochée d'une balle standard."],
+  },
+  {
+    brand: "Dunlop",
+    category: "accessoires",
+    subcategory: "balles",
+    family: "Giant / Mid (balles géantes)",
+    aliases: ["giant", "mid ball", "giant 9 ball", "mid 5 ball"],
+    versions: ["Giant", "Mid"],
+    statut: "observe",
+    notes: [
+      "Q17 (D-2026-09-28-03) : balles géantes de démonstration/décoration, gardées dans la sous-catégorie balles mais en version à part — jamais rapprochées d'une balle de jeu standard. Précaution ajoutée après l'alias « atp » (« Giant 9 Ball Atp », « Mid 5 Ball Atp ») : famille dédiée avec `excludes` sur la famille ATP.",
+    ],
   },
   { brand: "Slazenger", category: "accessoires", subcategory: "balles", family: "Championship", aliases: ["championship"], statut: "observe", notes: ["Deux offres Slazenger sans nom de modèle : balle non identifiable, pas de rapprochement."] },
   { brand: "Wilson", category: "accessoires", subcategory: "balles", family: "Triniti", aliases: ["triniti"], statut: "observe", notes: ["« 3er » / « 4er » (allemand) = tube de 3 / 4."] },
@@ -103,11 +121,13 @@ export const ACCESSORY_FAMILIES: AccessoryFamilyEntry[] = [
     brand: "Prince",
     category: "accessoires",
     subcategory: "grips_surgrips",
-    typeGrip: "surgrip",
+    typeGrip: "grip",
     family: "Resi Pro",
     aliases: ["resi pro"],
-    statut: "a_confirmer",
-    notes: ["Titre sans le mot « grip » (« Prince Resi Pro Pack 1 unité ») : grip ou surgrip, à vérifier."],
+    statut: "observe",
+    notes: [
+      "Q16/Q18 vérifié (2026-09-28, fiche tennis-point.fr) : « Resi Pro Pack 1 unité » est un grip de remplacement (surface synthétique amortissante appliquée directement sur le manche), pas un surgrip — corrigé de `surgrip` à `grip`. Prince vend aussi un « ResiPro Overgrip » (surgrip, vendu en pack) sous le même nom de gamme : rester vigilant si ce second produit apparaît en base, il devra être une famille distincte (`typeGrip: surgrip`).",
+    ],
   },
   {
     brand: "Tecnifibre",
@@ -117,8 +137,10 @@ export const ACCESSORY_FAMILIES: AccessoryFamilyEntry[] = [
     family: "Players Pro",
     aliases: ["players pro", "player pro"],
     versions: ["Feel"],
-    statut: "a_confirmer",
-    notes: ["« Players Pro X12 / X30 » (surgrip) et « Player Pro Feel Pack de 12 / 30 » : « Feel » version à part, à vérifier."],
+    statut: "observe",
+    notes: [
+      "Q16/Q18 vérifié (2026-09-28, tecnifibre.com) : « Players Pro » (profil fin 0,50 mm, précision) et « Players Pro Feel » (absorption rapide, toucher naturel) sont deux surgrips réellement différents, pas un simple coloris — « Feel » confirmé en version à part.",
+    ],
   },
   { brand: "Tecnifibre", category: "accessoires", subcategory: "grips_surgrips", typeGrip: "grip", family: "Wax Max", aliases: ["wax max"], editions: ["Black", "White"], statut: "observe" },
   { brand: "Tecnifibre", category: "accessoires", subcategory: "grips_surgrips", typeGrip: "grip", family: "Lacoste Grip", aliases: ["lacoste grip"], statut: "observe" },
@@ -135,8 +157,10 @@ export const ACCESSORY_FAMILIES: AccessoryFamilyEntry[] = [
     family: "Pro Overgrip",
     aliases: ["pro overgrip", "pro x60"],
     editions: ["Blade", "Burn"],
-    statut: "a_confirmer",
-    notes: ["« Blade Pro Overgrip » (vert) et « Burn Pro Overgrip » (orange) : coloris du même surgrip (édition, Q7) ; « Pro X60 » = même surgrip en boîte de 60 ? À confirmer."],
+    statut: "observe",
+    notes: [
+      "Q16/Q18 vérifié (2026-09-28, wilson.com) : « Pro Overgrip Blade » et « Pro Overgrip Burn » ont la même construction (feutre fin haute adhérence), coloris assortis aux gammes de raquettes Blade/Burn — confirmé édition (Q7, variante). « Pro X60 » = même surgrip Pro Overgrip vendu en boîte de 60 (conditionnement `lot`, différent), pas une édition distincte.",
+    ],
   },
   { brand: "MSV", category: "accessoires", subcategory: "grips_surgrips", typeGrip: "surgrip", family: "Cyber Wet", aliases: ["cyber wet"], statut: "observe" },
 
@@ -149,8 +173,10 @@ export const ACCESSORY_FAMILIES: AccessoryFamilyEntry[] = [
     aliases: ["damp"],
     versions: ["Aero", "Drive", "Strike", "Sonic", "Custom"],
     editions: ["Wimbledon"],
-    statut: "a_confirmer",
-    notes: ["Aero / Drive / Strike / Sonic / Custom Damp classés en versions (formes différentes). Si ce ne sont que des coloris aux couleurs des gammes, ce sont des éditions (Q18)."],
+    statut: "observe",
+    notes: [
+      "Q16/Q18 vérifié (2026-09-28, babolat.com, tenniscompanion.org, revendeurs) : formes/matériaux réellement différents, pas de simples coloris — Sonic Damp (silicone creux, effet sonore), Custom Damp (capsule à billes métalliques ajustable, modèle Nadal), Strike Damp (coloris assortis à la 4e génération Pure Strike mais forme dédiée). Confirmé en versions (différent).",
+    ],
   },
   { brand: "Tecnifibre", category: "accessoires", subcategory: "antivibrateurs", family: "Logo Damp", aliases: ["logo damp", "s logo damp"], editions: ["Neon", "Tricolore"], statut: "observe" },
   { brand: "Tecnifibre", category: "accessoires", subcategory: "antivibrateurs", family: "Spirit Damp", aliases: ["spirit damp"], editions: ["Neon"], statut: "observe" },
@@ -165,10 +191,10 @@ export const ACCESSORY_FAMILIES: AccessoryFamilyEntry[] = [
     aliases: ["pure aero", "pure drive", "pure strike", "pure wimbledon", "pure backpack"],
     versions: ["Aero", "Drive", "Strike", "Wimbledon"],
     editions: ["Spectra", "Carbon Grey", "Rafa"],
-    statut: "a_confirmer",
+    statut: "observe",
     notes: [
       "Sacs aux couleurs des gammes de raquettes : RH6 / RH9 / RH12 (contenance), Thermobag, Backpack.",
-      "Proposé : Aero / Drive / Strike = versions (sacs différents par leur design) ; à confirmer (Q19).",
+      "Q19 (D-2026-09-28-03) : Pure Aero / Pure Drive / Pure Strike tranchés par Mathieu comme trois sacs différents (versions).",
     ],
   },
   { brand: "Babolat", category: "accessoires", subcategory: "sacs", family: "Court", aliases: ["court backpack", "court hero", "evo court", "court"], versions: ["XS", "S", "M", "L", "Hero", "Lite"], editions: ["Wimbledon"], statut: "observe", notes: ["XS / S / M / L = contenance (différent)."] },

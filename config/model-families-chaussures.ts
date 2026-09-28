@@ -1,15 +1,16 @@
 /**
- * Référentiel de familles de modèles — chaussures (R2, passe 2 — PROPOSITION).
+ * Référentiel de familles de modèles — chaussures (R2, passe 2).
  *
  * Source : §7 du cadrage rapprochement, Q10 de D-2026-09-28-02 (passe R2
  * chaussures + accessoires avant R3). Méthode et questions Q13-Q20 :
- * `cadrage_deals-tennis/R2_referentiel.md` §7.
+ * `cadrage_deals-tennis/R2_referentiel.md` §7. Réponses de Mathieu :
+ * D-2026-09-28-03.
  *
- * Statut : proposé par Claude Code le 2026-09-28 à partir des titres réels en
- * base (898 offres chaussures, toutes offres), à valider par Mathieu. Aucune
- * fiche marchand consultée : les sites marchands sont bloqués par la politique
- * réseau de la session cloud qui a produit ce fichier. Aucun code ne le lit
- * encore (R4).
+ * Statut : validé par Mathieu (D-2026-09-28-03, 2026-09-28), à partir des
+ * titres réels en base (898 offres chaussures, toutes offres). Les cas Q16
+ * ont été vérifiés sur les fiches marchand/fabricant (session desktop, réseau
+ * ouvert, 2026-09-28) ; voir les notes de chaque famille. Aucun code ne le
+ * lit encore (R4).
  *
  * Mêmes conventions que `model-families.ts` (aliases normalisés, alias le plus
  * long, générations seulement observées). Particularités des chaussures :
@@ -45,8 +46,8 @@ export const SHOE_JUNIOR_MARKERS = ["junior", "jr", "enfant", "enfants", "kid", 
 export const SHOE_WIDTH_MARKERS = ["wide", "pieds larges", "large"];
 
 /**
- * Chaussures de ville ou de loisir vues dans la catégorie (Q13) : pas de
- * famille proposée tant que leur place dans le catalogue n'est pas tranchée.
+ * Chaussures de ville ou de loisir vues dans la catégorie (Q13, D-2026-09-28-03) :
+ * exclues à l'ingestion (R3) comme hors tennis, jamais de famille.
  */
 export const SHOE_LIFESTYLE_MARKERS = ["stan smith", "breaknet", "grand court", "advantage", "baskets", "sneakers", "lifestyle"];
 
@@ -84,10 +85,11 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
       { label: "13", markers: ["13"], source: TITRES },
       { label: "14", markers: ["14"], source: TITRES },
     ],
-    editions: ["Tsitsipas", "Pegula"],
-    statut: "a_confirmer",
+    editions: ["Tsitsipas", "Pegula", "Leather", "ASMC"],
+    statut: "observe",
     notes: [
-      "« Barricade Leather 13 » et « ASMC Barricade » (adidas by Stella McCartney) : version ou édition ? À vérifier sur les fiches (Q16).",
+      "Q16 vérifié (2026-09-28, adidas.com/us, tennis-warehouse.com) : « Barricade 13 Leather » est une déclinaison officielle adidas (tige cuir plutôt que mesh) du même modèle Barricade 13 — matériau différent, classée édition « proche » (même logique que Premium, Q15).",
+      "Q16 vérifié (2026-09-28) : « ASMC Barricade » (adidas by Stella McCartney) est une collaboration mode construite sur la plateforme Barricade (Torsion System, semelle Repetitor) mais vendue en ligne à part, sans numéro de génération aligné sur le Barricade grand public — matériaux/construction potentiellement différents, classée édition « proche » par précaution (principe R3).",
       "« Barricade pieds larges » : largeur différente.",
     ],
   },
@@ -199,9 +201,11 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
     family: "Jet Tere",
     aliases: ["jet tere"],
     generations: [{ label: "2", markers: ["2"], source: TITRES }],
-    editions: ["Wimbledon"],
-    statut: "a_confirmer",
-    notes: ["« Jet Tere 2 Premium » : version ou édition ? À vérifier (Q16)."],
+    editions: ["Wimbledon", "Premium"],
+    statut: "observe",
+    notes: [
+      "Q16 vérifié (2026-09-28, babolat.com) : « Jet Tere 2 Premium » est une référence distincte (30S26965B) de « Jet Tere 2 All Court » (3A0F25A649/30S24649), semelle Michelin Premium — édition « proche » (Q15, même traitement que Nike Vapor Pro Premium).",
+    ],
   },
   {
     brand: "Babolat",
@@ -221,12 +225,20 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
     category: "chaussures",
     family: "SFX",
     aliases: ["sfx"],
-    generations: [
-      { label: "4", markers: ["4"], source: TITRES },
-      { label: "Evo", markers: ["evo"], source: TITRES },
+    excludes: ["sfx evo"],
+    generations: [{ label: "4", markers: ["4"], source: TITRES }],
+    statut: "observe",
+    notes: [
+      "Q16 vérifié (2026-09-28, babolat.com, doittennis.com) : SFX 4 et SFX Evo sont deux lignes distinctes, pas deux générations d'un même modèle — SFX Evo (chausse 6% plus large, semelle Ortholite +20% d'épaisseur) vise débutant/intermédiaire, SFX 4 (Extra Cushion) vise joueur avancé. Séparées en deux familles.",
     ],
-    statut: "a_confirmer",
-    notes: ["« SFX 4 » et « SFX Evo » (« SFX Evo 2025 ») : deux générations ou deux lignes ? À vérifier (Q16)."],
+  },
+  {
+    brand: "Babolat",
+    category: "chaussures",
+    family: "SFX Evo",
+    aliases: ["sfx evo"],
+    statut: "observe",
+    notes: ["Ligne à part de SFX (voir note ci-dessus, Q16/D-2026-09-28-03) : chausse plus large, orientée confort. Pas de numéro de génération vu dans les titres en base."],
   },
   {
     brand: "Babolat",
@@ -270,14 +282,16 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
   {
     brand: "Diadora",
     category: "chaussures",
-    family: "Speed Challenge",
-    aliases: ["s challenge", "speed challenge"],
+    family: "S. Challenge",
+    aliases: ["s challenge"],
     generations: [
       { label: "5 SL", markers: ["5 sl"], source: TITRES },
       { label: "6 SL", markers: ["6 sl"], source: TITRES },
     ],
-    statut: "a_confirmer",
-    notes: ["« S. Challenge » lu comme « Speed Challenge » : à confirmer."],
+    statut: "observe",
+    notes: [
+      "Q16 vérifié (2026-09-28, diadora.com) : « S. Challenge » (ligne terre battue, suffixe « SL ») et « Speed Challenge » (ligne légère toutes surfaces, sans suffixe « SL », ex. « Speed Competition 7+ ») sont deux lignes Diadora distinctes — la lecture « S. Challenge = abréviation de Speed Challenge » proposée en R2 §7 était fausse, corrigée ici. Aucune offre « Speed Challenge » vue en base pour l'instant ; si elle apparaît, ne pas la rattacher à cette famille.",
+    ],
   },
   {
     brand: "Diadora",
@@ -376,7 +390,7 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
     statut: "observe",
     notes: [
       "Le nombre (100 / 200 / 300 / 500) est le niveau de gamme (version), « II » la génération.",
-      "« SPD » et « PRT » : sens non vérifié (speed ? print ?), à confirmer.",
+      "Vérifié (2026-09-28, tennis-warehouse.com) : « SPD » = Speed Sole (semelle orientée vitesse sur surfaces dures), construction différente donc marqueur de surface/version, pas une édition ; « PRT » = Printed (coloris imprimé), édition (variante).",
     ],
   },
   {
@@ -437,7 +451,9 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
     editions: ["Premium", "Aryna Sabalenka", "Carlos Alcaraz"],
     excludes: ["vapor pro", "vapor lite", "zoom vapor pro"],
     statut: "observe",
-    notes: ["« FO » (« Vapor 12 PRM FO ») : sens non vérifié, à confirmer."],
+    notes: [
+      "« FO » (« Vapor 12 PRM FO ») : recherche faite le 2026-09-28 (réseau ouvert), sens non trouvé dans la documentation Nike publique — reste à vérifier directement sur une fiche produit portant ce code si elle réapparaît. Sans confirmation, traité par défaut comme une variante non discriminante (aucun impact observé sur le rapprochement tant qu'aucune paire ne l'oppose à un « Vapor 12 PRM » sans FO).",
+    ],
   },
   {
     brand: "Nike",
@@ -461,8 +477,10 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
       { label: "1.5", markers: ["1 5", "1.5"], source: TITRES },
     ],
     editions: ["Premium"],
-    statut: "a_confirmer",
-    notes: ["« GP Challenge 1 », « 1.5 » et « Pro » : 1 et 1.5 lus comme deux générations, Pro comme une version. À vérifier (Q16)."],
+    statut: "observe",
+    notes: [
+      "Q16 vérifié (2026-09-28, nike.com, runrepeat.com) : GP Challenge 1 et 1.5 sont deux générations successives (upper retravaillé) ; GP Challenge Pro est une version d'entrée de gamme vendue en parallèle (mêmes stabilisateurs, moins de technologies premium) — confirme la lecture initiale (1/1.5 génération, Pro version).",
+    ],
   },
   {
     brand: "Nike",

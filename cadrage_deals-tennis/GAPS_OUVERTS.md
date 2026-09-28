@@ -117,16 +117,27 @@ junior. `tsc`/`eslint` propres. Paire R1 45 reportée dans le CSV et
 `config/accessory-subcategories.ts` (lexique v2 mesuré). Questions
 Q13-Q20 : `R2_referentiel.md` §7.
 
-**Réponses actées (2026-09-28, D-2026-09-28-03)** : Q13-Q20 tranchées,
-sauf les cas à vérifier sur les fiches (Q16, ATP / ATP Tour, Damp).
+**Réponses actées, reportées, cas vérifiés (2026-09-28, D-2026-09-28-03,
+session desktop Sonnet, réseau ouvert)** : Q13-Q20 tranchées et reportées
+dans `config/model-families-chaussures.ts` (77 familles, 0 `a_confirmer`),
+`config/model-families-accessoires.ts` (54 familles, 0 `a_confirmer`) et
+`config/accessory-subcategories.ts` (`protection_soins` ajoutée, textile
+porté déplacé, hors sujet exclu). Cas restés `a_confirmer` après la revue
+vérifiés réellement sur les fiches marchand/fabricant : Dunlop ATP / ATP
+Tour = même balle (conditionnement différent) ; SFX 4 / SFX Evo = deux
+lignes, séparées en familles ; Diadora « S. Challenge » ≠ « Speed
+Challenge » (correction d'une lecture erronée) ; Prince Resi Pro corrigé
+en grip (pas surgrip) ; Babolat Damp et sacs Pure confirmés en versions ;
+détail complet dans `DECISIONS_FONCTIONNELLES.md` D-2026-09-28-03 et
+`R2_referentiel.md` §7.4. `tsc`/`eslint` propres.
 
-**Bloquant sur** : report de D-2026-09-28-03 dans les fichiers et
-vérification des cas `a_confirmer` sur les fiches (session desktop Sonnet,
-réseau ouvert). Ensuite R3.
+**R2 clos pour toutes les catégories.**
 
-**Statut** : ouvert au 2026-09-28 — R0, R1 et R2 raquettes/cordages
-faits ; R2 chaussures/accessoires proposé, en attente de validation ;
-reste R3 à R5.
+**Bloquant sur** : rien. Prochaine étape : **R3** (capture à l'ingestion),
+voir aussi GAP-2026-09-25-11 (sous-catégories d'accessoires, étapes 1 à 4).
+
+**Statut** : ouvert au 2026-09-28 — R0, R1, R2 faits pour toutes les
+catégories ; reste R3 à R5.
 
 ---
 
@@ -295,23 +306,23 @@ Découvert en vérifiant le build Amazon (voir `ETAT_ACTUEL.md`) : la recherche 
 
 ---
 
-## GAP-2026-09-25-11 — Sous-catégories d'accessoires : cadrage fait, rattaché à R2 (OUVERT)
+## GAP-2026-09-25-11 — Sous-catégories d'accessoires : référentiel v2 validé, attend R3 (OUVERT)
 
-Suite à D-2026-09-25-15 : décisions de principe actées (nouveau champ `deals.subcategory` nullable, liste `sacs`/`balles`/`antivibrateurs`/`grips_surgrips`/`accessoires_cordage`, `NULL` pour le reste, backfill complet). Aucun code écrit dans cette conversation (cadrage uniquement). Numéroté -11 (et non -10) pour éviter une collision : GAP-2026-09-25-10 est déjà pris (conflit de nom Tennisdeals), mergé sur `master` entretemps par une autre session parallèle.
+Suite à D-2026-09-25-15 : décisions de principe actées (champ `deals.subcategory` nullable, backfill complet). **Lexique v2 validé** (D-2026-09-28-03, 2026-09-28) dans `config/accessory-subcategories.ts` : 6 valeurs (`sacs`/`balles`/`antivibrateurs`/`grips_surgrips`/`accessoires_cordage`/`protection_soins`), `NULL` pour le reste (« Autres accessoires »), plus deux actions R3 hors `subcategory` — textile porté déplacé vers la catégorie textile, hors sujet exclu à l'ingestion. Numéroté -11 (et non -10) pour éviter une collision : GAP-2026-09-25-10 est déjà pris (conflit de nom Tennisdeals), mergé sur `master` entretemps par une autre session parallèle.
 
-**Rattaché à R2** (2026-09-26, `CADRAGE_rapprochement-multi-niveaux.md` §10, « référentiel v1 et règles de tolérance ») : la taxonomie/sous-catégorisation relève de la même famille de travail que le référentiel de modèles v1 (§7) — traiter dans la même étape plutôt qu'isolément, pour ne pas retoucher deux fois les mêmes scripts de scraping.
+**Rattaché à R2** (2026-09-26, `CADRAGE_rapprochement-multi-niveaux.md` §10) : traité dans la même étape que le référentiel de modèles (R2_referentiel.md §7), maintenant clos — voir GAP-2026-09-25-19.
 
-**Reste à faire, dans l'ordre, une fois R2 démarré** :
-1. Migration (`deals.subcategory VARCHAR` + `CHECK` limité aux 5 valeurs ou `NULL`, index si utile au filtre).
-2. Fonction d'extraction (`lib/product-matching.ts`, ex. `extractAccessorySubcategory`) avec le lexique vérifié en cadrage (voir D-2026-09-25-15 pour le détail par sous-catégorie et les volumes réels constatés sur les 611 offres accessoires actives de prod).
+**Reste à faire, dans l'ordre, en R3** :
+1. Migration (`deals.subcategory VARCHAR` + `CHECK` limité aux 6 valeurs ou `NULL`, index si utile au filtre).
+2. Fonction d'extraction (`lib/product-matching.ts`, ex. `extractAccessorySubcategory`) avec `SUBCATEGORY_RULES` (lexique v2) et les deux actions R3 (déplacement textile, exclusion hors sujet), plus les exclusions chaussures de ville (Q13) et JOOLA (§4 de `R2_referentiel.md`).
 3. Script de backfill (`scripts/backfill-accessory-subcategory.ts`) sur les offres déjà en base.
 4. Mise à jour des 8 scripts de scraping (dans la même passe R3 que GAP-2026-09-25-15 étape 4) pour peupler `subcategory` dès l'ingestion.
 5. ~~Mise à jour du workflow n8n ProTennis~~ — **close, obsolète** (2026-09-26) : ProTennis retiré définitivement, plus de workflow n8n ProTennis dans le dépôt.
 6. UI du filtre secondaire (pills sous-catégorie, visibles uniquement quand « Accessoires » est sélectionné, incluant une option « Autres accessoires » pour `subcategory IS NULL`).
 
-**Bloquant sur** : R0-R1 du chantier de rapprochement multi-niveaux (voir GAP-2026-09-25-19).
+**Bloquant sur** : rien — R0-R2 du chantier de rapprochement multi-niveaux sont faits (voir GAP-2026-09-25-19). Attend le démarrage de R3.
 
-**Statut** : ouvert au 2026-09-26 — cadré, rattaché à R2, étape 5 close (obsolète).
+**Statut** : ouvert au 2026-09-28 — cadré et validé (référentiel v2), étape 5 close (obsolète), reste 1-4 et 6 en R3.
 
 ---
 
