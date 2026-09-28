@@ -5,7 +5,7 @@ export type DealCategory =
   | "textile"
   | "accessoires";
 
-export type DealStatus = "active" | "expired" | "invalid";
+export type DealStatus = "active" | "expired" | "invalid" | "tracked";
 
 export type DeviceType = "mobile" | "desktop" | "tablet" | "unknown";
 
@@ -35,6 +35,15 @@ export interface Deal {
   product_id: string | null;
   /** Couleur extraite du titre (D-2026-09-23-06), attribut affiché mais hors identité produit. */
   color: string | null;
+  /** Sous-catégorie d'accessoires (lexique v2, D-2026-09-28-03), NULL hors accessoires ou "Autres accessoires". */
+  subcategory: string | null;
+  /** Capture à l'ingestion (migration 007, R3.1/R3.2), sur l'offre plutôt que sur `products` (R3-Q1). */
+  gtin: string | null;
+  mpn: string | null;
+  merchant_sku: string | null;
+  unit_quantity: number | null;
+  unit_type: string | null;
+  raw_attributes: Record<string, unknown> | null;
   created_at: string;
   updated_at: string;
 }
