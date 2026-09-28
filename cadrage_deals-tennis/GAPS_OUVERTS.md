@@ -111,11 +111,19 @@ une famille, pas deux) ; RF 01 Future = version adulte allégée, pas
 junior. `tsc`/`eslint` propres. Paire R1 45 reportée dans le CSV et
 `R1_mesure.md` §10. Détail : `R2_referentiel.md` §5.
 
-**Bloquant sur** : la passe R2 chaussures + sous-catégories accessoires
-(GAP-2026-09-25-11, Q10). Ensuite R3.
+**Passe R2 chaussures + accessoires proposée (2026-09-28)** :
+`config/model-families-chaussures.ts` (76 familles),
+`config/model-families-accessoires.ts` (53 familles avec sous-catégorie),
+`config/accessory-subcategories.ts` (lexique v2 mesuré). Questions
+Q13-Q20 : `R2_referentiel.md` §7.
+
+**Bloquant sur** : réponses de Mathieu sur Q13-Q20, puis report (session
+Sonnet) et vérification des cas `a_confirmer` sur les fiches (réseau non
+bloqué). Ensuite R3.
 
 **Statut** : ouvert au 2026-09-28 — R0, R1 et R2 raquettes/cordages
-faits ; reste R2 chaussures/accessoires, puis R3 à R5.
+faits ; R2 chaussures/accessoires proposé, en attente de validation ;
+reste R3 à R5.
 
 ---
 
