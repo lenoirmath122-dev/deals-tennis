@@ -3,9 +3,10 @@
  *
  * Source : §5 de `cadrage_deals-tennis/CADRAGE_rapprochement-multi-niveaux.md`
  * et décisions D-2026-09-26-01, D-2026-09-27-05/06/07, D-2026-09-28-02
- * (réponses de Mathieu aux questions Q1-Q6 et Q12).
+ * (réponses de Mathieu aux questions Q1-Q6 et Q12), D-2026-09-28-03
+ * (réponses aux questions Q13-Q20, chaussures et accessoires).
  *
- * Statut : validé par Mathieu (D-2026-09-28-02, 2026-09-28).
+ * Statut : validé par Mathieu (D-2026-09-28-02 et D-2026-09-28-03, 2026-09-28).
  * Aucun code ne lit encore ce fichier : il sera consommé par le moteur en R4.
  *
  * Lecture : pour deux offres de la même famille, chaque attribut a un « rôle » :
@@ -36,10 +37,23 @@ export interface NumericTolerance {
 export interface CategoryRules {
   /** Rôle de chaque attribut extrait (liste de départ du §6). */
   attributes: Record<string, AttributeRole>;
+  /**
+   * Exceptions par valeur d'attribut (ex. l'édition « Premium » des
+   * chaussures est « proche » alors que les autres éditions sont
+   * « variante », Q15/D-2026-09-28-03). Valeurs comparées normalisées
+   * (minuscules). Absent = pas d'exception, le rôle de `attributes` s'applique.
+   */
+  attributeValueOverrides?: Record<string, Record<string, AttributeRole>>;
   /** Tolérances chiffrées, par attribut numérique. */
   numeric?: Record<string, NumericTolerance>;
   /** Unité de comparaison des prix, si le conditionnement varie. */
   unitType?: UnitType;
+  /**
+   * Unité de comparaison des prix par sous-catégorie, quand elle diffère de
+   * `unitType` (accessoires : balles comparées à la balle, Q17). Clé =
+   * `AccessorySubcategory`, non importé ici pour éviter un cycle.
+   */
+  unitTypeBySubcategory?: Record<string, UnitType>;
   /** Règle appliquée à la génération / collection (voir `GENERATION_RULES`). */
   generationRule: GenerationRuleId;
   /** Remarques pour la relecture, sans effet sur le code. */
@@ -144,10 +158,19 @@ export const CATEGORY_RULES: Record<DealCategory, CategoryRules> = {
       genre: "different",
       largeur: "different", // version large (« wide »)
       version: "different", // ex. Gel-Resolution / Gel-Resolution Clay : voir Q3
+      // Q15 (D-2026-09-28-03) : édition joueur ou événement nommé = même
+      // modèle (variante) ; « Premium »/« PRM » = proche (matériaux parfois
+      // différents), voir `attributeValueOverrides` ci-dessous.
+      edition: "variante",
+    },
+    attributeValueOverrides: {
+      edition: { premium: "proche", prm: "proche" },
     },
     generationRule: "standard",
     notes: [
       "Q3 : la surface est souvent écrite dans le nom (« Clay »). Elle compte comme attribut « proche », pas comme une version différente.",
+      "Q13 (D-2026-09-28-03) : chaussures de ville (Stan Smith, Breaknet, Grand Court, Advantage, Tommy Hilfiger, génériques Amazon) exclues à l'ingestion (R3), voir `SHOE_LIFESTYLE_MARKERS` dans `model-families-chaussures.ts` — jamais comparées ici.",
+      "Q14 (D-2026-09-28-03) : le numéro qui suit le nom (Barricade 13/14, Gel-Challenger 14/15) est une génération, règle standard (`generationRule`), pas un attribut `version`.",
     ],
   },
   cordages: {
@@ -172,13 +195,24 @@ export const CATEGORY_RULES: Record<DealCategory, CategoryRules> = {
       conditionnement: "different", // tube de 4, carton de 72, lot de 3 surgrips…
       pression: "different", // balles avec / sans pression
       contenance: "different", // sacs : nombre de raquettes
+      // Q17 (D-2026-09-28-03) : niveau de balle (standard / Stage 1 / 2 / 3) —
+      // deux balles de niveau différent ne sont jamais le même produit.
+      niveau: "different",
+      // Q18 (D-2026-09-28-03) : grip de remplacement ≠ surgrip, même marque/gamme.
+      typeGrip: "different",
     },
-    unitType: "unite",
+    unitType: "unite", // prix à la pièce par défaut (grips, antivibrateurs…)
+    unitTypeBySubcategory: {
+      // Q17 : conditionnement de balles (tube, bipack, carton, sachet, baril)
+      // = `lot` (COMMON_ATTRIBUTES, différent) ; prix comparé à la balle.
+      balles: "balle",
+    },
     generationRule: "standard",
     notes: [
-      "Balles : comparaison à la balle (unitType « balle » à appliquer quand type = balles).",
       "Sacs : règle des générations standard, « identique » seulement pour exactement la même référence (D-2026-09-27-07).",
       "Q5 : pression et contenance ajoutées en « différent » (absentes du §5).",
+      "Q17 : niveau de balle et conditionnement toujours « différent » ; jamais de « meilleur prix » entre deux conditionnements (comparaison au prix par balle).",
+      "Q18 : nombre de pièces (x3/x12/x30/x60) = `lot` (COMMON_ATTRIBUTES, différent), prix comparé à la pièce (unitType « unite »).",
     ],
   },
   textile: {

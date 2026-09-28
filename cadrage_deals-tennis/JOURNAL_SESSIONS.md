@@ -148,3 +148,23 @@
 - PR #88 mergée par Mathieu avant la revue (sans risque : fichiers « PROPOSITION », non lus par le code). Revue Q13-Q20 question par question, **D-2026-09-28-03** : toutes les propositions retenues, sauf les balles géantes, qui restent en sous-catégorie balles (version à part par précaution, alias « atp »). Cas à vérifier sur les fiches (Q16, ATP / ATP Tour, Damp) laissés à une session réseau ouvert : sites marchands toujours bloqués ici (curl testé).
 - Report dans les fichiers laissé à une session desktop Sonnet (exécution, réseau ouvert), spec = D-2026-09-28-03.
 
+## 2026-09-28 (session desktop Sonnet) — Report D-2026-09-28-03, R2 clos pour toutes les catégories
+
+- Reprise après merge de la PR #89 (branche `docs/r2-report-matching-rules-familles` obsolète, rebranché sur `origin/master`). Modèle actuel = recommandé (Sonnet, exécution d'une spec déjà validée). Réseau ouvert (`curl`/WebSearch/WebFetch testés fonctionnels).
+- Report de D-2026-09-28-03 dans les quatre fichiers : `config/model-families-chaussures.ts` (77 familles, 0 `a_confirmer`, +1 famille SFX Evo séparée de SFX), `config/model-families-accessoires.ts` (54 familles, 0 `a_confirmer`, +1 famille Giant/Mid balles géantes), `config/accessory-subcategories.ts` (`protection_soins` en 6e valeur, action R3 dédiée pour le déplacement textile porté et l'exclusion hors sujet), `config/matching-rules.ts` (chaussures : édition `variante` sauf Premium/PRM `proche`, via un nouveau champ `attributeValueOverrides` ; accessoires : `niveau`/`typeGrip` différents, `unitTypeBySubcategory` pour comparer les balles au prix par balle).
+- **8 cas `a_confirmer` vérifiés réellement** (WebSearch/WebFetch, fiches babolat.com/adidas.com/nike.com/diadora.com/wilson.com/tecnifibre.com, plus deux fiches tennispro.fr récupérées en `curl` avec User-Agent navigateur — `WebFetch` seul renvoie un 403 Cloudflare sur tennispro.fr, comme déjà documenté pour le scraping (section « Tennispro.fr » de l'état actuel) ; `curl` passe) :
+  - Barricade Leather 13 / ASMC Barricade, Jet Tere 2 Premium : matériaux différents, éditions « proche » (même traitement que Premium).
+  - SFX 4 / SFX Evo : deux lignes (largeur et cible joueur différentes), pas deux générations — séparées en deux familles.
+  - GP Challenge 1/1.5/Pro : confirmé (générations 1/1.5, version Pro).
+  - Diadora « S. Challenge » : **correction d'une erreur de R2** — ce n'est pas une abréviation de « Speed Challenge » (deux lignes Diadora distinctes, terre battue contre toutes surfaces) ; l'alias fautif retiré.
+  - Lotto SPD (Speed Sole, construction) / PRT (Printed, coloris) : précisés dans la note, pas de changement de statut.
+  - Nike Vapor 12 « FO » : recherche infructueuse, laissé non résolu (sans impact observé sur le rapprochement).
+  - Dunlop ATP / ATP Tour : requête DB + `curl` sur les deux fiches tennispro.fr, description technique identique mot pour mot (HD Pro Cloth/HD Pro Core) → même balle, fusionnées en une famille (conditionnement `lot`, différent).
+  - Damp (Aero/Drive/Strike/Sonic/Custom), Players Pro/Player Pro Feel, Pro Overgrip Blade/Burn/X60 : formes/absorption réellement différentes pour Damp et Players Pro (confirmé versions) ; Blade/Burn confirmés simples coloris (édition) ; X60 confirmé conditionnement.
+  - Prince Resi Pro : requête DB (titre « Pack 1 unité ») + fiche tennis-point.fr → grip de remplacement, pas surgrip — `typeGrip` corrigé de `surgrip` à `grip`.
+  - Sacs Pure Aero/Drive/Strike : pas de vérification web nécessaire, tranché directement par Mathieu (Q19) — trois sacs différents.
+- `tsc --noEmit` et `eslint config/` propres. Aucun code applicatif ne lit encore ces quatre fichiers (prévu R4), donc aucune vérification en base/prod à faire pour cette étape.
+- `R2_referentiel.md` §7 : questions Q13-Q20 remplacées par les réponses (même traitement que §5 pour Q1-Q12) ; `GAPS_OUVERTS.md` (GAP-2026-09-25-19 et GAP-2026-09-25-11), `ETAT_ACTUEL.md`, `DECISIONS_FONCTIONNELLES.md` (D-2026-09-28-03) mis à jour.
+- **R2 clos pour toutes les catégories.** Prochaine étape du phasage : **R3** (capture à l'ingestion, GAP-2026-09-25-11 étapes 1-4, exclusions JOOLA/chaussures de ville/hors sujet, déplacement textile porté).
+- **Arrêt** (une étape de build par conversation).
+
