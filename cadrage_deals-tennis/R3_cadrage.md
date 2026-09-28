@@ -1,6 +1,6 @@
 # R3 — Capture à l'ingestion : cadrage et découpage (2026-09-28)
 
-> Étape R3 du §10 de `CADRAGE_rapprochement-multi-niveaux.md`, avec la Phase 1 et le §6 de `CADRAGE_vrais-bons-plans.md`. **Cadrage uniquement, aucun code.** Proposition de Claude Code, à valider par Mathieu (questions R3-Q1 à R3-Q6, §4).
+> Étape R3 du §10 de `CADRAGE_rapprochement-multi-niveaux.md`, avec la Phase 1 et le §6 de `CADRAGE_vrais-bons-plans.md`. **Cadrage uniquement, aucun code.** Proposition de Claude Code **validée par Mathieu le 2026-09-28 (D-2026-09-28-04)** : toutes les propositions retenues (réponses au §4).
 
 ## 1. Ce que R3 doit livrer (déjà acté)
 
@@ -36,7 +36,7 @@ Déjà en place : le trigger `price_observations` (D-2026-09-25-22, en prod), qu
 | Étape | Contenu | Réseau marchand ? | Modèle |
 |---|---|---|---|
 | **R3.1** | Migration additive (statut `tracked`, colonnes de capture sur `deals`, `subcategory`, voir R3-Q1) testée sur une branche Neon. Audit et correction des requêtes du site pour exclure `tracked`, avec tests. | Non (Neon seulement) | Sonnet |
-| **R3.2** | `lib/ingest.ts` : upsert `products` + `deals`, choix `active` / `tracked`, exclusions, sous-catégorie (lexique v2 + famille), déplacement du textile porté, quantité unitaire (lots, mètres, balles, pièces), corrections de marque, éviction (actives **et** `tracked`), compteurs du passage. Tests unitaires sur des titres réels. | Non | Sonnet |
+| **R3.2** | `lib/ingest.ts` : upsert `products` + `deals`, choix `active` / `tracked`, exclusions, sous-catégorie (lexique v2 + famille), déplacement du textile porté, quantité unitaire (lots, mètres, balles, pièces), corrections de marque, éviction (actives **et** `tracked`) avec garde-fou 50 % (R3-Q5), compteurs du passage. Tests unitaires sur des titres réels. | Non | Sonnet |
 | **R3.3** | Backfill des offres existantes : sous-catégorie, exclusions (R3-Q4), déplacement du textile porté, quantité unitaire, corrections de marque. Branche Neon d'abord, puis prod après accord. | Non | Sonnet |
 | **R3.4 à R3.11** | Réécriture d'un script par étape pour utiliser `lib/ingest.ts`, avec capture de ce que chaque source expose **sans requête supplémentaire** (GTIN Sport 2000, poids Tennis Point FR, SKU…). Vérifiée par un vrai passage : compteurs, lignes `price_observations`, offres `tracked`, aucune régression sur les offres actives. Ordre proposé : Tecnifibre (petit, Shopify), Tennis Point FR, Sport 2000, SportSystem, Babolat, Tennispro.fr, Head, Amazon. | **Oui** (desktop ou VM) | Sonnet |
 | **R3.12** | Enrichissement par fiche (GTIN Tennis Point FR et Tecnifibre, `mpn` Tennispro.fr), si retenu (R3-Q2). | **Oui** | Sonnet |
@@ -44,27 +44,39 @@ Déjà en place : le trigger `price_observations` (D-2026-09-25-22, en prod), qu
 
 R3.1 à R3.3 peuvent se faire dans une session cloud (base Neon accessible, sites marchands inutiles). R3.4 et la suite demandent un vrai passage de scraping, donc la machine de Mathieu ou la VM.
 
-## 4. Questions pour Mathieu
+## 4. Questions et réponses de Mathieu (D-2026-09-28-04)
 
 **R3-Q1 — Où stocker ce qui est capturé ?**
 R0 §4 proposait de mettre le GTIN et les attributs sur `products` (niveau modèle), et de créer `product_families` et `product_merges`. Je propose plutôt de **tout capturer sur l'offre (`deals`)** en R3 : `gtin`, `mpn`, `merchant_sku`, `unit_quantity`, `unit_type`, `subcategory`, et un champ `raw_attributes` (jsonb) pour le reste (poids par variante, plan de cordage lu, surface…). Les tables `product_families` et `product_merges` et les colonnes de `products` seraient créées en R4, par le moteur qui les remplit.
 *Raison* : en R3, `products` est encore rempli par la clé texte actuelle, qui fusionne à tort des modèles différents (Pure Drive 98 Gen 11 et 2023 sous un même titre, R1 paire 29). Poser un GTIN sur ces produits propagerait l'erreur. L'offre, elle, est une observation fiable.
 
+> **Réponse** : sur l'offre (`deals`), comme proposé.
+
 **R3-Q2 — Requêtes supplémentaires par fiche (GTIN, référence fabricant)**
 Coût mesuré en R0 §1bis : Tennis Point FR 533 requêtes par passage, Tecnifibre 23, et Tennispro.fr 250 fiches avec 60 s d'attente imposée entre deux requêtes (≈ 4 h par passage).
 Proposé : **enrichir une seule fois par offre** (quand l'URL est nouvelle ou le champ vide), jamais à chaque passage, dans une étape séparée (R3.12) après la réécriture des scripts. Le coût devient proportionnel aux nouvelles offres (quelques dizaines par jour) au lieu du catalogue entier.
 
+> **Réponse** : une seule fois par offre, en R3.12, comme proposé.
+
 **R3-Q3 — Offres `tracked` : quel périmètre en R3 ?**
 Proposé : ne capturer en `tracked` que les articles sans remise **déjà présents dans ce que chaque script récupère**, sans parcourir de page en plus. Le parcours du catalogue complet, pour connaître les prix hors promo, reste en Phase 4-bis.
 
+> **Réponse** : ce que chaque script voit déjà, comme proposé.
+
 **R3-Q4 — Offres exclues déjà en base** (JOOLA, chaussures de ville, hors sujet accessoires)
 Proposé : à l'ingestion, **ne pas les insérer** et les compter dans les compteurs du passage. Pour les offres déjà en base, les passer en `status='invalid'` (statut déjà autorisé) plutôt que les supprimer : cela reste réversible, et l'historique de prix est conservé.
+
+> **Réponse** : `status='invalid'`, comme proposé.
 
 **R3-Q5 — Garde-fou d'éviction**
 D-2026-09-25-21 applique l'éviction aux `tracked`. Le garde-fou « chute de plus de 50 % des offres vues » est prévu en Phase 2 (avec `ingestion_runs`). Proposé : en R3, étendre l'éviction aux `tracked` et **garder le garde-fou actuel** (aucune éviction si 0 URL vue) ; le garde-fou 50 % reste en Phase 2.
 *Risque signalé* : avec les `tracked`, un passage partiel (page qui ne charge pas) pourrait expirer davantage d'offres qu'aujourd'hui. On pourrait avancer le garde-fou 50 % en R3.2 : il suffit de comparer au nombre d'offres actives et `tracked` du marchand avant le passage, sans `ingestion_runs`.
 
+> **Réponse** : garde-fou 50 % avancé en R3.2 (offres `active` + `tracked` du marchand comptées avant le passage), garde-fou « 0 URL vue » conservé.
+
 **R3-Q6 — Filtre des sous-catégories dans l'interface** (GAP-2026-09-25-11 étape 6) : dans R3 (R3.13), ou après R3 ?
+
+> **Réponse** : dans R3 (R3.13), sur conseil de Claude Code, sans bloquer R4 : faisable dans une session cloud dès la fin de R3.3, en parallèle des passages réels R3.4 à R3.11.
 
 ## 5. Hors périmètre de R3
 
