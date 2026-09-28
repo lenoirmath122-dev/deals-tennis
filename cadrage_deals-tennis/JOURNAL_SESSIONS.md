@@ -132,3 +132,12 @@
 - Question de Mathieu : une offre `tracked` sans prix barré mais sous la moyenne doit-elle s'afficher ? Rien d'acté (D-2026-09-25-21 les exclut du site ; la Phase 4 prévoit un badge/filtre, pas l'apparition). Confirmé : **n'influence pas R3** (collecte seulement).
 - Noté à la demande de Mathieu : GAP-2026-09-28-01 (`GAPS_OUVERTS.md`) et paragraphe « Question ouverte » en Phase 4 de `CADRAGE_vrais-bons-plans.md`. Bloquant seulement pour le cadrage de la Phase 4. Passage Opus → Sonnet à la demande de Mathieu pour cette mise à jour de doc.
 - Rien de commité (les modifications s'ajoutent à la branche `feat/r3-4-tecnifibre`, dont la PR n'est pas encore ouverte).
+
+## 2026-09-28 (session desktop Sonnet) — R3.5 : script Tennis Point FR réécrit sur `lib/ingest.ts`
+
+- Reprise (`/clear`). Modèle actuel = recommandé (Sonnet, exécution d'une spec validée). Mathieu choisit R3.5.
+- `scripts/scraping/tennis-point-fr.ts` réécrit sur `ingestOffer` / `evictMerchantOffers` (même schéma que Tecnifibre R3.4). Capture sans requête supplémentaire : `merchant_sku` (SKU de la 1re variante), `raw_attributes` (variantes : libellé, SKU, poids). Pas de `barcode` dans le JSON Shopify (vérifié sur ~1900 variantes) : GTIN pour R3.12.
+- Vérifié d'abord sur la branche Neon `test-r3-5-tennis-point` (supprimée après accord de Mathieu) : 2349 actives, 0 tracked (les deux collections ne contiennent que des articles remisés, chemin `tracked` non exercé ici, mais code identique à Tecnifibre), SKU et `raw_attributes` sur 100 % des actives, relance idempotente. Puis appliqué en prod après accord : mêmes compteurs, 114 offres expirées (dérive du catalogue marchand, pas un effet du script). Prod `deals` : 4193 active / 452 expired / 29 invalid / 9 tracked.
+- Bug trouvé par la vérification : le marqueur « advantage » de `SHOE_LIFESTYLE_MARKERS` excluait la On The Roger Advantage Pro (vraie chaussure de tennis, confirmé par Mathieu), déjà passée en `invalid` au backfill R3.3. Corrigé dans `checkExclusion` (« roger advantage » neutralisé avant le test) + 1 test ; relance du script en prod : offre repassée `active`. Les autres « Advantage » invalides (adidas Sport 2000) sont bien des chaussures de ville.
+- `tsc`/`eslint` propres, 79 tests unitaires (même échec préexistant sur `tracking.test.ts`).
+- Prochaine étape : **R3.6** (Sport 2000, GTIN exposé par Algolia) ou R3.13, au choix de Mathieu.

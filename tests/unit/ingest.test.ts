@@ -29,6 +29,16 @@ describe("checkExclusion", () => {
     ).toBe("chaussure_ville");
   });
 
+  it("n'exclut pas la On The Roger Advantage Pro, vraie chaussure de tennis (confirmé par Mathieu)", () => {
+    expect(
+      checkExclusion(
+        "Chaussures de tennis On The Roger Advantage Pro Chaussure Terre Battue Femmes-Blanc,Crème",
+        "On",
+        "chaussures"
+      )
+    ).toBeNull();
+  });
+
   it("n'exclut pas une chaussure de tennis normale", () => {
     expect(
       checkExclusion("Chaussures de tennis Asics Gel-Resolution 9 Clay", "Asics", "chaussures")

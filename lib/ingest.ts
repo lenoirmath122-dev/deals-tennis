@@ -60,7 +60,9 @@ export function checkExclusion(
   }
 
   if (category === "chaussures") {
-    const normalized = title.toLowerCase();
+    // « The Roger Advantage » (On) est une vraie chaussure de tennis, alors que
+    // « Advantage » seul désigne la ligne de ville d'adidas.
+    const normalized = title.toLowerCase().replace("roger advantage", "");
     if (SHOE_LIFESTYLE_MARKERS.some((marker) => normalized.includes(marker))) {
       return "chaussure_ville";
     }

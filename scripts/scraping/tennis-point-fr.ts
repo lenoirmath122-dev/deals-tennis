@@ -42,13 +42,20 @@
 // partagé extractGender/extractAgeGroup avant cette étape — lexique étendu au
 // pluriel dans lib/product-matching.ts (décision explicitement soumise à
 // l'utilisateur, impact rétroactif sans régression sur les autres marchands).
+//
+// R3.5 (`cadrage_deals-tennis/R3_cadrage.md`) : réécrit pour passer par
+// `lib/ingest.ts` (upsert products/deals, statut active/tracked, exclusions,
+// sous-catégorie, unité, corrections de marque, éviction avec garde-fou 50 %).
+// Capture ajoutée sans requête supplémentaire : `merchant_sku` (SKU de la
+// première variante) et `raw_attributes` (variantes : libellé, SKU, poids
+// d'expédition). Le JSON Shopify n'expose pas de code-barres (`barcode` absent
+// des variantes, vérifié le 2026-09-28 sur ~1900 variantes) : le GTIN reste pour
+// R3.12 (fiche produit `/products/<handle>.js`). Les articles vus sans remise
+// réelle sont désormais gardés en `status='tracked'` au lieu d'être ignorés
+// (R3-Q3).
 import { neon } from "@neondatabase/serverless";
-import {
-  extractAgeGroup,
-  extractColor,
-  extractGender,
-  extractModel,
-} from "../../lib/product-matching.ts";
+import { evictMerchantOffers, ingestOffer } from "../../lib/ingest.ts";
+import type { DealCategory } from "../../types/database.ts";
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is not set");
@@ -66,7 +73,7 @@ const MAX_PAGES = 15; // garde-fou, ~10 pages observées sur aktion-10-sale au 2
 const OTHER_SPORTS_PATTERN = /padel|squash|badminton|pickleball/i;
 
 interface TypeInfo {
-  category: string;
+  category: DealCategory;
   label: string;
 }
 
@@ -92,6 +99,9 @@ const TYPE_MAP: Record<string, TypeInfo> = {
 };
 
 interface ShopifyVariant {
+  title: string;
+  sku: string | null;
+  grams: number | null;
   price: string;
   compare_at_price: string | null;
 }
@@ -150,10 +160,13 @@ async function main() {
     RETURNING id
   `;
 
-  let inserted = 0;
-  let skippedNoDiscount = 0;
+  let active = 0;
+  let tracked = 0;
+  let skippedNoPrice = 0;
+  let skippedNoImage = 0;
   let skippedUnknownType = 0;
   let skippedOtherSport = 0;
+  const excluded: Record<string, number> = {};
   const seenUrls: string[] = [];
 
   for (const product of byHandle.values()) {
@@ -161,8 +174,8 @@ async function main() {
     const price = variant ? parseFloat(variant.price) : NaN;
     const comparePrice = variant?.compare_at_price ? parseFloat(variant.compare_at_price) : NaN;
 
-    if (!Number.isFinite(price) || !Number.isFinite(comparePrice) || comparePrice <= price) {
-      skippedNoDiscount += 1;
+    if (!Number.isFinite(price)) {
+      skippedNoPrice += 1;
       continue;
     }
 
@@ -180,71 +193,64 @@ async function main() {
       continue;
     }
 
-    const model = extractModel(title, brand, typeInfo.category);
-    const color = extractColor(title);
-    const gender = extractGender(title);
-    const ageGroup = extractAgeGroup(title, typeInfo.category, product.body_html ?? undefined);
-    const imageUrl = product.images[0]?.src ?? null;
-    const discountPercentage = Math.round(((comparePrice - price) / comparePrice) * 100);
+    const imageUrl = product.images[0]?.src;
+    if (!imageUrl) {
+      skippedNoImage += 1;
+      continue;
+    }
+
     const affiliateUrl = `${MERCHANT_WEBSITE}/products/${product.handle}`;
 
-    const [upsertedProduct] = await sql`
-      INSERT INTO products (brand, model, category, gender, age_group)
-      VALUES (${brand}, ${model}, ${typeInfo.category}, ${gender}, ${ageGroup})
-      ON CONFLICT (LOWER(brand), LOWER(model), category)
-      DO UPDATE SET
-        brand = EXCLUDED.brand,
-        gender = CASE WHEN products.gender = 'non_determine' THEN EXCLUDED.gender ELSE products.gender END,
-        age_group = CASE WHEN products.age_group = 'adulte' AND EXCLUDED.age_group = 'enfant' THEN 'enfant' ELSE products.age_group END
-      RETURNING id
-    `;
+    const outcome = await ingestOffer(sql, {
+      title,
+      brand,
+      category: typeInfo.category,
+      imageUrl,
+      originalPrice: comparePrice,
+      discountedPrice: price,
+      merchantId: merchant.id,
+      affiliateUrl,
+      description: product.body_html ?? undefined,
+      merchantSku: variant.sku || null,
+      rawAttributes: {
+        variants: product.variants.map((v) => ({
+          title: v.title,
+          sku: v.sku || null,
+          grams: v.grams ?? null,
+        })),
+      },
+    });
 
-    await sql`
-      INSERT INTO deals (
-        title, brand, category, image_url, original_price, discounted_price,
-        discount_percentage, merchant_id, affiliate_url, status, is_active,
-        color, product_id
-      )
-      VALUES (
-        ${title}, ${brand}, ${typeInfo.category}, ${imageUrl}, ${comparePrice},
-        ${price}, ${discountPercentage}, ${merchant.id}, ${affiliateUrl}, 'active', true,
-        ${color}, ${upsertedProduct.id}
-      )
-      ON CONFLICT (merchant_id, affiliate_url) DO UPDATE SET
-        title = EXCLUDED.title,
-        brand = EXCLUDED.brand,
-        image_url = EXCLUDED.image_url,
-        original_price = EXCLUDED.original_price,
-        discounted_price = EXCLUDED.discounted_price,
-        discount_percentage = EXCLUDED.discount_percentage,
-        status = 'active',
-        is_active = true,
-        color = EXCLUDED.color,
-        product_id = EXCLUDED.product_id,
-        updated_at = NOW()
-    `;
+    if (!outcome.inserted) {
+      excluded[outcome.reason] = (excluded[outcome.reason] ?? 0) + 1;
+      console.log(`  exclu (${outcome.reason}) : ${title}`);
+      continue;
+    }
 
     seenUrls.push(affiliateUrl);
-    inserted += 1;
+    if (outcome.status === "active") active += 1;
+    else tracked += 1;
   }
 
+  const excludedTotal = Object.values(excluded).reduce((sum, n) => sum + n, 0);
   console.log(
-    `${inserted} offre(s) insérée(s)/mise(s) à jour, ${skippedNoDiscount} sans remise réelle, ` +
-      `${skippedUnknownType} type(s) non mappé(s), ${skippedOtherSport} hors tennis.`
+    `${active} offre(s) active(s), ${tracked} offre(s) suivie(s) sans remise (tracked), ` +
+      `${excludedTotal} exclue(s) ${JSON.stringify(excluded)}, ${skippedNoPrice} sans prix, ` +
+      `${skippedNoImage} sans image, ${skippedUnknownType} type(s) non mappé(s), ` +
+      `${skippedOtherSport} hors tennis.`
   );
 
-  if (seenUrls.length > 0) {
-    const evicted = await sql`
-      UPDATE deals
-      SET status = 'expired', is_active = false, updated_at = NOW()
-      WHERE merchant_id = ${merchant.id}
-        AND is_active = true
-        AND NOT (affiliate_url = ANY(${seenUrls}))
-      RETURNING id
-    `;
-    console.log(`${evicted.length} offre(s) Tennis Point FR expirée(s) (disparue(s) des collections promo).`);
-  } else {
+  // Éviction : toute offre Tennis Point FR `active`/`tracked` dont l'URL n'a pas
+  // été revue aujourd'hui (sortie des collections promo). Garde-fous dans
+  // `evictMerchantOffers` : aucune éviction si 0 URL vue, ni si moins de la
+  // moitié des offres `active`+`tracked` connues ont été revues (R3-Q5).
+  const eviction = await evictMerchantOffers(sql, merchant.id, seenUrls);
+  if (eviction.guard === "aucune_url_vue") {
     console.log("Aucune offre vue ce passage : éviction ignorée (garde-fou anti-vidage en masse).");
+  } else if (eviction.guard === "moins_de_moitie") {
+    console.log("Moins de la moitié des offres connues revues : éviction ignorée (garde-fou 50 %).");
+  } else {
+    console.log(`${eviction.evicted} offre(s) Tennis Point FR expirée(s) (disparue(s) des collections promo).`);
   }
 }
 
