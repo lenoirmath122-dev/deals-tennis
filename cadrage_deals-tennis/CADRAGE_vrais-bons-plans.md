@@ -157,6 +157,8 @@ Les seuils sont des points de départ, à ajuster. Le mécanisme de quarantaine 
 - Tests unitaires du calcul (historique insuffisant, trous de données, plusieurs marchands, prix gonflé avant promo).
 - Aucun badge affiché pour un produit sous les seuils de confiance.
 
+**Question ouverte à trancher avant d'écrire cette phase** (GAP-2026-09-28-01) : une offre `tracked` (vue sans prix barré, D-2026-09-25-21) dont le verdict est positif doit-elle être **affichée** sur le site (exception à D-2026-09-25-21, formulation P4 sans pourcentage de remise), ou le verdict ne sert-il qu'au badge des offres déjà `active` ? Ne concerne pas la collecte (R3, Phase 1).
+
 **Arrêt :** revue d'un échantillon de verdicts avant activation.
 
 ---

@@ -218,6 +218,39 @@ pour la construction (R5) et l'interface (Phase 5).
 
 ---
 
+## GAP-2026-09-28-01 — Une offre `tracked` (sans prix barré) au plus bas de l'historique doit-elle être affichée ? (OUVERT)
+
+Aujourd'hui (D-2026-09-25-21), une offre `tracked` est exclue du site partout ;
+elle ne passe `active` que si le marchand affiche une remise. Le verdict
+« vrai bon plan » de la Phase 4 (`CADRAGE_vrais-bons-plans.md`) s'appuie sur
+notre historique (médiane et plus bas sur 90 jours, principe P1) et donne un
+badge et un filtre ; le cadrage ne dit pas s'il peut aussi **faire apparaître**
+une offre `tracked`. Cas visé : un article sans prix barré, mais au plus bas
+observé ou à 90 % ou moins de la médiane.
+
+Pour : cohérent avec P1 (le prix barré n'est pas une source de vérité) ; un tel
+article est souvent un meilleur signal qu'une promo à prix barré gonflé.
+
+Conséquences si oui :
+- exception à D-2026-09-25-21 (une `tracked` avec verdict positif est affichée
+  ou passe `active`) ;
+- pas de pourcentage de remise à afficher : formulation P4 (« prix le plus bas
+  vu depuis N jours ») ;
+- le volume dépend du nombre de `tracked` collectés (R3-Q3 : seulement ce que
+  chaque script récupère déjà ; catalogue complet en Phase 4-bis). Tecnifibre
+  n'en donne que 9, car son script ne lit que l'outlet. Les passages R3.5 à
+  R3.11 donneront le chiffre par marchand.
+
+**Ne bloque pas R3** : R3 collecte les offres `active` et `tracked` et leur prix
+quotidien (trigger), quelle que soit la réponse.
+
+**Bloquant sur** : le cadrage de la Phase 4 (à trancher avant d'écrire le
+verdict et son affichage).
+
+**Statut** : ouvert au 2026-09-28, noté à la demande de Mathieu.
+
+---
+
 ## GAP-2026-09-26-01 — n8n : `N8N_BASIC_AUTH_*` encore pris en compte en 2.40.5 ? (OUVERT)
 
 Le `docker-compose.yml` de la VM Oracle définit une authentification basique

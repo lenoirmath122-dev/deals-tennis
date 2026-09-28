@@ -125,3 +125,10 @@
 - `JOURNAL_SESSIONS.md` dépassait 150 lignes (155) : sessions du 2026-09-27 archivées telles quelles (`archive/JOURNAL_SESSIONS_2026-09-27-reperage_a-preparation-R2.md`).
 - Point noté : les scripts se lancent avec `node --env-file=.env.local` qui **n'écrase pas** un `DATABASE_URL` déjà défini dans l'environnement — permet de viser une branche Neon (`DATABASE_URL=<branche> node --env-file=.env.local scripts/scraping/<marchand>.ts`) pour les vérifications des étapes R3.5-R3.11.
 - Prochaine étape : **R3.5** (Tennis Point FR) selon l'ordre proposé par `R3_cadrage.md`, ou R3.13, au choix de Mathieu. Nouvelle session Sonnet. **Arrêt** (une étape de build par conversation).
+
+## 2026-09-28 (session desktop Opus puis Sonnet) — Questions sur R3.4, `tracked` et verdict Phase 4 noté
+
+- Session de questions après R3.4 (aucun code). Explications données : 9 `tracked` seulement parce que le script ne lit que la collection outlet (R3-Q3, pas de catalogue complet avant Phase 4-bis) ; les offres `active` ET `tracked` alimentent `price_observations` via le trigger (statut = affichage, pas suivi du prix).
+- Question de Mathieu : une offre `tracked` sans prix barré mais sous la moyenne doit-elle s'afficher ? Rien d'acté (D-2026-09-25-21 les exclut du site ; la Phase 4 prévoit un badge/filtre, pas l'apparition). Confirmé : **n'influence pas R3** (collecte seulement).
+- Noté à la demande de Mathieu : GAP-2026-09-28-01 (`GAPS_OUVERTS.md`) et paragraphe « Question ouverte » en Phase 4 de `CADRAGE_vrais-bons-plans.md`. Bloquant seulement pour le cadrage de la Phase 4. Passage Opus → Sonnet à la demande de Mathieu pour cette mise à jour de doc.
+- Rien de commité (les modifications s'ajoutent à la branche `feat/r3-4-tecnifibre`, dont la PR n'est pas encore ouverte).
