@@ -1,11 +1,11 @@
 /**
- * Règles de tolérance du rapprochement multi-niveaux (R2, v1 — PROPOSITION).
+ * Règles de tolérance du rapprochement multi-niveaux (R2, v1).
  *
  * Source : §5 de `cadrage_deals-tennis/CADRAGE_rapprochement-multi-niveaux.md`
- * et décisions D-2026-09-26-01, D-2026-09-27-05/06/07.
+ * et décisions D-2026-09-26-01, D-2026-09-27-05/06/07, D-2026-09-28-02
+ * (réponses de Mathieu aux questions Q1-Q6 et Q12).
  *
- * Statut : proposé par Claude Code le 2026-09-28, à valider par Mathieu
- * (§0 du cadrage : toute connaissance tennis est validée avant d'être acquise).
+ * Statut : validé par Mathieu (D-2026-09-28-02, 2026-09-28).
  * Aucun code ne lit encore ce fichier : il sera consommé par le moteur en R4.
  *
  * Lecture : pour deux offres de la même famille, chaque attribut a un « rôle » :
@@ -52,8 +52,11 @@ export interface CategoryRules {
  *   différente et vérifiée des deux côtés → différent ; inconnue d'un côté →
  *   proche ; identique seulement si confirmée des deux côtés ou génération
  *   unique sur le marché.
- * - `textile` (D-2026-09-27-06) : même modèle sans génération différente écrite
- *   → identique ; génération ou collection explicitement différente → proche.
+ * - `textile` (D-2026-09-27-06, affiné par Q6/D-2026-09-28-02) : même modèle
+ *   sans génération différente écrite → identique ; année ou collection écrite
+ *   d'un seul côté → identique (§`attributes.edition` traite l'édition
+ *   spéciale nommée séparément, voir plus bas) ; génération ou collection
+ *   explicitement différente → proche.
  */
 export type GenerationRuleId = "standard" | "textile";
 
@@ -76,9 +79,11 @@ export const GENERATION_RULES: Record<
   textile: {
     confirmeeIdentique: "identique",
     verifieeDifferente: "proche",
-    // Q6 : génération ou édition écrite d'un seul côté. Proposé « proche », par
-    // analogie avec la paire R1 n° 59 (Freelift Pro « RG », D-2026-09-27-07).
-    inconnueUnCote: "proche",
+    // Q6 (D-2026-09-28-02) : année ou collection écrite d'un seul côté →
+    // identique (paire R1 n° 58). Une édition spéciale nommée (RG, Wimbledon,
+    // US Open…, paire R1 n° 59) est traitée séparément par
+    // `CATEGORY_RULES.textile.attributes.edition` (→ proche), pas ici.
+    inconnueUnCote: "identique",
     nonEcriteDesDeuxCotes: "identique",
   },
 };
@@ -101,6 +106,12 @@ export const COMMON_ATTRIBUTES: Record<string, AttributeRole> = {
   famille: "different",
   age_group: "different", // adulte / enfant (raquette junior, chaussure enfant…)
   coloris: "variante",
+  // Q12 (D-2026-09-28-02) : lot de N articles identiques = produit différent,
+  // prix à l'unité affiché, jamais de « meilleur prix » entre un lot et l'unité.
+  lot: "different",
+  // Q12 : article + cadeau offert (« 6 cordages offerts », « sac offert ») =
+  // même modèle, cadeau indiqué sur l'offre.
+  cadeau: "variante",
 };
 
 export const CATEGORY_RULES: Record<DealCategory, CategoryRules> = {
@@ -111,8 +122,9 @@ export const CATEGORY_RULES: Record<DealCategory, CategoryRules> = {
       poids: "proche", // voir `numeric.poids`
       tamis: "different", // 98 / 100 / 107…
       version: "different", // Lite / Tour / Team / Plus / S Lite…
-      plan_cordage: "different", // 16x19 / 18x20
-      longueur: "different", // standard / +0,5 pouce (« Plus »)
+      plan_cordage: "proche", // 16x19 / 18x20 (Q2, D-2026-09-28-02)
+      longueur: "proche", // standard / +0,5 pouce (« Plus ») (Q2, D-2026-09-28-02)
+      edition: "variante", // coloris/édition sans caractéristique différente (Q7)
     },
     numeric: {
       // Poids non cordé, en grammes. ±10 g = proche (§5) ; au-delà = différent.
@@ -120,8 +132,9 @@ export const CATEGORY_RULES: Record<DealCategory, CategoryRules> = {
     },
     generationRule: "standard",
     notes: [
-      "Q1 : un poids écrit entre parenthèses par le marchand (paire R1 n° 2) est traité comme précision de fiche. Poids identique des deux côtés = variante ; écart ≤ 10 g sans changement de version = proche ; > 10 g = différent.",
-      "Q2 : plan de cordage et longueur ajoutés en « différent » (absents du §5). Exemple R1 n° 6 : FX 500 Lite 16x18 contre 16/19.",
+      "Q1 (D-2026-09-28-02) : même poids = même modèle ; écart ≤ 10 g = proche ; > 10 g = différent. Un poids écrit dans le nom du modèle (T-Fight 300 / 305, Tempo 270 / 275) compte comme un écart de poids ordinaire, pas comme une version.",
+      "Q2 (D-2026-09-28-02) : plan de cordage et longueur sont « proche » tous les deux (« même modèle avec un plan de cordage différent », ex. Pure Drive / Pure Drive +). Remplace la proposition initiale « différent ».",
+      "Q7 (D-2026-09-28-02) : édition ou coloris sans caractéristique différente sur la fiche = variante (Spectra, Wimbledon, White, LTD rouge, Black Code Fire/Lime…). Cas à part : Pure Aero Rafa Origin, T-Fight 300 IG (version, pas édition).",
     ],
   },
   chaussures: {
@@ -143,12 +156,14 @@ export const CATEGORY_RULES: Record<DealCategory, CategoryRules> = {
       conditionnement: "different", // garniture / bobine
       longueur: "different",
       matiere: "different",
+      edition: "variante", // coloris/édition sans caractéristique différente (Q7)
     },
     unitType: "metre",
     generationRule: "standard",
     notes: [
       "Jauge au choix dans la fiche (même jauge disponible des deux côtés) = variante (§5).",
       "Q4 : garniture et bobine sont deux produits différents, mais leur prix est aussi affiché au mètre (principe R5). Le « meilleur prix » n'est jamais écrit entre les deux (R6).",
+      "Q7 (D-2026-09-28-02) : édition ou coloris nommé sans caractéristique différente = variante (Alu Power Black, Black Code Fire/Lime…).",
     ],
   },
   accessoires: {
@@ -172,8 +187,15 @@ export const CATEGORY_RULES: Record<DealCategory, CategoryRules> = {
       type: "different", // t-shirt / short / robe…
       genre: "different",
       modele: "different",
+      // Édition spéciale nommée (RG, Wimbledon, US Open…) écrite d'un seul
+      // côté → proche (Q6, D-2026-09-28-02, paire R1 n° 59). Distincte de
+      // l'année/collection, qui reste gérée par `generationRule` (→ identique).
+      edition: "proche",
     },
     generationRule: "textile",
+    notes: [
+      "Q6 (D-2026-09-28-02) : une mention écrite d'un seul côté est soit une année/collection (→ identique, `generationRule`), soit une édition spéciale nommée (→ proche, `attributes.edition`) — jamais « proche dans tous les cas » comme proposé initialement (contredisait la paire R1 n° 58).",
+    ],
   },
 };
 

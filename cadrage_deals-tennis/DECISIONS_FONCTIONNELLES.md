@@ -1134,4 +1134,4 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 - `CADRAGE_rapprochement-multi-niveaux.md` §5 : règles ajoutées (plan de cordage et longueur proches, lots, cadeaux, éditions, textile année / édition).
 - Anomalies à filtrer en R3 (ajoutées à `R2_referentiel.md` §4) : JOOLA.
 
-**Statut** : Actée (réponses explicites de Mathieu du 2026-09-28), sauf les 5 vérifications de Q9. R2 est clos pour les raquettes et les cordages une fois le report fait et les 5 vérifications tranchées. La passe R2 chaussures + accessoires suit.
+**Statut** : Actée et reportée (2026-09-28, session Sonnet, spec = cette décision). Les 5 vérifications de Q9 ont été faites réellement (web) : Lacoste L23 L = Tecnifibre L23 Light ; Synthetic Gut Force ≠ Synthetic Gut ; Wilson Element = Luxilon Element ; Gosen Eggpower = Sidewinder (même cordage, fusionnés en une famille) ; RF 01 Future = version adulte allégée (pas junior). **R2 clos pour les raquettes et les cordages.** La passe R2 chaussures + accessoires suit (Q10, GAP-2026-09-25-11).

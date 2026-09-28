@@ -193,3 +193,9 @@ Question 3 tranchée le 2026-09-27 : voir §9.
 Mathieu valide **les 29 propositions** telles quelles et confirme « proche » pour la paire 59. Pour les sacs, la règle des générations (D-2026-09-26-01) reste en vigueur, sauf pour exactement le même article : les paires 22 et 23 ne changent pas.
 
 Jeu R1 final : **67 paires validées**, 32 identiques / 14 proches / 21 différents. **Mesure de référence avant R2** : précision **5/8 = 62,5 %**, rappel **5/32 = 15,6 %**, inter-marchands **2/29 = 6,9 %**.
+
+## 10. Reclassement Q2 (2026-09-28, D-2026-09-28-02)
+
+En répondant aux questions R2, Mathieu a tranché que le plan de cordage est « proche » (pas « différent »). La paire 45 (Head Radical Pro, plan de cordage 16x19 / 18x20, seule paire de ce type dans le jeu) passe de « différent » à « proche » — contradiction avec la validation du 2026-09-27 signalée avant de noter la réponse.
+
+Jeu R1 : **67 paires**, **32 identiques / 15 proches / 20 différents**. La paire 45 n'étant pas « identique » ni rapprochée par l'algorithme avant ou après ce reclassement, la mesure de référence ne change pas : précision **5/8 = 62,5 %**, rappel **5/32 = 15,6 %**, inter-marchands **2/29 = 6,9 %**.
