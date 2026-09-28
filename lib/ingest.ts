@@ -12,15 +12,15 @@
 // R3-Q4), corrections de marque (R2_referentiel.md §4), quantité unitaire
 // (lots, mètres, balles, pièces), éviction avec garde-fou 50% (R3-Q5).
 import type { NeonQueryFunction } from "@neondatabase/serverless";
-import type { DealCategory } from "@/types/database";
-import type { UnitType } from "@/config/matching-rules";
+import type { DealCategory } from "../types/database.ts";
+import type { UnitType } from "../config/matching-rules.ts";
 import {
   SUBCATEGORY_RULES,
   type AccessorySubcategory,
   type SubcategoryRule,
-} from "@/config/accessory-subcategories";
-import { SHOE_LIFESTYLE_MARKERS } from "@/config/model-families-chaussures";
-import { BRAND_ALIASES } from "@/config/model-families";
+} from "../config/accessory-subcategories.ts";
+import { SHOE_LIFESTYLE_MARKERS } from "../config/model-families-chaussures.ts";
+import { BRAND_ALIASES } from "../config/model-families.ts";
 import {
   extractAgeGroup,
   extractColor,
@@ -28,7 +28,7 @@ import {
   extractModel,
   type AgeGroup,
   type Gender,
-} from "@/lib/product-matching";
+} from "./product-matching.ts";
 
 type Sql = NeonQueryFunction<false, false>;
 
