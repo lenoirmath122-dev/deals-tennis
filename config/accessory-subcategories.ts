@@ -77,8 +77,8 @@ export const SUBCATEGORY_RULES: SubcategoryRule[] = [
   {
     subcategory: null,
     action: "deplacer_textile",
-    pattern: /(casquette|visi[èe]re|poignet|wristband|headband|bandeau|bandana|chaussettes|socks|\bpairs\b)/,
-    note: "textile porté (Q20) : casquettes, visières, poignets, bandeaux, chaussettes → catégorie textile",
+    pattern: /(casquette|visi[èe]re|poignet|bracelet|wristband|headband|bandeau|bandana|chaussettes|socks|\bpairs\b)/,
+    note: "textile porté (Q20) : casquettes, visières, poignets (bracelets éponge), bandeaux, chaussettes → catégorie textile",
   },
 
   // 3. Hors sujet (Q20) : exclu du catalogue à l'ingestion, jamais publié.

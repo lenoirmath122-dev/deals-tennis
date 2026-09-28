@@ -270,6 +270,11 @@ describe("prepareOffer", () => {
     expect(result).toEqual({ insert: false, reason: "joola" });
   });
 
+  it("traite les bracelets éponge comme des poignets (textile porté)", () => {
+    const res = resolveCategory("Accessoire de tennis LACOSTE Bracelets de tennis Homme Back To Work", "accessoires");
+    expect(res).toEqual({ category: "textile", subcategory: null });
+  });
+
   it("déplace un accessoire textile porté vers la catégorie textile et capture unit info cordage", () => {
     const casquette = prepareOffer({
       title: "Casquette de tennis Nike Dri-FIT",
