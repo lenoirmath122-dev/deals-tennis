@@ -58,16 +58,18 @@ Le rapprochement doit distinguer ces trois cas, et l'affichage doit toujours dir
 - sur `deals` : un champ d'attributs de variante (JSONB ou colonnes, à justifier), l'identifiant universel (`gtin`), la référence fabricant (`mpn`) si disponible, et la quantité unitaire (`unit_quantity`, `unit_type`) pour les catégories concernées ;
 - la relation « modèle proche » est **calculée à la lecture** (même famille + attributs dans la tolérance), pas stockée, sauf si R0 montre une bonne raison de faire autrement.
 
-## 5. Règles de tolérance par catégorie (v0, à valider par Mathieu)
+## 5. Règles de tolérance par catégorie (v1, validée — D-2026-09-28-02)
 
 | Catégorie | Variante (sans importance) | Modèle proche (affiché avec mention) | Produit différent |
 |---|---|---|---|
-| Raquettes | Grip, coloris, cordée/non cordée | Poids ±10 g, génération voisine | Tamis (98/100…), version Lite/Tour/Team/Plus, raquette junior |
+| Raquettes | Grip, coloris, cordée/non cordée, édition sans caractéristique différente (Q7) | Poids ±10 g (même quand le poids est écrit dans le nom du modèle, Q1), plan de cordage différent, longueur différente (« + », Q2), génération voisine | Tamis (98/100…), version Lite/Tour/Team/Plus, raquette junior, poids > 10 g d'écart |
 | Chaussures | Pointure, coloris | Surface (terre battue / toutes surfaces) | Genre, modèle, version large |
-| Cordages | Coloris ; jauge au choix dans la fiche (même jauge disponible des deux côtés) | Jauge différente (D-2026-09-27-05) | Garniture ou bobine, longueur (comparaison au mètre) |
-| Balles | — | — | Conditionnement (comparaison à la balle) |
+| Cordages | Coloris, édition sans caractéristique différente (Q7) ; jauge au choix dans la fiche (même jauge disponible des deux côtés) | Jauge différente (D-2026-09-27-05) | Garniture ou bobine (Q4, prix aussi affiché au mètre, jamais de « meilleur prix » entre les deux), longueur (comparaison au mètre) |
+| Balles | — | — | Pression (Q5), conditionnement (comparaison à la balle) |
+| Sacs | Coloris | — | Contenance (Q5, nombre de raquettes) |
 | Surgrips, accessoires | Coloris | — | Conditionnement (comparaison à l'unité) |
-| Textile | Taille, coloris ; collection non écrite (D-2026-09-27-06) | Génération ou collection explicitement différente (D-2026-09-27-06) | Modèle, genre |
+| Textile | Taille, coloris ; collection/année non écrite ou écrite d'un seul côté (D-2026-09-27-06, Q6) | Édition spéciale nommée écrite d'un seul côté (RG, Wimbledon, US Open…, Q6) ; génération ou collection explicitement différente | Modèle, genre |
+| Toutes catégories | Article + cadeau offert (« 6 cordages offerts », « sac offert »), cadeau indiqué sur l'offre (Q12) | — | Lot de N articles identiques (« Pack de 2 raquettes »), prix à l'unité affiché, jamais de « meilleur prix » entre un lot et l'unité (Q12) |
 
 **Règle des générations (décision de Mathieu, 2026-09-26, D-2026-09-26-01)** — s'applique à toutes les catégories et prime sur la mention « génération voisine » de la ligne Raquettes :
 
@@ -75,11 +77,11 @@ Le rapprochement doit distinguer ces trois cas, et l'affichage doit toujours dir
 - Génération **inconnue ou non vérifiable d'un côté** → **modèle proche**. Jamais de fusion automatique.
 - **Même modèle** (identique) exige que la génération soit **confirmée des deux côtés**, ou que le modèle n'ait **qu'une seule génération sur le marché**.
 
-**Exceptions (décisions de Mathieu, 2026-09-27)** : pour le **textile**, un même modèle sans génération différente écrite est « identique » et une génération explicitement différente donne « proche » (D-2026-09-27-06) ; pour les **cordages**, une jauge différente donne « proche », pas « différent » (D-2026-09-27-05).
+**Exceptions (décisions de Mathieu, 2026-09-27 et 2026-09-28)** : pour le **textile**, un même modèle sans génération différente écrite est « identique », une année/collection écrite d'un seul côté reste « identique », et une édition spéciale nommée écrite d'un seul côté donne « proche » (D-2026-09-27-06, affiné par Q6/D-2026-09-28-02) ; pour les **cordages**, une jauge différente donne « proche », pas « différent » (D-2026-09-27-05) ; pour les **raquettes**, le plan de cordage et la longueur donnent « proche » (Q2, D-2026-09-28-02).
 
 Sources de vérification admises : référence fabricant (`mpn`), GTIN, titre, JSON-LD ou fiche marchand. La source retenue est notée pour chaque paire du jeu de référence.
 
-Ces règles vivent dans un fichier de configuration unique et commenté (par exemple `config/matching-rules.ts`).
+Ces règles vivent dans un fichier de configuration unique et commenté (`config/matching-rules.ts`), et le référentiel de familles dans `config/model-families.ts` (§7).
 
 ## 6. Extraction des attributs
 

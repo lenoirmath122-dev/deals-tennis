@@ -95,13 +95,27 @@ R2 : précision 5/8, rappel 5/32, inter-marchands 2/29.
 (paire R1 45 reclassée « proche »), sauf 5 correspondances de Q9 à
 vérifier sur les fiches.
 
-**Bloquant sur** : report de D-2026-09-28-02 dans les fichiers (session
-Sonnet), les 5 vérifications de Q9, puis la passe R2 chaussures +
-sous-catégories accessoires (GAP-2026-09-25-11). Ensuite R3.
+**Report fait, 5 vérifications de Q9 faites (2026-09-28, session Sonnet)** :
+`config/matching-rules.ts` et `config/model-families.ts` mis à jour selon
+D-2026-09-28-02 (poids/plan de cordage/longueur retirés des versions ou
+reclassés « proche », éditions séparées, 5 regroupements provisoires
+éclatés en 18 familles par ligne, attribut `edition` ajouté, règle textile
+affinée, `lot`/`cadeau` dans `COMMON_ATTRIBUTES`). Référentiel : 119
+familles (76 raquettes, 43 cordages), 0 `a_confirmer`. Les 5
+correspondances Q9 vérifiées réellement sur le web (accès non bloqué dans
+cette session, à la différence de la session cloud) : Lacoste L23 L =
+Tecnifibre L23 Light (même référence fabricant) ; Synthetic Gut Force ≠
+Synthetic Gut (fiches différentes) ; Wilson Element = Luxilon Element
+(marque alias) ; Gosen Eggpower = Sidewinder (même cordage, fusionnés en
+une famille, pas deux) ; RF 01 Future = version adulte allégée, pas
+junior. `tsc`/`eslint` propres. Paire R1 45 reportée dans le CSV et
+`R1_mesure.md` §10. Détail : `R2_referentiel.md` §5.
 
-**Statut** : ouvert au 2026-09-28 — R0 et R1 validés, R2 raquettes et
-cordages tranché (report en cours), R2 chaussures et accessoires à faire ;
-reste R3 à R5.
+**Bloquant sur** : la passe R2 chaussures + sous-catégories accessoires
+(GAP-2026-09-25-11, Q10). Ensuite R3.
+
+**Statut** : ouvert au 2026-09-28 — R0, R1 et R2 raquettes/cordages
+faits ; reste R2 chaussures/accessoires, puis R3 à R5.
 
 ---
 

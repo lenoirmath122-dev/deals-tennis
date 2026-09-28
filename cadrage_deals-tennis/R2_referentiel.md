@@ -1,18 +1,20 @@
 # R2 — Référentiel de familles de modèles v1 (2026-09-28)
 
 > Livrable R2 (§7 et §10 de `CADRAGE_rapprochement-multi-niveaux.md`), avec `config/matching-rules.ts` (règles de tolérance, questions Q1-Q6).
-> Fichier proposé : `config/model-families.ts`. **Proposition de Claude Code, à valider par Mathieu** (§0 du cadrage). Aucun code ne le lit encore : il sera consommé par le moteur en R4.
+> Fichier : `config/model-families.ts`. **Validé par Mathieu** (D-2026-09-28-02, 2026-09-28). Aucun code ne le lit encore : il sera consommé par le moteur en R4.
 > Aucune modification de code applicatif ni de base. Lecture seule sur la base Neon de prod.
-> **Réponses de Mathieu à Q1-Q12 : D-2026-09-28-02 (2026-09-28).** Le §5 ci-dessous garde les questions telles que posées ; elles seront remplacées par les réponses lors du report.
+> **Réponses de Mathieu à Q1-Q12 : D-2026-09-28-02 (2026-09-28).** Le report dans `config/matching-rules.ts` et `config/model-families.ts` est fait (session Sonnet du 2026-09-28) ; §5 ci-dessous garde le rappel des réponses et les 5 vérifications, désormais tranchées.
 
 ## 1. Ce que contient le fichier
 
 | | Raquettes | Cordages | Total |
 |---|---|---|---|
-| Familles | 58 | 43 | 101 |
-| dont statut `observe` | | | 91 |
-| dont statut `a_confirmer` | | | 10 |
-| dont lignes junior (`junior: true`) | 8 | 0 | 8 |
+| Familles | 76 | 43 | 119 |
+| dont statut `observe` | 76 | 43 | 119 |
+| dont statut `a_confirmer` | 0 | 0 | 0 |
+| dont lignes junior (`junior: true`) | 16 | 0 | 16 |
+
+Les 10 familles `a_confirmer` de la v1 proposée sont toutes passées à `observe` le 2026-09-28 : 5 par réponse explicite de Mathieu (Q7/Q8, régroupements éclatés en familles par ligne) et 5 par vérification réelle sur les fiches marchand (Q9, voir §5). Le nombre de familles raquettes passe de 58 à 76 par l'éclatement de 5 regroupements provisoires (Boost, junior Babolat, loisir Head, junior Head, loisir Wilson) en une famille par ligne (Q8).
 
 Marques couvertes : Babolat, Head, Wilson, Tecnifibre, Lacoste, Dunlop, Prince, Pro Kennex, Yonex (raquettes) ; Babolat, Head, Luxilon, Gosen, Dunlop, Tecnifibre, West Gut, Wilson, Kirschbaum, Prince, Pro's Pro, Yonex (cordages).
 
@@ -36,8 +38,8 @@ Chaque famille porte :
 
 ## 3. Hors référentiel v1
 
-- **Chaussures, textile, accessoires** : aucune famille pour l'instant (voir Q10).
-- **Raquettes de marques sans famille** : Senston (2 offres), Amazon Basics (1), JOOLA (1). Proposition : les laisser hors référentiel ; leurs offres restent « nouveau modèle » (voir Q11).
+- **Chaussures, textile, accessoires** : aucune famille pour l'instant. **Q10 (D-2026-09-28-02)** : chaussures et sous-catégories d'accessoires (GAP-2026-09-25-11) traitées dans une passe R2 suivante, avant R3 ; pas de référentiel pour le textile (règle textile D-2026-09-27-06 appliquée au nom de modèle lu dans le titre).
+- **Raquettes de marques sans famille** : Senston (2 offres), Amazon Basics (1), JOOLA (1). **Q11 (D-2026-09-28-02)** : laissées hors référentiel, leurs offres restent « nouveau modèle ». **JOOLA = raquette de tennis de table**, hors sujet : à filtrer à l'ingestion (R3), voir §4.
 
 ## 4. Anomalies de données relevées (à corriger à l'ingestion, R3)
 
@@ -47,41 +49,25 @@ Ce ne sont pas des questions de tennis, mais elles faussent la reconnaissance de
 - **Luxilon enregistré sous Wilson** (Amazon, propriétaire de la marque) : « Wilson Cordages pour Raquette Luxilon, Alu Power 125… ». Paires R1 66 et 67.
 - **Lacoste L23** enregistrée sous Tecnifibre chez un marchand (fabricant) et sous Lacoste chez l'autre.
 
-## 5. Questions pour Mathieu
+## 5. Réponses de Mathieu (D-2026-09-28-02, 2026-09-28)
 
-Numérotation à la suite de Q1-Q6 (`config/matching-rules.ts`).
+Numérotation à la suite de Q1-Q6 (`config/matching-rules.ts`). Détail complet des réponses : `DECISIONS_FONCTIONNELLES.md`, D-2026-09-28-02. Report dans `config/model-families.ts`/`config/matching-rules.ts` fait le même jour (session Sonnet).
 
-**Q7 — Éditions : coloris sans effet, ou produit à part ?**
-Proposé : une édition ou un coloris nommé (Pink, White, Noir, Neon, Wimbledon, Spectra Edition, Palm Tree Crew, Black chez Luxilon…) est une **variante** (même modèle), sauf si la fiche montre des spécifications différentes. Cas limites à trancher :
-- Pure Aero « Rafa » / « Rafa Origin » : classés en **versions** (spécifications propres) ;
-- T-Fight « 300 IG » (Iga Swiatek) : version ou édition ?
-- Prince Beast 100 « 265 LTD » : même raquette que Beast 100 265 ?
-- Evo Drive « Femme » (270 g) : version ou simple coloris ?
-- Black Code « Fire » / « Lime » : coloris (proposé).
-
-**Q8 — Regroupements provisoires : une famille par ligne ?**
-Cinq entrées rassemblent des petites lignes vues une fois chacune : Babolat Boost (Aero / Drive / Strike en versions), junior Babolat (Carlitos, B Fly, Ballfighter, Wimbledon), junior Head (Novak, Coco, Paw, Extreme / Radical / Boom Junior), loisir Head (Ti, MX Spark, IG Challenge), loisir Wilson (Pro Open, Hyper, Six.One, Fusion, Intrigue, Tour Slam, Impact).
-Proposé : **une famille par ligne**, car un regroupement ferait se reconnaître entre elles des raquettes différentes. Le regroupement actuel est seulement une commodité de lecture.
-
-**Q9 — Correspondances à confirmer une par une**
-- Lacoste « L23 L » = Tecnifibre « L23 Light » (même raquette) ?
-- Babolat « Synthetic Gut Force » : cordage différent du Synthetic Gut (proposé) ?
-- Wilson « Element » : cordage Luxilon (proposé : famille Luxilon) ?
-- Gosen « Eggpower (sidewinder) » et « Sidewinder » : même cordage ?
-- Wilson « RF 01 Future » : version junior de RF 01 ?
-- Head « Hawk Tour Rpet » : même cordage que Hawk Tour, ou version à part ?
-
-**Q10 — Périmètre de R2 : chaussures, textile, accessoires**
-Le référentiel v1 couvre raquettes et cordages (587 offres). Il reste 898 offres chaussures, 2 725 textile et 429 accessoires. Proposition, à valider :
-- **chaussures** : référentiel de familles dans une passe R2 suivante (même méthode). C'est la catégorie où R0 a trouvé des GTIN (Tennis Point FR, Sport 2000), donc là où la cascade §8 gagnera le plus vite ;
-- **textile** : pas de référentiel exhaustif ; la règle textile (D-2026-09-27-06) s'applique au nom de modèle lu dans le titre ;
-- **accessoires** : traiter les sous-catégories (GAP-2026-09-25-11, rattaché à R2) dans la même passe que les chaussures.
-
-**Q11 — Marques sans famille** (Senston, Amazon Basics, JOOLA) : les laisser hors référentiel (proposé), ou créer une famille par modèle vu ?
+- **Q7 (éditions)** : une édition ou un coloris nommé sans caractéristique différente sur la fiche = variante. Pure Aero « Rafa » = édition, « Rafa Origin » = version (spécifications propres) ; T-Fight « 300 IG » = édition ; Evo Drive « Femme » = coloris (poids comparé par Q1) ; Black Code « Fire »/« Lime » = coloris.
+- **Q8 (regroupements)** : une famille par ligne — les 5 regroupements provisoires (Boost, junior Babolat, junior Head, loisir Head, loisir Wilson) sont éclatés en 18 familles à part.
+- **Q9 (correspondances)** : Head « Hawk Tour Rpet » = version à part. Les 5 autres cas ont été **vérifiés réellement sur les fiches marchand le 2026-09-28** (recherche web, la politique réseau de la session Sonnet le permettait, contrairement à la session cloud qui avait posé les questions) :
+  1. **Lacoste « L23 L » = Tecnifibre « L23 Light »** : même référence fabricant (18LACL23L), même poids (275 g), même tamis (100 sq in), même plan de cordage (16x19) — confirmé même raquette (sportsystem.fr, tecnifibre.com, tenniswarehouse-europe.com).
+  2. **Babolat « Synthetic Gut Force » ≠ « Synthetic Gut »** : fiches produit différentes (âme unique + 2 filaments enveloppants contre boyau synthétique multifilament longévité) — confirmé produit différent (tennispro.fr).
+  3. **Wilson « Element » = cordage Luxilon Element** : vendu sous la marque Wilson (propriétaire de Luxilon) — confirmé (wilson.com, liste l'Element dans sa gamme Luxilon).
+  4. **Gosen « Eggpower » = « Sidewinder »** : même cordage, « Eggpower » est le nom d'origine japonais de « Sidewinder » — confirmé même produit, pas deux (gosen.com.au, tennis-warehouse.com). Une seule famille, pas deux.
+  5. **Wilson « RF 01 Future » = version plus légère de RF 01, taille adulte standard** (27 in, 98 sq in) — pas une raquette junior au sens taille réduite, reste une version (pas de `junior: true`).
+- **Q10 (périmètre)** : chaussures et sous-catégories d'accessoires (GAP-2026-09-25-11) passent en R2 suivante, avant R3. Pas de référentiel pour le textile (règle D-2026-09-27-06 sur le titre).
+- **Q11 (marques sans famille)** : Senston, Amazon Basics, JOOLA laissés hors référentiel. JOOLA = raquette de tennis de table, à filtrer à l'ingestion (R3).
+- **Q12 (ajoutée en revue)** : lot de N articles identiques = produit différent (prix à l'unité affiché) ; article + cadeau offert = même modèle (cadeau indiqué sur l'offre). Reporté dans `COMMON_ATTRIBUTES` de `matching-rules.ts`.
 
 ## 6. Suite
 
-- Validation de Mathieu sur Q1-Q11 (règles et référentiel), puis report des réponses dans `config/model-families.ts` et `config/matching-rules.ts`.
+- ~~Validation de Mathieu sur Q1-Q11~~ **fait** (D-2026-09-28-02, 2026-09-28), report dans `config/model-families.ts` et `config/matching-rules.ts` **fait** le même jour.
 - Les alias proposés par la file de revue seront ajoutés **en lot** après validation (D-2026-09-28-01) ; jamais d'écriture dans le référentiel depuis l'application.
 - Révision à chaque saison (§7 du cadrage) : nouvelles générations, nouvelles lignes.
-- **Arrêt** (§10, R2).
+- **R2 clos pour les raquettes et les cordages.** Reste, avant R3 : passe R2 chaussures + sous-catégories d'accessoires (Q10).
