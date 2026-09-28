@@ -3,6 +3,7 @@
 > Livrable R2 (§7 et §10 de `CADRAGE_rapprochement-multi-niveaux.md`), avec `config/matching-rules.ts` (règles de tolérance, questions Q1-Q6).
 > Fichier proposé : `config/model-families.ts`. **Proposition de Claude Code, à valider par Mathieu** (§0 du cadrage). Aucun code ne le lit encore : il sera consommé par le moteur en R4.
 > Aucune modification de code applicatif ni de base. Lecture seule sur la base Neon de prod.
+> **Réponses de Mathieu à Q1-Q12 : D-2026-09-28-02 (2026-09-28).** Le §5 ci-dessous garde les questions telles que posées ; elles seront remplacées par les réponses lors du report.
 
 ## 1. Ce que contient le fichier
 

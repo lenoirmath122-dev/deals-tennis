@@ -91,11 +91,17 @@ R2 : précision 5/8, rappel 5/32, inter-marchands 2/29.
 `config/model-families.ts` (raquettes et cordages, Q7-Q11 dans
 `R2_referentiel.md`).
 
-**Bloquant sur** : validation de Mathieu sur Q1-Q11, qui clôt R2. Ensuite
-R3 (capture à l'ingestion, §10 du cadrage).
+**Réponses actées (2026-09-28, D-2026-09-28-02)** : Q1-Q12 tranchées
+(paire R1 45 reclassée « proche »), sauf 5 correspondances de Q9 à
+vérifier sur les fiches.
 
-**Statut** : ouvert au 2026-09-28 — R0 et R1 validés, R2 proposé en
-attente de validation ; reste R3 à R5.
+**Bloquant sur** : report de D-2026-09-28-02 dans les fichiers (session
+Sonnet), les 5 vérifications de Q9, puis la passe R2 chaussures +
+sous-catégories accessoires (GAP-2026-09-25-11). Ensuite R3.
+
+**Statut** : ouvert au 2026-09-28 — R0 et R1 validés, R2 raquettes et
+cordages tranché (report en cours), R2 chaussures et accessoires à faire ;
+reste R3 à R5.
 
 ---
 
