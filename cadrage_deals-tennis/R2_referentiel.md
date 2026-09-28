@@ -71,3 +71,58 @@ Numérotation à la suite de Q1-Q6 (`config/matching-rules.ts`). Détail complet
 - Les alias proposés par la file de revue seront ajoutés **en lot** après validation (D-2026-09-28-01) ; jamais d'écriture dans le référentiel depuis l'application.
 - Révision à chaque saison (§7 du cadrage) : nouvelles générations, nouvelles lignes.
 - **R2 clos pour les raquettes et les cordages.** Reste, avant R3 : passe R2 chaussures + sous-catégories d'accessoires (Q10).
+
+## 7. Passe 2 : chaussures et accessoires (2026-09-28, PROPOSITION)
+
+> Suite de Q10 (D-2026-09-28-02). **Proposition de Claude Code, à valider par Mathieu.** Construite à partir des titres réels en base (lecture seule). **Aucune fiche marchand consultée** : la politique réseau de la session cloud bloque les sites marchands. Les points qui en dépendent sont marqués `a_confirmer`.
+
+### 7.1 Fichiers
+
+| Fichier | Contenu |
+|---|---|
+| `config/model-families-chaussures.ts` | 76 familles (16 des 19 marques en base, 898 offres ; sans famille : « Générique », « Gamecourt », Tommy Hilfiger), dont 5 `a_confirmer` ; marqueurs de surface, genre, junior, largeur et « chaussures de ville » |
+| `config/model-families-accessoires.ts` | 53 familles : balles 9, grips / surgrips 23, antivibrateurs 4, sacs 17 ; dont 6 `a_confirmer` ; chaque famille porte sa sous-catégorie |
+| `config/accessory-subcategories.ts` | Lexique v2 des sous-catégories (D-2026-09-25-15), mesuré sur les 429 offres accessoires |
+
+Les deux fichiers de familles reprennent le type `FamilyEntry` de `model-families.ts` et ses conventions.
+
+### 7.2 Méthode
+
+- Chaussures : titres nettoyés (préfixe « Chaussures de tennis », marque répétée, genre, surface, coloris), puis regroupés par marque. Les formats diffèrent beaucoup selon le marchand : Sport 2000 écrit le genre avant le modèle et en majuscules (« ASICS Homme GEL-DEDICATE 8 »), Nike via Sport 2000 préfixe « M » / « W », Tennis Point FR ajoute la surface et les coloris.
+- Accessoires : répartition par préfixe de titre (« Sac de tennis », « Balles de tennis »…), puis lexique rejoué et corrigé, puis familles pour les sous-catégories comparables d'un marchand à l'autre.
+
+### 7.3 Constats
+
+- **Chaussures** : le numéro qui suit le nom est presque toujours une génération (Barricade 13 / 14, Gel-Challenger 14 / 15, Rush Pro 4.0 / 4.5 / 5, Vapor Lite 2 / 3). La surface s'écrit de nombreuses façons (Clay, CLY, OC, AC, HC, Terre battue, Toutes surfaces, Gazon, Sand Grass, Omni, moquette). Sport 2000 et Tennis Point FR exposent le GTIN (R0 §1bis) : ce sont les meilleurs candidats au rapprochement exact.
+- **Chaussures de ville** vues dans la catégorie : Stan Smith, Breaknet, Grand Court, Advantage, baskets Tommy Hilfiger, chaussures génériques Amazon (voir Q13).
+- **Accessoires, lexique v1 (D-2026-09-25-15)** : faux positifs (« Balle de tennis Tennis-Point Stage 2 **Sac** de 12 » classé en sac, « Nike Refuel **Grip** Gourde » en grip, « **Ball** Tube », « **Balle** Clip », chariot à balles, porte-clés en balles) et oublis (surgrips Tecnifibre Players Pro Feel, MSV Cyber Wet, Prince Resi Pro). Le v2 lit d'abord le préfixe, puis des exclusions, puis les mots-clés ; les 4 surgrips sans mot-clé sont rattachés par leur famille.
+- **« Autres accessoires »** (184 offres, 137 actives) : protection et soins 64, textile porté 58, hors sujet 18, matériel de terrain 15, accessoires de raquette 13, gourdes et serviettes 12 (voir Q20).
+- **Multi-marchands** : les balles Dunlop et Slazenger ne sont vendues que par Tennispro.fr, les balles Wilson que par Tennis Point FR. Sur les balles, le rapprochement n'apportera rien tant qu'un autre marchand n'en vend pas.
+- **Nouvelles anomalies (à filtrer ou corriger en R3)** : « Tennis Évolution Rétro … T-Shirt » classé en accessoires ; « LACOSTE Jonc de tennis Unisex Wristband » (poignet, pas un jonc) ; marques « Générique », « Roland Garros », « Paris 2024 » ; « Wilson … Bowl Antivibrateur Box de 75 Balles » (boîte de 75 antivibrateurs, titre trompeur).
+
+### 7.4 Questions pour Mathieu (Q13-Q20)
+
+**Q13 — Chaussures de ville** (Stan Smith, Breaknet, Grand Court, Advantage, Tommy Hilfiger, génériques Amazon) : les garder dans le catalogue (sans famille, jamais rapprochées), ou les exclure à l'ingestion (R3) comme hors tennis ? Proposé : **exclure**.
+
+**Q14 — Numéro de génération des chaussures** : Barricade 13 / 14 ou Gel-Challenger 14 / 15 suivent la règle des générations standard, comme les raquettes (différente et écrite des deux côtés → **différent** ; absente d'un côté → proche). Proposé : **standard**. L'alternative est la règle textile (génération différente → proche).
+
+**Q15 — Éditions des chaussures** : éditions joueur (Pegula, Zverev, Tsitsipas, Sabalenka, Alcaraz, Medvedev), événements (Wimbledon, RG, Open d'Australie, Night Energy) et « Premium / PRM ». Proposé : **même modèle** (Q7), sauf **Premium**, dont les matériaux peuvent différer, classé **proche**.
+
+**Q16 — Cas à vérifier sur les fiches** (réseau bloqué ici) : adidas « Barricade Leather 13 » et « ASMC Barricade » ; Babolat « Jet Tere 2 Premium » ; Babolat « SFX 4 » / « SFX Evo » ; Nike « GP Challenge 1 / 1.5 / Pro » ; Diadora « S. Challenge » ; Lotto « SPD » / « PRT » ; Nike « FO ».
+
+**Q17 — Balles** : niveau (standard / Stage 1 / 2 / 3) = **différent** ; prix comparé **à la balle** entre tube, bipack, carton, sachet et baril (Q12) ; Dunlop « ATP » (tube de 4) et « ATP Tour » (tube de 3) : même balle ? (à vérifier) ; « Giant 9 Ball » / « Mid 5 Ball » (balles géantes) : hors balles de jeu ?
+
+**Q18 — Grips et antivibrateurs** : grip de remplacement ≠ surgrip (**différent**) ; x3 / x12 / x30 / x60 = lot, prix **à la pièce** (Q12). Babolat Aero / Drive / Strike / Sonic / Custom Damp : versions différentes (proposé) ou coloris d'un même antivibrateur ?
+
+**Q19 — Sacs** : famille = **gamme** (Pure, Court, Super Tour, Tour Endurance…) ; type (thermobag, sac à dos, duffle, housse, tote) et contenance (RH6 / 9 / 12, litres) = **différent** (Q5) ; collection et année = règle standard, identique seulement pour la même référence (D-2026-09-27-07). Sacs Babolat Pure Aero / Pure Drive / Pure Strike : trois sacs différents (proposé) ou même sac en trois coloris ?
+
+**Q20 — Sous-catégories d'accessoires** :
+- adopter le **lexique v2** (préfixe, puis exclusions, puis mots-clés) ;
+- ajouter des sous-catégories pour « Autres accessoires » ? Proposé : **`protection_soins`** (64 offres) ; **textile porté** (casquettes, visières, poignets, bandeaux, chaussettes : 58) déplacé vers la catégorie textile ; **hors sujet** (médailles, mug, cahier, décoration, tapis de yoga : 18) exclu à l'ingestion ; le reste en « Autres accessoires ».
+
+### 7.5 Suite
+
+- Réponses de Mathieu sur Q13-Q20, puis report dans les trois fichiers (session Sonnet).
+- Vérifications de Q16 (et celles marquées `a_confirmer` : ATP / ATP Tour, Resi Pro, Players Pro Feel, Pro Overgrip, Damp, sacs Pure) sur les fiches, dans une session où le réseau n'est pas bloqué.
+- R2 sera alors clos pour toutes les catégories. Prochaine étape : **R3** (capture à l'ingestion), qui construira aussi `deals.subcategory` (GAP-2026-09-25-11, étapes 1 à 4).
+- **Arrêt.**

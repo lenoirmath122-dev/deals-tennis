@@ -138,3 +138,11 @@
 - **`R2_referentiel.md`** §5 remplacé par le rappel des réponses (dont le détail des 5 vérifications) ; §1 (compteurs), §3 et §6 mis à jour. `CADRAGE_rapprochement-multi-niveaux.md` §5 réécrit (v1 validée : plan de cordage/longueur proches, lots, cadeaux, éditions, textile année/édition).
 - **R2 clos pour les raquettes et les cordages.** Reste : passe R2 chaussures + sous-catégories d'accessoires (Q10), avant R3.
 
+## 2026-09-28 (session cloud, suite) — Passe R2 chaussures + accessoires proposée
+
+- Reprise dans la session cloud après merge de la PR #87 (desktop) ; branche repartie de `master`. Modèle actuel = recommandé (Opus, conception R2). Proposé de faire cette passe dans une nouvelle session desktop (réseau non bloqué, une étape par conversation) : Mathieu a choisi de continuer ici.
+- Signalé à Mathieu : la session Sonnet a fusionné Gosen Eggpower et Sidewinder en une famille, alors que Tennispro les vend sous deux références (validé par le merge de la PR #87, à rouvrir en cas de doute).
+- Amorçage depuis la base (lecture seule, Neon) : 898 offres chaussures, 429 offres accessoires. `config/model-families-chaussures.ts` (76 familles, 16 marques, marqueurs de surface, genre, junior, largeur et chaussures de ville), `config/model-families-accessoires.ts` (53 familles : balles 9, grips/surgrips 23, antivibrateurs 4, sacs 17 ; chacune porte sa sous-catégorie), `config/accessory-subcategories.ts` (lexique v2 : préfixe du titre, puis exclusions, puis mots-clés ; mesuré sur la prod, corrige les faux positifs du v1). `tsc`/`eslint` propres.
+- Constats : le numéro des chaussures est une génération ; chaussures de ville dans la catégorie ; « Autres accessoires » = 184 offres (protection/soins 64, textile porté 58, hors sujet 18…) ; nouvelles anomalies (t-shirt et poignet mal classés, marques « Générique », « Roland Garros », « Paris 2024 »).
+- Questions Q13-Q20 dans `R2_referentiel.md` §7. Aucune fiche consultée (réseau bloqué) : 11 familles `a_confirmer`. Arrêt en attente de Mathieu.
+
