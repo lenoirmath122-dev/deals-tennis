@@ -29,13 +29,22 @@
 // indice est ajouté au titre construit à partir de la page d'origine, plus
 // fiable que de compter uniquement sur le lexique de `extractGender`/
 // `extractAgeGroup` appliqué au titre brut marchand.
+//
+// R3.7 (`cadrage_deals-tennis/R3_cadrage.md`) : réécrit pour passer par
+// `lib/ingest.ts` (upsert products/deals, statut active/tracked, exclusions,
+// sous-catégorie, unité, corrections de marque, éviction avec garde-fou 50 %).
+// Capture ajoutée sans requête supplémentaire : la fiche produit, déjà chargée
+// pour la marque, expose dans son `data-product` la référence marchand
+// (`reference` -> `merchant_sku`), l'EAN par déclinaison (`attributes[].ean13`
+// -> `gtin`, renseigné seulement sur une partie des articles, jamais sur les
+// sacs) et les caractéristiques (poids, tamis, plan de cordage, équilibre...)
+// gardées dans `raw_attributes`. Le JSON-LD `mpn` recopie la référence
+// marchand (pas une vraie référence fabricant) : non capturé en `mpn`. Les
+// pages restent des pages promo (R3-Q3) : le catalogue complet est pour la
+// Phase 4-bis, `tracked` n'apparaît que si une carte a un prix de base <= prix.
 import { neon } from "@neondatabase/serverless";
-import {
-  extractAgeGroup,
-  extractColor,
-  extractGender,
-  extractModel,
-} from "../../lib/product-matching.ts";
+import { evictMerchantOffers, ingestOffer } from "../../lib/ingest.ts";
+import type { DealCategory } from "../../types/database.ts";
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is not set");
@@ -60,7 +69,7 @@ interface TypeEntry {
 
 interface CategoryConfig {
   urlSlug: string; // page promo dédiée tennis
-  dbCategory: string;
+  dbCategory: DealCategory;
   entries: TypeEntry[];
   defaultLabel: string;
   genderHint?: "Homme" | "Femme";
@@ -194,7 +203,13 @@ async function politeFetch(url: string): Promise<string> {
   if (!res.ok) {
     throw new Error(`Échec HTTP ${res.status} sur ${url}`);
   }
-  return res.text();
+  // Les fiches contiennent parfois des octets non UTF-8 (ex. "cm²" en ISO-8859-1).
+  const bytes = await res.arrayBuffer();
+  try {
+    return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch {
+    return new TextDecoder("windows-1252").decode(bytes);
+  }
 }
 
 function decodeEntities(raw: string): string {
@@ -276,11 +291,53 @@ function resolveLabel(config: CategoryConfig, name: string): string {
   return config.defaultLabel;
 }
 
-async function fetchBrand(url: string): Promise<string | null> {
-  const html = await politeFetch(url);
-  const match = html.match(/"brand"\s*:\s*\{\s*"@type"\s*:\s*"Brand"\s*,\s*"name"\s*:\s*"([^"]+)"/);
+interface ProductDetails {
+  brand: string | null;
+  sku: string | null;
+  gtin: string | null;
+  rawAttributes: Record<string, unknown>;
+}
+
+interface DataProduct {
+  reference?: string;
+  features?: { name: string; value: string }[];
+  attributes?: Record<string, { group?: string; name?: string; reference?: string; ean13?: string }>;
+}
+
+function parseDataProduct(html: string): DataProduct | null {
+  const match = html.match(/data-product="([^"]*)"/);
   if (!match) return null;
-  return decodeEntities(match[1].trim());
+  const json = match[1]
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+  try {
+    return JSON.parse(json) as DataProduct;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchDetails(url: string): Promise<ProductDetails> {
+  const html = await politeFetch(url);
+  const brandMatch = html.match(/"brand"\s*:\s*\{\s*"@type"\s*:\s*"Brand"\s*,\s*"name"\s*:\s*"([^"]+)"/);
+  const brand = brandMatch ? decodeEntities(brandMatch[1].trim()) : null;
+
+  const data = parseDataProduct(html);
+  const variants = Object.values(data?.attributes ?? {});
+  const gtin = variants.map((v) => v.ean13?.trim()).find((e) => e && /^\d{8,14}$/.test(e)) ?? null;
+
+  return {
+    brand,
+    sku: data?.reference?.trim() || null,
+    gtin,
+    rawAttributes: {
+      features: data?.features?.map((f) => ({ name: f.name, value: f.value })) ?? null,
+      variants: variants.map((v) => ({ group: v.group ?? null, name: v.name ?? null, reference: v.reference || null, ean13: v.ean13 || null })),
+    },
+  };
 }
 
 async function main() {
@@ -291,8 +348,9 @@ async function main() {
     RETURNING id
   `;
 
-  let inserted = 0;
-  let skippedNoDiscount = 0;
+  let active = 0;
+  let tracked = 0;
+  const excluded: Record<string, number> = {};
   let skippedOtherSport = 0;
   let skippedUnparsable = 0;
   let skippedNoBrand = 0;
@@ -320,12 +378,8 @@ async function main() {
           continue;
         }
 
-        if (
-          !Number.isFinite(product.price) ||
-          !Number.isFinite(product.originalPrice) ||
-          product.originalPrice <= product.price
-        ) {
-          skippedNoDiscount += 1;
+        if (!Number.isFinite(product.price) || !Number.isFinite(product.originalPrice)) {
+          skippedUnparsable += 1;
           continue;
         }
 
@@ -334,7 +388,8 @@ async function main() {
           continue;
         }
 
-        const brand = await fetchBrand(product.url);
+        const details = await fetchDetails(product.url);
+        const brand = details.brand;
         if (!brand) {
           skippedNoBrand += 1;
           console.log(`  marque introuvable (JSON-LD) ignorée : "${product.name}"`);
@@ -348,76 +403,51 @@ async function main() {
           .replace(/\s+/g, " ")
           .trim();
 
-        const model = extractModel(title, brand, config.dbCategory);
-        const color = extractColor(title);
-        const gender = extractGender(title);
-        const ageGroup = extractAgeGroup(title, config.dbCategory);
-        const discountPercentage = Math.round(
-          ((product.originalPrice - product.price) / product.originalPrice) * 100
-        );
+        const outcome = await ingestOffer(sql, {
+          title,
+          brand,
+          category: config.dbCategory,
+          imageUrl: product.image,
+          originalPrice: product.originalPrice,
+          discountedPrice: product.price,
+          merchantId: merchant.id,
+          affiliateUrl: product.url,
+          gtin: details.gtin,
+          merchantSku: details.sku,
+          rawAttributes: details.rawAttributes,
+        });
 
-        const [upsertedProduct] = await sql`
-          INSERT INTO products (brand, model, category, gender, age_group)
-          VALUES (${brand}, ${model}, ${config.dbCategory}, ${gender}, ${ageGroup})
-          ON CONFLICT (LOWER(brand), LOWER(model), category)
-          DO UPDATE SET
-            brand = EXCLUDED.brand,
-            gender = CASE WHEN products.gender = 'non_determine' THEN EXCLUDED.gender ELSE products.gender END,
-            age_group = CASE WHEN products.age_group = 'adulte' AND EXCLUDED.age_group = 'enfant' THEN 'enfant' ELSE products.age_group END
-          RETURNING id
-        `;
-
-        await sql`
-          INSERT INTO deals (
-            title, brand, category, image_url, original_price, discounted_price,
-            discount_percentage, merchant_id, affiliate_url, status, is_active,
-            color, product_id
-          )
-          VALUES (
-            ${title}, ${brand}, ${config.dbCategory}, ${product.image}, ${product.originalPrice},
-            ${product.price}, ${discountPercentage}, ${merchant.id}, ${product.url}, 'active', true,
-            ${color}, ${upsertedProduct.id}
-          )
-          ON CONFLICT (merchant_id, affiliate_url) DO UPDATE SET
-            title = EXCLUDED.title,
-            brand = EXCLUDED.brand,
-            image_url = EXCLUDED.image_url,
-            original_price = EXCLUDED.original_price,
-            discounted_price = EXCLUDED.discounted_price,
-            discount_percentage = EXCLUDED.discount_percentage,
-            status = 'active',
-            is_active = true,
-            color = EXCLUDED.color,
-            product_id = EXCLUDED.product_id,
-            updated_at = NOW()
-        `;
+        if (!outcome.inserted) {
+          excluded[outcome.reason] = (excluded[outcome.reason] ?? 0) + 1;
+          console.log(`  exclu (${outcome.reason}) : ${title}`);
+          continue;
+        }
 
         seenUrls.push(product.url);
-        inserted += 1;
+        if (outcome.status === "active") active += 1;
+        else tracked += 1;
         categoryCount += 1;
       }
     }
     console.log(`  ${categoryCount} offre(s) retenue(s) pour ${config.urlSlug}.`);
   }
 
+  const excludedTotal = Object.values(excluded).reduce((sum, n) => sum + n, 0);
   console.log(
-    `${inserted} offre(s) insérée(s)/mise(s) à jour au total, ${skippedNoDiscount} sans remise réelle, ` +
-      `${skippedOtherSport} hors tennis, ${skippedNoBrand} sans marque identifiable, ` +
-      `${skippedUnparsable} bloc(s) non parsable(s).`
+    `${active} offre(s) active(s), ${tracked} offre(s) suivie(s) sans remise (tracked), ` +
+      `${excludedTotal} exclue(s) ${JSON.stringify(excluded)}, ${skippedOtherSport} hors tennis, ` +
+      `${skippedNoBrand} sans marque identifiable, ${skippedUnparsable} bloc(s) non parsable(s).`
   );
 
-  if (seenUrls.length > 0) {
-    const evicted = await sql`
-      UPDATE deals
-      SET status = 'expired', is_active = false, updated_at = NOW()
-      WHERE merchant_id = ${merchant.id}
-        AND is_active = true
-        AND NOT (affiliate_url = ANY(${seenUrls}))
-      RETURNING id
-    `;
-    console.log(`${evicted.length} offre(s) SportSystem expirée(s) (disparue(s) des pages promo tennis).`);
-  } else {
+  // Éviction : garde-fous (0 URL vue, moins de la moitié des offres connues
+  // revues) dans `evictMerchantOffers` (R3-Q5).
+  const eviction = await evictMerchantOffers(sql, merchant.id, seenUrls);
+  if (eviction.guard === "aucune_url_vue") {
     console.log("Aucune offre vue ce passage : éviction ignorée (garde-fou anti-vidage en masse).");
+  } else if (eviction.guard === "moins_de_moitie") {
+    console.log("Moins de la moitié des offres connues revues : éviction ignorée (garde-fou 50 %).");
+  } else {
+    console.log(`${eviction.evicted} offre(s) SportSystem expirée(s) (disparue(s) des pages promo tennis).`);
   }
 }
 
