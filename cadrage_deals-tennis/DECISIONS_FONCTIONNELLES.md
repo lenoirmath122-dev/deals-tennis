@@ -1198,3 +1198,12 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 **Découpage retenu** (`R4_cadrage.md` §4) : R4.1 migration + jeu R1 figé + banc de mesure ; R4.2 extraction raquettes/cordages ; R4.3 extraction chaussures/accessoires ; R4.4 comparaison, cascade, script fantôme, rapport ; R4.5 textile + étape approchée + seuils (Opus) ; R4.6 analyse des erreurs et dossier de bascule (Opus). R4.1 à R4.4 en Sonnet. Toutes faisables en session cloud.
 
 **Statut** : Actée (2026-09-29). Prochaine étape : **R4.1**, nouvelle session Sonnet.
+
+### D-2026-09-29-02 — R4.2 : familles Head ajoutées, référence SportSystem lue par le moteur (révision de R4-Q7)
+
+**Contexte** : R4.2 (extraction raquettes + cordages). Propositions de `R4_2_complement_referentiel.md`, conseil de Claude Code, validées par Mathieu le 2026-09-29.
+
+- **Familles Head raquettes ajoutées** à `config/model-families.ts` : Challenge, MX Attitude, Arthur Ashe, Spark (`observe`), Metallix Attitude et PWR (`a_confirmer`). Aucune n'est marquée « génération unique » (règle stricte, R4-Q4). MX Attitude / Metallix Attitude et Spark / MX Spark restent séparées faute de vérification.
+- **R4-Q7 révisée** : la référence SportSystem (vérifiée comme référence fabricant pour Head, Babolat, Tecnifibre) n'est **pas copiée dans `mpn`**. Le moteur la lit directement (`reference` de chaque variante ; `merchant_sku` seulement sans variantes et non concaténé). Raisons : aucune écriture sur `deals` pendant R4 (principe fantôme), une référence par variante conservée (Dunlop : varie avec la taille de manche), correction par une ligne de code si une marque se révèle fausse. La correction de `scripts/scraping/sportsystem.ts` (remplir `mpn` à la source) est reportée à R5.
+
+**Statut** : Actée (2026-09-29).

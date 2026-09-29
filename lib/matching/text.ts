@@ -37,9 +37,10 @@ export function containsPhrase(haystack: string, needle: string): boolean {
 }
 
 /**
- * Expression qui reconnaît `phrase` bornée par autre chose que lettres et
- * chiffres. Les espaces entre lettres et chiffres collés sont facultatives
- * (« 100 l » = « 100l »).
+ * Expression qui reconnaît `phrase` comme mot entier. Le passage lettres /
+ * chiffres compte comme une limite de mot, dedans comme aux bords : « 100 l » =
+ * « 100l », « sx » se trouve dans « sx300 », la version « s » dans « 300s »
+ * (les marchands collent souvent nom et chiffres : SX300, FX500, T-Fight 300S).
  */
 export function phraseRegExp(phrase: string, flags = ""): RegExp {
   const tokens = phrase.split(" ").filter(Boolean);
@@ -53,7 +54,11 @@ export function phraseRegExp(phrase: string, flags = ""): RegExp {
     }
     source += escapeRegExp(token);
   });
-  return new RegExp(`(?<![a-z0-9])${source}(?![a-z0-9])`, flags);
+  const first = tokens[0]?.[0] ?? "";
+  const last = tokens.at(-1)?.slice(-1) ?? "";
+  const before = /\d/.test(first) ? "(?<![0-9])" : /[a-z]/.test(first) ? "(?<![a-z])" : "(?<![a-z0-9])";
+  const after = /\d/.test(last) ? "(?![0-9])" : /[a-z]/.test(last) ? "(?![a-z])" : "(?![a-z0-9])";
+  return new RegExp(`${before}${source}${after}`, flags);
 }
 
 /** Retire la première occurrence de `phrase` ; renvoie le texte inchangé si absente. */

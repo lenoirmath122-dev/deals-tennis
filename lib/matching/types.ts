@@ -45,8 +45,11 @@ export interface ExtractedOffer {
   attributes: Record<string, ExtractedAttribute>;
   /** GTIN valide (8, 12, 13 ou 14 chiffres), sinon null. */
   gtin: string | null;
-  /** Référence fabricant, sinon null (recopie de la référence marchand écartée). */
-  referenceFabricant: string | null;
+  /**
+   * Références fabricant (recopie de la référence marchand écartée) ; plusieurs
+   * quand la fiche en donne une par variante (SportSystem).
+   */
+  referencesFabricant: { value: string; source: AttributeSource }[];
   /** Renseigné seulement si la famille n'est pas reconnue. */
   nonReconnu: { reason: UnrecognizedReason; termes: string[] } | null;
   /** Points douteux à relire (ex. `longueur_douteuse`), sans effet sur la comparaison. */

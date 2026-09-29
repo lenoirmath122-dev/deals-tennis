@@ -29,6 +29,36 @@ export function cleanMpn(offer: OfferInput): string | null {
   return mpn;
 }
 
+/**
+ * Toutes les références fabricant de l'offre, sans doublon.
+ *
+ * SportSystem : la `reference` de chaque variante est la référence fabricant
+ * (vérifié en R4.2 sur la prod, Head / Babolat / Tecnifibre retrouvées dans le
+ * `mpn` d'autres marchands). Lue ici plutôt que recopiée dans `mpn` (décision
+ * du 2026-09-29, révision de R4-Q7) : une référence par variante (Dunlop :
+ * varie avec la taille de manche), aucune écriture en base. `merchant_sku`
+ * seulement sans variantes, et jamais s'il concatène plusieurs références.
+ */
+export function manufacturerReferences(offer: OfferInput): { value: string; source: AttributeSource }[] {
+  const out: { value: string; source: AttributeSource }[] = [];
+  const add = (value: string | null | undefined, source: AttributeSource) => {
+    const v = value?.trim();
+    if (v && !out.some((r) => r.value === v)) out.push({ value: v, source });
+  };
+  add(cleanMpn(offer), "mpn");
+  if (offer.marchand === "SportSystem") {
+    const variants = offer.raw_attributes?.variants;
+    const refs = Array.isArray(variants)
+      ? variants.map((v) => (v && typeof v === "object" ? (v as { reference?: unknown }).reference : null))
+      : [];
+    for (const ref of refs) if (typeof ref === "string") add(ref, "fiche_marchand");
+    if (refs.length === 0 && offer.merchant_sku && !/[-/]/.test(offer.merchant_sku)) {
+      add(offer.merchant_sku, "fiche_marchand");
+    }
+  }
+  return out;
+}
+
 /** Fiche technique SportSystem (`raw_attributes.features`) : nom → valeur. */
 export function sportSystemFeatures(offer: OfferInput): Record<string, string> {
   const features = offer.raw_attributes?.features;
@@ -68,15 +98,16 @@ export function extractLot(light: string): { count: number; text: string; assume
 /** Cadeau offert (Q12) : « 6 cordages offerts », « sac offert ». Renvoie le texte et le titre sans lui. */
 export function extractGift(light: string): { text: string; rest: string } | null {
   const match = /(?:\+\s*|avec\s+)?(?:\d+\s+)?[a-z]+(?:\s+[a-z]+)?\s+offert(?:e|s|es)?\b/.exec(light);
-  if (!match) return null;
+  // « livraison offerte » n'est pas un cadeau joint à l'article.
+  if (!match || /livraison|frais de port/.test(match[0])) return null;
   return { text: match[0].trim(), rest: `${light.slice(0, match.index)} ${light.slice(match.index + match[0].length)}` };
 }
 
 export type CordedState = "cordee" | "non_cordee";
 
 export function extractCorded(light: string): CordedState | null {
-  if (/\bnon\s+cord[ee]e?s?\b/.test(light)) return "non_cordee";
-  if (/\bcord[ee]e?s?\b/.test(light)) return "cordee";
+  if (/\bnon\s+corde?e?s?\b/.test(light)) return "non_cordee";
+  if (/\bcorde?e?s?\b/.test(light)) return "cordee";
   return null;
 }
 

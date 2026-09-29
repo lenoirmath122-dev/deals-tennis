@@ -80,6 +80,23 @@ describe("extraction raquettes : titres réels", () => {
     expect(value(r, "poids")).toBe(305);
   });
 
+  it("lit version et poids quand le nom est collé aux chiffres (SX300, T-Fight 300S)", () => {
+    const sx = racquet("Raquette de tennis Dunlop SX300 Lite 2025");
+    expect(sx.famille).toBe("SX");
+    expect(value(sx, "version")).toBe("300 Lite");
+    expect(value(sx, "generation")).toBe("2025");
+    const fx = racquet("Raquette de tennis Dunlop FX500 Tour");
+    expect(fx.famille).toBe("FX");
+    expect(value(fx, "version")).toBe("500 Tour");
+    const tf = racquet("Raquette de tennis Tecnifibre T-Fight 300S");
+    expect(value(tf, "version")).toBe("S");
+    expect(value(tf, "poids")).toBe(300);
+  });
+
+  it("ne prend pas « livraison offerte » pour un cadeau", () => {
+    expect(racquet("Raquette de tennis Babolat Pure Drive 98 livraison offerte").attributes.cadeau).toBeUndefined();
+  });
+
   it("préfère la fiche technique SportSystem au titre", () => {
     const r = racquet("Raquette de tennis Dunlop Dunlop FX 500 Lite 2026", {
       raw_attributes: {
@@ -156,9 +173,39 @@ describe("identifiants", () => {
   });
 
   it("écarte un mpn recopié de la référence marchand", () => {
-    const r = racquet("Raquette de tennis Dunlop FX 500 Lite", { mpn: "10335789", merchant_sku: "10335789" });
-    expect(r.referenceFabricant).toBeNull();
-    expect(racquet("Raquette de tennis Dunlop FX 500 Lite", { mpn: "10369906", merchant_sku: "846865" }).referenceFabricant).toBe("10369906");
+    const refs = (extra: Partial<OfferInput>) =>
+      racquet("Raquette de tennis Dunlop FX 500 Lite", extra).referencesFabricant.map((r) => r.value);
+    expect(refs({ mpn: "10335789", merchant_sku: "10335789" })).toEqual([]);
+    expect(refs({ mpn: "10369906", merchant_sku: "846865" })).toEqual(["10369906"]);
+  });
+
+  it("lit la référence de chaque variante SportSystem comme référence fabricant", () => {
+    const r = racquet("Raquette de tennis Dunlop Dunlop FX 500 Lite 2026", {
+      marchand: "SportSystem",
+      raw_attributes: { variants: [{ reference: "10369907" }, { reference: "10369906" }, { reference: "10369907" }] },
+    });
+    expect(r.referencesFabricant).toEqual([
+      { value: "10369907", source: "fiche_marchand" },
+      { value: "10369906", source: "fiche_marchand" },
+    ]);
+  });
+
+  it("n'utilise le merchant_sku SportSystem que sans variantes et s'il n'est pas concaténé", () => {
+    const refs = (merchant_sku: string) =>
+      racquet("Raquette de tennis Head Extreme MP", { marchand: "SportSystem", merchant_sku }).referencesFabricant;
+    expect(refs("231114").map((r) => r.value)).toEqual(["231114"]);
+    expect(refs("WRZ990200-WR8302801")).toEqual([]);
+  });
+
+  it("ne lit pas la référence marchand des autres marchands", () => {
+    const r = racquet("Raquette de tennis Head Extreme MP", { marchand: "Tennispro.fr", merchant_sku: "231114" });
+    expect(r.referencesFabricant).toEqual([]);
+  });
+
+  it("retrouve la même référence fabricant des deux côtés des paires R1 où elle existe (paire 40 : 232036)", () => {
+    const [a, b] = pair(40);
+    const shared = a.referencesFabricant.filter((r) => b.referencesFabricant.some((x) => x.value === r.value));
+    expect(shared.map((r) => r.value)).toEqual(["232036"]);
   });
 });
 

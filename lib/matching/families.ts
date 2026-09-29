@@ -67,6 +67,19 @@ function indexFor(category: DealCategory, families: FamilyEntry[]): AliasIndexEn
 }
 
 /**
+ * Alias de la famille à retirer du titre avant de lire version, tamis et poids :
+ * le plus court présent, pour que « sx300 » laisse la version « 300 » (alias
+ * « sx » plutôt que « sx300 »). `text` est normalisé (`fullNormalize`).
+ */
+export function shortestAliasIn(text: string, entry: FamilyEntry): string | null {
+  const found = entry.aliases
+    .map((raw) => fullNormalize(raw))
+    .filter((alias) => phraseRegExp(alias).test(text))
+    .sort((a, b) => a.length - b.length);
+  return found[0] ?? null;
+}
+
+/**
  * Cherche la famille d'un titre déjà normalisé (`fullNormalize`).
  * `families` permet d'injecter un autre référentiel (chaussures, accessoires en R4.3).
  */

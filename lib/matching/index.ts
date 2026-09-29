@@ -8,7 +8,7 @@
 
 import { familyKey, recognizeFamily } from "./families";
 import { extractRacquetAttributes } from "./racquets";
-import { cleanGtin, cleanMpn, residualTerms, setAttr, type Attributes } from "./shared";
+import { cleanGtin, manufacturerReferences, residualTerms, setAttr, type Attributes } from "./shared";
 import { extractStringAttributes } from "./strings";
 import { fullNormalize } from "./text";
 import type { ExtractedOffer, OfferInput } from "./types";
@@ -38,7 +38,7 @@ export function extractOfferAttributes(offer: OfferInput): ExtractedOffer {
   else extractStringAttributes(offer, entry, alias, attrs, alertes);
 
   const gtin = cleanGtin(offer.gtin);
-  const referenceFabricant = cleanMpn(offer);
+  const referencesFabricant = manufacturerReferences(offer);
   if (offer.categorie === "cordages") setAttr(attrs, "age_group", "adulte", "titre_description");
 
   const marque = entry?.brand ?? offer.marque;
@@ -59,7 +59,7 @@ export function extractOfferAttributes(offer: OfferInput): ExtractedOffer {
     alias,
     attributes: attrs,
     gtin,
-    referenceFabricant,
+    referencesFabricant,
     nonReconnu,
     alertes,
   };

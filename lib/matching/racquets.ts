@@ -8,6 +8,7 @@
  */
 
 import type { FamilyEntry } from "@/config/model-families";
+import { shortestAliasIn } from "./families";
 import {
   ageGroupOf,
   extractCorded,
@@ -109,7 +110,8 @@ export function extractRacquetAttributes(
   if (generation.marker) text = fullNormalize(text.replace(generation.marker, " "));
 
   // L'alias de famille est retiré : ses chiffres (« tf 40 », « l23 ») ne sont ni tamis ni poids.
-  if (alias) text = removePhrase(text, alias);
+  const removable = entry ? shortestAliasIn(text, entry) : alias;
+  if (removable) text = removePhrase(text, removable);
   const versionResult = extractVersion(text, entry);
   if (versionResult) {
     setAttr(attrs, "version", versionResult.version, "titre_description");

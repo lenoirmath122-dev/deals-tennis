@@ -4,6 +4,7 @@
  */
 
 import type { FamilyEntry } from "@/config/model-families";
+import { shortestAliasIn } from "./families";
 import {
   extractEdition,
   extractGift,
@@ -88,7 +89,8 @@ export function extractStringAttributes(
   }
 
   let text = fullNormalize(light);
-  if (alias) text = removePhrase(text, alias);
+  const removable = entry ? shortestAliasIn(text, entry) : alias;
+  if (removable) text = removePhrase(text, removable);
 
   // Jauge écrite en centièmes après le nom (« Alu Power 125 » = 1,25 mm, Amazon, R1 paire 66).
   if (!attrs.jauge) {

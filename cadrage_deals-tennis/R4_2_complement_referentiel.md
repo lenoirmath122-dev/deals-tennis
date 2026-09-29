@@ -1,6 +1,6 @@
-# R4.2 — Compléments proposés au référentiel (raquettes, cordages) — à valider par Mathieu
+# R4.2 — Compléments au référentiel (raquettes, cordages)
 
-> Proposition de Claude Code, **rien n'est écrit dans `config/model-families.ts`** (D-2026-09-28-01 : ajouts en lot après validation). Mesure du 2026-09-29, lecture seule sur la prod (offres `active` + `tracked`).
+> **Validé par Mathieu le 2026-09-29 (D-2026-09-29-02)** : familles du §1 ajoutées à `config/model-families.ts` (PWR et Metallix Attitude en `a_confirmer`) ; §2 remplacé par une lecture de la référence dans le moteur, sans copie en base. Mesure du 2026-09-29, lecture seule sur la prod (offres `active` + `tracked`).
 
 ## 1. Familles Head raquettes non reconnues (titres réels)
 
