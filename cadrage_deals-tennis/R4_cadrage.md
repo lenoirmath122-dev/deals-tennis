@@ -1,6 +1,6 @@
 # R4 — Nouveau moteur de rapprochement en mode fantôme : cadrage et découpage (2026-09-29)
 
-> Étape R4 du §10 de `CADRAGE_rapprochement-multi-niveaux.md`. **Cadrage uniquement, aucun code.** Proposition de Claude Code, **en attente de validation par Mathieu** (questions R4-Q1 à R4-Q8, §5).
+> Étape R4 du §10 de `CADRAGE_rapprochement-multi-niveaux.md`. **Cadrage uniquement, aucun code.** Proposition de Claude Code **validée par Mathieu le 2026-09-29 (D-2026-09-29-01)** : toutes les propositions retenues (réponses au §5).
 > Mesures faites en lecture seule sur la base de prod le 2026-09-29 (offres `active` + `tracked`), avec les fichiers `config/` de R2 tels quels.
 
 ## 1. Ce que R4 doit livrer (déjà acté)
@@ -100,11 +100,17 @@ R0 §4 proposait d'ajouter des colonnes à `products` et une table `product_fami
 Les familles restent dans les fichiers `config/` (D-2026-09-28-01) : pas de table `product_families` en R4. La relation « modèle proche » est calculée à la lecture (§4 du cadrage), pas stockée. `product_merges` (traçabilité des fusions de **produits existants**) sert à la bascule : il est créé en R5. En R5 on décidera si les tables `match_` deviennent le modèle du site ou sont recopiées.
 *Raison* : rien à défaire si R4 échoue ; le site ne peut pas lire ces tables par accident.
 
+> **Réponse** : tables `match_*`, comme proposé.
+
 **R4-Q2 — Quand le moteur tourne-t-il ?**
 Proposé : **script lancé à la main**, recalcul complet (§3.2), après les passages de scraping. **Pas branché dans `lib/ingest.ts`** en R4 ; le branchement à l'ingestion (ou en fin de passage n8n) se décide en R5, quand les règles seront stables.
 
+> **Réponse** : script lancé à la main, recalcul complet, comme proposé.
+
 **R4-Q3 — Périmètre des offres.**
 Proposé : offres `active` **et** `tracked` (la couverture du §9 les compte toutes les deux : une offre `tracked` Babolat est la référence du fabricant). Offres `expired` et `invalid` exclues du passage, mais présentes dans le jeu R1 figé. La couverture sera donnée **deux fois** : modèles avec ≥ 2 marchands (`active` + `tracked`), et modèles avec ≥ 2 marchands **en `active`** (ce que le site pourra montrer).
+
+> **Réponse** : `active` + `tracked`, couverture publiée deux fois, comme proposé.
 
 **R4-Q4 — Génération non écrite des deux côtés (§2.2).** C'est la question qui pèse le plus sur le résultat.
 Proposé :
@@ -112,16 +118,24 @@ Proposé :
 - **Raquettes, chaussures, sacs** : règle stricte inchangée (sans génération des deux côtés → « proche »), levée seulement par : génération écrite, GTIN, référence fabricant partagée, ou famille explicitement marquée « génération unique » dans le référentiel (liste proposée par Claude Code en R4.2/R4.3, validée par toi).
 Autre option : règle stricte partout, en acceptant un rappel très bas sur les cordages et les accessoires.
 
+> **Réponse** : règle mixte selon la catégorie, comme proposé.
+
 **R4-Q5 — File de revue en mode fantôme.**
 Proposé : **pas d'interface en R4**. Chaque passage produit un **rapport** (fichier Markdown + CSV dans le dépôt ou le scratchpad) : cas entre les deux seuils, conflits (même GTIN mais familles différentes), familles et termes fréquents non reconnus par marque et catégorie (GAP-2026-09-27-01), résumé des compteurs. La page de revue se construit en R5 / Phase 5, quand il y aura quelque chose à valider pour de vrai.
+
+> **Réponse** : rapport à chaque passage, comme proposé.
 
 **R4-Q6 — Mesure de la précision au-delà du jeu R1.**
 Le jeu R1 ne compte que 32 paires identiques : une seule erreur fait perdre 3 points. Et plusieurs de ces paires ont été tranchées avec une information que le moteur n'a pas (fiche fabricant consultée à la main). Proposé :
 - sur le jeu R1, publier **deux rappels** : global, et « atteignable » (paires dont l'information nécessaire est dans les données capturées) ;
 - en R4.6, tirer **30 modèles « identiques » inter-marchands** au hasard dans la prod ; tu valides chacun ; la précision de bascule se juge sur les deux (jeu R1 + échantillon).
 
+> **Réponse** : jeu R1 + 30 modèles de prod validés en R4.6, comme proposé.
+
 **R4-Q7 — Référence SportSystem (§2.3).**
 Proposé : vérifier en R4.2, sur un échantillon de fiches, si la `reference` SportSystem est la référence fabricant. Si oui, la copier dans `mpn` (backfill limité à ce champ, branche Neon puis prod, avec ton accord), et corriger `scripts/scraping/sportsystem.ts` au prochain passage.
+
+> **Réponse** : vérifier en R4.2 puis copier dans `mpn`, comme proposé.
 
 **R4-Q8 — Option IA.**
 Proposé : **pas de décision avant R4.6**, comme prévu. À noter dès maintenant : l'IA peut aider à décomposer un titre (textile surtout), **pas** à retrouver une génération qui n'est écrite nulle part (§2.2). Elle ne corrigerait donc pas la principale limite du rappel.
@@ -133,3 +147,5 @@ Proposé : **pas de décision avant R4.6**, comme prévu. À noter dès maintena
 - Page de revue, rapport récurrent de supervision : R5 / Phase 5.
 - Parcours du catalogue complet des revendeurs (prix hors promo, couverture) : Phase 4-bis. Rappel : le moteur ne peut rapprocher que ce que les scripts voient (une Pure Aero absente de Tennis Point FR hors promo ne sera jamais rapprochée).
 - Automatisation des passages : Phase 2, indépendante de R4.
+
+> **Réponse** : décision en R4.6, comme proposé.

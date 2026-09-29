@@ -1181,3 +1181,20 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 **Découpage retenu** (`R3_cadrage.md` §3) : R3.1 migration additive + audit des requêtes du site (branche Neon) ; R3.2 `lib/ingest.ts` + tests ; R3.3 backfill (branche Neon puis prod après accord) ; R3.4 à R3.11 réécriture d'un script par étape avec vrai passage (ordre : Tecnifibre, Tennis Point FR, Sport 2000, SportSystem, Babolat, Tennispro.fr, Head, Amazon) ; R3.12 enrichissement par fiche ; R3.13 filtre UI. Toutes les étapes relèvent de Sonnet (exécution d'une spec validée), une étape par conversation.
 
 **Statut** : Actée (2026-09-28). Prochaine étape : **R3.1**, nouvelle session Sonnet (cloud possible : Neon seulement).
+
+### D-2026-09-29-01 — Cadrage R4 (moteur de rapprochement en mode fantôme) : réponses aux questions R4-Q1 à R4-Q8
+
+**Contexte** : cadrage de R4 (`R4_cadrage.md`), questions posées une par une avec leurs implications. Mathieu retient **toutes les propositions**.
+
+- **R4-Q1 — Stockage** : 4 tables nouvelles `match_runs`, `match_offer_attributes`, `match_models`, `match_offer_links` ; aucune table existante modifiée ; familles lues dans `config/` (pas de table `product_families`) ; « modèle proche » calculé à la lecture ; `product_merges` créé en R5.
+- **R4-Q2 — Lancement** : script lancé à la main, recalcul complet et déterministe ; pas de branchement dans `lib/ingest.ts` avant R5.
+- **R4-Q3 — Périmètre** : offres `active` + `tracked` ; couverture publiée deux fois (avec `tracked`, et en `active` seulement) ; `expired`/`invalid` seulement dans le jeu R1 figé.
+- **R4-Q4 — Génération non écrite des deux côtés** : règle mixte. Cordages et accessoires hors sacs : « génération unique » par défaut (→ identique possible), exceptions notées dans le référentiel. Raquettes, chaussures, sacs : règle stricte D-2026-09-26-01 (→ proche), levée par génération écrite, GTIN, référence fabricant commune, ou famille marquée « génération unique » validée par Mathieu.
+- **R4-Q5 — Revue** : rapport Markdown + CSV à chaque passage ; pas d'interface avant R5 / Phase 5 ; ajouts au référentiel en lot (D-2026-09-28-01).
+- **R4-Q6 — Mesure** : jeu R1 (rappel global et « atteignable ») + 30 modèles « identiques » inter-marchands tirés en prod et validés par Mathieu en R4.6.
+- **R4-Q7 — Référence SportSystem** : vérifiée en R4.2 sur un échantillon par marque ; si c'est la référence fabricant, copiée dans `mpn` (branche Neon puis prod avec accord), script corrigé, marques où ce n'est pas le cas exclues.
+- **R4-Q8 — Option IA** : décision en R4.6, sur les erreurs restantes.
+
+**Découpage retenu** (`R4_cadrage.md` §4) : R4.1 migration + jeu R1 figé + banc de mesure ; R4.2 extraction raquettes/cordages ; R4.3 extraction chaussures/accessoires ; R4.4 comparaison, cascade, script fantôme, rapport ; R4.5 textile + étape approchée + seuils (Opus) ; R4.6 analyse des erreurs et dossier de bascule (Opus). R4.1 à R4.4 en Sonnet. Toutes faisables en session cloud.
+
+**Statut** : Actée (2026-09-29). Prochaine étape : **R4.1**, nouvelle session Sonnet.

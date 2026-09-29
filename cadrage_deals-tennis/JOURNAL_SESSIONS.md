@@ -121,4 +121,5 @@
 
 - Explication à Mathieu du fonctionnement de R3 et de son état réel (requêtes en lecture seule sur la prod) : capture opérationnelle sur les 8 marchands, mais passages lancés à la main uniquement (Phase 2 non construite), clé produit texte inchangée (5 produits multi-marchands), 2 GTIN seulement partagés entre marchands. Exemple Pure Aero vérifié : titres différents entre Babolat et SportSystem, et Pure Aero absente de Tennis Point FR / Amazon (pages promo seulement).
 - Cadrage R4 rédigé : `R4_cadrage.md`. Mesures faites avec les fichiers `config/` de R2 (script jetable, scratchpad, lecture seule) : reconnaissance de famille 92 % raquettes, 98 % cordages et chaussures, 0 % textile (57 % des offres) ; 104 familles chez ≥ 2 marchands ; non-reconnus surtout les nouveautés du site Head. Génération rarement écrite → la règle stricte bloque « identique » (R4-Q4). `grams` Tennis Point FR = poids d'expédition (corrige R0 §1). Référence SportSystem : contradiction R1 §8.3 / R3.7 à vérifier (R4-Q7).
-- Aucune modification de code ni de base. **En attente des réponses de Mathieu à R4-Q1..Q8.**
+- Questions posées une par une (demande de Mathieu), avec leurs implications : toutes les propositions retenues (D-2026-09-29-01).
+- Aucune modification de code ni de base. **Prochaine étape : R4.1**, nouvelle session Sonnet.
