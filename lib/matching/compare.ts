@@ -128,11 +128,26 @@ function roleFor(category: ExtractedOffer["categorie"], name: string, base: Attr
   return roles.includes("different") ? "different" : roles.includes("proche") ? "proche" : base;
 }
 
+/** Raquettes : caractéristiques qui découlent de la version et de la génération chez le fabricant. */
+const DERIVED_RACQUET_ATTRIBUTES = ["poids", "tamis", "plan_cordage", "longueur"];
+
+/**
+ * C-Q3 (D-2026-09-29-03, « blocage B » de `R4_4_controle.md` §5) : famille, version et génération
+ * écrites et égales des deux côtés → une caractéristique connue d'un seul côté ne bloque plus
+ * « identique ». Elle reste bloquante si elle est connue des deux côtés et différente.
+ */
+export function derivedAttributesRelaxed(a: ExtractedOffer, b: ExtractedOffer): boolean {
+  if (a.categorie !== "raquettes" || a.familyKey === null || a.familyKey !== b.familyKey) return false;
+  const ga = generationToken(a);
+  return ga !== null && ga === generationToken(b) && token(a, "version") === token(b, "version");
+}
+
 /** Différences d'attributs entre deux offres de même famille (sans les identifiants). */
 function attributeDifferences(a: ExtractedOffer, b: ExtractedOffer): Difference[] {
   const category = a.categorie;
   const rules = CATEGORY_RULES[category];
   const out: Difference[] = [];
+  const relaxed = derivedAttributesRelaxed(a, b);
 
   for (const [name, base] of Object.entries(discriminantRoles(category))) {
     const ta = token(a, name);
@@ -143,6 +158,7 @@ function attributeDifferences(a: ExtractedOffer, b: ExtractedOffer): Difference[
     }
 
     if (ta === null || tb === null) {
+      if (relaxed && DERIVED_RACQUET_ATTRIBUTES.includes(name)) continue;
       out.push({ attribut: name, a: ta, b: tb, effet: "inconnu" });
       continue;
     }

@@ -125,8 +125,12 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
       { label: "2", markers: ["2"], source: TITRES },
       { label: "3", markers: ["3"], source: TITRES },
     ],
+    editions: ["Y-3"],
     statut: "observe",
-    notes: ["« Avacourt3 » (collé) : la normalisation doit séparer lettres et chiffres."],
+    notes: [
+      "« Avacourt3 » (collé) : la normalisation doit séparer lettres et chiffres.",
+      "C-Q2 (D-2026-09-29-03) : « Y-3 » est une collaboration qui change le produit : modèle séparé de l'Avacourt standard (`attributeValueOverrides.edition` → différent).",
+    ],
   },
   { brand: "adidas", category: "chaussures", family: "Avaflash", aliases: ["avaflash"], generations: [{ label: "2", markers: ["2"], source: TITRES }], statut: "observe" },
   { brand: "adidas", category: "chaussures", family: "Avaluxe", aliases: ["avaluxe"], statut: "observe" },

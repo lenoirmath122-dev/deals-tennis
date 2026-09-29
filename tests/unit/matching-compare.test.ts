@@ -101,11 +101,24 @@ describe("étape 2 : famille et attributs discriminants", () => {
   });
 
   it("attribut discriminant connu d'un seul côté : proche, jamais identique", () => {
+    // Génération non écrite d'un côté : le blocage B (C-Q3) ne joue pas, le tamis reste bloquant.
     const a = racket({ tamis: 100, generation: "Gen 11", annee: 2025 });
-    const b = racket({ generation: "Gen 11", annee: 2025 });
+    const b = racket({});
     const result = compare(a, b);
     expect(result.niveau).toBe("proche");
-    expect(result.differences).toEqual([{ attribut: "tamis", a: "100", b: null, effet: "inconnu" }]);
+    expect(result.differences).toContainEqual({ attribut: "tamis", a: "100", b: null, effet: "inconnu" });
+  });
+
+  it("blocage B (C-Q3) : même génération des deux côtés, tamis / poids / plan connus d'un seul côté = identique", () => {
+    const a = racket({ tamis: 100, poids: 300, plan_cordage: "16x19", generation: "Gen 11", annee: 2025 });
+    const b = racket({ generation: "Gen 11", annee: 2025 });
+    expect(compare(a, b)).toMatchObject({ niveau: "identique", methode: "signature", differences: [] });
+  });
+
+  it("blocage B : reste bloquant si connu des deux côtés et différent, ou si la version diffère", () => {
+    const gen = { generation: "Gen 11", annee: 2025 };
+    expect(compare(racket({ tamis: 98, ...gen }), racket({ tamis: 100, ...gen })).niveau).toBe("different");
+    expect(compare(racket({ version: "Tour", ...gen }), racket({ ...gen })).niveau).not.toBe("identique");
   });
 
   it("attribut absent des deux côtés : traité comme égal", () => {
@@ -241,6 +254,20 @@ describe("balles : nombre non écrit", () => {
   });
 });
 
+describe("cordages : version (C-Q1, D1)", () => {
+  it("versions différentes (Blast / Soft) : différent", () => {
+    const a = string({ version: "Rough", jauge: 1.25, conditionnement: "bobine", longueur: 220 });
+    const b = string({ version: "Soft", jauge: 1.25, conditionnement: "bobine", longueur: 220 });
+    expect(compare(a, b).niveau).toBe("different");
+  });
+
+  it("version écrite d'un seul côté : proche, jamais identique", () => {
+    const a = string({ version: "Rough", jauge: 1.25, conditionnement: "bobine", longueur: 220 });
+    const b = string({ jauge: 1.25, conditionnement: "bobine", longueur: 220 });
+    expect(compare(a, b).niveau).toBe("proche");
+  });
+});
+
 describe("signature", () => {
   it("nulle sans famille reconnue", () => {
     expect(signature(offer("raquettes", null), "d1")).toBeNull();
@@ -333,6 +360,31 @@ describe("regroupement en modèles", () => {
     const one = buildModels(offers);
     const two = buildModels([...offers].reverse());
     expect(two.models).toEqual(one.models);
+  });
+
+  it("blocage B : réunit deux raquettes dont une seule a le poids, mais pas si une troisième contredit", () => {
+    const one = buildModels([
+      engine("a", "M1", racket({ poids: 300, tamis: 100, ...gen })),
+      engine("b", "M2", racket({ ...gen })),
+    ]);
+    expect(one.models).toHaveLength(1);
+    // c (290 g) est « proche » de a (300 g) : b ne doit pas les relier.
+    const three = buildModels([
+      engine("a", "M1", racket({ poids: 300, ...gen })),
+      engine("b", "M2", racket({ ...gen })),
+      engine("c", "M3", racket({ poids: 290, ...gen })),
+    ]);
+    expect(three.models.length).toBeGreaterThan(1);
+  });
+
+  it("D5 : signale les modèles dont les membres ont des valeurs différentes pour un attribut", () => {
+    const ref = { referencesFabricant: [{ value: "233612", source: "mpn" as AttributeSource }] };
+    const result = buildModels([
+      engine("a", "M1", racket({ version: "Tour", ...gen }, { gtin: "3324921234567" })),
+      engine("b", "M2", racket({ ...gen }, { gtin: "3324921234567", ...ref })),
+      engine("c", "M3", racket({ version: "Lite", ...gen }, ref)),
+    ]);
+    expect(result.divergences).toEqual([expect.objectContaining({ attribut: "version", valeurs: ["lite", "tour"] })]);
   });
 
   it("signale un modèle incohérent : deux identifiants réunissent deux offres qui se contredisent", () => {

@@ -151,6 +151,7 @@ export function buildReport(input: ReportInput): PassReport {
     familles_multi_marchands_atteintes: familiesReached,
     conflits: result.conflicts.length,
     modeles_incoherents: result.incoherent.length,
+    modeles_divergents: new Set(result.divergences.map((d) => d.model)).size,
     paires_famille_inter_marchands: pairLevels,
   };
 
@@ -199,6 +200,7 @@ export function buildReport(input: ReportInput): PassReport {
     "",
     `- Conflits (même GTIN ou même référence mais familles ou attributs contradictoires, jamais fusionnés) : **${result.conflicts.length}** — \`conflits.csv\`.`,
     `- Modèles incohérents (deux membres « différents » réunis par un identifiant) : **${result.incoherent.length}**.`,
+    `- Modèles divergents (contrôle indépendant de \`compare()\` : valeurs extraites différentes pour un même attribut chez deux membres) : **${counters.modeles_divergents}** — \`conflits.csv\`.`,
     `- Alertes d'extraction : ${Object.entries(alertCounts).map(([k, v]) => `${k} ${v}`).join(", ") || "aucune"}.`,
     "",
   ].join("\n");
@@ -219,6 +221,10 @@ export function buildReport(input: ReportInput): PassReport {
     ["type", "deal_a", "titre_a", "deal_b", "titre_b", "detail"],
     ...result.conflicts.map((c) => [c.kind, c.a, byId.get(c.a)?.titre, c.b, byId.get(c.b)?.titre, c.detail]),
     ...result.incoherent.map((c) => ["incoherent", c.a, byId.get(c.a)?.titre, c.b, byId.get(c.b)?.titre, c.detail]),
+    ...result.divergences.map((d) => {
+      const first = result.models[d.model].members[0];
+      return ["divergent", first, byId.get(first)?.titre, "", "", `${d.attribut} (${d.valeurs.join(" | ")})`];
+    }),
   ]);
 
   return { counters, markdown, csv: { nonReconnus, proches: csv(proches), conflits } };

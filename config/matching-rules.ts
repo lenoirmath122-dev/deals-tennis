@@ -164,7 +164,8 @@ export const CATEGORY_RULES: Record<DealCategory, CategoryRules> = {
       edition: "variante",
     },
     attributeValueOverrides: {
-      edition: { premium: "proche", prm: "proche" },
+      // C-Q2 (D-2026-09-29-03) : une collaboration (Y-3…) est un autre produit, pas une édition.
+      edition: { premium: "proche", prm: "proche", "y-3": "different", "y 3": "different" },
     },
     generationRule: "standard",
     notes: [
@@ -176,6 +177,9 @@ export const CATEGORY_RULES: Record<DealCategory, CategoryRules> = {
   cordages: {
     attributes: {
       jauge: "proche", // D-2026-09-27-05
+      // C-Q1 (D-2026-09-29-03) : une version différente (Blast / Soft, Alu Power / Rough) = un autre
+      // cordage ; écrite d'un seul côté → « proche » (règle générale « connu d'un seul côté »).
+      version: "different",
       conditionnement: "different", // garniture / bobine
       longueur: "different",
       matiere: "different",

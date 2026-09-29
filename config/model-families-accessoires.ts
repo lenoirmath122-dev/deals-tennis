@@ -113,7 +113,7 @@ export const ACCESSORY_FAMILIES: AccessoryFamilyEntry[] = [
   { brand: "Babolat", category: "accessoires", subcategory: "grips_surgrips", typeGrip: "surgrip", family: "Pro Tour", aliases: ["pro tour"], generations: [{ label: "2.0", markers: ["2 0", "2.0"], source: "titres « Pro Tour 2.0 x3 / x12 »" }], statut: "observe" },
   { brand: "Babolat", category: "accessoires", subcategory: "grips_surgrips", typeGrip: "surgrip", family: "VS Original", aliases: ["vs original"], statut: "observe" },
   { brand: "Dunlop", category: "accessoires", subcategory: "grips_surgrips", typeGrip: "surgrip", family: "Gecko-Tac", aliases: ["gecko tac"], statut: "observe" },
-  { brand: "Head", category: "accessoires", subcategory: "grips_surgrips", typeGrip: "grip", family: "Hydrosorb", aliases: ["hydrosorb"], versions: ["Pro"], statut: "observe" },
+  { brand: "Head", category: "accessoires", subcategory: "grips_surgrips", typeGrip: "grip", family: "Hydrosorb", aliases: ["hydrosorb"], versions: ["Pro", "Comfort"], statut: "observe" },
   { brand: "Head", category: "accessoires", subcategory: "grips_surgrips", typeGrip: "grip", family: "Dual Absorbing", aliases: ["dual absorbing"], statut: "observe" },
   { brand: "Prince", category: "accessoires", subcategory: "grips_surgrips", typeGrip: "grip", family: "DuraPro+", aliases: ["durapro+", "durapro"], statut: "observe" },
   { brand: "Prince", category: "accessoires", subcategory: "grips_surgrips", typeGrip: "grip", family: "Resitex", aliases: ["resitex"], versions: ["Soft", "Tour"], statut: "observe" },
