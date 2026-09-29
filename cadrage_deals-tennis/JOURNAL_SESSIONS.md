@@ -194,3 +194,12 @@
 - **Raquettes** (précisé à la demande de Mathieu) : 21 modèles multi-marchands, tous SportSystem / Tennispro.fr par référence ; 0 GTIN partagé ; blocage A (génération non écrite : Head 0 / 135) et blocage B (même génération, mais poids / tamis / plan connus d'un seul côté : 29 paires Babolat / SportSystem, ex. Pure Drive Gen 11). GAP-2026-09-29-01 ouvert.
 - **Décision de Mathieu (D-2026-09-29-03)** : phase de correction **R4.4-bis** ajoutée à la feuille de route avant R4.5 (`R4_cadrage.md` §4). Détail complet : `R4_4_controle.md`.
 - Prochaine étape : **R4.4-bis**. Questions C-Q1 à C-Q4 à Mathieu d'abord, puis exécution en Sonnet.
+
+
+## 2026-09-29 (session cloud, Sonnet) — R4.4-bis : décisions C-Q1 à C-Q4 et corrections de code
+
+- Reprise de session : modèle actuel Sonnet, recommandé Sonnet (état) puis exécution d'une spec validée. Questions C-Q1 à C-Q4 posées une par une à Mathieu, toutes tranchées dans le sens recommandé (`DECISIONS_FONCTIONNELLES.md`, D-2026-09-29-03).
+- Corrections D1 à D5, Y-3 séparée, blocage B levé ; C-Q4 vérifié sur le web (Sensation Comfort = intitulé européen du Sensation 16, équivalence à confirmer). Jeu R1 : 12/12, rappel 12/32, inter-marchands 11/29, 0 faux positif. 211 tests unitaires, `tsc`, `eslint` propres. Détail : `R4_4_controle.md` §8.
+- Incident : l'outil Bash a été indisponible plusieurs tours (contrôle de sécurité sans verdict) ; aucun impact sur le dépôt, les tests ont été lancés après reprise.
+- Aucune écriture en base pendant cette session.
+- Prochaine étape : paires pièges dans un jeu versionné, GTIN par déclinaison (lecture seule), puis nouveau passage sur branche Neon (accord de Mathieu avant la prod), relecture des modèles multi-marchands et des ~45 paires de raquettes gagnées.

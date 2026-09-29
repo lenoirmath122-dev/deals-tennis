@@ -173,3 +173,13 @@ describe("R4.4-bis : corrections D2, D3, D4 et Y-3", () => {
     expect(compare(y3, std).niveau).toBe("different");
   });
 });
+
+describe("R4.4-bis : C-Q4, Sensation Comfort", () => {
+  const string = (titre: string) => extractOfferAttributes({ marchand: "Test", titre, marque: "Wilson", categorie: "cordages" });
+  it("Comfort et Control sont deux versions différentes", () => {
+    const comfort = string("Wilson Sensation Comfort, Rouleau de 200 m, 16G, 1,30 mm");
+    const control = string("Wilson Sensation Control (200m) 1,30 mm");
+    expect(comfort.attributes.version?.value).toBe("Comfort");
+    expect(compare(comfort, control).niveau).toBe("different");
+  });
+});

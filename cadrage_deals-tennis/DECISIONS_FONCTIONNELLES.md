@@ -1214,4 +1214,10 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 
 **Décision (Mathieu, 2026-09-29)** : ajouter une **phase de correction R4.4-bis** à la feuille de route (`R4_cadrage.md` §4) **avant de poursuivre les autres phases** : R4.5 ne démarre qu'après les corrections, un nouveau passage fantôme et une nouvelle relecture des modèles multi-marchands. Contenu proposé dans `R4_4_controle.md` §7 ; les questions C-Q1 à C-Q4 (version des cordages, collaborations type Y-3, levier du blocage B des raquettes, Wilson Sensation Comfort) sont posées à Mathieu en début de phase et ne sont pas tranchées par cette décision.
 
+**Réponses de Mathieu aux questions (2026-09-29, début de R4.4-bis)** :
+- **C-Q1** : la version des cordages est discriminante (`version: "different"`) ; écrite d'un seul côté → « proche ».
+- **C-Q2** : l'Avacourt 2 Y-3 et les collaborations du même type sont des **modèles séparés** (édition « Y-3 » → « différent » ; autres collaborations à ajouter au référentiel au fil des rencontres).
+- **C-Q3** : le blocage B des raquettes est levé dans R4.4-bis (famille, version et génération écrites et égales des deux côtés : poids, tamis, plan, longueur connus d'un seul côté ne bloquent plus ; bloquants s'ils sont connus des deux côtés et différents).
+- **C-Q4** : fiche vérifiée puis version « Comfort » ajoutée à Sensation (voir `model-families.ts`).
+
 **Statut** : Actée (2026-09-29).

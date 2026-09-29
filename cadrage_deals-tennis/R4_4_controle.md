@@ -127,3 +127,14 @@ Décidée par Mathieu le 2026-09-29 (D-2026-09-29-03). Contenu proposé, à vali
 6. Mise à jour de la mesure R1 et de `R4_4_rapport_passage.md`.
 
 Modèle : réponses aux questions C-Q1 à C-Q4 d'abord (décision de Mathieu), puis exécution en Sonnet.
+
+## 8. Exécution de R4.4-bis (2026-09-29, Sonnet)
+
+Réponses de Mathieu : C-Q1 oui (`version: "different"`), C-Q2 modèle séparé, C-Q3 blocage B dans R4.4-bis, C-Q4 vérifier puis ajouter (D-2026-09-29-03).
+
+- **Code** : D1 (`matching-rules.ts`), D2 (« all court », « toutes surfaces » retirés avant la lecture de la version, `shared.ts`), D3 (« PRM » → « Premium » dans `extractEdition`), D4 (Hydrosorb « Comfort »), Y-3 (édition Avacourt + exception « différent »), blocage B (`derivedAttributesRelaxed` dans `compare.ts` + étape 2 bis dans `cluster.ts`, fusion seulement si toutes les paires des deux groupes sont « identiques »), D5 (indicateur « modèles divergents » dans `cluster.ts` / `report.ts`, indépendant de `compare()`).
+- **C-Q4 vérifié** : Tennis Warehouse Europe vend « Wilson Sensation Comfort 1.30/16 String Reel - 200m » ; Wilson US l'appelle « Sensation 16 ». « Comfort » semble être l'intitulé européen du Sensation de base, distinct de Control. Version « Comfort » ajoutée : Comfort ≠ Control ; Comfort face à « Sensation » sans version = proche. Équivalence Comfort = Sensation de base **non validée** (à confirmer sur une fiche Wilson Europe).
+- **Mesure sur le jeu R1** : 12/12 (rappel 12/32, avant 9/32), inter-marchands 11/29 (avant 8/29), 0 faux positif. Les 3 paires gagnées sont des raquettes (blocage B).
+- **Tests** : 211 unitaires passent (`tracking.test.ts` : `DATABASE_URL`, préexistant), `tsc` et `eslint` propres. Tests ajoutés : D1, D2, D3, D4, Y-3, Sensation, blocage B (dont le cas où une troisième offre contredit), D5.
+- **Limite connue** : « Avacourt Y-3 » sans numéro de génération pourrait lire le « 3 » de « Y-3 » comme génération (non testé sur titres réels).
+- **Reste à faire** : point 3 (paires pièges dans un jeu versionné, titres réels), point 4 (GTIN par déclinaison), points 5 et 6 (nouveau passage sur branche Neon puis prod, relecture des modèles multi-marchands et des paires de raquettes gagnées, mise à jour de `R4_4_rapport_passage.md`).
