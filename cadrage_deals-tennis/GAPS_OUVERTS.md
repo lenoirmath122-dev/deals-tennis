@@ -140,11 +140,15 @@ en base passées en `invalid`, garde-fou d'éviction 50 % avancé en R3.2,
 filtre UI des sous-catégories en R3.13. Découpage R3.1 à R3.13, une étape
 par conversation (Sonnet).
 
-**Bloquant sur** : rien. Prochaine étape : **R3.1** (migration additive +
-audit des requêtes du site, branche Neon), voir aussi GAP-2026-09-25-11.
+**R3 fait (2026-09-28 au 2026-09-29, R3.1 à R3.13, PR #92 à #106 et
+R3.13)** : migration `tracked` + colonnes de capture, `lib/ingest.ts`,
+backfill, 8 scripts réécrits, enrichissement par fiche (GTIN, `mpn`),
+filtre des sous-catégories. Détail étape par étape : `R3_cadrage.md` §3.
 
-**Statut** : ouvert au 2026-09-28 — R0, R1, R2 faits pour toutes les
-catégories, R3 cadré ; reste R3.1 à R3.13, puis R4 et R5.
+**Bloquant sur** : rien. Prochaine étape : **R4** (nouveau moteur en mode
+fantôme, §10 du cadrage rapprochement), à cadrer d'abord (Opus).
+
+**Statut** : ouvert au 2026-09-29 — R0 à R3 faits ; reste R4 et R5.
 
 ---
 
@@ -343,32 +347,6 @@ Découvert en vérifiant le build Amazon (voir `ETAT_ACTUEL.md`) : la recherche 
 **Résolution (2026-09-25, D-2026-09-25-16)** : le nouveau filtre marque connue exclut de fait cet article (aucune marque reconnue en tête d'un titre de décoration de gâteau) — non revérifié individuellement sur ce titre précis (l'article n'est pas revenu dans les résultats de recherche du dernier passage), mais le mécanisme qui l'aurait laissé passer n'existe plus.
 
 **Statut** : résolu le 2026-09-25 par effet de bord de D-2026-09-25-16.
-
----
-
-## GAP-2026-09-25-11 — Sous-catégories d'accessoires : référentiel v2 validé, attend R3 (OUVERT)
-
-Suite à D-2026-09-25-15 : décisions de principe actées (champ `deals.subcategory` nullable, backfill complet). **Lexique v2 validé** (D-2026-09-28-03, 2026-09-28) dans `config/accessory-subcategories.ts` : 6 valeurs (`sacs`/`balles`/`antivibrateurs`/`grips_surgrips`/`accessoires_cordage`/`protection_soins`), `NULL` pour le reste (« Autres accessoires »), plus deux actions R3 hors `subcategory` — textile porté déplacé vers la catégorie textile, hors sujet exclu à l'ingestion. Numéroté -11 (et non -10) pour éviter une collision : GAP-2026-09-25-10 est déjà pris (conflit de nom Tennisdeals), mergé sur `master` entretemps par une autre session parallèle.
-
-**Rattaché à R2** (2026-09-26, `CADRAGE_rapprochement-multi-niveaux.md` §10) : traité dans la même étape que le référentiel de modèles (R2_referentiel.md §7), maintenant clos — voir GAP-2026-09-25-19.
-
-**Reste à faire, dans l'ordre, en R3** :
-1. Migration (`deals.subcategory VARCHAR` + `CHECK` limité aux 6 valeurs ou `NULL`, index si utile au filtre).
-2. Fonction d'extraction (`lib/product-matching.ts`, ex. `extractAccessorySubcategory`) avec `SUBCATEGORY_RULES` (lexique v2) et les deux actions R3 (déplacement textile, exclusion hors sujet), plus les exclusions chaussures de ville (Q13) et JOOLA (§4 de `R2_referentiel.md`).
-3. Script de backfill (`scripts/backfill-accessory-subcategory.ts`) sur les offres déjà en base.
-4. Mise à jour des 8 scripts de scraping (dans la même passe R3 que GAP-2026-09-25-15 étape 4) pour peupler `subcategory` dès l'ingestion.
-5. ~~Mise à jour du workflow n8n ProTennis~~ — **close, obsolète** (2026-09-26) : ProTennis retiré définitivement, plus de workflow n8n ProTennis dans le dépôt.
-6. UI du filtre secondaire (pills sous-catégorie, visibles uniquement quand « Accessoires » est sélectionné, incluant une option « Autres accessoires » pour `subcategory IS NULL`).
-
-**Placement dans R3** (D-2026-09-28-04, `R3_cadrage.md` §3) : étape 1 en R3.1 (migration), étape 2 en R3.2 (`lib/ingest.ts`, et non `lib/product-matching.ts` seul), étape 3 en R3.3 (backfill : offres exclues passées en `status='invalid'`, pas supprimées), étape 4 en R3.4 à R3.11, étape 6 en R3.13 (sans bloquer R4).
-
-**Étape 2 faite (2026-09-28)** : `resolveCategory`/`checkExclusion` dans `lib/ingest.ts`, à partir de `SUBCATEGORY_RULES` (lexique v2) seul — pas de lookup dans les familles `ACCESSORY_FAMILIES` (leur champ `subcategory` reste redondant avec les règles par motif pour l'instant ; pas de gain mesuré à l'utiliser en plus, et cela aurait demandé une résolution d'alias proche du moteur R4, hors périmètre R3). Les deux actions R3 (déplacement textile, exclusion hors sujet) et les exclusions chaussures de ville/JOOLA sont couvertes.
-
-**Étape 4, avancement** : Tecnifibre fait en R3.4 (2026-09-28) ; Tennis Point FR fait en R3.5 (2026-09-28) ; Sport 2000 fait en R3.6 (2026-09-28) ; SportSystem fait en R3.7 (2026-09-29) ; Babolat fait en R3.8 (2026-09-29) ; Tennispro.fr fait en R3.9 (2026-09-29) ; Head fait en R3.10 (2026-09-29) ; Amazon fait en R3.11 (2026-09-29) : les 8 scripts sont réécrits. **Constat R3.6 (à trancher par Mathieu, lexique déjà validé donc non modifié)** : le motif « textile porté » de `SUBCATEGORY_RULES` reconnaît « poignet »/« wristband » mais pas « bracelet » ; 2 accessoires Sport 2000 (« Bracelets de Sport » Nike, « Bracelets de tennis » Lacoste) restent donc en `accessoires` sans sous-catégorie, alors que ce sont des poignets (textile porté). Ajouter « bracelet » au motif = changement de lexique, à valider.
-
-**Bloquant sur** : rien — R0-R2 faits, R3 cadré et validé (voir GAP-2026-09-25-19). Étapes 1 à 3 faites, étape 4 en cours.
-
-**Statut** : ouvert au 2026-09-28 — cadré et validé (référentiel v2, placement R3), étapes 1, 2 et 5 faites, reste 3 (R3.3), 4 (R3.4-R3.11) et 6 (R3.13).
 
 ---
 

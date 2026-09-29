@@ -8,7 +8,7 @@ import {
 } from "@/lib/filters";
 import { buildCatalogHref } from "@/lib/catalog-url";
 
-function FilterPills({
+export function FilterPills({
   label,
   ariaLabel,
   values,
@@ -54,12 +54,14 @@ function FilterPills({
 
 export function GenderAgeFilter({
   category,
+  subcategory,
   gender,
   ageGroup,
   sort,
   q,
 }: {
   category: string;
+  subcategory: string;
   gender: string;
   ageGroup: string;
   sort: CatalogSort;
@@ -73,7 +75,9 @@ export function GenderAgeFilter({
         values={GENDER_VALUES}
         labels={GENDER_LABELS}
         active={gender}
-        buildHref={(value) => buildCatalogHref({ category, gender: value, age_group: ageGroup, sort, q })}
+        buildHref={(value) =>
+          buildCatalogHref({ category, subcategory, gender: value, age_group: ageGroup, sort, q })
+        }
       />
       <FilterPills
         label="Âge"
@@ -81,7 +85,9 @@ export function GenderAgeFilter({
         values={AGE_GROUP_VALUES}
         labels={AGE_GROUP_LABELS}
         active={ageGroup}
-        buildHref={(value) => buildCatalogHref({ category, gender, age_group: value, sort, q })}
+        buildHref={(value) =>
+          buildCatalogHref({ category, subcategory, gender, age_group: value, sort, q })
+        }
       />
     </div>
   );

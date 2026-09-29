@@ -36,6 +36,51 @@ export function isValidCategory(value: string | undefined | null): value is Cata
   return value === "all" || (DEAL_CATEGORIES as readonly string[]).includes(value);
 }
 
+/**
+ * Sous-catégories d'accessoires (D-2026-09-25-15, lexique v2 D-2026-09-28-03).
+ * Alignées sur `AccessorySubcategory` (`config/accessory-subcategories.ts`) et sur
+ * le CHECK `subcategory_check` de la migration 007 — un test unitaire vérifie l'alignement.
+ * L'ordre est celui des pills.
+ */
+export const SUBCATEGORY_VALUES = [
+  "sacs",
+  "balles",
+  "grips_surgrips",
+  "antivibrateurs",
+  "protection_soins",
+  "accessoires_cordage",
+] as const;
+
+/** Valeur d'URL pour les accessoires sans sous-catégorie (`subcategory IS NULL`). */
+export const OTHER_ACCESSORIES = "autres";
+
+export type CatalogSubcategoryFilter =
+  | (typeof SUBCATEGORY_VALUES)[number]
+  | typeof OTHER_ACCESSORIES
+  | "all";
+
+export const SUBCATEGORY_LABELS: Record<CatalogSubcategoryFilter, string> = {
+  all: "Tous",
+  sacs: "Sacs",
+  balles: "Balles",
+  grips_surgrips: "Grips et surgrips",
+  antivibrateurs: "Antivibrateurs",
+  protection_soins: "Protection et soins",
+  accessoires_cordage: "Outils de cordage",
+  autres: "Autres accessoires",
+};
+
+export function isValidSubcategory(
+  value: string | undefined | null
+): value is CatalogSubcategoryFilter {
+  if (!value) return false;
+  return (
+    value === "all" ||
+    value === OTHER_ACCESSORIES ||
+    (SUBCATEGORY_VALUES as readonly string[]).includes(value)
+  );
+}
+
 export const GENDER_VALUES = ["homme", "femme", "mixte"] as const;
 
 export type CatalogGenderFilter = (typeof GENDER_VALUES)[number] | "all";

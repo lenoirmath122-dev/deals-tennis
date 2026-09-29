@@ -1,8 +1,10 @@
 import { sql } from "@/lib/db";
 import {
+  OTHER_ACCESSORIES,
   isValidCategory,
   isValidGender,
   isValidAgeGroup,
+  isValidSubcategory,
   sanitizeSearchQuery,
   type CatalogSort,
 } from "@/lib/filters";
@@ -31,6 +33,8 @@ const DEAL_CARD_FIELDS = `
 
 export interface GetCatalogDealsParams {
   category?: string;
+  /** Sous-catégorie d'accessoires ; ignorée hors de la catégorie « accessoires ». */
+  subcategory?: string;
   gender?: string;
   age_group?: string;
   sort?: CatalogSort;
@@ -81,6 +85,20 @@ export async function getCatalogDeals(
   if (params.category && isValidCategory(params.category) && params.category !== "all") {
     conditions.push(`d.category = $${paramIndex++}`);
     queryParams.push(params.category);
+  }
+
+  if (
+    params.category === "accessoires" &&
+    params.subcategory &&
+    isValidSubcategory(params.subcategory) &&
+    params.subcategory !== "all"
+  ) {
+    if (params.subcategory === OTHER_ACCESSORIES) {
+      conditions.push(`d.subcategory IS NULL`);
+    } else {
+      conditions.push(`d.subcategory = $${paramIndex++}`);
+      queryParams.push(params.subcategory);
+    }
   }
 
   let needsProductJoin = false;
@@ -226,6 +244,23 @@ async function getGroupedCatalogDeals({
       per_page: PER_PAGE,
     },
   };
+}
+
+/**
+ * Sous-catégories d'accessoires qui ont au moins une offre visible (mêmes conditions
+ * que le catalogue), pour ne proposer que des pills qui mènent à des résultats.
+ * `OTHER_ACCESSORIES` regroupe les accessoires sans sous-catégorie.
+ */
+export async function getAccessorySubcategoriesWithDeals(): Promise<Set<string>> {
+  const rows = await sql`
+    SELECT DISTINCT COALESCE(subcategory, ${OTHER_ACCESSORIES}) AS subcategory
+    FROM deals
+    WHERE category = 'accessoires'
+      AND status = 'active'
+      AND is_active = true
+      AND (expires_at IS NULL OR expires_at > NOW())
+  `;
+  return new Set(rows.map((row) => row.subcategory as string));
 }
 
 export async function getDealDetail(

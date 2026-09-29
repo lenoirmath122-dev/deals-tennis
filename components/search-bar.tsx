@@ -15,12 +15,14 @@ interface SuggestionCategory {
 export function SearchBar({
   defaultValue,
   category,
+  subcategory,
   gender,
   ageGroup,
   sort,
 }: {
   defaultValue: string;
   category: string;
+  subcategory: string;
   gender: string;
   ageGroup: string;
   sort: CatalogSort;
@@ -55,7 +57,14 @@ export function SearchBar({
   function runSearch(query: string, searchCategory: string) {
     setShowSuggestions(false);
     router.push(
-      buildCatalogHref({ category: searchCategory, gender, age_group: ageGroup, sort, q: query })
+      buildCatalogHref({
+        category: searchCategory,
+        subcategory,
+        gender,
+        age_group: ageGroup,
+        sort,
+        q: query,
+      })
     );
   }
 
