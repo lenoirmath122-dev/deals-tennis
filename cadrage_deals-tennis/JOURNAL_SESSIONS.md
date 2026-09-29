@@ -104,3 +104,12 @@
 - Vérifié sur la branche Neon `test-r3-8-babolat` : 350 tracked (SKU 350, `raw_attributes` 350, GTIN 0, 0 titre cassé, 0 sans produit, relance idempotente), 20 expirées. Appliqué en prod après accord de Mathieu (branche supprimée) : Babolat 350 tracked / 20 expired ; `deals` prod : 4190 active / 185 expired / 28 invalid / 359 tracked.
 - `tsc`/`eslint` propres ; `npm test` non relancé.
 - Prochaine étape : **R3.9** (Tennispro.fr) ou R3.13, au choix de Mathieu.
+
+## 2026-09-29 (session desktop Sonnet) — R3.9 : script Tennispro.fr réécrit sur `lib/ingest.ts`
+
+- Reprise. Modèle actuel = recommandé (Sonnet, exécution d une spec validée). Mathieu : « On reprend R3.9 ».
+- `scripts/scraping/tennispro.ts` réécrit sur `lib/ingest.ts` ; `merchant_sku` = identifiant Magento de la carte (675/675, aussi suffixe de l'URL), `mpn` lu dans le `dataLayer` de la page catégorie (279/675, soit 41 % : le `dataLayer` ne couvre que les 10 premiers articles de chaque page de 25 ; le reste relève de R3.12), `raw_attributes` (identifiant Magento, coloris, taille, marque et nom bruts) sans requête en plus ; aucun GTIN (R0). Toutes les offres de l'outlet ont un prix barré : 0 `tracked` réel, le chemin `tracked` (carte sans prix public) est codé mais non exercé sur des données réelles. Vérifié sur branche Neon `test-r3-9-tennispro` puis en prod : Tennispro.fr 675 active / 13 expired / 11 invalid ; 11 offres exclues (`accessoire_hors_sujet` : médailles, mug, cahier). Relance d'idempotence non faite (upsert sur `merchant_id, affiliate_url`, comme R3.7/R3.8).
+- Inspection réelle (1 requête, robots.txt respecté) de `outlet/accessoires.html` : 25 cartes, toutes avec prix public ; `view_product_N` = identifiant Magento ; `dataLayer.push({"products":[...]})` avec `magento_id`, `mpn`, `color`, `size` pour 10 cartes sur 25.
+- Passage réel sur la branche Neon : ~40 min (crawl-delay 60 s, 7 catégories), puis identique en prod. Le lancement prod a d abord été refusé par le classifieur du mode auto (écriture en base partagée) ; règle `Bash(node --env-file=.env.local scripts/scraping/tennispro.ts)` ajoutée dans `.claude/settings.local.json` (non versionné) à la demande de Mathieu, puis lancement.
+- `deals` prod : 4203 active / 198 expired / 28 invalid / 359 tracked. `tsc`/`eslint` propres ; `npm test` : mêmes 4 échecs préexistants (`catalog-query`, `product-suggestions`), identiques sans le changement.
+- Prochaine étape : **R3.10** (Head) ou R3.13, au choix de Mathieu.
