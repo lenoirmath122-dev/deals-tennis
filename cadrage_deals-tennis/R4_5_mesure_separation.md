@@ -75,3 +75,50 @@
 - **Maintenu strict** : raquettes et sacs, où l'échantillon compte 10 erreurs sur 16 si on assouplit.
 
 Le gain réel sur les 539 paires (et en modèles multi-marchands) reste à mesurer par un passage à blanc une fois les leviers retenus codés.
+
+## 5. Révision (même session, relecture critique demandée par Mathieu)
+
+### 5.1 Ce qui ne tenait pas dans la première analyse
+
+- **Tirage biaisé** : une paire par famille, et non paire par paire. Les familles à beaucoup de paires (Courtflash, Propulse, Babolat Pure…) pèsent autant qu'une famille à une seule paire.
+- **Règles oubliées** : pour les raquettes et les chaussures, une édition ou un coloris est une **variante** (Q7, Q15). J'avais compté à tort #29 (Boom Alternate / Neon) et #32 (Gravity Zverev) comme « différents : édition ». La vraie question y est la génération, que les titres ne permettent pas de trancher : ces paires passent en « incertain ». Pour les sacs, la règle « identique seulement avec la même référence » est déjà une décision (D-2026-09-27-07, Q19) : il n'y avait pas à la rediscuter.
+- **Cause mal identifiée pour les cordages** : ils sont déjà « génération unique » par défaut (`defaultSingleGeneration`). C'est la jauge, attribut obligatoire (`requiredAttributes`), qui les sépare.
+- **L1 largement sous-estimé** : il était présenté comme « 5 paires sur 34 ». En réalité, il s'agit d'un défaut du moteur qui touche toutes les catégories (§5.2).
+
+### 5.2 Constat principal : les références fabricant présentes en base ne sont pas exploitées
+
+Hors textile, le moteur ne lit comme références que le `mpn` et les variantes SportSystem (`lib/matching/shared.ts`, `manufacturerReferences`). La comparaison porte sur la référence complète, suffixe de coloris compris (`normalizeReference`). Il manque donc :
+- le **SKU des sites de marque** (Babolat, Head, Tecnifibre) et de **Sport 2000**, qui sont des références fabricant (déjà admis pour le textile : `TEXTILE_SKU_IS_REFERENCE_MERCHANTS`) ;
+- la **coupe du suffixe de coloris ou de taille** (`3A0S25A555-4131` → `3A0S25A555`, `241146-107` → `241146`), déjà faite pour le textile (partie « style » avant le premier tiret).
+
+Mesure en prod (tables `match_*`, lecture seule), sur les offres de même marque et de même catégorie, chez deux marchands différents, dans deux modèles différents, et partageant la même référence de style :
+
+| Catégorie | Paires d'offres | Références |
+|---|---|---|
+| Raquettes | 75 | 57 |
+| Cordages | 35 | 14 |
+| Chaussures | 16 | 10 |
+| Accessoires | 11 | 10 |
+| **Total** | **137** | **91** |
+
+- **Précision à la relecture** : les 91 références ont été relues (titres et prix). Toutes désignent le même produit, par exemple « Babolat Pure Strike 97 Gen4 » (Babolat) et « Pure Strike 97 (310 Gr) » (Tennispro.fr), ou « HEAD Speed MP » (Head) et « Head Speed MP 2026 » (SportSystem). Aucun faux positif relevé. Seuls écarts : un prix « cordée / non cordée » chez Tennispro (Boom MP L Neon, 230 € / 270 €), qui est une variante connue.
+- **Effet** : 110 paires de modèles à réunir, 190 modèles touchés, dont 25 déjà présents chez plusieurs marchands. Estimation : de 103 à environ 170 modèles présents chez plusieurs marchands. Le chiffre exact viendra du passage à blanc.
+- Plusieurs cas jugés « à trancher par une règle » au §2 sont en fait résolus par la référence : #1 Court L, #10 SFX Evo, #11 Endure Pro Boa (273006 des deux côtés), #16 Courtflash, #18, #20, #26, #28, #30, ainsi que les sacs Pure Drive RH12 et RH6 « (new) ».
+
+### 5.3 Deuxième constat : l'échantillon révèle aussi des défauts d'extraction
+
+- **Taille ou contenance de sac non lue** : Base L / M (Q19 dit pourtant « différent »).
+- **Longueur junior mal lue** : « Speed Jr.25 » (collé) contre « IG Speed 21 » ; « Sprint Court 40 » (Sport 2000) non lu comme 4.0.
+- **Modèle junior confondu** : « T-Fight Tour 26 » contre « T-Fight Team 25 » (Tour ≠ Team, 26 ≠ 25), « Pure Drive Junior » contre « Drive Junior ».
+- **Collaboration non reconnue** : « ASMC Barricade » (adidas by Stella McCartney, 200 €) contre « Barricade 14 » (160 €), à traiter comme Y-3 (C-Q2 : collaboration = autre produit).
+- **UL non lu** : « Extreme MP UL » contre « Extreme MP ».
+
+Ces défauts sont aujourd'hui masqués par la règle stricte des générations. Ils deviendraient de faux regroupements si on assouplissait la règle sans les corriger.
+
+### 5.4 Solution révisée, par ordre de priorité
+
+1. **Références de style, toutes catégories** (priorité 1, risque quasi nul) : lire le SKU de Babolat, Head, Tecnifibre et Sport 2000 comme référence fabricant, et comparer la partie « style » (avant le premier tiret), comme pour le textile. La liste de marchands et la règle de découpe s'écrivent **par marchand ou par marque**, vérifiées sur les données (§5.2). La règle Nike de D-2026-09-29-05 (références de style différentes → « proche ») relève du même chantier.
+2. **Correctifs d'extraction du §5.3**, avec une paire piège versionnée pour chacun.
+3. **Ensuite seulement**, sur ce qui reste sans référence commune, rediscuter la génération absente des deux côtés (pour les raquettes et les chaussures) et la jauge absente des deux côtés (pour les cordages). Il faudra un nouvel échantillon tiré paire par paire, puisque la règle actuelle ne masquera plus les défauts corrigés. `generationUnique` (R4.5-c) reste la voie prudente.
+
+Les leviers L2 et L3 du §4 sont repoussés à l'étape 3 : leur intérêt se mesurera après l'étape 1, qui couvre déjà une bonne partie de leurs cas (35 paires de cordages, Courtflash, SFX Evo…).
