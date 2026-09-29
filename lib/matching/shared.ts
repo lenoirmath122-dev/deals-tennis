@@ -200,6 +200,8 @@ const NOISE_WORDS = new Set([
   "raquette", "raquettes", "cordage", "cordages", "bobine", "pack", "tennis", "de", "du", "la", "le", "les", "des", "et",
   "en", "pour", "avec", "gr", "g", "cordee", "cordees", "non", "competition", "rouleau", "metres", "metre", "m", "mm",
   "a", "the", "and", "for", "of", "new", "raquete",
+  "chaussure", "chaussures", "balle", "balles", "sac", "grip", "surgrip", "antivibrateur", "accessoire", "homme",
+  "hommes", "femme", "femmes", "men", "women", "toutes", "surfaces", "surface", "terre", "battue", "junior", "enfant",
 ]);
 
 export function residualTerms(title: string, brand: string | null): string[] {

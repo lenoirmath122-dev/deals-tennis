@@ -160,3 +160,14 @@
 - Relecture Opus du code R4.2, trois défauts corrigés : (1) un nom collé aux chiffres n'était pas reconnu ou perdait sa version (« SX300 », « FX500 », « T-Fight 300S » : la limite lettres/chiffres compte désormais comme limite de mot, et l'alias retiré avant de lire la version est le plus court présent) ; (2) « livraison offerte » aurait été lu comme un cadeau ; (3) classe de caractères inutile dans la lecture « cordée ». Tests ajoutés (130 tests unitaires passent, `tsc`/`eslint` propres).
 - Points laissés pour R4.4 (comparaison) : (a) le tamis de la fiche SportSystem peut différer d'un pouce de l'annonce du fabricant (Pure Aero Rafa : « 640 cm² / 99 sq. in. », vendue en 100) ; une tolérance casserait Pure Strike 97 / 98 (paire R1 4), donc à traiter au cas par cas dans le rapport ; (b) les jauges américaines (« RPM Blast 17 ») ne sont pas lues (conversion en mm non fiable selon la marque) : jauge inconnue → « proche » ; (c) les nouvelles règles de limite de mot n'ont été vérifiées que sur le jeu R1 et les tests, pas sur toute la prod (rapport de passage R4.4).
 - Prochaine étape : **R4.3** (chaussures + accessoires), nouvelle session Sonnet.
+
+## 2026-09-29 (session cloud, Sonnet) — R4.3 : extraction des attributs chaussures + accessoires
+
+- Reprise (« On reprend à R4.3 »). Modèle actuel = recommandé (Sonnet, R4.3 marquée Sonnet dans `R4_cadrage.md`).
+- `lib/matching/` : `shoes.ts` (genre, âge, surface, largeur, génération, version, édition), `accessories.ts` (balles : niveau, pression, conditionnement en nombre de balles ; grips : type et pièces ; antivibrateurs ; sacs : format, contenance), `families.ts` choisit le référentiel par catégorie (`familiesFor`) et, pour les accessoires, restreint aux familles de la sous-catégorie ; `index.ts` prend en charge chaussures et accessoires (textile : R4.5).
+- Genre : fiche Sport 2000 (`donnees_structurees`) sinon titre, alerte si contradiction ; marqueurs d'une lettre du référentiel ignorés.
+- Tests : `tests/unit/matching-extraction-r43.test.ts` (14) ; toutes les offres chaussures et sacs / grips / balles / antivibrateurs du jeu R1 sont reconnues, pièges des paires 14, 16, 20, 24, 26, 33, 37, 49, 51, 53, 61, 22-23 séparés par le bon attribut. Un test R4.2 (catégorie refusée) passe du cas chaussures au cas textile. 145 tests unitaires passent, `tsc` et `eslint` propres.
+- Complément du référentiel et points à valider : `R4_3_complement_referentiel.md` (surface « CL », attribut `type_sac`, lecture de `lot`).
+- Limite : pas de mesure sur toute la prod (pas de `DATABASE_URL`, mot de passe privilégié non demandé) ; la liste des non-reconnus sortira du rapport de passage R4.4.
+- Prochaine étape : réponses de Mathieu sur `R4_3_complement_referentiel.md`, puis **R4.4** (comparaison, cascade, script fantôme, rapport), Sonnet.
+

@@ -219,7 +219,7 @@ describe("non-reconnus", () => {
 
   it("refuse les catégories non prises en charge", () => {
     expect(() =>
-      extractOfferAttributes({ marchand: "Test", titre: "Chaussures", marque: "Asics", categorie: "chaussures" }),
+      extractOfferAttributes({ marchand: "Test", titre: "T-shirt", marque: "Asics", categorie: "textile" }),
     ).toThrow();
   });
 });

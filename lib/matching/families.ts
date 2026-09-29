@@ -5,6 +5,8 @@
  * normalisé, même marque, même catégorie (`config/model-families.ts`).
  */
 
+import { ACCESSORY_FAMILIES } from "@/config/model-families-accessoires";
+import { SHOE_FAMILIES } from "@/config/model-families-chaussures";
 import { BRAND_ALIASES, MODEL_FAMILIES, type FamilyEntry } from "@/config/model-families";
 import type { DealCategory } from "@/types/database";
 import { fullNormalize, phraseRegExp } from "./text";
@@ -79,19 +81,30 @@ export function shortestAliasIn(text: string, entry: FamilyEntry): string | null
   return found[0] ?? null;
 }
 
+/** Référentiel de la catégorie : un fichier par catégorie dans `config/` (textile : aucun, R4.5). */
+export function familiesFor(category: DealCategory): FamilyEntry[] {
+  if (category === "chaussures") return SHOE_FAMILIES;
+  if (category === "accessoires") return ACCESSORY_FAMILIES;
+  return MODEL_FAMILIES;
+}
+
 /**
  * Cherche la famille d'un titre déjà normalisé (`fullNormalize`).
- * `families` permet d'injecter un autre référentiel (chaussures, accessoires en R4.3).
+ * `families` permet d'injecter un autre référentiel ; `accept` restreint les
+ * familles candidates (accessoires : même sous-catégorie que l'offre, pour
+ * qu'un alias court comme « team » ou « court » ne traverse pas les gammes).
  */
 export function recognizeFamily(
   normalizedTitle: string,
   brand: string | null,
   category: DealCategory,
-  families: FamilyEntry[] = MODEL_FAMILIES,
+  families: FamilyEntry[] = familiesFor(category),
+  accept?: (entry: FamilyEntry) => boolean,
 ): FamilyMatch | null {
   const accepted = acceptedBrands(brand, category);
   for (const { entry, alias, regexp } of indexFor(category, families)) {
     if (!accepted.all && !accepted.names.has(fullNormalize(entry.brand))) continue;
+    if (accept && !accept(entry)) continue;
     if (regexp.test(normalizedTitle)) return { entry, alias };
   }
   return null;

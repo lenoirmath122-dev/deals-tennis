@@ -6,6 +6,7 @@
  * `COMMON_ATTRIBUTES`).
  */
 
+import type { AccessorySubcategory } from "@/config/accessory-subcategories";
 import type { ATTRIBUTE_SOURCES } from "@/config/matching-rules";
 import type { DealCategory } from "@/types/database";
 
@@ -25,13 +26,19 @@ export interface OfferInput {
   titre: string;
   marque: string | null;
   categorie: DealCategory;
+  /** Sous-catégorie d'accessoires déjà en base ; sinon déduite du titre (`subcategoryOf`). */
+  subcategory?: AccessorySubcategory | null;
   gtin?: string | null;
   mpn?: string | null;
   merchant_sku?: string | null;
   raw_attributes?: Record<string, unknown> | null;
 }
 
-export type UnrecognizedReason = "famille_inconnue" | "marque_inconnue";
+export type UnrecognizedReason =
+  | "famille_inconnue"
+  | "marque_inconnue"
+  /** Accessoire d'une sous-catégorie sans famille au référentiel (protection et soins, autres) : normal. */
+  | "sans_famille_prevue";
 
 export interface ExtractedOffer {
   categorie: DealCategory;
@@ -40,6 +47,8 @@ export interface ExtractedOffer {
   /** `marque|famille|catégorie`, clé stable de la famille reconnue. */
   familyKey: string | null;
   famille: string | null;
+  /** Accessoires : sous-catégorie retenue (base, sinon titre). */
+  subcategory: AccessorySubcategory | null;
   /** Alias de famille trouvé dans le titre (le plus long). */
   alias: string | null;
   attributes: Record<string, ExtractedAttribute>;
