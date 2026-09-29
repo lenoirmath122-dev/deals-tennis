@@ -161,6 +161,15 @@ export function applyVersionSynonyms(text: string): string {
 }
 
 /**
+ * Expressions de surface retirées avant de lire la version : « All Court » ne doit pas être
+ * lu comme la version « Court » (Revolt, Sprint, Wave Exceed…) — D2 de `R4_4_controle.md`.
+ */
+const SURFACE_PHRASES = /(?<![a-z0-9])(?:all courts?|toutes? surfaces?|all surfaces?)(?![a-z0-9])/g;
+
+/** Synonymes d'édition : « PRM » = « Premium » (Q15, D3 de `R4_4_controle.md`). */
+const EDITION_SYNONYMS: [RegExp, string][] = [[/(?<![a-z0-9])prm(?![a-z0-9])/g, "premium"]];
+
+/**
  * Version : la plus longue version du référentiel présente dans `text`.
  * Renvoie aussi le texte sans elle, pour ne pas la relire comme tamis ou poids.
  */
@@ -169,7 +178,7 @@ export function extractVersion(text: string, entry: FamilyEntry | null): { versi
   const candidates = [...entry.versions]
     .map((version) => ({ version, normalized: applyVersionSynonyms(fullNormalize(version)) }))
     .sort((a, b) => b.normalized.length - a.normalized.length);
-  const haystack = applyVersionSynonyms(text);
+  const haystack = applyVersionSynonyms(text).replace(SURFACE_PHRASES, " ");
   for (const { version, normalized } of candidates) {
     if (phraseRegExp(normalized).test(haystack)) {
       return { version, rest: removePhrase(haystack, normalized) };
@@ -184,8 +193,9 @@ export function extractEdition(text: string, entry: FamilyEntry | null): { editi
   const candidates = [...entry.editions]
     .map((edition) => ({ edition, normalized: fullNormalize(edition) }))
     .sort((a, b) => b.normalized.length - a.normalized.length);
+  const haystack = EDITION_SYNONYMS.reduce((acc, [pattern, replacement]) => acc.replace(pattern, replacement), text);
   for (const { edition, normalized } of candidates) {
-    if (phraseRegExp(normalized).test(text)) return { edition, rest: removePhrase(text, normalized) };
+    if (phraseRegExp(normalized).test(haystack)) return { edition, rest: removePhrase(haystack, normalized) };
   }
   return null;
 }

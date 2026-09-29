@@ -127,3 +127,51 @@ Décidée par Mathieu le 2026-09-29 (D-2026-09-29-03). Contenu proposé, à vali
 6. Mise à jour de la mesure R1 et de `R4_4_rapport_passage.md`.
 
 Modèle : réponses aux questions C-Q1 à C-Q4 d'abord (décision de Mathieu), puis exécution en Sonnet.
+
+## 8. Exécution de R4.4-bis (2026-09-29, Sonnet)
+
+Réponses de Mathieu : C-Q1 oui (`version: "different"`), C-Q2 modèle séparé, C-Q3 blocage B dans R4.4-bis, C-Q4 vérifier puis ajouter (D-2026-09-29-03).
+
+- **Code** : D1 (`matching-rules.ts`), D2 (« all court », « toutes surfaces » retirés avant la lecture de la version, `shared.ts`), D3 (« PRM » → « Premium » dans `extractEdition`), D4 (Hydrosorb « Comfort »), Y-3 (édition Avacourt + exception « différent »), blocage B (`derivedAttributesRelaxed` dans `compare.ts` + étape 2 bis dans `cluster.ts`, fusion seulement si toutes les paires des deux groupes sont « identiques »), D5 (indicateur « modèles divergents » dans `cluster.ts` / `report.ts`, indépendant de `compare()`).
+- **C-Q4 vérifié** : Tennis Warehouse Europe vend « Wilson Sensation Comfort 1.30/16 String Reel - 200m » ; Wilson US l'appelle « Sensation 16 ». « Comfort » semble être l'intitulé européen du Sensation de base, distinct de Control. Version « Comfort » ajoutée : Comfort ≠ Control ; Comfort face à « Sensation » sans version = proche. Équivalence Comfort = Sensation de base **non validée** (à confirmer sur une fiche Wilson Europe).
+- **Mesure sur le jeu R1** : 12/12 (rappel 12/32, avant 9/32), inter-marchands 11/29 (avant 8/29), 0 faux positif. Les 3 paires gagnées sont des raquettes (blocage B).
+- **Tests** : 211 unitaires passent (`tracking.test.ts` : `DATABASE_URL`, préexistant), `tsc` et `eslint` propres. Tests ajoutés : D1, D2, D3, D4, Y-3, Sensation, blocage B (dont le cas où une troisième offre contredit), D5.
+- **Limite connue** : « Avacourt Y-3 » sans numéro de génération pourrait lire le « 3 » de « Y-3 » comme génération (non testé sur titres réels).
+- **Reste à faire** : point 3 (paires pièges dans un jeu versionné, titres réels), point 4 (GTIN par déclinaison), points 5 et 6 (nouveau passage sur branche Neon puis prod, relecture des modèles multi-marchands et des paires de raquettes gagnées, mise à jour de `R4_4_rapport_passage.md`).
+
+### 8.1 Passage à blanc sur la prod (`--dry-run`, lecture seule, 2026-09-29)
+
+Aucune écriture en base. Le script `shadow-run.ts` écrit désormais aussi `modeles-multi-marchands.csv` (une ligne par offre des modèles à ≥ 2 marchands) pour la relecture.
+
+| | Avant (R4.4) | Après (R4.4-bis) |
+|---|---|---|
+| Modèles | 1 456 | 1 451 |
+| Modèles ≥ 2 marchands (active + tracked) | 90 | **103** |
+| … en `active` seulement | 71 | **77** |
+| Raquettes | 21 | **35** |
+| Cordages | 4 | 3 |
+| Chaussures / accessoires | 60 / 5 | 60 / 5 |
+| Conflits / incohérents | 11 / 0 | 14 lignes dans `conflits.csv` (12 conflits + 2 divergents) / 0 |
+
+Relecture faite : **cordages 3/3 justes** (Alu Power Rough, Rip Control, RPM Blast ; avant 5/9 faux) ; **raquettes 35 modèles relus**, gains du blocage B cohérents (Pure Aero, Pure Drive, Evo Aero Babolat ↔ SportSystem / Tennispro.fr, Gen 9 / 11 / 2) ; **défauts D2, D3, D4 disparus des modèles multi-marchands** (Sprint Evo / Pro / Court et Revolt Evo / Pro séparés, aucun Vapor « PRM » fusionné avec le standard, Hydrosorb Comfort absent des modèles ; Avacourt Y-3 absente).
+
+**Non fait** : relecture complète des 60 modèles de chaussures (seules les familles des défauts ont été relues) ; la précision globale n'est donc pas encore rechiffrée.
+
+**À vérifier** :
+- « Babolat Pure Aero 98 **x2** Gen9 » réuni avec « Pure Aero 98 Gen9 » : le « x2 » n'est pas lu comme un lot pour les raquettes (pack de 2 ? à contrôler sur la fiche).
+- Deux modèles « divergents » (D5) : jauge 1,25 | 1,35 (Babolat Xcel, bobine à jauges au choix) et longueur 27,5 | 27,6 (Pure Drive +) : bénins probables, à confirmer.
+- Raquettes Head : toujours regroupées seulement SportSystem ↔ Tennispro.fr (blocage A non traité).
+
+### 8.2 Pack « x2 » corrigé et relecture complète (2026-09-29)
+
+- **« x2 » des raquettes** : confirmé sur la prod (Babolat « Pure Aero 98 x2 Gen9 », 599,95 € = 2 × 299,95 €, référence 101568 ≠ 101567) : c'est un pack de 2. `racquets.ts` lit désormais « x2 » à « x9 » (collé, sans chiffre avant : « 16x19 » exclu) comme `lot`, donc « différent » de la raquette seule. Tests ajoutés (pack et plan de cordage). La Pure Aero 98 forme maintenant un modèle correct (SportSystem + Babolat).
+- **Nouveau passage à blanc (lecture seule)** : 1 454 modèles, **103 multi-marchands (77 en `active`)** : chaussures 60, raquettes 35, accessoires 5, cordages 3. 2 modèles « divergents » restent (jauge 1,25 | 1,35 sur une bobine à jauges au choix ; longueur 27,5 | 27,6 sur la Pure Drive + : écarts d'arrondi ou de choix de fiche, bénins).
+- **Relecture complète** des 103 modèles (titres, marchand, statut) : **aucun faux regroupement repéré** (60 chaussures, 35 raquettes, 3 cordages, 5 accessoires). Précision observée 103 / 103 (avant : ≈ 94 %, 5 faux sur 90), à lire comme « aucune erreur vue à la relecture », pas comme une vérité de terrain (relecture sur titres et prix, sans ouvrir les fiches).
+- **Points de vigilance** : Babolat / Tennispro.fr « Pure Drive (Lite) » sans génération écrite réunis par référence avec des « Gén 11 » SportSystem (cohérent, à garder à l'œil) ; 12 conflits GTIN / référence non fusionnés (dont Avacourt Y-3, packs de 2 raquettes contre raquette seule), attendus.
+- **Reste avant R4.5** : point 3 de §7 (paires pièges versionnées sur titres réels) et point 4 (GTIN par déclinaison), puis **écriture du passage en prod (tables `match_*`) : accord de Mathieu requis**.
+
+### 8.3 Paires pièges versionnées et GTIN par déclinaison (2026-09-29)
+
+- **Paires pièges** : `tests/fixtures/r4-4-bis-paires-pieges.json` (11 paires, titres réels de la prod : RPM Blast / Soft / Rough / Team, Alu Power Rough / Soft / standard, Revolt Evo All Court / Court, Vapor Pro 3 PRM / standard, Hydrosorb Comfort / standard / Pro, Avacourt 2 Y-3 / standard, Pure Aero 98 x2 / simple) et `tests/unit/r4-4-bis-paires-pieges.test.ts` : aucune ne doit être « identique », et « différent » quand la règle le dit. Jeu R1 figé inchangé. 224 tests unitaires passent, `tsc` et `eslint` propres. Limite : les positives ne sont pas dans ce jeu (elles dépendent des références et attributs de fiche, pas seulement du titre) ; elles restent couvertes par le jeu R1 et les tests du blocage B.
+- **GTIN par déclinaison** (lecture seule, SQL sur la prod, EAN de `deals.gtin`, `raw_attributes.enrichissement.variants[].gtin` chez Tennis Point FR, `raw_attributes.variants[].ean13` chez SportSystem) : **16 EAN partagés par au moins deux marchands, tous en chaussures** (12 uniquement par les déclinaisons, 24 offres). Aucun EAN partagé en raquettes, cordages ou accessoires : Babolat, Head, Tennispro.fr et Amazon n'ont aucun GTIN. Tous les groupes relus réunissent bien le même modèle, et ils tombent tous dans un modèle déjà réuni par la signature (contrôle à l'œil sur les titres) : **aucun rapprochement nouveau**, mais une confirmation indépendante sur 16 groupes (SportSystem / Tennis Point FR / Sport 2000).
+- **Conclusion** : la piste 3 (§5) ne débloque pas les raquettes ; pas de développement dans R4.4-bis. Utile plus tard comme contrôle de précision (16 groupes vérités terrain) si de nouveaux marchands publient des EAN.

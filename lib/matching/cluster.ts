@@ -7,8 +7,15 @@
  * sur les mêmes données donnent les mêmes modèles.
  */
 
-import { ATTRIBUTE_SOURCES } from "../../config/matching-rules.ts";
-import { compare, discriminantAttributeNames, normalizeReference, signature, type CompareMethod } from "./compare.ts";
+import { ATTRIBUTE_SOURCES, CATEGORY_RULES } from "../../config/matching-rules.ts";
+import {
+  compare,
+  derivedAttributesRelaxed,
+  discriminantAttributeNames,
+  normalizeReference,
+  signature,
+  type CompareMethod,
+} from "./compare.ts";
 import type { ExtractedAttribute, ExtractedOffer } from "./types.ts";
 
 export interface EngineOffer {
@@ -50,6 +57,8 @@ export interface ClusterResult {
   conflicts: ClusterConflict[];
   /** Modèles dont deux membres se contredisent (fusion par identifiant + signature en désaccord). */
   incoherent: { model: number; a: string; b: string; detail: string }[];
+  /** Modèles dont les membres n'ont pas la même valeur extraite pour un attribut discriminant (D5). */
+  divergences: { model: number; attribut: string; valeurs: string[] }[];
 }
 
 const METHOD_RANK: Record<CompareMethod, number> = { gtin: 3, reference: 2, signature: 1 };
@@ -159,6 +168,31 @@ export function buildModels(input: EngineOffer[]): ClusterResult {
     for (const member of members) linked.add(member.dealId);
   }
 
+  // Étape 2 bis (C-Q3) : raquettes de même famille, version et génération, dont une caractéristique
+  // dérivée (poids, tamis, plan, longueur) n'est connue que d'un côté : leurs signatures diffèrent
+  // mais `compare()` dit « identique ». Réunies seulement si toutes les paires des deux groupes le disent.
+  const racquetsByFamily = new Map<string, EngineOffer[]>();
+  for (const offer of offers) {
+    if (offer.extracted.categorie !== "raquettes" || offer.extracted.familyKey === null) continue;
+    const list = racquetsByFamily.get(offer.extracted.familyKey) ?? [];
+    list.push(offer);
+    racquetsByFamily.set(offer.extracted.familyKey, list);
+  }
+  for (const members of racquetsByFamily.values()) {
+    for (let i = 0; i < members.length; i++) {
+      for (let j = i + 1; j < members.length; j++) {
+        const [x, y] = [members[i], members[j]];
+        if (uf.find(x.dealId) === uf.find(y.dealId)) continue;
+        if (!derivedAttributesRelaxed(x.extracted, y.extracted)) continue;
+        if (compare(x.extracted, y.extracted).niveau !== "identique") continue;
+        const groupX = members.filter((m) => uf.find(m.dealId) === uf.find(x.dealId));
+        const groupY = members.filter((m) => uf.find(m.dealId) === uf.find(y.dealId));
+        const allIdentical = groupX.every((p) => groupY.every((q) => compare(p.extracted, q.extracted).niveau === "identique"));
+        if (allIdentical) uf.union(x.dealId, y.dealId);
+      }
+    }
+  }
+
   // Composantes → modèles.
   const components = new Map<string, EngineOffer[]>();
   for (const offer of offers) {
@@ -173,6 +207,7 @@ export function buildModels(input: EngineOffer[]): ClusterResult {
   const links = new Map<string, OfferLink>();
   const usedSignatures = new Set<string>();
   const incoherent: ClusterResult["incoherent"] = [];
+  const divergences: ClusterResult["divergences"] = [];
 
   for (const members of [...components.values()].sort((a, b) => (a[0].dealId < b[0].dealId ? -1 : 1))) {
     const recognized = members.filter((m) => m.extracted.familyKey !== null);
@@ -199,6 +234,8 @@ export function buildModels(input: EngineOffer[]): ClusterResult {
       links.set(member.dealId, { modelIndex: index, method: method.get(member.dealId) ?? "signature", score: 1 });
     }
 
+    if (recognized.length > 1) divergences.push(...findDivergences(recognized, index));
+
     // Cohérence : un modèle fusionné par identifiant ne doit pas contenir deux offres « différentes ».
     if (members.length > 1 && recognized.length > 1) {
       const pairs: [EngineOffer, EngineOffer][] = [];
@@ -221,5 +258,26 @@ export function buildModels(input: EngineOffer[]): ClusterResult {
       }
     }
   }
-  return { models, links, conflicts, incoherent };
+  return { models, links, conflicts, incoherent, divergences };
+}
+
+/**
+ * D5 (`R4_4_controle.md`) : contrôle indépendant de `compare()`. Un modèle dont deux membres ont
+ * des valeurs extraites différentes pour un même attribut discriminant (ou la version, ou une
+ * édition à exception de valeur) est signalé, même si `compare()` les juge « identiques ».
+ */
+function findDivergences(members: EngineOffer[], model: number): ClusterResult["divergences"] {
+  const category = members[0].extracted.categorie;
+  const overridden = Object.keys(CATEGORY_RULES[category]?.attributeValueOverrides ?? {});
+  const names = new Set([...discriminantAttributeNames(category), "version", ...overridden]);
+  const out: ClusterResult["divergences"] = [];
+  for (const name of names) {
+    const values = new Set<string>();
+    for (const member of members) {
+      const attr = member.extracted.attributes[name];
+      if (attr) values.add(String(attr.value).toLowerCase());
+    }
+    if (values.size > 1) out.push({ model, attribut: name, valeurs: [...values].sort() });
+  }
+  return out;
 }

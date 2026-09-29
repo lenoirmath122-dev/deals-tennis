@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import fixture from "../fixtures/r1-jeu-fige.json";
 import { extractOfferAttributes, type OfferInput } from "@/lib/matching";
+import { compare } from "@/lib/matching/compare";
 
 type FixtureOffer = OfferInput & { id: string };
 const offers = new Map((fixture.offers as unknown as FixtureOffer[]).map((o) => [o.id, o]));
@@ -138,5 +139,60 @@ describe("jeu R1 chaussures + accessoires", () => {
       if (r.subcategory === "protection_soins" || (o.categorie === "accessoires" && r.nonReconnu?.reason === "sans_famille_prevue")) continue;
       expect(r.famille, o.titre).not.toBeNull();
     }
+  });
+});
+
+describe("R4.4-bis : corrections D2, D3, D4 et Y-3", () => {
+  const shoeOf = (titre: string, marque: string) =>
+    extractOfferAttributes({ marchand: "Test", titre, marque, categorie: "chaussures" });
+
+  it("D2 : « All Court » n'est pas lu comme la version « Court »", () => {
+    const evo = shoeOf("Head Revolt Evo 5.0 All Court", "Head");
+    expect(evo.attributes.version?.value).toBe("Evo");
+    const court = shoeOf("Head Revolt Court 5.0", "Head");
+    expect(court.attributes.version?.value).toBe("Court");
+    expect(compare(evo, court).niveau).toBe("different");
+  });
+
+  it("D3 : « PRM » est lu comme l'édition Premium", () => {
+    const prm = shoeOf("Nike Vapor Pro 3 PRM", "Nike");
+    expect(String(prm.attributes.edition?.value).toLowerCase()).toBe("premium");
+    expect(compare(prm, shoeOf("Nike Zoom Vapor Pro 3", "Nike")).niveau).not.toBe("identique");
+  });
+
+  it("D4 : Hydrosorb Comfort est une version distincte d'Hydrosorb", () => {
+    const grip = (titre: string) => extractOfferAttributes({ marchand: "Test", titre, marque: "Head", categorie: "accessoires" });
+    expect(grip("HEAD Hydrosorb Comfort grip").attributes.version?.value).toBe("Comfort");
+    expect(compare(grip("HEAD Hydrosorb Comfort grip"), grip("HEAD Hydrosorb grip")).niveau).not.toBe("identique");
+  });
+
+  it("C-Q2 : l'Avacourt 2 Y-3 est un modèle séparé de l'Avacourt 2", () => {
+    const y3 = shoeOf("adidas Avacourt 2 Y-3 beige édition limitée", "adidas");
+    const std = shoeOf("adidas Avacourt 2", "adidas");
+    expect(y3.attributes.generation?.value).toBe("2");
+    expect(compare(y3, std).niveau).toBe("different");
+  });
+});
+
+describe("R4.4-bis : C-Q4, Sensation Comfort", () => {
+  const string = (titre: string) => extractOfferAttributes({ marchand: "Test", titre, marque: "Wilson", categorie: "cordages" });
+  it("Comfort et Control sont deux versions différentes", () => {
+    const comfort = string("Wilson Sensation Comfort, Rouleau de 200 m, 16G, 1,30 mm");
+    const control = string("Wilson Sensation Control (200m) 1,30 mm");
+    expect(comfort.attributes.version?.value).toBe("Comfort");
+    expect(compare(comfort, control).niveau).toBe("different");
+  });
+});
+
+describe("R4.4-bis : pack « x2 » des raquettes", () => {
+  const racket = (titre: string) => extractOfferAttributes({ marchand: "Test", titre, marque: "Babolat", categorie: "raquettes" });
+  it("« Pure Aero 98 x2 » est un lot de 2, donc différent de la raquette seule", () => {
+    const pack = racket("Raquette de tennis Babolat Pure Aero 98 x2 Gen9 Non Cordée");
+    const single = racket("Raquette de tennis Babolat Pure Aero 98 Gen9 Non Cordée");
+    expect(pack.attributes.lot?.value).toBe(2);
+    expect(compare(pack, single).niveau).toBe("different");
+  });
+  it("le plan de cordage « 16x19 » n'est pas un pack", () => {
+    expect(racket("Raquette Babolat Pure Drive 16x19 Gen11").attributes.lot).toBeUndefined();
   });
 });

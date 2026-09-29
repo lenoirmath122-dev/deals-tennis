@@ -99,7 +99,19 @@ writeFileSync(join(outDir, "rapport.md"), report.markdown);
 writeFileSync(join(outDir, "non-reconnus.csv"), report.csv.nonReconnus);
 writeFileSync(join(outDir, "proches.csv"), report.csv.proches);
 writeFileSync(join(outDir, "conflits.csv"), report.csv.conflits);
-console.log(`Rapport écrit dans ${outDir}/ (rapport.md, non-reconnus.csv, proches.csv, conflits.csv).`);
+// Relecture des modèles réunissant au moins deux marchands (une ligne par offre).
+const byDealId = new Map(engineOffers.map((o) => [o.dealId, o]));
+const quote = (v: string | number) => `"${String(v).replaceAll('"', '""')}"`;
+const multiLines = ["modele;categorie;signature;marchand;statut;titre"];
+result.models.forEach((model, index) => {
+  const members = model.members.map((id) => byDealId.get(id)!);
+  if (new Set(members.map((m) => m.marchand)).size < 2) return;
+  for (const m of members) {
+    multiLines.push([index, model.category, quote(model.signature), quote(m.marchand), m.statut, quote(m.titre)].join(";"));
+  }
+});
+writeFileSync(join(outDir, "modeles-multi-marchands.csv"), multiLines.join("\n"));
+console.log(`Rapport écrit dans ${outDir}/ (rapport.md, non-reconnus.csv, proches.csv, conflits.csv, modeles-multi-marchands.csv).`);
 
 if (dryRun) {
   console.log("--dry-run : rien n'est écrit en base.");

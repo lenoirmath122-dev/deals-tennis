@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { compare, signature } from "@/lib/matching/compare";
+import { compare, derivedAttributesRelaxed, signature } from "@/lib/matching/compare";
 import { buildModels, type EngineOffer } from "@/lib/matching/cluster";
 import { buildReport } from "@/lib/matching/report";
 import { extractOfferAttributes, isSupportedCategory, type ExtractedOffer } from "@/lib/matching";
@@ -69,13 +69,13 @@ function measure(pairs: Pair[]) {
 }
 
 describe("moteur R4.4 sur le jeu R1", () => {
-  it("précision 9/9 et rappel 9/32 (algorithme actuel : 5/8 et 5/32)", () => {
-    expect(measure(fixture.pairs)).toEqual({ vp: 9, fp: 0, identical: 32 });
+  it("précision 12/12 et rappel 12/32 (R4.4-bis ; avant : 9/9 et 9/32)", () => {
+    expect(measure(fixture.pairs)).toEqual({ vp: 12, fp: 0, identical: 32 });
   });
 
-  it("inter-marchands : précision 8/8 et rappel 8/29 (algorithme actuel : 2/29)", () => {
+  it("inter-marchands : précision 11/11 et rappel 11/29 (R4.4-bis ; avant : 8/29)", () => {
     const inter = fixture.pairs.filter((p) => offersById.get(p.offre_a)!.marchand !== offersById.get(p.offre_b)!.marchand);
-    expect(measure(inter)).toEqual({ vp: 8, fp: 0, identical: 29 });
+    expect(measure(inter)).toEqual({ vp: 11, fp: 0, identical: 29 });
   });
 
   it("aucun faux positif (la paire 14, « S Logo Damp », est « proche » grâce à la version « S »)", () => {
@@ -119,7 +119,7 @@ describe("cohérence signature / comparaison", () => {
         const result = compare(a, b);
         const sameSignature = sa !== null && sa === sb;
         if (sameSignature) expect(result.niveau, `${idA} / ${idB}`).toBe("identique");
-        if (result.methode === "signature") expect(sameSignature, `${idA} / ${idB}`).toBe(true);
+        if (result.methode === "signature" && !derivedAttributesRelaxed(a, b)) expect(sameSignature, `${idA} / ${idB}`).toBe(true);
       }
     }
   });

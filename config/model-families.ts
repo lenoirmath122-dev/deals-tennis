@@ -1076,7 +1076,7 @@ export const MODEL_FAMILIES: FamilyEntry[] = [
     versions: ["14 Polyflex", "17 Poly Black", "18 Poly Black Penta", "19 Plus Power", "20 Hexa Spin"],
     statut: "observe",
   },
-  { brand: "Wilson", category: "cordages", family: "Sensation", aliases: ["sensation"], versions: ["Control"], statut: "observe" },
+  { brand: "Wilson", category: "cordages", family: "Sensation", aliases: ["sensation"], versions: ["Control", "Comfort"], statut: "observe", notes: ["C-Q4 (D-2026-09-29-03) vérifié le 2026-09-29 (tenniswarehouse-europe.com, fiche « Wilson Sensation Comfort 1.30/16 String Reel - 200m ») : « Comfort » est l'intitulé européen du Sensation 16 de base (Wilson US : « Sensation 16 »), distinct de Control. Version ajoutée : Comfort ≠ Control ; Comfort face à « Sensation » sans version = proche (jamais identique) tant que l'équivalence n'est pas validée."] },
   { brand: "Wilson", category: "cordages", family: "Revolve Spin", aliases: ["revolve spin", "revolve"], statut: "observe" },
   { brand: "Wilson", category: "cordages", family: "NXT", aliases: ["nxt"], statut: "observe" },
   { brand: "Kirschbaum", category: "cordages", family: "Max Power", aliases: ["max power"], versions: ["Rough"], statut: "observe" },

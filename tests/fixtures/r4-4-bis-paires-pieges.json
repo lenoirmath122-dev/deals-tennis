@@ -1,0 +1,214 @@
+{
+  "description": "Paires pièges de R4.4-bis : titres réels de la prod (2026-09-29), complémentaire du jeu R1 figé. Jamais 'identique' pour ces paires.",
+  "pairs": [
+    {
+      "nom": "RPM Blast / RPM Soft (SportSystem)",
+      "a": {
+        "marchand": "SportSystem",
+        "marque": "Babolat",
+        "categorie": "cordages",
+        "subcategory": null,
+        "titre": "Cordage de tennis Babolat RPM Blast (200m)"
+      },
+      "b": {
+        "marchand": "SportSystem",
+        "marque": "Babolat",
+        "categorie": "cordages",
+        "subcategory": null,
+        "titre": "Cordage de tennis Babolat Babolat RPM Soft 200m : Le confort d'un multi, la structure d'un mono"
+      },
+      "attendu": "different",
+      "pourquoi": "D1 : la version d'un cordage est un autre produit (C-Q1)"
+    },
+    {
+      "nom": "RPM Rough / RPM Team (Tennispro.fr)",
+      "a": {
+        "marchand": "Tennispro.fr",
+        "marque": "Babolat",
+        "categorie": "cordages",
+        "subcategory": null,
+        "titre": "Bobine de cordage de tennis Babolat Rpm Rough (200 Metres)"
+      },
+      "b": {
+        "marchand": "Tennispro.fr",
+        "marque": "Babolat",
+        "categorie": "cordages",
+        "subcategory": null,
+        "titre": "Bobine de cordage de tennis Babolat Rpm Team (200 Metres)"
+      },
+      "attendu": "different",
+      "pourquoi": "D1"
+    },
+    {
+      "nom": "Alu Power Rough / Alu Power Soft",
+      "a": {
+        "marchand": "SportSystem",
+        "marque": "Luxilon",
+        "categorie": "cordages",
+        "subcategory": null,
+        "titre": "Bobine de cordage de tennis Luxilon Alu Power Rough bobine 220m"
+      },
+      "b": {
+        "marchand": "Tennispro.fr",
+        "marque": "Luxilon",
+        "categorie": "cordages",
+        "subcategory": null,
+        "titre": "Bobine de cordage de tennis Luxilon Alu Power Soft (200 Metres)"
+      },
+      "attendu": "different",
+      "pourquoi": "D1"
+    },
+    {
+      "nom": "Alu Power Rough / Alu Power sans version",
+      "a": {
+        "marchand": "SportSystem",
+        "marque": "Luxilon",
+        "categorie": "cordages",
+        "subcategory": null,
+        "titre": "Bobine de cordage de tennis Luxilon Alu Power Rough bobine 220m"
+      },
+      "b": {
+        "marchand": "Tennispro.fr",
+        "marque": "Luxilon",
+        "categorie": "cordages",
+        "subcategory": null,
+        "titre": "Bobine de cordage de tennis Luxilon Big Banger Alu Power 1.25mm (220 Metres)"
+      },
+      "attendu": "non_identique",
+      "pourquoi": "D1 : version écrite d'un seul côté, jamais identique"
+    },
+    {
+      "nom": "Revolt Evo 5.0 All Court / Revolt Court 5.0",
+      "a": {
+        "marchand": "SportSystem",
+        "marque": "Head",
+        "categorie": "chaussures",
+        "subcategory": null,
+        "titre": "Chaussures de tennis Head Head Revolt Evo 5.0 All Court - Chaussure tennis homme bleu Anthracite Homme"
+      },
+      "b": {
+        "marchand": "Tennis Point FR",
+        "marque": "Head",
+        "categorie": "chaussures",
+        "subcategory": null,
+        "titre": "Chaussures de tennis HEAD Revolt Court 5.0 Chaussures toutes surfaces Hommes-blanc, noir"
+      },
+      "attendu": "different",
+      "pourquoi": "D2 : « All Court » n'est pas la version « Court »"
+    },
+    {
+      "nom": "Revolt Evo 5.0 / Revolt Court 5.0 (Head)",
+      "a": {
+        "marchand": "Head",
+        "marque": "Head",
+        "categorie": "chaussures",
+        "subcategory": null,
+        "titre": "HEAD Revolt Evo 5.0 Chaussures de tennis hommes Homme"
+      },
+      "b": {
+        "marchand": "Head",
+        "marque": "Head",
+        "categorie": "chaussures",
+        "subcategory": null,
+        "titre": "HEAD Revolt Court 5.0 Chaussures de tennis hommes Homme"
+      },
+      "attendu": "different",
+      "pourquoi": "D2"
+    },
+    {
+      "nom": "Vapor Pro 3 PRM / Vapor Pro 3",
+      "a": {
+        "marchand": "Tennis Point FR",
+        "marque": "Nike",
+        "categorie": "chaussures",
+        "subcategory": null,
+        "titre": "Chaussures de tennis Nike Vapor Pro 3 PRM FO Chaussures toutes surfaces Hommes - blanc, corail"
+      },
+      "b": {
+        "marchand": "Tennis Point FR",
+        "marque": "Nike",
+        "categorie": "chaussures",
+        "subcategory": null,
+        "titre": "Chaussures de tennis Nike Vapor Pro 3 Chaussures Toutes Surfaces Hommes-Rouge,Noir"
+      },
+      "attendu": "non_identique",
+      "pourquoi": "D3 : « PRM » = Premium, édition « proche »"
+    },
+    {
+      "nom": "Hydrosorb Comfort / Hydrosorb",
+      "a": {
+        "marchand": "Head",
+        "marque": "Head",
+        "categorie": "accessoires",
+        "subcategory": "grips_surgrips",
+        "titre": "HEAD Hydrosorb™ Comfort grip"
+      },
+      "b": {
+        "marchand": "Tennispro.fr",
+        "marque": "Head",
+        "categorie": "accessoires",
+        "subcategory": "grips_surgrips",
+        "titre": "Grip de tennis Head Hydrosorb (x1)"
+      },
+      "attendu": "non_identique",
+      "pourquoi": "D4 : Comfort est une version distincte"
+    },
+    {
+      "nom": "Hydrosorb Comfort / Hydrosorb Pro",
+      "a": {
+        "marchand": "Head",
+        "marque": "Head",
+        "categorie": "accessoires",
+        "subcategory": "grips_surgrips",
+        "titre": "HEAD Hydrosorb™ Comfort grip"
+      },
+      "b": {
+        "marchand": "Head",
+        "marque": "Head",
+        "categorie": "accessoires",
+        "subcategory": "grips_surgrips",
+        "titre": "HEAD Hydrosorb™ Pro grip de tennis"
+      },
+      "attendu": "non_identique",
+      "pourquoi": "D4 : deux versions écrites différentes, « proche » pour les accessoires (règle R4.4)"
+    },
+    {
+      "nom": "Avacourt 2 Y-3 / Avacourt 2",
+      "a": {
+        "marchand": "SportSystem",
+        "marque": "Adidas",
+        "categorie": "chaussures",
+        "subcategory": null,
+        "titre": "Chaussures de tennis Adidas Adidas Avacourt 2 Y-3 beige - Chaussures de tennis femme Édition limitée Femme"
+      },
+      "b": {
+        "marchand": "Tennispro.fr",
+        "marque": "Adidas",
+        "categorie": "chaussures",
+        "subcategory": null,
+        "titre": "Chaussures de tennis Adidas Femme Avacourt 2 Toutes Surfaces"
+      },
+      "attendu": "different",
+      "pourquoi": "C-Q2 : la collaboration Y-3 est un modèle séparé"
+    },
+    {
+      "nom": "Pure Aero 98 x2 / Pure Aero 98",
+      "a": {
+        "marchand": "Babolat",
+        "marque": "Babolat",
+        "categorie": "raquettes",
+        "subcategory": null,
+        "titre": "Raquette de tennis Babolat Pure Aero 98 x2 Gen9 Non Cordée"
+      },
+      "b": {
+        "marchand": "Babolat",
+        "marque": "Babolat",
+        "categorie": "raquettes",
+        "subcategory": null,
+        "titre": "Raquette de tennis Babolat Pure Aero 98 Gen9 Non Cordée"
+      },
+      "attendu": "different",
+      "pourquoi": "« x2 » = pack de 2 raquettes (599,95 € = 2 × 299,95 €, référence différente)"
+    }
+  ]
+}
