@@ -18,18 +18,14 @@ Point d'entrée et protocole de reprise du projet. À lire dans cet ordre en dé
 - [R3_cadrage.md](./R3_cadrage.md) — cadrage de R3 (capture à l'ingestion) : ce qui est déjà acté, état du code, découpage R3.1 à R3.13, réponses de Mathieu R3-Q1 à R3-Q6 (D-2026-09-28-04).
 - [R4_cadrage.md](./R4_cadrage.md) — cadrage de R4 (moteur de rapprochement en mode fantôme) : mesures sur la prod, principes, découpage R4.1 à R4.6 (+ R4.4-bis, phase de correction), réponses de Mathieu R4-Q1 à R4-Q8 (D-2026-09-29-01).
 - [R4_4_controle.md](./R4_4_controle.md) — contrôle de R4.1 à R4.4 (2026-09-29) : faux regroupements trouvés en prod, défauts D1 à D5, blocages des raquettes, contenu de la phase de correction R4.4-bis (D-2026-09-29-03).
+- [R4_2_complement_referentiel.md](./R4_2_complement_referentiel.md) / [R4_3_complement_referentiel.md](./R4_3_complement_referentiel.md) / [R4_4_complement_referentiel.md](./R4_4_complement_referentiel.md) — compléments du référentiel décidés en R4.2, R4.3 et R4.4.
+- [R4_4_rapport_passage.md](./R4_4_rapport_passage.md) — rapport du passage en mode fantôme de R4.4.
 - [R4_5_cadrage.md](./R4_5_cadrage.md) — cadrage de R4.5 (textile et correspondance approchée) : mesures sur la prod, référence de style, signature textile, file de revue, réponses de Mathieu T-Q1 à T-Q7 (D-2026-09-29-04).
+- [R4_5_mesure_separation.md](./R4_5_mesure_separation.md) — mesure des offres séparées faute d'information (références de style, leviers L1 à L3, solution §5.4).
 - [REPERAGE_marchands_prompt-cowork.md](./REPERAGE_marchands_prompt-cowork.md) — prompt de repérage de nouveaux marchands (Claude cowork, hors dépôt), voir D-2026-09-26-02 et D-2026-09-27-02.
 - [REPERAGE_marchands_resultat-cowork.md](./REPERAGE_marchands_resultat-cowork.md) / [.csv](./REPERAGE_marchands_resultat-cowork.csv) — rapport cowork tel quel (18 candidats) ; le CSV porte les colonnes `verif_claude_code` et `decision_mathieu` (remplie pour le top 5).
 - [REPERAGE_marchands_verification.md](./REPERAGE_marchands_verification.md) — vérification réelle du top 5, mesure du recouvrement Tennis Achat / Tennispro.fr (2026-09-27) et décisions prises.
-- [spec.md](./spec.md) — spécification fonctionnelle (feature "Tennis Deals Catalog").
-- [plan.md](./plan.md) — plan d'implémentation technique.
-- [data-model.md](./data-model.md) — modèle de données.
-- [research.md](./research.md) — notes de recherche technique.
-- [quickstart.md](./quickstart.md) — guide de démarrage rapide visé.
-- [tasks.md](./tasks.md) — découpage en tâches (⚠️ voir GAPS_OUVERTS.md — les cases cochées ne reflètent pas de code réel existant).
-- [checklists/](./checklists/) — checklists de qualité des exigences.
-- [contracts/](./contracts/) — contrats d'API (catalogue, ingestion, redirection).
+- [archive/mvp/](./archive/mvp/) — spécification et plan du MVP (spec, plan, tasks, data-model, contracts…), état au 2026-09-24, non tenu à jour.
 - [archive/](./archive/) — versions détaillées intégrales des anciens fichiers de suivi (état/journal), déplacées ici quand la synthèse courante dépasse son seuil. **Ne consulter que si la synthèse en cours ne suffit pas pour un point précis** — ce n'est jamais la source de vérité de l'état courant.
 
 ## Règles de travail (rappel)
@@ -44,5 +40,5 @@ Point d'entrée et protocole de reprise du projet. À lire dans cet ordre en dé
 
 - `ETAT_ACTUEL.md` : seuil 150 lignes. Au-delà, condenser chaque phase/chantier **terminé** en une ligne et déplacer son détail intégral dans `archive/` ; seul le chantier **en cours** garde son détail complet ici.
 - `JOURNAL_SESSIONS.md` : seuil 150 lignes. Au-delà, garder les sessions récentes en clair et déplacer les plus anciennes, telles quelles, dans `archive/`.
-- `GAPS_OUVERTS.md` : pas de seuil de taille — un gap tranché est retiré immédiatement du fichier (la décision `D-xxx` qui le clôt fait foi, pas d'archive séparée).
+- `GAPS_OUVERTS.md` : pas de seuil de taille — un gap tranché est retiré du fichier ; le texte retiré va tel quel dans `archive/GAPS_OUVERTS_retires_*.md` (la décision `D-xxx` qui le clôt fait foi).
 - `DECISIONS_FONCTIONNELLES.md` : **jamais archivé** (registre consulté par référence d'ID, pas relu intégralement à chaque reprise).
