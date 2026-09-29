@@ -1261,3 +1261,17 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 - nouveau passage à blanc, puis relecture des modèles multi-marchands, puis PR de R4.5-b.
 
 **Statut** : Actée (2026-09-29).
+
+### D-2026-09-29-06 — Définition de « identique » ; « proche » séparé d'un nouvel état « indéterminé »
+
+**Contexte** : la mesure de séparation (`R4_5_mesure_separation.md`) montre que, sur l'échantillon, 56 % des paires séparées faute d'information étaient en réalité le même produit. Dans le moteur, un attribut connu d'un seul côté vaut une différence « proche » (`lib/matching/compare.ts`) : « proche » mélange donc une vraie différence mineure et une information manquante. Définitions proposées en session Opus, validées par Mathieu.
+
+**Décision (Mathieu, 2026-09-29)** :
+1. **Identique** : deux offres sont identiques si l'acheteur reçoit le même produit en choisissant la même variante chez l'un ou l'autre marchand. Les variantes (taille, pointure, grip, **coloris**, y compris un coloris d'une nouvelle saison si la fiche technique ne change pas) ne changent pas l'article : « un modèle rose ou vert sera identique » (Mathieu). Définition complète : §4 bis du cadrage du rapprochement. Validée.
+2. **« Proche » (différence connue) séparé de « indéterminé » (information manquante)** : validé, **à condition de faire plus tard le travail d'investigation** sur les paires indéterminées (référence fabricant, fiche, familles à génération unique). Ce travail est un engagement, pas une option.
+3. **Sort des paires indéterminées** (A : les laisser à part ; B : « identique présumé » ; C : validation une à une) : **tranché plus tard, catégorie par catégorie**, après les mesures de la relecture. Validé.
+
+**Portée** : ces définitions deviennent la grille de la relecture. Elles ne remplacent pas le travail fait (extraction, référentiel, cascade, R4.5-a et R4.5-b restent en place) ; elles servent à juger les résultats et à cibler les ajustements. Seul changement de code déjà identifié : distinguer « indéterminé » de « proche » dans `compare()` (étape à planifier, non faite).
+
+**Statut** : Actée (2026-09-29).
+

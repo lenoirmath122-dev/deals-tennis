@@ -276,3 +276,12 @@
 - Leviers ciblés proposés à Mathieu : L1 (SKU Babolat et Head, `mpn` Tennispro lus comme références), L2 (cordages : jauge absente des deux côtés → identique, avec un garde-fou de prix), L3 (`generationUnique` dès les chaussures, R4.5-c) ; raquettes et sacs maintenus stricts.
 - Aucun code modifié, aucune écriture en base.
 - Révision demandée par Mathieu (même session) : premier échantillon biaisé (une paire par famille) ; règles Q7, Q15 et D-2026-09-27-07 oubliées ; L1 sous-estimé. Constat principal : **91 références de style communes entre marchands (137 paires) ne sont pas exploitées par le moteur**, car le SKU des sites de marque et de Sport 2000 n'est pas lu et le suffixe de coloris n'est pas coupé. Les 91 ont été relues, sans faux positif. Gain estimé : de 103 à environ 170 modèles présents chez plusieurs marchands. Défauts d'extraction relevés (taille de sac, longueur junior collée, « 40 » pour 4.0, T-Fight Tour / Team, ASMC, UL). Solution révisée dans `R4_5_mesure_separation.md` §5.4 : références d'abord, extraction ensuite, assouplissement en dernier et remesuré.
+
+## 2026-09-29 (session cloud, Opus) — Définitions des verdicts (D-2026-09-29-06)
+
+- Modèle actuel Opus, recommandé Opus (décision de conception).
+- Les définitions ont été proposées dans une autre fenêtre ; Mathieu y a répondu ici. Réponses : (1) définition de « identique » validée, en insistant sur le fait que les variantes ne comptent pas (« un modèle rose ou vert sera identique ») ; (2) séparation « proche » / « indéterminé » validée **à condition de faire plus tard le travail d'investigation** ; (3) sort des paires indéterminées tranché plus tard, catégorie par catégorie.
+- Question de Mathieu : ces définitions remplacent-elles le travail fait ? Réponse : non, elles deviennent la grille de la relecture et ciblent des ajustements ; un seul changement de code déjà identifié (état « indéterminé » dans `compare()`), à planifier.
+- Écrit : D-2026-09-29-06 (`DECISIONS_FONCTIONNELLES.md`), §4 bis du cadrage du rapprochement. Aucun code modifié, aucune écriture en base.
+- Prochaine étape inchangée : session Sonnet pour coder D-2026-09-29-05, passage à blanc et relecture (avec cette grille), puis PR de R4.5-b.
+
