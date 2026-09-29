@@ -1,6 +1,6 @@
 # Rapport de passage du moteur fantôme — r4.4-etapes-1-2
 
-> **Passage R4.4-bis du 2026-09-29.** Écrit et vérifié sur la **branche Neon `test-r4-4bis-passage`** (copie de la prod) : 1 454 modèles, 1 912 liens, 2 206 offres extraites, un seul passage conservé, `deals` inchangé (4 241 `active`, 794 `tracked`, 5 269 au total). **L'écriture dans la prod (`match_*`) n'est pas faite** : la commande a été refusée par le contrôle de sécurité de l'environnement ; la prod contient toujours le passage R4.4 (1 456 modèles, 90 multi-marchands). Ces chiffres sont ceux que la prod donnera, la base source étant identique. Relecture des 103 modèles multi-marchands : `R4_4_controle.md` §8.
+> **Passage R4.4-bis du 2026-09-29, écrit en prod.** Vérifié d'abord sur la branche Neon `test-r4-4bis-passage` (copie de la prod), puis écrit dans la prod (tables `match_*` uniquement) : 1 passage, 1 454 modèles, 1 912 liens, 2 206 offres extraites, `deals` inchangé (4 241 `active`, 794 `tracked`, 5 269 au total). Le passage R4.4 (1 456 modèles, 90 multi-marchands) a été remplacé. Relecture des 103 modèles multi-marchands : `R4_4_controle.md` §8.
 >
 > Écart avec le premier passage (R4.4) : modèles 1 456 → 1 454 ; multi-marchands 90 → **103** (`active` 71 → **77**) ; raquettes 21 → **35** ; cordages 4 → 3 (tous justes) ; nouvel indicateur « modèles divergents » (2, bénins). Le premier passage est conservé dans l'historique git de ce fichier.
 
