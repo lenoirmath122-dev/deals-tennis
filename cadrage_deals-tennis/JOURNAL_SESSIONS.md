@@ -128,3 +128,14 @@
 - Décision mineure (non structurante) : `merchant_sku` = ASIN, jamais dans `gtin` ; filtres de pertinence Amazon conservés, seul le filtre « sans remise » disparaît (→ `tracked`, R3-Q3).
 - Vérifié sur branche Neon puis en prod (accord de Mathieu pour l'application prod et la suppression de la branche) : 41 active + 12 tracked, tous `?tag=` et SKU = ASIN, 0 doublon. `deals` prod : 4241 active / 206 expired / 28 invalid / 794 tracked.
 - Prochaine étape : **R3.13** ou **R3.12**, au choix de Mathieu.
+
+## 2026-09-29 (session desktop Sonnet) — R3.12 : enrichissement par fiche (GTIN, mpn)
+
+- Reprise. Modèle actuel = recommandé (Sonnet, R3.12 marquée Sonnet dans `R3_cadrage.md`). R3.11 déjà fusionnée (#105), branche `feat/r3-12-enrichissement` depuis `master`.
+- Inspection réelle des fiches : Tennis Point FR = `ProductGroup.hasVariant[].gtin` (un par variante) ; Tecnifibre = `Product.offers[].gtin13` ; Tennispro.fr = `dataLayer.push({"product":{…"mpn"}})`. robots.txt : aucun délai pour Tennis Point FR (2 s de politesse), 1 s Tecnifibre, 60 s Tennispro.
+- Décisions mineures (non structurantes) : périmètre raquettes + chaussures (celui du coût mesuré en R0 §1bis) ; `gtin` = GTIN de la 1re variante qui en a un (cohérent avec `merchant_sku`), tous dans `raw_attributes.enrichissement.variants` ; marqueur `enrichissement` même si la fiche ne donne rien (une seule lecture par offre) ; pas de marqueur sur erreur réseau (retenté), arrêt après 5 échecs consécutifs. Un GTIN doit être numérique de 8, 12, 13 ou 14 chiffres (le `barcode` de 11 chiffres de Shopify Tecnifibre est rejeté).
+- Défaut découvert : `upsertDeal` écrasait `gtin`, `mpn` et `raw_attributes` à chaque passage, ce qui aurait effacé l’enrichissement au scraping suivant. Corrigé (`COALESCE` sur `gtin`/`mpn`, fusion jsonb de `raw_attributes`) ; vérifié : un passage complet de `tecnifibre.ts` conserve les 19 GTIN et les 25 marqueurs.
+- Vérifié sur branche Neon `test-r3-12-enrichissement` (Tecnifibre 19/25, Tennis Point FR 2/3, Tennispro 2/2, relance à 0 fiche) puis en prod après accord de Mathieu : Tecnifibre 19/25, Tennis Point FR 494/510, Tennispro 150/150 (aucun échec). `deals` prod inchangé : 4241 active / 206 expired / 28 invalid / 794 tracked. Branche supprimée.
+- À noter pour R4 : le `mpn` Tennispro vaut parfois le `sku` interne (ex. fiche Dunlop FX 500 : sku = mpn = 10335789) ; à traiter au rapprochement, non filtré ici. Une fiche Tennis Point FR expose `mpn` = `sku` (non capturé).
+- `tsc`/`eslint` propres ; 86 tests unitaires passent (dont 6 nouveaux) ; `tracking.test.ts` échoue sous `test:unit` faute de `DATABASE_URL` (préexistant).
+- Prochaine étape : **R3.13** (filtre UI des sous-catégories).
