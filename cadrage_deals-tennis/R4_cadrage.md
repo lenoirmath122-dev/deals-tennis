@@ -140,6 +140,8 @@ Proposé : vérifier en R4.2, sur un échantillon de fiches, si la `reference` S
 **R4-Q8 — Option IA.**
 Proposé : **pas de décision avant R4.6**, comme prévu. À noter dès maintenant : l'IA peut aider à décomposer un titre (textile surtout), **pas** à retrouver une génération qui n'est écrite nulle part (§2.2). Elle ne corrigerait donc pas la principale limite du rappel.
 
+> **Réponse** : décision en R4.6, comme proposé.
+
 ## 6. Hors périmètre de R4
 
 - Tout changement visible sur le site (affichage « même modèle / modèle proche », page produit) : R5.
