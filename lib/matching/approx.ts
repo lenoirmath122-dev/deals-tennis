@@ -112,6 +112,8 @@ export function reviewTextilePairs(
         if (x.merchants.size === 1 && y.merchants.size === 1 && [...x.merchants][0] === [...y.merchants][0]) continue;
         const r = compare(x.rep.extracted, y.rep.extracted);
         if (!r.differences.some((d) => d.attribut === "modele" && d.effet === "different")) continue;
+        // Un numéro de génération écrit d'un seul côté ou différent (« Tie Break II ») : autre génération (D-2026-09-29-05).
+        if (r.differences.some((d) => d.attribut === "numero")) continue;
         if (r.differences.some((d) => d.attribut === "genre" || d.attribut === "age_group" || (d.effet === "different" && d.attribut !== "modele"))) continue;
         const modeleA = String(x.rep.extracted.attributes.modele.value);
         const modeleB = String(y.rep.extracted.attributes.modele.value);

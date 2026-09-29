@@ -94,3 +94,13 @@ describe("file de revue textile", () => {
     expect(report.counters.revue_textile_paires).toBe(1);
   });
 });
+
+describe("Tie Break II (D-2026-09-29-05)", () => {
+  it("« TIE-BREAK » / « BREAK II TIE- » : autre génération, refusée avant la file de revue", () => {
+    const offers = [
+      offer("Tennis Point FR", "Head", "Vêtement de tennis HEAD Tie-Break T-shirt Femmes - bleu clair, blanc"),
+      offer("Head", "Head", "BREAK II TIE- T-shirt de tennis femme"),
+    ];
+    expect(review(offers)).toEqual([]);
+  });
+});

@@ -159,6 +159,7 @@ export function buildReport(input: ReportInput): PassReport {
     modeles_incoherents: result.incoherent.length,
     modeles_divergents: new Set(result.divergences.map((d) => d.model)).size,
     paires_famille_inter_marchands: pairLevels,
+    textile_sans_reference_ambigues: result.ambiguousWithoutReference.length,
     revue_textile_paires: revue.length,
     revue_textile_paires_score_haut: revue.filter((p) => p.score >= 0.6).length,
   };

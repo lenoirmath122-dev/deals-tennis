@@ -11,6 +11,7 @@ import { ATTRIBUTE_SOURCES, CATEGORY_RULES } from "../../config/matching-rules.t
 import {
   compare,
   derivedAttributesRelaxed,
+  distinctStyleReferences,
   discriminantAttributeNames,
   normalizeReference,
   signature,
@@ -61,6 +62,11 @@ export interface ClusterResult {
   incoherent: { model: number; a: string; b: string; detail: string }[];
   /** Modèles dont les membres n'ont pas la même valeur extraite pour un attribut discriminant (D5). */
   divergences: { model: number; attribut: string; valeurs: string[] }[];
+  /**
+   * Textile, marques à style distinct (D-2026-09-29-05) : offres sans référence dont le titre
+   * correspond à plusieurs groupes de références. Rattachées à aucun : « proches » de chacun.
+   */
+  ambiguousWithoutReference: { dealId: string; references: string[] }[];
 }
 
 const METHOD_RANK: Record<CompareMethod, number> = { gtin: 3, reference: 2, signature: 1 };
@@ -108,6 +114,30 @@ export function buildModels(input: EngineOffer[]): ClusterResult {
   const method = new Map<string, CompareMethod>();
   const conflicts: ClusterConflict[] = [];
   const linked = new Set<string>();
+  const ambiguousWithoutReference: ClusterResult["ambiguousWithoutReference"] = [];
+
+  // D-2026-09-29-05 : un modèle ne contient jamais deux références de style d'une marque « à style
+  // distinct » (Nike), y compris par transitivité. Références par composante, tenues à jour à chaque fusion.
+  const styleRefs = new Map<string, Set<string>>();
+  for (const offer of offers) {
+    const refs = distinctStyleReferences(offer.extracted);
+    if (refs.length > 0) styleRefs.set(offer.dealId, new Set(refs));
+  }
+  const refsOf = (id: string) => styleRefs.get(uf.find(id));
+  const guardedUnion = (a: string, b: string): boolean => {
+    const ra = uf.find(a);
+    const rb = uf.find(b);
+    if (ra === rb) return true;
+    const sa = styleRefs.get(ra);
+    const sb = styleRefs.get(rb);
+    const merged = new Set([...(sa ?? []), ...(sb ?? [])]);
+    if (sa && sb && merged.size > Math.max(sa.size, sb.size)) return false;
+    uf.union(a, b);
+    styleRefs.delete(ra);
+    styleRefs.delete(rb);
+    if (merged.size > 0) styleRefs.set(uf.find(a), merged);
+    return true;
+  };
 
   const note = (id: string, m: CompareMethod) => {
     linked.add(id);
@@ -140,9 +170,10 @@ export function buildModels(input: EngineOffer[]): ClusterResult {
       for (const other of members.slice(1)) {
         const result = compare(anchor.extracted, other.extracted);
         if (result.methode === "gtin" || result.methode === "reference") {
-          uf.union(anchor.dealId, other.dealId);
-          note(anchor.dealId, result.methode);
-          note(other.dealId, result.methode);
+          if (guardedUnion(anchor.dealId, other.dealId)) {
+            note(anchor.dealId, result.methode);
+            note(other.dealId, result.methode);
+          }
         } else if (result.conflit) {
           conflicts.push({
             kind,
@@ -165,7 +196,17 @@ export function buildModels(input: EngineOffer[]): ClusterResult {
     bySignature.set(sig, list);
   }
   for (const members of bySignature.values()) {
-    for (const other of members.slice(1)) uf.union(members[0].dealId, other.dealId);
+    // Signature partagée par plusieurs groupes de références de style : chaque groupe reste à part,
+    // les offres sans référence ne se rattachent à aucun (elles se regroupent entre elles).
+    const styled = new Set(members.filter((m) => refsOf(m.dealId)).map((m) => uf.find(m.dealId)));
+    if (styled.size > 1) {
+      const bare = members.filter((m) => !refsOf(m.dealId));
+      for (const other of bare.slice(1)) guardedUnion(bare[0].dealId, other.dealId);
+      const references = [...new Set([...styled].flatMap((root) => [...(styleRefs.get(root) ?? [])]))].sort();
+      for (const member of bare) ambiguousWithoutReference.push({ dealId: member.dealId, references });
+    } else {
+      for (const other of members.slice(1)) guardedUnion(members[0].dealId, other.dealId);
+    }
     // Les offres de famille reconnue ont toujours un modèle (au minimum le leur).
     for (const member of members) linked.add(member.dealId);
   }
@@ -260,7 +301,7 @@ export function buildModels(input: EngineOffer[]): ClusterResult {
       }
     }
   }
-  return { models, links, conflicts, incoherent, divergences };
+  return { models, links, conflicts, incoherent, divergences, ambiguousWithoutReference };
 }
 
 /**
