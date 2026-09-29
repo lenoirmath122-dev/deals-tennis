@@ -27,6 +27,12 @@ import {
 import { familyKey } from "./families.ts";
 import type { ExtractedOffer } from "./types.ts";
 
+/**
+ * Textile, étape 1 (T-Q1, D-2026-09-29-04) : la référence de style identifie l'article, quels que
+ * soient les titres. Ces attributs sont lus dans le titre : leur écart ne contredit pas la référence.
+ */
+const TEXTILE_TITLE_ONLY_ATTRIBUTES = new Set(["modele", "edition", "millesime", "numero", "longueur"]);
+
 export type CompareMethod = "gtin" | "reference" | "signature";
 
 export interface Difference {
@@ -80,6 +86,8 @@ const GARNITURE_METERS = { min: 11, max: 13 };
  * choix de la fiche ; nombre de balles non écrit). Ailleurs, absent des deux côtés = égal.
  */
 function requiredAttributes(offer: ExtractedOffer): string[] {
+  // Textile : un titre sans nom de gamme lisible ne prouve rien (modèle non identifié).
+  if (offer.categorie === "textile") return ["modele"];
   if (offer.categorie === "cordages") return ["jauge", "conditionnement"];
   if (offer.categorie === "accessoires" && offer.subcategory === "balles") return ["lot"];
   return [];
@@ -264,7 +272,10 @@ export function signature(offer: ExtractedOffer, dealId: string): string | null 
   const gen = generationToken(offer);
   parts.push(`generation=${gen ?? "-"}`);
   const unverifiable = requiredAttributes(offer).some((name) => token(offer, name) === null);
-  if ((gen === null && !isSingleGeneration(offer)) || unverifiable) parts.push(`#${dealId}`);
+  // Textile : génération non écrite = même modèle (D-2026-09-27-06) ; la règle ne bloque pas.
+  const generationBlocks =
+    GENERATION_RULES[CATEGORY_RULES[offer.categorie].generationRule].nonEcriteDesDeuxCotes !== "identique";
+  if ((gen === null && generationBlocks && !isSingleGeneration(offer)) || unverifiable) parts.push(`#${dealId}`);
   return parts.join("|");
 }
 
@@ -280,7 +291,10 @@ export function compare(a: ExtractedOffer, b: ExtractedOffer): CompareResult {
 
   // Étape 1 : identifiant partagé. Contradiction franche = conflit, jamais « identique ».
   if (method) {
-    const differences = a.familyKey && b.familyKey && !familiesDiffer ? [...attributeDifferences(a, b)] : [];
+    const differences =
+      a.familyKey && b.familyKey && !familiesDiffer
+        ? attributeDifferences(a, b).filter((d) => a.categorie !== "textile" || !TEXTILE_TITLE_ONLY_ATTRIBUTES.has(d.attribut))
+        : [];
     const generation = a.familyKey && b.familyKey && !familiesDiffer ? generationDifference(a, b) : null;
     const contradictions = differences.filter((d) => d.effet === "different");
     if (generation?.effet === "different") contradictions.push(generation);

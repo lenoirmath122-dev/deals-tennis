@@ -1,5 +1,5 @@
 {
- "description": "Jeu R1 fige (R4.1) : 67 paires validees (32 identiques / 15 proches / 20 differents) et les 123 offres distinctes qu'elles referencent, extraites de la base de prod le 2026-09-29. Independant de la base (des offres expirent). `attendu` = decision finale (R1_mesure.md §10) ; `algo_reference` = sortie de l'algorithme actuel mesuree en R1.",
+ "description": "Jeu R1 fige (R4.1) : 67 paires validees (33 identiques / 14 proches / 20 differents) et les 123 offres distinctes qu'elles referencent, extraites de la base de prod le 2026-09-29. Independant de la base (des offres expirent). `attendu` = decision finale (R1_mesure.md §10) ; `algo_reference` = sortie de l'algorithme actuel mesuree en R1.",
  "extrait_le": "2026-09-29",
  "pairs": [
   {
@@ -148,9 +148,9 @@
   },
   {
    "id": 17,
-   "attendu": "proche",
-   "niveau": "modèle",
-   "piege": "",
+   "attendu": "identique",
+   "niveau": "offre",
+   "piege": "reclassée proche → identique le 2026-09-29 (T-Q1, D-2026-09-29-04) : SW = Stretch Woven, même short Club adidas",
    "algo_reference": "non rapproché",
    "offre_a": "b37708a1-7670-4d83-9a86-3a4751d1a5f0",
    "offre_b": "b3195ae2-e9c5-42d1-929a-5a6ff5585e35"

@@ -19,7 +19,7 @@ import type { AccessorySubcategory } from "../../config/accessory-subcategories.
 import type { DealCategory } from "../../types/database.ts";
 
 /** Version du moteur écrite dans `match_runs.engine_version`. */
-const ENGINE_VERSION = "r4.4-etapes-1-2";
+const ENGINE_VERSION = "r4.5-a-textile";
 const BATCH = 500;
 
 if (!process.env.DATABASE_URL) {

@@ -1,0 +1,348 @@
+{
+  "description": "Paires pièges de R4.5-a (textile) : titres réels de la prod (2026-09-29), complémentaire du jeu R1 figé. `attendu` : niveau exact de compare() ; jamais 'identique' pour ces paires.",
+  "pairs": [
+    {
+      "nom": "Club / Club Pleat (adidas)",
+      "a": {
+        "marchand": "Tennispro.fr",
+        "marque": "Adidas",
+        "categorie": "textile",
+        "titre": "Jupe de tennis Adidas Femme Club"
+      },
+      "b": {
+        "marchand": "Tennis Point FR",
+        "marque": "adidas",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis adidas Club Pleat Jupe Femmes - noir"
+      },
+      "attendu": "different",
+      "pourquoi": "sous-modèle : jupe plissée, autre modèle (paire R1 56)"
+    },
+    {
+      "nom": "Freelift / Freelift Pro (adidas)",
+      "a": {
+        "marchand": "SportSystem",
+        "marque": "Adidas",
+        "categorie": "textile",
+        "titre": "T-shirt de tennis Adidas Tee-shirt de tennis Adidas Freelift blanc Homme"
+      },
+      "b": {
+        "marchand": "Tennis Point FR",
+        "marque": "adidas",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis adidas Freelift Pro T-shirt Hommes - blanc"
+      },
+      "attendu": "different",
+      "pourquoi": "« Pro » est un autre modèle"
+    },
+    {
+      "nom": "Play Crew Neck Tee / Play Tank Top (Babolat)",
+      "a": {
+        "marchand": "Babolat",
+        "marque": "Babolat",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis Babolat Play Crew Neck Tee Homme"
+      },
+      "b": {
+        "marchand": "Babolat",
+        "marque": "Babolat",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis Babolat Play Tank Top Femme"
+      },
+      "attendu": "different",
+      "pourquoi": "type précis : t-shirt / débardeur (et genre)"
+    },
+    {
+      "nom": "Play Cap Sleeve Top / Play Tank Top (Babolat)",
+      "a": {
+        "marchand": "Babolat",
+        "marque": "Babolat",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis Babolat Play Cap Sleeve Top Femme"
+      },
+      "b": {
+        "marchand": "Babolat",
+        "marque": "Babolat",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis Babolat Play Tank Top Femme"
+      },
+      "attendu": "different",
+      "pourquoi": "« Cap Sleeve » n'est pas une casquette ; t-shirt / débardeur"
+    },
+    {
+      "nom": "Play Crew Neck Tee / Play Cap Sleeve Top (Babolat)",
+      "a": {
+        "marchand": "Babolat",
+        "marque": "Babolat",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis Babolat Play Crew Neck Tee Garçon"
+      },
+      "b": {
+        "marchand": "Babolat",
+        "marque": "Babolat",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis Babolat Play Cap Sleeve Top Fille"
+      },
+      "attendu": "different",
+      "pourquoi": "deux modèles de la gamme Play (et genre)"
+    },
+    {
+      "nom": "Advantage 7in / 9in (Nike)",
+      "a": {
+        "marchand": "Sport 2000",
+        "marque": "NIKE",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis NIKE Short Homme M NKCT DF ADVTG 6IN SHORT Bleu Homme"
+      },
+      "b": {
+        "marchand": "Sport 2000",
+        "marque": "NIKE",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis NIKE Short Homme M NKCT DF ADVTG 9IN SHORT Bleu Homme"
+      },
+      "attendu": "proche",
+      "pourquoi": "T-Q2 : longueur différente = proche"
+    },
+    {
+      "nom": "Advantage / Advantage Slam (Nike)",
+      "a": {
+        "marchand": "Sport 2000",
+        "marque": "NIKE",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis NIKE Short Homme M NKCT DF ADVTG 6IN SHORT Bleu Homme"
+      },
+      "b": {
+        "marchand": "Tennis Point FR",
+        "marque": "Nike",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis Nike Court Dri-Fit Advantage Slam Polo Hommes-orange"
+      },
+      "attendu": "different",
+      "pourquoi": "polo / short et autre modèle"
+    },
+    {
+      "nom": "Tie Break / Tie Break II (Head)",
+      "a": {
+        "marchand": "Head",
+        "marque": "Head",
+        "categorie": "textile",
+        "titre": "TIE-BREAK T-shirt de tennis femme"
+      },
+      "b": {
+        "marchand": "Tennis Point FR",
+        "marque": "Head",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis HEAD Tie-Break II T-shirt Femmes - abricot, blanc"
+      },
+      "attendu": "proche",
+      "pourquoi": "génération écrite d'un seul côté"
+    },
+    {
+      "nom": "Club / Club Ann (Head)",
+      "a": {
+        "marchand": "Tennis Point FR",
+        "marque": "Head",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis HEAD Club Ann Shorts Femmes - gris clair"
+      },
+      "b": {
+        "marchand": "SportSystem",
+        "marque": "Head",
+        "categorie": "textile",
+        "titre": "Short de tennis Head Short de tennis femme Head club blanc Femme"
+      },
+      "attendu": "different",
+      "pourquoi": "« Ann » est un autre modèle"
+    },
+    {
+      "nom": "Club Tech / Club 25 Tech (Head)",
+      "a": {
+        "marchand": "SportSystem",
+        "marque": "Head",
+        "categorie": "textile",
+        "titre": "T-shirt de tennis Head Tee-shirt de tennis femme Head Club Tech blanc Femme"
+      },
+      "b": {
+        "marchand": "Head",
+        "marque": "Head",
+        "categorie": "textile",
+        "titre": "CLUB 25 TECH T-shirt femme"
+      },
+      "attendu": "proche",
+      "pourquoi": "millésime écrit d'un seul côté"
+    },
+    {
+      "nom": "Pro / Pro Londres (adidas)",
+      "a": {
+        "marchand": "Tennis Point FR",
+        "marque": "adidas",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis adidas Pro Robe Femmes-orange"
+      },
+      "b": {
+        "marchand": "Tennispro.fr",
+        "marque": "Adidas",
+        "categorie": "textile",
+        "titre": "Robe de tennis Adidas Pro Femme Londres"
+      },
+      "attendu": "proche",
+      "pourquoi": "T-Q3 : collection de tournoi = édition = proche"
+    }
+  ],
+  "references": [
+    {
+      "nom": "adidas JG0994 (paire R1 17 de la prod)",
+      "a": {
+        "marchand": "Sport 2000",
+        "marque": "ADIDAS",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis ADIDAS Short Homme Club Homme",
+        "merchant_sku": "JG0994"
+      },
+      "b": {
+        "marchand": "SportSystem",
+        "marque": "Adidas",
+        "categorie": "textile",
+        "titre": "Short de tennis Adidas Short de tennis homme Adidas SW Stretch Woven Climacool noir Homme",
+        "merchant_sku": "JG0994",
+        "raw_attributes": {
+          "variants": [
+            {
+              "name": "M",
+              "reference": "JG0994"
+            }
+          ]
+        }
+      },
+      "attendu": "identique",
+      "pourquoi": "T-Q1 : même référence de style, titres différents"
+    },
+    {
+      "nom": "Lacoste TH8917",
+      "a": {
+        "marchand": "Sport 2000",
+        "marque": "LACOSTE",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis LACOSTE TEE-SHIRT CORE PERFORMANCE Homme Noir Homme",
+        "merchant_sku": "TH8917-00-031"
+      },
+      "b": {
+        "marchand": "SportSystem",
+        "marque": "Lacoste",
+        "categorie": "textile",
+        "titre": "T-shirt de tennis Lacoste Tee-shirt Lacoste Sport Ultra Dry bleu clair Homme",
+        "merchant_sku": "TH8917-T01",
+        "raw_attributes": {
+          "variants": [
+            {
+              "name": "M",
+              "reference": "TH8917-T01"
+            }
+          ]
+        }
+      },
+      "attendu": "identique",
+      "pourquoi": "T-Q1 : « Core Performance » = « Sport Ultra Dry »"
+    },
+    {
+      "nom": "Head 811379 (Club 22 / Club)",
+      "a": {
+        "marchand": "Head",
+        "marque": "Head",
+        "categorie": "textile",
+        "titre": "CLUB Short homme",
+        "merchant_sku": "811379"
+      },
+      "b": {
+        "marchand": "SportSystem",
+        "marque": "Head",
+        "categorie": "textile",
+        "titre": "Short de tennis Head Short de tennis Head club 22 noir Homme",
+        "merchant_sku": "811379-BK",
+        "raw_attributes": {
+          "variants": [
+            {
+              "name": "M",
+              "reference": "811379-BK"
+            }
+          ]
+        }
+      },
+      "attendu": "identique",
+      "pourquoi": "même style 811379 malgré le millésime écrit d'un seul côté"
+    },
+    {
+      "nom": "Nike CV2545 (7in / 9 Victory)",
+      "a": {
+        "marchand": "Sport 2000",
+        "marque": "NIKE",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis NIKE Short de tennis Homme M NKCT DF VCTRY SHRT 9IN",
+        "merchant_sku": "CV2545-100"
+      },
+      "b": {
+        "marchand": "SportSystem",
+        "marque": "Nike",
+        "categorie": "textile",
+        "titre": "Short de tennis Nike Short tennis Dri-Fit NikeCourt 9 Victory Homme",
+        "merchant_sku": "CV2545-100",
+        "raw_attributes": {
+          "variants": [
+            {
+              "name": "M",
+              "reference": "CV2545-100"
+            }
+          ]
+        }
+      },
+      "attendu": "identique",
+      "pourquoi": "même style, longueur lue « 9in » et « 9 » : identique aussi par le titre"
+    },
+    {
+      "nom": "Références de style différentes, même titre",
+      "a": {
+        "marchand": "Sport 2000",
+        "marque": "NIKE",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis NIKE Short Homme M NKCT DF ADVTG 6IN SHORT Bleu Homme",
+        "merchant_sku": "FD5336-435"
+      },
+      "b": {
+        "marchand": "Sport 2000",
+        "marque": "NIKE",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis NIKE Short Homme M NKCT DF ADVTG 6IN SHORT Blanc Homme",
+        "merchant_sku": "FD5336-100"
+      },
+      "attendu": "identique",
+      "pourquoi": "deux coloris du même article (même style), titre identique"
+    },
+    {
+      "nom": "Même référence mais types différents (conflit)",
+      "a": {
+        "marchand": "Sport 2000",
+        "marque": "ADIDAS",
+        "categorie": "textile",
+        "titre": "Vêtement de tennis ADIDAS Short Homme Club Homme",
+        "merchant_sku": "JG0994"
+      },
+      "b": {
+        "marchand": "SportSystem",
+        "marque": "Adidas",
+        "categorie": "textile",
+        "titre": "Débardeur de tennis Adidas Débardeur Club Homme",
+        "merchant_sku": "JG0994",
+        "raw_attributes": {
+          "variants": [
+            {
+              "name": "M",
+              "reference": "JG0994"
+            }
+          ]
+        }
+      },
+      "attendu": "conflit",
+      "pourquoi": "la référence ne fait pas oublier une contradiction de type"
+    }
+  ]
+}

@@ -6,7 +6,7 @@ import { buildModels, type EngineOffer } from "@/lib/matching/cluster";
 import { buildReport } from "@/lib/matching/report";
 import { extractOfferAttributes, isSupportedCategory, type ExtractedOffer } from "@/lib/matching";
 
-// Première mesure R4.4 : le moteur (étapes 1 et 2) sur le jeu R1 figé, à comparer à
+// Mesure du moteur (étapes 1 et 2, textile compris depuis R4.5-a) sur le jeu R1 figé, à comparer à
 // l'algorithme actuel (précision 5/8, rappel 5/32, inter-marchands 2/29, `r1-banc-mesure.test.ts`).
 // Les valeurs ci-dessous sont l'état mesuré ; elles bougeront avec les règles (R4.5, R4.6).
 
@@ -51,7 +51,7 @@ for (const o of fixture.offers) {
 function predictedLevel(pair: Pair) {
   const a = extracted.get(pair.offre_a);
   const b = extracted.get(pair.offre_b);
-  return a && b ? compare(a, b).niveau : null; // null : textile, R4.5
+  return a && b ? compare(a, b).niveau : null;
 }
 
 function measure(pairs: Pair[]) {
@@ -69,13 +69,13 @@ function measure(pairs: Pair[]) {
 }
 
 describe("moteur R4.4 sur le jeu R1", () => {
-  it("précision 12/12 et rappel 12/32 (R4.4-bis ; avant : 9/9 et 9/32)", () => {
-    expect(measure(fixture.pairs)).toEqual({ vp: 12, fp: 0, identical: 32 });
+  it("précision 20/20 et rappel 20/33 (R4.5-a ; R4.4-bis : 12/12 et 12/32, textile non pris en charge)", () => {
+    expect(measure(fixture.pairs)).toEqual({ vp: 20, fp: 0, identical: 33 });
   });
 
-  it("inter-marchands : précision 11/11 et rappel 11/29 (R4.4-bis ; avant : 8/29)", () => {
+  it("inter-marchands : précision 19/19 et rappel 19/30 (R4.5-a ; R4.4-bis : 11/29 ; algorithme actuel : 2/30)", () => {
     const inter = fixture.pairs.filter((p) => offersById.get(p.offre_a)!.marchand !== offersById.get(p.offre_b)!.marchand);
-    expect(measure(inter)).toEqual({ vp: 11, fp: 0, identical: 29 });
+    expect(measure(inter)).toEqual({ vp: 19, fp: 0, identical: 30 });
   });
 
   it("aucun faux positif (la paire 14, « S Logo Damp », est « proche » grâce à la version « S »)", () => {
@@ -89,10 +89,13 @@ describe("moteur R4.4 sur le jeu R1", () => {
     }
   });
 
-  it("paires textile : non prises en charge avant R4.5 (7 identiques et 2 proches manquées)", () => {
-    const textile = fixture.pairs.filter((p) => predictedLevel(p) === null);
-    expect(textile.filter((p) => p.attendu === "identique")).toHaveLength(7);
-    expect(textile.filter((p) => p.attendu === "proche")).toHaveLength(2);
+  it("paires textile (R4.5-a) : les 8 identiques sont trouvées, les 2 différents et le proche aussi", () => {
+    const textile = fixture.pairs.filter((p) => offersById.get(p.offre_a)!.categorie === "textile");
+    expect(textile).toHaveLength(11);
+    for (const pair of textile) {
+      const expected = pair.attendu === "différent" ? "different" : pair.attendu;
+      expect(predictedLevel(pair), `paire ${pair.id}`).toBe(expected);
+    }
   });
 
   it("un « proche » attendu n'est jamais jugé « différent » (hors gourde sans famille)", () => {
