@@ -7,12 +7,14 @@ import { SORT_OPTIONS, type CatalogSort } from "@/lib/filters";
 export function SortDropdown({
   value,
   category,
+  subcategory,
   gender,
   ageGroup,
   q,
 }: {
   value: CatalogSort;
   category: string;
+  subcategory: string;
   gender: string;
   ageGroup: string;
   q: string;
@@ -26,6 +28,7 @@ export function SortDropdown({
         router.push(
           buildCatalogHref({
             category,
+            subcategory,
             gender,
             age_group: ageGroup,
             q,

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { getCatalogDeals } from "@/lib/deals";
+import { getAccessorySubcategoriesWithDeals, getCatalogDeals } from "@/lib/deals";
 import {
   isValidCategory,
+  isValidSubcategory,
   isValidGender,
   isValidAgeGroup,
   isValidSort,
@@ -11,6 +12,7 @@ import { DealGrid } from "@/components/deal-grid";
 import { Pagination } from "@/components/pagination";
 import { CategoryFilter } from "@/components/category-filter";
 import { GenderAgeFilter } from "@/components/gender-age-filter";
+import { SubcategoryFilter } from "@/components/subcategory-filter";
 import { SearchBar } from "@/components/search-bar";
 import { SortDropdown } from "@/components/sort-dropdown";
 import { NotificationBanner } from "@/components/notification-banner";
@@ -30,6 +32,9 @@ export default async function CatalogPage({
 
   const rawCategory = typeof params.category === "string" ? params.category : "all";
   const category = isValidCategory(rawCategory) ? rawCategory : "all";
+  const rawSubcategory = typeof params.subcategory === "string" ? params.subcategory : "all";
+  const subcategory =
+    category === "accessoires" && isValidSubcategory(rawSubcategory) ? rawSubcategory : "all";
   const rawGender = typeof params.gender === "string" ? params.gender : "all";
   const gender = isValidGender(rawGender) ? rawGender : "all";
   const rawAgeGroup = typeof params.age_group === "string" ? params.age_group : "all";
@@ -40,14 +45,20 @@ export default async function CatalogPage({
   const page = Number(params.page) || 1;
   const notification = typeof params.notification === "string" ? params.notification : null;
 
-  const { deals, pagination } = await getCatalogDeals({
-    category,
-    gender,
-    age_group: ageGroup,
-    sort,
-    q,
-    page,
-  });
+  const [{ deals, pagination }, availableSubcategories] = await Promise.all([
+    getCatalogDeals({
+      category,
+      subcategory,
+      gender,
+      age_group: ageGroup,
+      sort,
+      q,
+      page,
+    }),
+    category === "accessoires"
+      ? getAccessorySubcategoriesWithDeals()
+      : Promise.resolve(new Set<string>()),
+  ]);
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-8">
@@ -56,6 +67,7 @@ export default async function CatalogPage({
       <NotificationBanner
         type={notification}
         category={category}
+        subcategory={subcategory}
         gender={gender}
         age_group={ageGroup}
         sort={sort}
@@ -68,30 +80,66 @@ export default async function CatalogPage({
             key={q}
             defaultValue={q}
             category={category}
+            subcategory={subcategory}
             gender={gender}
             ageGroup={ageGroup}
             sort={sort}
           />
         </div>
-        <SortDropdown value={sort} category={category} gender={gender} ageGroup={ageGroup} q={q} />
+        <SortDropdown
+          value={sort}
+          category={category}
+          subcategory={subcategory}
+          gender={gender}
+          ageGroup={ageGroup}
+          q={q}
+        />
       </div>
 
       <div className="mb-4">
         <CategoryFilter active={category} gender={gender} ageGroup={ageGroup} sort={sort} q={q} />
       </div>
 
+      {category === "accessoires" && (
+        <div className="mb-4">
+          <SubcategoryFilter
+            category={category}
+            subcategory={subcategory}
+            available={availableSubcategories}
+            gender={gender}
+            ageGroup={ageGroup}
+            sort={sort}
+            q={q}
+          />
+        </div>
+      )}
+
       <div className="mb-6">
-        <GenderAgeFilter category={category} gender={gender} ageGroup={ageGroup} sort={sort} q={q} />
+        <GenderAgeFilter
+          category={category}
+          subcategory={subcategory}
+          gender={gender}
+          ageGroup={ageGroup}
+          sort={sort}
+          q={q}
+        />
       </div>
 
       <DealGrid
         deals={deals}
-        hasActiveFilters={category !== "all" || gender !== "all" || ageGroup !== "all" || q.length > 0}
+        hasActiveFilters={
+          category !== "all" ||
+          subcategory !== "all" ||
+          gender !== "all" ||
+          ageGroup !== "all" ||
+          q.length > 0
+        }
       />
       <Pagination
         currentPage={pagination.current_page}
         totalPages={pagination.total_pages}
         category={category}
+        subcategory={subcategory}
         gender={gender}
         ageGroup={ageGroup}
         sort={sort}

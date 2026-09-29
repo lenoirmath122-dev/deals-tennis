@@ -1,5 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { isValidCategory, isValidGender, isValidAgeGroup, sanitizeSearchQuery } from "@/lib/filters";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import {
+  isValidCategory,
+  isValidGender,
+  isValidAgeGroup,
+  isValidSubcategory,
+  sanitizeSearchQuery,
+  OTHER_ACCESSORIES,
+  SUBCATEGORY_LABELS,
+  SUBCATEGORY_VALUES,
+} from "@/lib/filters";
+import type { AccessorySubcategory } from "@/config/accessory-subcategories";
 
 describe("isValidCategory", () => {
   it("accepts 'all'", () => {
@@ -80,5 +92,47 @@ describe("sanitizeSearchQuery", () => {
 
   it("leaves an already-clean query unchanged", () => {
     expect(sanitizeSearchQuery("Babolat")).toBe("Babolat");
+  });
+});
+
+describe("isValidSubcategory (GAP-2026-09-25-11 étape 6)", () => {
+  it("accepts 'all', 'autres' and each accessory subcategory", () => {
+    expect(isValidSubcategory("all")).toBe(true);
+    expect(isValidSubcategory(OTHER_ACCESSORIES)).toBe(true);
+    for (const value of SUBCATEGORY_VALUES) {
+      expect(isValidSubcategory(value)).toBe(true);
+    }
+  });
+
+  it("rejects unknown values, including an injection attempt", () => {
+    expect(isValidSubcategory("sac")).toBe(false);
+    expect(isValidSubcategory("textile_porte")).toBe(false);
+    expect(isValidSubcategory("DROP TABLE deals")).toBe(false);
+  });
+
+  it("rejects empty, null and undefined values", () => {
+    expect(isValidSubcategory("")).toBe(false);
+    expect(isValidSubcategory(null)).toBe(false);
+    expect(isValidSubcategory(undefined)).toBe(false);
+  });
+
+  it("has a label for every value", () => {
+    for (const value of ["all", OTHER_ACCESSORIES, ...SUBCATEGORY_VALUES]) {
+      expect(SUBCATEGORY_LABELS[value as keyof typeof SUBCATEGORY_LABELS]).toBeTruthy();
+    }
+  });
+
+  it("stays aligned with the config type and the database CHECK constraint", () => {
+    // Si une sous-catégorie est ajoutée au type de config sans l'être ici, la ligne
+    // suivante ne compile plus.
+    const fromConfig: readonly AccessorySubcategory[] = SUBCATEGORY_VALUES;
+    const migration = readFileSync(
+      join(process.cwd(), "scripts/migrations/007_deals_tracked_capture.sql"),
+      "utf8"
+    );
+    const check = migration.match(/subcategory IN \(([^)]+)\)/);
+    expect(check).not.toBeNull();
+    const dbValues = [...check![1].matchAll(/'([a-z_]+)'/g)].map((m) => m[1]).sort();
+    expect([...fromConfig].sort()).toEqual(dbValues);
   });
 });
