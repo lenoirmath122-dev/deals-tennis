@@ -117,3 +117,43 @@ describe("getCatalogDeals contract — grouped search mode (D-2026-09-22-06/17)"
     expect(result.deals.every((deal) => deal.offer_count === undefined)).toBe(true);
   });
 });
+
+describe("getCatalogDeals contract — sous-catégorie d'accessoires (GAP-2026-09-25-11 étape 6)", () => {
+  it("only returns accessories of the requested subcategory", async () => {
+    const result = await getCatalogDeals({ category: "accessoires", subcategory: "sacs" });
+    expect(result.deals.length).toBeGreaterThan(0);
+
+    const ids = result.deals.map((deal) => deal.id);
+    const rows = await sql.query(
+      `SELECT category, subcategory FROM deals WHERE id = ANY($1::uuid[])`,
+      [ids]
+    );
+    expect(
+      (rows as { category: string; subcategory: string | null }[]).every(
+        (row) => row.category === "accessoires" && row.subcategory === "sacs"
+      )
+    ).toBe(true);
+  });
+
+  it("returns only accessories without subcategory for 'autres'", async () => {
+    const result = await getCatalogDeals({ category: "accessoires", subcategory: "autres" });
+    const ids = result.deals.map((deal) => deal.id);
+    const rows = await sql.query(`SELECT subcategory FROM deals WHERE id = ANY($1::uuid[])`, [ids]);
+    expect((rows as { subcategory: string | null }[]).every((row) => row.subcategory === null)).toBe(
+      true
+    );
+  });
+
+  it("ignores the subcategory outside of the accessoires category", async () => {
+    const withSub = await getCatalogDeals({ category: "raquettes", subcategory: "sacs" });
+    const without = await getCatalogDeals({ category: "raquettes" });
+    expect(withSub.pagination.total_deals).toBe(without.pagination.total_deals);
+  });
+
+  it("ignores an unknown subcategory value", async () => {
+    const withSub = await getCatalogDeals({ category: "accessoires", subcategory: "DROP TABLE deals" });
+    const without = await getCatalogDeals({ category: "accessoires" });
+    expect(withSub.pagination.total_deals).toBe(without.pagination.total_deals);
+  });
+});
+

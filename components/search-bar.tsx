@@ -54,12 +54,12 @@ export function SearchBar({
     };
   }, []);
 
-  function runSearch(query: string, searchCategory: string) {
+  function runSearch(query: string, searchCategory: string, searchSubcategory: string) {
     setShowSuggestions(false);
     router.push(
       buildCatalogHref({
         category: searchCategory,
-        subcategory,
+        subcategory: searchSubcategory,
         gender,
         age_group: ageGroup,
         sort,
@@ -120,7 +120,9 @@ export function SearchBar({
 
   function handleArticleClick(suggestion: string) {
     setValue(suggestion);
-    runSearch(suggestion, selectedCategory ?? category);
+    // Les suggestions ne tiennent pas compte de la sous-catégorie : on l'abandonne pour
+    // que l'article choisi (ex. un sac proposé depuis « Balles ») soit bien trouvé.
+    runSearch(suggestion, selectedCategory ?? category, "all");
   }
 
   return (
@@ -129,7 +131,7 @@ export function SearchBar({
         role="search"
         onSubmit={(event) => {
           event.preventDefault();
-          runSearch(value, category);
+          runSearch(value, category, subcategory);
         }}
         className="flex items-center gap-2 rounded-md border border-card-border bg-white px-3 py-1.5"
       >
