@@ -98,3 +98,12 @@
 - Aucun code modifié, aucune écriture en base.
 - Prochaine étape : session **Sonnet** — exécuter ce ménage, puis fin de R4.5-b (code de D-2026-09-29-05, passage à blanc, relecture, PR).
 
+
+## 2026-09-29 (session cloud, Sonnet) — Ménage de la documentation : exécution (D-2026-09-29-08)
+
+- Modèle actuel Sonnet, recommandé Sonnet (exécution d'une spec validée).
+- Fait, un commit par point : (1) ETAT_ACTUEL réécrit (46 lignes), ancien texte dans `archive/ETAT_ACTUEL_detail_2026-09-29-R0_a_R4-5.md` ; (2) JOURNAL : sessions R3.4 à R4.4-bis dans `archive/JOURNAL_SESSIONS_2026-09-28-R3-4_a_R4-4bis.md`, 12 renvois fusionnés en un ; (3) GAPS_OUVERTS : 22 gaps retirés (texte tel quel dans `archive/GAPS_OUVERTS_retires_2026-09-29.md`), GAP-2026-09-29-02 (détection junior restante, fusion de 25-15 et 25-17) et GAP-2026-09-29-03 (nouveaux marchands) ouverts, 21-03 et 25-19 mis à jour ; (4) spec MVP déplacée dans `archive/mvp/` ; (5) INDEX à jour ; (6) README réécrit.
+- Vérification en base (lecture seule, Neon) : « Super Tape » n'existe plus qu'en Babolat, donc GAP-2026-09-23-04 retiré.
+- Contrôle : aucun lien `](./` cassé dans INDEX, ETAT, GAPS, JOURNAL ; ETAT 46 lignes, JOURNAL environ 115 lignes. Les mentions de `spec.md` etc. dans `DECISIONS_FONCTIONNELLES.md` sont historiques, laissées telles quelles. Le lien de `archive/mvp/tasks.md` vers `spec.md` reste valide (même dossier).
+- Aucun code modifié, aucune écriture en base.
+- Prochaine étape : fin de R4.5-b (code de D-2026-09-29-05, passage à blanc, relecture, PR).
