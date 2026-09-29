@@ -1,17 +1,17 @@
 # R4.4 — Première mesure du moteur (étapes 1 et 2) et points à valider
 
-> **À valider par Mathieu** pour les points §3. La comparaison (`lib/matching/compare.ts`), le regroupement (`cluster.ts`), le rapport (`report.ts`) et le script (`scripts/matching/shadow-run.ts`) sont écrits et testés sur le jeu R1 figé. **Le script n'a pas été lancé sur la prod** (pas de `DATABASE_URL` dans la session) : la mesure de couverture sur toute la base et la liste des non-reconnus sortiront du premier passage (`npm run match:shadow -- --dry-run`, puis sans `--dry-run`).
+> **Points §3 validés par Mathieu le 2026-09-29 (« je valide tout »).** La comparaison (`lib/matching/compare.ts`), le regroupement (`cluster.ts`), le rapport (`report.ts`) et le script (`scripts/matching/shadow-run.ts`) sont écrits et testés sur le jeu R1 figé. Premier passage réalisé le 2026-09-29 : essai sur une branche Neon temporaire, puis écriture en prod (rapport : `R4_4_rapport_passage.md`).
 
 ## 1. Mesure sur le jeu R1 (67 paires : 32 identiques / 15 proches / 20 différents)
 
 | | Algorithme actuel | Moteur R4.4 |
 |---|---|---|
-| Précision « même modèle » | 5 / 8 = 62,5 % | **9 / 10 = 90 %** |
+| Précision « même modèle » | 5 / 8 = 62,5 % | **9 / 9 = 100 %** |
 | Rappel global | 5 / 32 = 15,6 % | **9 / 32 = 28 %** |
-| Inter-marchands (29 paires identiques) | 2 / 29 | **8 / 29** |
+| Inter-marchands (29 paires identiques) | 2 / 29 | **8 / 29** (précision 8 / 8) |
 | Paires « différent » jugées identiques | 2 (28, 29) | **0** |
 
-Objectif du cadrage : précision ≥ 95 %. **Non atteint sur ce jeu, à cause d'un seul faux positif** (paire 14), qui vient du référentiel, pas du moteur (§3.1).
+Objectif du cadrage : précision ≥ 95 % : atteint sur ce jeu (le faux positif de la paire 14 est corrigé, §3.1), avec la réserve de la petite taille du jeu ; l'échantillon de 30 modèles de prod (R4.6) tranchera.
 
 **Pourquoi le rappel reste bas.** Sur les 23 identiques manquées :
 
@@ -23,7 +23,7 @@ Objectif du cadrage : précision ≥ 95 %. **Non atteint sur ce jeu, à cause d'
 | Cordages : jauge ou conditionnement absents d'un côté ou des deux | 32, 65, 66, 67 | 4 |
 | Genre non écrit d'un côté (chaussures) | 49 | 1 |
 
-Les paires 32 et 65 sont **sacrifiées volontairement** par la règle des attributs requis (§3.3) : sans elle, la 32 serait trouvée mais la paire 25 (« proche » attendu) deviendrait un faux positif : 10 / 12 = 83 % de précision au lieu de 9 / 10. Précision d'abord (principe R3).
+Les paires 32 et 65 sont **sacrifiées volontairement** par la règle des attributs requis (§3.3) : sans elle, la 32 serait trouvée mais la paire 25 (« proche » attendu) deviendrait un faux positif : 10 / 11 au lieu de 9 / 9. Précision d'abord (principe R3).
 
 Rappel « atteignable » (R4-Q6, paires dont l'information nécessaire est dans les données capturées) : **une seule paire l'était** (63, jauge lisible dans la fiche SportSystem), corrigée en R4.4. Toutes les autres manquent d'une information qu'**aucun marchand ne donne** (ou que seule une connaissance extérieure, comme dans les paires 32 et 65, permet de deviner). Le plafond vient donc des règles (« inconnu d'un côté → proche »), pas de la qualité de l'extraction.
 
@@ -38,7 +38,7 @@ Rappel « atteignable » (R4-Q6, paires dont l'information nécessaire est dans 
 
 ## 3. Points à valider (choix non dictés par le cadrage)
 
-1. **Paire 14, alias du référentiel.** `Logo Damp` porte l'alias `s logo damp` : « S Logo Damp » (Tennispro.fr) et « Logo Damp » (Tecnifibre) sont donc la même famille sans autre attribut, alors que R1 les a classés « proche » (sens du « S » incertain : taille ? conditionnement ?). **Proposition** : retirer l'alias `s logo damp` de `model-families-accessoires.ts` (le titre « S Logo Damp » deviendrait non reconnu, donc jamais rapproché) ou en faire une `version` « S » (différente de l'absence de version → « proche »). Avec l'une ou l'autre, la précision passe à **9 / 9**. Je n'ai pas modifié le référentiel validé.
+1. **Paire 14, alias du référentiel — appliqué.** L'alias `s logo damp` est retiré de `Logo Damp` et remplacé par la version « S » (`model-families-accessoires.ts`) ; `version` devient un attribut « proche » des accessoires (`CATEGORY_RULES.accessoires`). « S Logo Damp » face à « Logo Damp » donne « proche ». Précision du jeu R1 : 9 / 9.
 2. **`type_sac: "different"`** ajouté à `CATEGORY_RULES.accessoires` (proposition de `R4_3_complement_referentiel.md` §2, lue seulement si écrite dans le titre). À retirer si tu refuses.
 3. **Attributs requis** (choix R4.4) : pour les cordages, `jauge` et `conditionnement` absents **des deux côtés** = « proche » (paire R1 25 : la jauge est un choix de la fiche) ; pour les balles, `lot` absent des deux côtés = « proche ». Partout ailleurs, absent des deux côtés = égal. Sans cette règle, la paire 25 serait un second faux positif.
 4. **`lot` absent = 1 article** (question laissée ouverte en R4.3), sauf balles où le nombre n'est pas toujours écrit.
@@ -52,3 +52,7 @@ Rappel « atteignable » (R4-Q6, paires dont l'information nécessaire est dans 
 - Textile (57 % des offres) et étape 3 (score, seuils `CONFIDENCE_THRESHOLDS`) : R4.5.
 - Mesure de couverture réelle, liste des non-reconnus, analyse des blocages sur toute la prod : premier passage du script.
 - Gourdes et « autres accessoires » : hors référentiel.
+
+## 5. Premier passage sur la prod (2026-09-29)
+
+Détail dans `R4_4_rapport_passage.md`. En bref : 5 035 offres lues, famille reconnue pour 1 912 des 2 206 offres hors textile, **90 modèles avec ≥ 2 marchands** (5 aujourd'hui) dont **71 en `active` seulement** ; 40 des 106 familles présentes chez ≥ 2 marchands ont un modèle commun. 11 conflits (surtout « pack de 2 raquettes » qui partage le GTIN de la raquette seule, jamais fusionnés), 0 modèle incohérent. Cause de blocage n°1 : génération non écrite (« proche : generation », 3 941 paires), puis version, poids et surface inconnus.

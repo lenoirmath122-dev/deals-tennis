@@ -200,6 +200,9 @@ export const CATEGORY_RULES: Record<DealCategory, CategoryRules> = {
       niveau: "different",
       // Q18 (D-2026-09-28-03) : grip de remplacement ≠ surgrip, même marque/gamme.
       typeGrip: "different",
+      // R4.4 (paire R1 14) : « S Logo Damp » ≠ « Logo Damp » (sens du « S » incertain) : une
+      // version écrite d'un seul côté donne « proche », deux versions différentes aussi.
+      version: "proche",
       // Proposé en R4.3 (`R4_3_complement_referentiel.md` §2), lu seulement s'il est écrit
       // dans le titre (thermobag / sac à dos / duffle / housse / tote) : à valider.
       type_sac: "different",

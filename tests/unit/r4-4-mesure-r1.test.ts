@@ -69,18 +69,18 @@ function measure(pairs: Pair[]) {
 }
 
 describe("moteur R4.4 sur le jeu R1", () => {
-  it("précision 9/10 et rappel 9/32 (algorithme actuel : 5/8 et 5/32)", () => {
-    expect(measure(fixture.pairs)).toEqual({ vp: 9, fp: 1, identical: 32 });
+  it("précision 9/9 et rappel 9/32 (algorithme actuel : 5/8 et 5/32)", () => {
+    expect(measure(fixture.pairs)).toEqual({ vp: 9, fp: 0, identical: 32 });
   });
 
-  it("inter-marchands : précision 8/9 et rappel 8/29 (algorithme actuel : 2/29)", () => {
+  it("inter-marchands : précision 8/8 et rappel 8/29 (algorithme actuel : 2/29)", () => {
     const inter = fixture.pairs.filter((p) => offersById.get(p.offre_a)!.marchand !== offersById.get(p.offre_b)!.marchand);
-    expect(measure(inter)).toEqual({ vp: 8, fp: 1, identical: 29 });
+    expect(measure(inter)).toEqual({ vp: 8, fp: 0, identical: 29 });
   });
 
-  it("un seul faux positif : la paire 14 (« S Logo Damp », alias du référentiel)", () => {
+  it("aucun faux positif (la paire 14, « S Logo Damp », est « proche » grâce à la version « S »)", () => {
     const falsePositives = fixture.pairs.filter((p) => predictedLevel(p) === "identique" && p.attendu !== "identique");
-    expect(falsePositives.map((p) => p.id)).toEqual([14]);
+    expect(falsePositives).toEqual([]);
   });
 
   it("aucune paire « différent » n'est jugée identique (les pièges 28, 29, 33, 38, 43 sont évités)", () => {
@@ -131,7 +131,7 @@ describe("regroupement et rapport sur le jeu R1", () => {
     .map((o) => ({ dealId: o.id, marchand: o.marchand, statut: o.statut, titre: o.titre, extracted: extracted.get(o.id)! }));
   const result = buildModels(engineOffers);
 
-  it("fusionne au moins les 9 paires trouvées et ne fusionne aucune paire « différent »", () => {
+  it("fusionne au moins les paires trouvées et ne fusionne aucune paire « différent »", () => {
     const modelOf = (id: string) => result.links.get(id)?.modelIndex;
     for (const pair of fixture.pairs) {
       if (!extracted.has(pair.offre_a) || !extracted.has(pair.offre_b)) continue;
@@ -156,7 +156,7 @@ describe("regroupement et rapport sur le jeu R1", () => {
     });
     expect(report.counters.offres_lues).toBe(fixture.offers.length);
     expect(report.counters.modeles).toBe(result.models.length);
-    expect(report.counters.modeles_multi_marchands).toBeGreaterThanOrEqual(9);
+    expect(report.counters.modeles_multi_marchands).toBeGreaterThanOrEqual(8);
     expect(report.markdown).toContain("Modèles avec ≥ 2 marchands (active + tracked)");
     expect(report.markdown).toContain("Modèles avec ≥ 2 marchands en active seulement");
     expect(report.csv.conflits.split("\n")[0]).toBe("type;deal_a;titre_a;deal_b;titre_b;detail");
