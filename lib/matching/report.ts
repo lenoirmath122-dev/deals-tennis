@@ -15,7 +15,7 @@ export interface UnsupportedOffer {
 export interface ReportInput {
   engineVersion: string;
   offers: EngineOffer[];
-  /** Offres d'une catégorie que l'extraction ne couvre pas encore (textile, R4.5). */
+  /** Offres d'une catégorie que l'extraction ne couvre pas encore (aucune depuis R4.5-a). */
   unsupported: UnsupportedOffer[];
   result: ClusterResult;
   /** Marque de chaque offre (pour les non-reconnus par marque). */
@@ -161,7 +161,7 @@ export function buildReport(input: ReportInput): PassReport {
     "",
     "## 1. Compteurs",
     "",
-    `- Offres lues : **${counters.offres_lues}** (extraites ${offers.length}, catégorie non prise en charge ${unsupported.length}, textile : R4.5).`,
+    `- Offres lues : **${counters.offres_lues}** (extraites ${offers.length}, catégorie non prise en charge ${unsupported.length}).`,
     `- Famille reconnue : **${recognized.length} / ${offers.length}** (${pct(recognized.length, offers.length)}). Non reconnues : ${Object.entries(reasons).map(([k, v]) => `${k} ${v}`).join(", ") || "aucune"}.`,
     "",
     table(

@@ -230,7 +230,12 @@ export const CATEGORY_RULES: Record<DealCategory, CategoryRules> = {
       taille: "variante",
       type: "different", // t-shirt / short / robe…
       genre: "different",
-      modele: "different",
+      modele: "different", // nom de gamme lu dans le titre (R4.5-a) ; « Club » ≠ « Club Pleat »
+      // R4.5-a (cadrage §2.3) : millésime (« Club 25 Tech »), numéro de génération (« Tie Break II »)
+      // et longueur (7in / 9in, T-Q2) écrits d'un seul côté ou différents → proche.
+      millesime: "proche",
+      numero: "proche",
+      longueur: "proche",
       // Édition spéciale nommée (RG, Wimbledon, US Open…) écrite d'un seul
       // côté → proche (Q6, D-2026-09-28-02, paire R1 n° 59). Distincte de
       // l'année/collection, qui reste gérée par `generationRule` (→ identique).

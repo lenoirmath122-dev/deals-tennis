@@ -60,11 +60,11 @@ function measure(pairs: Pair[]) {
 }
 
 describe("jeu R1 figé", () => {
-  it("contient les 67 paires validées : 32 identiques / 15 proches / 20 différents", () => {
+  it("contient les 67 paires validées : 33 identiques / 14 proches / 20 différents (paire 17 reclassée en R4.5-a)", () => {
     const count = (label: string) => fixture.pairs.filter((p) => p.attendu === label).length;
     expect(fixture.pairs).toHaveLength(67);
-    expect(count("identique")).toBe(32);
-    expect(count("proche")).toBe(15);
+    expect(count("identique")).toBe(33);
+    expect(count("proche")).toBe(14);
     expect(count("différent")).toBe(20);
   });
 
@@ -89,20 +89,20 @@ describe("banc de mesure : algorithme actuel sur le jeu R1", () => {
     expect(ecarts).toEqual([]);
   });
 
-  it("retrouve la précision 5/8 et le rappel 5/32 sur le jeu complet", () => {
+  it("retrouve la précision 5/8 et le rappel 5/33 sur le jeu complet (5/32 avant la reclassification de la paire 17)", () => {
     const result = measure(fixture.pairs);
     expect(result.vp).toBe(5);
     expect(result.matched).toBe(8);
-    expect(result.identical).toBe(32);
+    expect(result.identical).toBe(33);
   });
 
-  it("retrouve 2/29 sur les seules paires inter-marchands identiques", () => {
+  it("retrouve 2/30 sur les seules paires inter-marchands identiques", () => {
     const interMerchants = fixture.pairs.filter(
       (pair) =>
         offersById.get(pair.offre_a)!.marchand !== offersById.get(pair.offre_b)!.marchand
     );
     const result = measure(interMerchants);
     expect(result.vp).toBe(2);
-    expect(result.identical).toBe(29);
+    expect(result.identical).toBe(30);
   });
 });
