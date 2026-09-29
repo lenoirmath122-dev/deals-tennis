@@ -87,14 +87,28 @@
 // Tag d'affiliation Amazon Partenaires (AMAZON_ASSOCIATE_TAG, .env.local,
 // jamais committé) ajouté en paramètre `?tag=` sur chaque lien — sans lui,
 // aucune commission n'est attribuée à l'utilisateur.
+//
+// R3.11 (`cadrage_deals-tennis/R3_cadrage.md`) : réécrit pour passer par
+// `lib/ingest.ts` (upsert products/deals, statut active/tracked, exclusions,
+// sous-catégorie, unité, corrections de marque, éviction avec garde-fou 50 %).
+// - Lien d'affiliation inchangé : `https://www.amazon.fr/dp/{asin}?tag=…` reste
+//   la clé d'upsert (`merchant_id, affiliate_url`) et la cible de `/go/[dealId]`.
+//   Il est construit ici et transmis tel quel à `ingestOffer` ; le tag est
+//   constant, le lien est donc stable d'un passage à l'autre.
+// - Une carte sans prix barré (auparavant ignorée, 154 sur 233 au dernier
+//   passage connu) est gardée en `status='tracked'` (R3-Q3). Les filtres de
+//   pertinence propres à Amazon (marque connue, mot « tennis » en recherche
+//   par mot-clé, autres sports) sont conservés : ils écartent du bruit, pas des
+//   articles sans remise.
+// - `merchant_sku` = ASIN (`data-asin` de la carte, identifiant Amazon de
+//   l'article, aussi présent dans l'URL). L'ASIN n'est pas un GTIN et n'est
+//   pas mis dans `gtin`. `raw_attributes` : ASIN, titre brut de la carte et
+//   source (rayon ou mot-clé, page). Aucun GTIN ni référence fabricant sur la
+//   carte de résultat ; reste R3.12.
 import { chromium, type Browser, type Page } from "playwright";
 import { neon } from "@neondatabase/serverless";
-import {
-  extractAgeGroup,
-  extractColor,
-  extractGender,
-  extractModel,
-} from "../../lib/product-matching.ts";
+import { evictMerchantOffers, ingestOffer } from "../../lib/ingest.ts";
+import type { DealCategory } from "../../types/database.ts";
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is not set");
@@ -144,7 +158,7 @@ interface RayonSource {
 }
 
 interface CategoryConfig {
-  dbCategory: string;
+  dbCategory: DealCategory;
   mode: "rayon" | "keyword";
   rayons?: RayonSource[];
   keyword?: string;
@@ -281,8 +295,9 @@ async function main() {
   console.log(`${knownBrands.length} marque(s) connue(s) chargée(s) depuis la base (référence dynamique).`);
 
   let browser: Browser | undefined;
-  let inserted = 0;
-  let skippedNoDiscount = 0;
+  let active = 0;
+  let tracked = 0;
+  const excluded: Record<string, number> = {};
   let skippedOtherSport = 0;
   let skippedNotTennis = 0;
   let skippedUnparsable = 0;
@@ -334,11 +349,6 @@ async function main() {
             continue;
           }
 
-          if (!Number.isFinite(product.originalPrice) || product.originalPrice <= product.price) {
-            skippedNoDiscount += 1;
-            continue;
-          }
-
           const genderSuffix = source.genderHint ? ` ${source.genderHint}` : "";
           const title = `${product.title}${genderSuffix}`.replace(/\s+/g, " ").trim();
 
@@ -359,52 +369,39 @@ async function main() {
           }
 
           const affiliateUrl = `${MERCHANT_WEBSITE}/dp/${product.asin}?tag=${ASSOCIATE_TAG}`;
-          const model = extractModel(title, brand, config.dbCategory);
-          const color = extractColor(title);
-          const gender = extractGender(title);
-          const ageGroup = extractAgeGroup(title, config.dbCategory);
-          const discountPercentage = Math.round(
-            ((product.originalPrice - product.price) / product.originalPrice) * 100
-          );
+          // Un prix barré absent, illisible ou ≤ prix courant équivaut à « pas de
+          // remise » : `resolvePrice` le traite en `tracked`.
+          const originalPrice =
+            Number.isFinite(product.originalPrice) && product.originalPrice > product.price
+              ? product.originalPrice
+              : product.price;
 
-          const [upsertedProduct] = await sql`
-            INSERT INTO products (brand, model, category, gender, age_group)
-            VALUES (${brand}, ${model}, ${config.dbCategory}, ${gender}, ${ageGroup})
-            ON CONFLICT (LOWER(brand), LOWER(model), category)
-            DO UPDATE SET
-              brand = EXCLUDED.brand,
-              gender = CASE WHEN products.gender = 'non_determine' THEN EXCLUDED.gender ELSE products.gender END,
-              age_group = CASE WHEN products.age_group = 'adulte' AND EXCLUDED.age_group = 'enfant' THEN 'enfant' ELSE products.age_group END
-            RETURNING id
-          `;
+          const outcome = await ingestOffer(sql, {
+            title,
+            brand,
+            category: config.dbCategory,
+            imageUrl: product.image ?? "",
+            originalPrice,
+            discountedPrice: product.price,
+            merchantId: merchant.id,
+            affiliateUrl,
+            merchantSku: product.asin,
+            rawAttributes: {
+              asin: product.asin,
+              merchantName: product.title,
+              source: source.label,
+            },
+          });
 
-          await sql`
-            INSERT INTO deals (
-              title, brand, category, image_url, original_price, discounted_price,
-              discount_percentage, merchant_id, affiliate_url, status, is_active,
-              color, product_id
-            )
-            VALUES (
-              ${title}, ${brand}, ${config.dbCategory}, ${product.image}, ${product.originalPrice},
-              ${product.price}, ${discountPercentage}, ${merchant.id}, ${affiliateUrl}, 'active', true,
-              ${color}, ${upsertedProduct.id}
-            )
-            ON CONFLICT (merchant_id, affiliate_url) DO UPDATE SET
-              title = EXCLUDED.title,
-              brand = EXCLUDED.brand,
-              image_url = EXCLUDED.image_url,
-              original_price = EXCLUDED.original_price,
-              discounted_price = EXCLUDED.discounted_price,
-              discount_percentage = EXCLUDED.discount_percentage,
-              status = 'active',
-              is_active = true,
-              color = EXCLUDED.color,
-              product_id = EXCLUDED.product_id,
-              updated_at = NOW()
-          `;
+          if (!outcome.inserted) {
+            excluded[outcome.reason] = (excluded[outcome.reason] ?? 0) + 1;
+            console.log(`  exclu (${outcome.reason}) : ${title}`);
+            continue;
+          }
 
           seenUrls.push(affiliateUrl);
-          inserted += 1;
+          if (outcome.status === "active") active += 1;
+          else tracked += 1;
           categoryCount += 1;
         }
       }
@@ -415,24 +412,23 @@ async function main() {
     await browser?.close();
   }
 
+  const excludedTotal = Object.values(excluded).reduce((sum, n) => sum + n, 0);
   console.log(
-    `${inserted} offre(s) insérée(s)/mise(s) à jour au total, ${skippedNoDiscount} sans remise réelle, ` +
+    `${active} offre(s) active(s), ${tracked} offre(s) suivie(s) sans remise (tracked), ` +
+      `${excludedTotal} exclue(s) ${JSON.stringify(excluded)}, ` +
       `${skippedNotTennis} sans le mot "tennis" dans le titre, ${skippedOtherSport} hors tennis, ` +
-      `${skippedUnknownBrand} marque non reconnue, ${skippedUnparsable} bloc(s) non parsable(s).`
+      `${skippedUnknownBrand} marque non reconnue, ${skippedUnparsable} bloc(s) sans prix lisible.`
   );
 
-  if (seenUrls.length > 0) {
-    const evicted = await sql`
-      UPDATE deals
-      SET status = 'expired', is_active = false, updated_at = NOW()
-      WHERE merchant_id = ${merchant.id}
-        AND is_active = true
-        AND NOT (affiliate_url = ANY(${seenUrls}))
-      RETURNING id
-    `;
-    console.log(`${evicted.length} offre(s) Amazon expirée(s) (disparue(s) des résultats de recherche).`);
-  } else {
+  // Éviction : garde-fous (0 URL vue, moins de la moitié des offres connues
+  // revues) dans `evictMerchantOffers` (R3-Q5).
+  const eviction = await evictMerchantOffers(sql, merchant.id, seenUrls);
+  if (eviction.guard === "aucune_url_vue") {
     console.log("Aucune offre vue ce passage : éviction ignorée (garde-fou anti-vidage en masse).");
+  } else if (eviction.guard === "moins_de_moitie") {
+    console.log("Moins de la moitié des offres connues revues : éviction ignorée (garde-fou 50 %).");
+  } else {
+    console.log(`${eviction.evicted} offre(s) Amazon expirée(s) (disparue(s) des résultats de recherche).`);
   }
 }
 
