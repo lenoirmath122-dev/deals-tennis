@@ -132,3 +132,12 @@
 - Migration `scripts/migrations/008_match_engine_tables.sql` écrite : `match_runs`, `match_offer_attributes`, `match_models`, `match_offer_links` (R4-Q1), additive, `ON DELETE CASCADE` depuis `match_runs` pour le recalcul complet. Choix de conception non dictés par le cadrage (à revoir en R4.4 si besoin) : clés `(run_id, deal_id)`, `method` limitée à gtin / reference / signature / approche, `score` entre 0 et 1, signature unique par passage.
 - **Incident : le connecteur Neon s'est déconnecté (réauthentification demandée) juste avant l'essai de la migration sur une branche.** Migration donc ni testée ni appliquée. À faire : rétablir le connecteur, tester sur une branche Neon, appliquer en prod avec l'accord de Mathieu, supprimer la branche.
 - Prochaine étape : finir R4.1 (application de la migration), puis **R4.2**.
+
+## 2026-09-29 (session cloud, suite) — R4.1 terminé : migration 008 appliquée en prod
+
+- Point d'étape demandé par Mathieu (« on en est où ? ») : constat que la branche portait 4 commits R4 faits dans une autre session ; GitHub renvoyait des erreurs 503 (état des PR non vérifiable). Question posée à Mathieu : appliquer la migration 008 en prod puis supprimer la branche de test `test-r4-1-match-tables` ; réponse **oui**.
+- **Erreur de ma part, corrigée dans la même session** : j'ai affirmé un instant que cette branche n'existait pas, sans avoir vérifié. Elle existait : créée par Mathieu depuis la console Neon à 14h27 UTC, avec la migration déjà appliquée dessus. Vérifié avant d'agir (`list_branches`), rien n'a été fait sur la base de l'affirmation fausse.
+- Essai sur la branche : structure conforme au fichier (7 index, 14 contraintes, clés étrangères en cascade), insertion réelle d'un passage complet (run, attributs, modèle, lien) puis suppression du run : plus aucune ligne enfant ; `method = 'mauvaise-methode'` rejeté. Branche de test polluée seulement par cet essai, supprimée ensuite.
+- Application en prod par une transaction unique (6 instructions, tout ou rien) sur la branche `main` ; résultat identique à la branche testée (4 tables, 7 index, 14 contraintes, 0 ligne) ; `deals` inchangé (5269 lignes, 4241 `active`, 794 `tracked`). Branche `test-r4-1-match-tables` supprimée ; il ne reste que `main`.
+- **R4.1 terminé.** Prochaine étape : **R4.2** (extraction des attributs raquettes + cordages, `lib/matching/`, Sonnet), dans une nouvelle session.
+
