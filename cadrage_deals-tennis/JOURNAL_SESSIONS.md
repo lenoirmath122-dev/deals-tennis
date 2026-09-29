@@ -121,3 +121,10 @@
 - Décision mineure (raisonnement ci-dessus, non structurante) : `merchant_sku` = SKU seulement, jamais l'identifiant interne (celui-ci va dans `raw_attributes`), pour ne pas mélanger deux identifiants dans la même colonne.
 - Vérifié sur branche Neon puis en prod : 523 offres Head (100 active, 423 tracked, 1 expired), 0 doublon, une observation de prix par offre. `deals` prod : 4237 active / 199 expired / 28 invalid / 782 tracked. Le lancement prod n'a pas été bloqué (règle `mcp__claude_ai_Neon__run_sql` déjà en place ; le script est lancé via `node`, sans blocage constaté).
 - Prochaine étape : **R3.11** (Amazon) ou R3.13, au choix de Mathieu.
+
+## 2026-09-29 (session desktop Sonnet) — R3.11 : script Amazon réécrit sur `lib/ingest.ts`
+
+- Reprise. `git fetch` : PR #104 (R3.10) mergée, passage sur `master` à jour. Modèle actuel = recommandé (Sonnet). Mathieu a choisi R3.11 (question posée, réponse reçue) et demandé de vérifier que les liens d'affiliation sont bien pris en compte : confirmé dans le code (`?tag=${AMAZON_ASSOCIATE_TAG}`, garde sur la variable, clé d'upsert `merchant_id, affiliate_url`) et `AMAZON_ASSOCIATE_TAG` présent dans `.env.local`.
+- Décision mineure (non structurante) : `merchant_sku` = ASIN, jamais dans `gtin` ; filtres de pertinence Amazon conservés, seul le filtre « sans remise » disparaît (→ `tracked`, R3-Q3).
+- Vérifié sur branche Neon puis en prod (accord de Mathieu pour l'application prod et la suppression de la branche) : 41 active + 12 tracked, tous `?tag=` et SKU = ASIN, 0 doublon. `deals` prod : 4241 active / 206 expired / 28 invalid / 794 tracked.
+- Prochaine étape : **R3.13** ou **R3.12**, au choix de Mathieu.
