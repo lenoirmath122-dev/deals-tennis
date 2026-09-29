@@ -1,36 +1,25 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tennisdeals
 
-## Getting Started
+Catalogue de bons plans tennis (raquettes, cordages, chaussures, textile, accessoires) : offres de plusieurs marchands regroupées par article, avec prix barré, remise et lien affilié. Site en production : <https://deals-tennis.vercel.app>.
 
-First, run the development server:
+## Stack
+
+Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, PostgreSQL (Neon), déploiement Vercel. Les offres sont collectées par des scripts lancés à la main (`scripts/scraping/`, socle `lib/ingest.ts`).
+
+## Commandes utiles
+
+Prérequis : un fichier `.env.local` avec `DATABASE_URL`.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev            # serveur de développement
+npm run lint           # eslint
+npm run test:unit      # tests unitaires
+npm run build          # build de production
+npm run db:migrate     # applique les migrations SQL
+npm run scrape:<marchand>   # ex. scrape:tecnifibre, scrape:head, scrape:amazon
+npm run match:shadow   # moteur de rapprochement en mode fantôme (lecture seule)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Documentation de suivi
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Point d'entrée et protocole de reprise : [`cadrage_deals-tennis/INDEX.md`](./cadrage_deals-tennis/INDEX.md).
