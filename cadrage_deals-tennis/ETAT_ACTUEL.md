@@ -7,7 +7,7 @@
 ## Chantier en cours : rapprochement multi-niveaux, R4.5
 
 - **R4.5-a** (extraction textile, référence de style, signature) : fait, PR #116 fusionnée.
-- **R4.5-b** (étape 3 en file de revue, passage à blanc textile) : commit `6e2b8fb` sur la branche `claude/cloud-credit-usage-bqgtxs`, **sans PR** ; les 3 cas Nike tranchés (D-2026-09-29-05), code de cette décision **pas encore écrit**.
+- **R4.5-b** (étape 3 en file de revue, passage à blanc textile) : code de D-2026-09-29-05 écrit et poussé (PR ouverte, commit `2798664`). **Reste à faire : passage à blanc `--dry-run` et relecture (grille D-2026-09-29-06), en session locale** ; à faire avant de fusionner.
 - Définitions des verdicts validées (D-2026-09-29-06) ; étape 0 et ordre du chantier (D-2026-09-29-07) ; mesure de séparation dans `R4_5_mesure_separation.md`.
 
 ## Chantiers terminés
@@ -43,4 +43,4 @@ Next.js 16.3.5 (App Router), React 19, TypeScript, Tailwind CSS v4, PostgreSQL (
 
 ## Prochaine étape
 
-Ordre acté (D-2026-09-29-07) : (1) fin de R4.5-b, session Sonnet : code de D-2026-09-29-05, passage à blanc, relecture avec la grille D-2026-09-29-06, PR ; (2) décisions de Mathieu sur `revue-textile.csv` ; (3) écriture du passage en prod (accord de Mathieu) ; (4) références de style toutes catégories ; (5) corrections d'extraction (§5.3 de `R4_5_mesure_separation.md`) ; (6) état « indéterminé » dans `compare()` ; (7) investigation des indéterminés, dont R4.5-c ; (8) R4.6.
+Ordre acté (D-2026-09-29-07) : (1) fin de R4.5-b : code fait, PR ouverte ; reste passage à blanc et relecture avec la grille D-2026-09-29-06 (session locale) ; (2) décisions de Mathieu sur `revue-textile.csv` ; (3) écriture du passage en prod (accord de Mathieu) ; (4) références de style toutes catégories ; (5) corrections d'extraction (§5.3 de `R4_5_mesure_separation.md`) ; (6) état « indéterminé » dans `compare()` ; (7) investigation des indéterminés, dont R4.5-c ; (8) R4.6.

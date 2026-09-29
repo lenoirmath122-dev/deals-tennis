@@ -107,3 +107,14 @@
 - Contrôle : aucun lien `](./` cassé dans INDEX, ETAT, GAPS, JOURNAL ; ETAT 46 lignes, JOURNAL environ 115 lignes. Les mentions de `spec.md` etc. dans `DECISIONS_FONCTIONNELLES.md` sont historiques, laissées telles quelles. Le lien de `archive/mvp/tasks.md` vers `spec.md` reste valide (même dossier).
 - Aucun code modifié, aucune écriture en base.
 - Prochaine étape : fin de R4.5-b (code de D-2026-09-29-05, passage à blanc, relecture, PR).
+
+
+## 2026-09-29 (session cloud, Sonnet) — R4.5-b : code de D-2026-09-29-05, PR ouverte sans passage à blanc
+
+- Modèle actuel Sonnet, recommandé Sonnet (exécution d'une spec validée).
+- Code (commit `2798664`) : `TEXTILE_STYLE_DISTINCT_BRANDS = ["nike"]` (`config/textile-lexicon.ts`) ; `compare()` : deux références de style Nike connues et différentes = « proche » (`reference_style`) ; `cluster.ts` : union gardée (jamais deux références de style Nike dans un modèle, transitivité comprise), offre sans référence correspondant à plusieurs groupes rattachée à aucun (`ambiguousWithoutReference`, compteur `textile_sans_reference_ambigues` dans le rapport) ; `approx.ts` : paire avec numéro de génération écrit d'un seul côté ou différent exclue de la file de revue (Tie Break II). La signature du titre n'inclut pas la référence de style (sinon les offres sans référence ne se rattacheraient plus).
+- Tests : CV3048/FD5380, DD8329/FD5336, CV2545/FD5384 (proche), transitivité, offre sans référence, adidas inchangée, Lacoste GH5219-3A4/-166 (identique), « TIE-BREAK » / « BREAK II TIE- » (hors file). Suite unitaire verte, sauf `tracking.test.ts` (exige `DATABASE_URL`).
+- **Non fait** : passage à blanc (`npm run match:shadow -- --dry-run`) et relecture des modèles multi-marchands avec la grille D-2026-09-29-06. Le passage a été refusé par le contrôle de sécurité (chaîne de connexion passée en variable d'environnement) ; à lancer depuis une session locale. Le mot de passe du rôle `neondb_owner` est apparu dans la conversation de cette session : rotation conseillée.
+- Décision de Mathieu : ouvrir la PR quand même, pour repartir de là en session locale.
+- À faire au passage à blanc : vérifier que le nombre de modèles multi-marchands ne chute pas fortement (à signaler à Mathieu, D-2026-09-29-05) ; relire `textile_sans_reference_ambigues`.
+- Prochaine étape : session locale, passage à blanc + relecture, puis décisions de Mathieu sur `revue-textile.csv`.
