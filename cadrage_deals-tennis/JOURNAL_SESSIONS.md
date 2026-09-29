@@ -141,3 +141,33 @@
 - Application en prod par une transaction unique (6 instructions, tout ou rien) sur la branche `main` ; résultat identique à la branche testée (4 tables, 7 index, 14 contraintes, 0 ligne) ; `deals` inchangé (5269 lignes, 4241 `active`, 794 `tracked`). Branche `test-r4-1-match-tables` supprimée ; il ne reste que `main`.
 - **R4.1 terminé.** Prochaine étape : **R4.2** (extraction des attributs raquettes + cordages, `lib/matching/`, Sonnet), dans une nouvelle session.
 
+
+## 2026-09-29 (session cloud, Sonnet) — R4.2 : extraction des attributs raquettes + cordages
+
+- Reprise (« On reprend 4.2 »). Modèle actuel = recommandé (Sonnet, R4.2 marquée Sonnet dans `R4_cadrage.md`).
+- Construit `lib/matching/` (fonctions pures, sans base) : `text.ts` (normalisation), `families.ts` (alias le plus long, même marque et catégorie, `BRAND_ALIASES` pris en compte), `shared.ts` (GTIN valide, `mpn` recopié du SKU écarté, lot, cadeau, génération, version, édition), `racquets.ts`, `strings.ts`, `index.ts` (`extractOfferAttributes`). Chaque attribut garde sa source (`fiche_marchand` pour la fiche SportSystem, sinon `titre_description`). Non lus volontairement : le poids `grams` de Tennis Point FR (poids d'expédition), toute génération non écrite (jamais déduite).
+- Attributs : famille, version, génération (+ année), tamis, poids, plan de cordage, longueur (pouces, « + » = 27,5), junior, cordée, édition, lot, cadeau ; cordages : jauge (mm, ou centièmes après le nom), longueur (m), conditionnement (≤ 13 m garniture, sinon bobine), matière. Longueur < 5 m jugée fausse (alerte `longueur_douteuse`, paire R1 67).
+- Défaut trouvé et corrigé en cours : « 16/19 » lu comme taille junior 19 (âge désormais lu après retrait du plan de cordage).
+- Tests : `tests/unit/matching-extraction.test.ts` (24) ; les 63 offres raquettes/cordages du jeu R1 sont toutes reconnues, les pièges des paires (3, 4, 7, 11, 38, 45, 64…) sont séparés par le bon attribut. `tsc` et `eslint` propres ; 124 tests unitaires passent (`tracking.test.ts` exige `DATABASE_URL`, préexistant).
+- Vérifié en lecture seule sur la prod : référence SportSystem (R4-Q7) et non-reconnus Head raquettes → `R4_2_complement_referentiel.md`, **à valider par Mathieu** ; aucune écriture en base, référentiel inchangé.
+- Limite : liste complète des non-reconnus sur toute la prod pas faite ici (pas de `DATABASE_URL` dans le processus, résultats SQL non exportables) ; elle sortira du rapport de passage de R4.4.
+- Prochaine étape : réponses de Mathieu (compléments Head, copie SportSystem → `mpn`), puis **R4.3** (chaussures + accessoires).
+
+## 2026-09-29 (même session, Opus) — R4.2 : décisions de Mathieu et relecture
+
+- Passage sur Opus à la demande de Mathieu (« Tu me conseilles quoi ? »), décision à valider. Conseil donné et retenu (**D-2026-09-29-02**) : six familles Head ajoutées au référentiel ; référence SportSystem lue par le moteur au lieu d'être copiée dans `mpn` (révision de R4-Q7, aucune écriture en base).
+- Code : `referencesFabricant` (liste avec source) remplace `referenceFabricant` ; `mpn` nettoyé + `reference` de chaque variante SportSystem.
+- Relecture Opus du code R4.2, trois défauts corrigés : (1) un nom collé aux chiffres n'était pas reconnu ou perdait sa version (« SX300 », « FX500 », « T-Fight 300S » : la limite lettres/chiffres compte désormais comme limite de mot, et l'alias retiré avant de lire la version est le plus court présent) ; (2) « livraison offerte » aurait été lu comme un cadeau ; (3) classe de caractères inutile dans la lecture « cordée ». Tests ajoutés (130 tests unitaires passent, `tsc`/`eslint` propres).
+- Points laissés pour R4.4 (comparaison) : (a) le tamis de la fiche SportSystem peut différer d'un pouce de l'annonce du fabricant (Pure Aero Rafa : « 640 cm² / 99 sq. in. », vendue en 100) ; une tolérance casserait Pure Strike 97 / 98 (paire R1 4), donc à traiter au cas par cas dans le rapport ; (b) les jauges américaines (« RPM Blast 17 ») ne sont pas lues (conversion en mm non fiable selon la marque) : jauge inconnue → « proche » ; (c) les nouvelles règles de limite de mot n'ont été vérifiées que sur le jeu R1 et les tests, pas sur toute la prod (rapport de passage R4.4).
+- Prochaine étape : **R4.3** (chaussures + accessoires), nouvelle session Sonnet.
+
+## 2026-09-29 (session cloud, Sonnet) — R4.3 : extraction des attributs chaussures + accessoires
+
+- Reprise (« On reprend à R4.3 »). Modèle actuel = recommandé (Sonnet, R4.3 marquée Sonnet dans `R4_cadrage.md`).
+- `lib/matching/` : `shoes.ts` (genre, âge, surface, largeur, génération, version, édition), `accessories.ts` (balles : niveau, pression, conditionnement en nombre de balles ; grips : type et pièces ; antivibrateurs ; sacs : format, contenance), `families.ts` choisit le référentiel par catégorie (`familiesFor`) et, pour les accessoires, restreint aux familles de la sous-catégorie ; `index.ts` prend en charge chaussures et accessoires (textile : R4.5).
+- Genre : fiche Sport 2000 (`donnees_structurees`) sinon titre, alerte si contradiction ; marqueurs d'une lettre du référentiel ignorés.
+- Tests : `tests/unit/matching-extraction-r43.test.ts` (14) ; toutes les offres chaussures et sacs / grips / balles / antivibrateurs du jeu R1 sont reconnues, pièges des paires 14, 16, 20, 24, 26, 33, 37, 49, 51, 53, 61, 22-23 séparés par le bon attribut. Un test R4.2 (catégorie refusée) passe du cas chaussures au cas textile. 145 tests unitaires passent, `tsc` et `eslint` propres.
+- Complément du référentiel et points à valider : `R4_3_complement_referentiel.md` (surface « CL », attribut `type_sac`, lecture de `lot`).
+- Limite : pas de mesure sur toute la prod (pas de `DATABASE_URL`, mot de passe privilégié non demandé) ; la liste des non-reconnus sortira du rapport de passage R4.4.
+- Prochaine étape : réponses de Mathieu sur `R4_3_complement_referentiel.md`, puis **R4.4** (comparaison, cascade, script fantôme, rapport), Sonnet.
+
