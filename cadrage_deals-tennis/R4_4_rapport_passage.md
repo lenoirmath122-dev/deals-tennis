@@ -1,5 +1,9 @@
 # Rapport de passage du moteur fantôme — r4.4-etapes-1-2
 
+> **Passage R4.4-bis du 2026-09-29.** Écrit et vérifié sur la **branche Neon `test-r4-4bis-passage`** (copie de la prod) : 1 454 modèles, 1 912 liens, 2 206 offres extraites, un seul passage conservé, `deals` inchangé (4 241 `active`, 794 `tracked`, 5 269 au total). **L'écriture dans la prod (`match_*`) n'est pas faite** : la commande a été refusée par le contrôle de sécurité de l'environnement ; la prod contient toujours le passage R4.4 (1 456 modèles, 90 multi-marchands). Ces chiffres sont ceux que la prod donnera, la base source étant identique. Relecture des 103 modèles multi-marchands : `R4_4_controle.md` §8.
+>
+> Écart avec le premier passage (R4.4) : modèles 1 456 → 1 454 ; multi-marchands 90 → **103** (`active` 71 → **77**) ; raquettes 21 → **35** ; cordages 4 → 3 (tous justes) ; nouvel indicateur « modèles divergents » (2, bénins). Le premier passage est conservé dans l'historique git de ce fichier.
+
 ## 1. Compteurs
 
 - Offres lues : **5035** (extraites 2206, catégorie non prise en charge 2829, textile : R4.5).
@@ -15,31 +19,31 @@
 
 ## 2. Couverture (R4-Q3)
 
-- Modèles : **1456** (liens : signature 1836, reference 72, gtin 4).
-- **Modèles avec ≥ 2 marchands (active + tracked) : 90** (référence actuelle : 5 produits multi-marchands).
-- **Modèles avec ≥ 2 marchands en active seulement : 71** (ce que le site pourra montrer).
-- Par catégorie (active + tracked) : chaussures 60, accessoires 5, cordages 4, raquettes 21.
-- Plafond famille : 106 familles chez ≥ 2 marchands ; 40 ont au moins un modèle commun (37.7 %).
+- Modèles : **1454** (liens : signature 1836, reference 72, gtin 4).
+- **Modèles avec ≥ 2 marchands (active + tracked) : 103** (référence actuelle : 5 produits multi-marchands).
+- **Modèles avec ≥ 2 marchands en active seulement : 77** (ce que le site pourra montrer).
+- Par catégorie (active + tracked) : chaussures 60, raquettes 35, accessoires 5, cordages 3.
+- Plafond famille : 106 familles chez ≥ 2 marchands ; 44 ont au moins un modèle commun (41.5 %).
 
 ## 3. Pourquoi les autres paires ne fusionnent pas
 
-Paires inter-marchands d'une même famille (300 au plus par famille) : different 4465, proche 2852, identique 259.
+Paires inter-marchands d'une même famille (300 au plus par famille) : different 4628, proche 2655, identique 293.
 
 | Cause (effet : attribut) | Paires |
 | --- | --- |
 | proche : generation | 3941 |
-| different : version | 1727 |
-| inconnu : poids | 1668 |
+| different : version | 2039 |
+| inconnu : poids | 1625 |
 | inconnu : surface | 1241 |
+| inconnu : version | 1153 |
 | proche : surface | 1129 |
 | different : age_group | 1103 |
 | different : genre | 1086 |
-| inconnu : longueur | 1067 |
-| inconnu : version | 974 |
+| inconnu : longueur | 1014 |
 | inconnu : genre | 971 |
-| inconnu : plan_cordage | 893 |
 | inconnu : jauge | 848 |
-| inconnu : tamis | 823 |
+| inconnu : plan_cordage | 837 |
+| inconnu : tamis | 774 |
 | different : generation | 498 |
 | inconnu : conditionnement | 310 |
 
@@ -81,4 +85,5 @@ Liste complète : `non-reconnus.csv`.
 
 - Conflits (même GTIN ou même référence mais familles ou attributs contradictoires, jamais fusionnés) : **11** — `conflits.csv`.
 - Modèles incohérents (deux membres « différents » réunis par un identifiant) : **0**.
+- Modèles divergents (contrôle indépendant de `compare()` : valeurs extraites différentes pour un même attribut chez deux membres) : **2** — `conflits.csv`.
 - Alertes d'extraction : conditionnement_inconnu 9, surfaces_multiples 8, longueur_douteuse 3, lot_quantite_supposee 3.
