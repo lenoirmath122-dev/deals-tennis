@@ -94,3 +94,13 @@
 - Vérifié sur la branche Neon `test-r3-7-sportsystem` (créée le matin même, intacte) : 764 actives (SKU 749, GTIN 302, `raw_attributes` 764, caractéristiques 658, 0 caractère corrompu), 15 expirées (dont 11 nouvelles = dérive du catalogue), relance idempotente (0 expirée). Puis appliqué en prod après accord de Mathieu : mêmes compteurs ; `deals` prod : 4190 active / 466 expired / 28 invalid / 9 tracked.
 - `tsc`/`eslint` propres ; `npm test` non relancé.
 - Prochaine étape : **R3.8** (Babolat) ou R3.13, au choix de Mathieu.
+
+## 2026-09-29 (session desktop Sonnet) — R3.8 : script Babolat réécrit sur `lib/ingest.ts`
+
+- Reprise. Modèle actuel = recommandé (Sonnet, exécution d une spec validée). Mathieu : « On continue R3.8 ».
+- `scripts/scraping/babolat.ts` réécrit sur `ingestOffer` / `evictMerchantOffers`. Inspection réelle : `data-pid` de la carte = `sku` = `mpn` du JSON-LD (référence marchand, `merchant_sku` ; `mpn` non capturé) ; aucun GTIN ni code-barres dans la fiche. `raw_attributes` = étiquette, bénéfices, coloris de la carte (sans requête supplémentaire). Aucune promo : les articles sans remise passent en `tracked` (R3-Q3) au lieu d être ignorés.
+- Défaut préexistant corrigé : la 1re page d une catégorie renvoie 23 blocs pour `sz=24` (raquettes : 23/24/24/20 = 91), ce qui déclenchait l arrêt `< PAGE_SIZE` ; arrêt désormais sur page vide + dédoublonnage par URL. Raquettes passent de 23 à 91.
+- Incident de session : un premier patch scripté a transformé des `\s` en `s` (titres « tenni », « Boo t » sur la branche) ; détecté à la vérification en base, corrigé, relancé. Rien en prod avant correction.
+- Vérifié sur la branche Neon `test-r3-8-babolat` : 350 tracked (SKU 350, `raw_attributes` 350, GTIN 0, 0 titre cassé, 0 sans produit, relance idempotente), 20 expirées. Appliqué en prod après accord de Mathieu (branche supprimée) : Babolat 350 tracked / 20 expired ; `deals` prod : 4190 active / 185 expired / 28 invalid / 359 tracked.
+- `tsc`/`eslint` propres ; `npm test` non relancé.
+- Prochaine étape : **R3.9** (Tennispro.fr) ou R3.13, au choix de Mathieu.

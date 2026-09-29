@@ -8,16 +8,22 @@
 // (seuls des paramètres de filtre/tri/panier/compte/recherche le sont, non
 // utilisés ici).
 //
-// Aucune promotion trouvée sur le site au moment de la vérification (comme au
-// 2026-09-24, reconfirmé le 2026-09-25 sur les 8 sous-catégories) : aucun
-// élément de prix barré (`c-price__list` ou équivalent) n'existe dans le
-// balisage tant qu'un produit n'est pas réellement en promo. Contrairement à
-// la première version de ce script (D-2026-09-24-05), on n'ingère PAS les
-// offres sans remise réelle — incohérent avec les autres marchands
-// (Sport 2000/Tecnifibre/SportSystem n'exposent jamais de "deal" à 0%) et
-// produisait un prix barré identique au prix affiché avec un badge "-0%"
-// dans l'UI. Même traitement que Tecnifibre pour ses catégories sans promo :
-// accepté à 0 article tant que Babolat ne fait pas de vraie promotion.
+// R3.8 (`cadrage_deals-tennis/R3_cadrage.md`) : réécrit pour passer par
+// `lib/ingest.ts` (upsert products/deals, statut active/tracked, exclusions,
+// sous-catégorie, unité, corrections de marque, éviction avec garde-fou 50 %).
+// Aucune promotion sur le site (vérifié 2026-09-24, 2026-09-25 et 2026-09-29) :
+// aucun élément de prix barré (`c-price__list` ou équivalent) n'existe dans le
+// balisage tant qu'un produit n'est pas réellement en promo. Les articles sans
+// remise, auparavant ignorés (D-2026-09-24-05), sont désormais gardés en
+// `status='tracked'` (R3-Q3, D-2026-09-25-21) : exclus du site, mais prix
+// suivi pour l'historique. Le prix barré, lui, n'a jamais été observé (classe
+// `c-price__list` déduite par convention SFCC).
+// Capture ajoutée sans requête supplémentaire : `merchant_sku` = `data-pid` de
+// la carte (identique au `sku` et au `mpn` du JSON-LD de la fiche, vérifié le
+// 2026-09-29 : `mpn` non capturé, il recopie la référence marchand) et
+// `raw_attributes` (étiquette « Nouveau », bénéfices, coloris de la carte).
+// Aucun GTIN/EAN dans la fiche (JSON-LD sans `gtin`, aucun code-barres dans la
+// page) : il reste pour R3.12 s'il est retrouvé ailleurs.
 //
 // Découverte en cours de build (2026-09-25) qui affine la méthode actée en
 // D-2026-09-24-04 ("rendu JS, Playwright nécessaire") : le HTML brut renvoyé
@@ -30,12 +36,12 @@
 // toutes les pages plutôt que de driver un navigateur, cohérent avec le choix
 // déjà fait pour Sport 2000 (D-2026-09-25-06). Aucun Playwright en exécution.
 //
-// Pagination réelle par catégorie (vérifiée le 2026-09-25, `sz=24` par page) :
+// Pagination réelle par catégorie (vérifiée le 2026-09-25, `sz=24` par page ;
+// corrigée en R3.8 : arrêt sur page vide, la première page peut compter 23 blocs) :
 // la page HTML statique ne montre que le premier lot (jusqu'à 24 articles),
 // masquant le reste — ex. chaussures affiche 24 en HTML brut mais compte 90
 // articles réels au total une fois toutes les pages AJAX récupérées. Ce script
-// pagine systématiquement jusqu'à une page renvoyant moins de `PAGE_SIZE`
-// articles.
+// pagine systématiquement jusqu'à une page sans article.
 //
 // Périmètre catégorie -> cgid Babolat (vérifié réellement, un id par page) :
 // raquettes=B2C_NAVIGATION_TENNIS_RACKETS, cordages=..._STRINGS,
@@ -49,12 +55,8 @@
 // `accessoires` plutôt que de se limiter à une seule, pour refléter fidèlement
 // le catalogue réel du marchand.
 import { neon } from "@neondatabase/serverless";
-import {
-  extractAgeGroup,
-  extractColor,
-  extractGender,
-  extractModel,
-} from "../../lib/product-matching.ts";
+import { evictMerchantOffers, ingestOffer } from "../../lib/ingest.ts";
+import type { DealCategory } from "../../types/database.ts";
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is not set");
@@ -75,7 +77,7 @@ const OTHER_SPORTS_PATTERN = /squash|padel|badminton|pickleball/i;
 
 interface CategoryConfig {
   cgid: string;
-  dbCategory: string;
+  dbCategory: DealCategory;
   label: string;
 }
 
@@ -128,6 +130,10 @@ function decodeEntities(text: string): string {
 }
 
 interface ScrapedProduct {
+  pid: string;
+  label: string | null;
+  benefits: string[];
+  colors: string[];
   url: string;
   name: string;
   price: number;
@@ -176,12 +182,20 @@ function parseProduct(block: string): ScrapedProduct | null {
   // le jour où Babolat lance une vraie promotion.
   const listPriceMatch = block.match(/class="c-price__list[^"]*"[^>]*content="([\d.]+)"/);
   const srcsetMatch = block.match(/data-srcset="([^"]+)"/);
+  const pidMatch = block.match(/^<div class="product" data-pid="([^"]+)"/);
+  const labelMatch = block.match(/class="c-product-tile__label link[^>]*>\s*([^<]+?)\s*</);
+  const benefits = [...block.matchAll(/benefit__text">\s*([^<]+?)\s*</g)].map((m) => decodeEntities(m[1]));
+  const colors = [...block.matchAll(/aria-label="Coloris ([^"]+)"/g)].map((m) => decodeEntities(m[1]));
 
   if (!hrefMatch || !altMatch || !priceMatch) {
     return null;
   }
 
   return {
+    pid: pidMatch ? pidMatch[1] : "",
+    label: labelMatch ? decodeEntities(labelMatch[1]) : null,
+    benefits,
+    colors,
     url: `${MERCHANT_WEBSITE}${hrefMatch[1]}`,
     name: decodeEntities(altMatch[1].trim()).replace(/\s+/g, " "),
     price: parseFloat(priceMatch[1]),
@@ -200,7 +214,7 @@ async function fetchCategoryPage(cgid: string, start: number): Promise<string> {
 }
 
 async function fetchAllProducts(cgid: string): Promise<ScrapedProduct[]> {
-  const all: ScrapedProduct[] = [];
+  const all = new Map<string, ScrapedProduct>();
 
   for (let page = 0; page < MAX_PAGES; page += 1) {
     const start = page * PAGE_SIZE;
@@ -210,16 +224,20 @@ async function fetchAllProducts(cgid: string): Promise<ScrapedProduct[]> {
     const blocks = splitProductBlocks(html);
     for (const block of blocks) {
       const product = parseProduct(block);
-      if (product) all.push(product);
+      if (product) all.set(product.url, product);
     }
 
-    if (blocks.length < PAGE_SIZE) break;
+    // Arrêt sur page vide, pas sur page incomplète : la première page d'une
+    // catégorie peut renvoyer 23 blocs pour `sz=24` (raquettes, constaté le
+    // 2026-09-29 : 23 puis 24/24/20, soit 91 articles), ce qui coupait la
+    // lecture après la première page.
+    if (blocks.length === 0) break;
     if (page === MAX_PAGES - 1) {
       console.warn(`  ATTENTION : ${cgid} a atteint MAX_PAGES (${MAX_PAGES}), des articles ont peut-être été manqués.`);
     }
   }
 
-  return all;
+  return [...all.values()];
 }
 
 async function main() {
@@ -230,10 +248,11 @@ async function main() {
     RETURNING id
   `;
 
-  let inserted = 0;
+  let active = 0;
+  let tracked = 0;
+  const excluded: Record<string, number> = {};
   let skippedUnparsable = 0;
   let skippedOtherSport = 0;
-  let skippedNoDiscount = 0;
   const seenUrls: string[] = [];
 
   for (const category of CATEGORIES) {
@@ -248,11 +267,6 @@ async function main() {
         continue;
       }
 
-      if (product.listPrice === null || !Number.isFinite(product.listPrice) || product.listPrice <= product.price) {
-        skippedNoDiscount += 1;
-        continue;
-      }
-
       const title = `${category.label} ${MERCHANT_NAME} ${product.name}`.replace(/\s+/g, " ").trim();
 
       if (OTHER_SPORTS_PATTERN.test(title)) {
@@ -260,73 +274,53 @@ async function main() {
         continue;
       }
 
-      const model = extractModel(title, MERCHANT_NAME, category.dbCategory);
-      const color = extractColor(title);
-      const gender = extractGender(title);
-      const ageGroup = extractAgeGroup(title, category.dbCategory);
-      const price = product.price;
-      const listPrice = product.listPrice;
-      const discountPercentage = Math.round(((listPrice - price) / listPrice) * 100);
+      const outcome = await ingestOffer(sql, {
+        title,
+        brand: MERCHANT_NAME,
+        category: category.dbCategory,
+        imageUrl: product.image ?? "",
+        originalPrice: product.listPrice ?? product.price,
+        discountedPrice: product.price,
+        merchantId: merchant.id,
+        affiliateUrl: product.url,
+        merchantSku: product.pid || null,
+        rawAttributes: {
+          label: product.label,
+          benefits: product.benefits,
+          colors: product.colors,
+        },
+      });
 
-      const [upsertedProduct] = await sql`
-        INSERT INTO products (brand, model, category, gender, age_group)
-        VALUES (${MERCHANT_NAME}, ${model}, ${category.dbCategory}, ${gender}, ${ageGroup})
-        ON CONFLICT (LOWER(brand), LOWER(model), category)
-        DO UPDATE SET
-          brand = EXCLUDED.brand,
-          gender = CASE WHEN products.gender = 'non_determine' THEN EXCLUDED.gender ELSE products.gender END,
-          age_group = CASE WHEN products.age_group = 'adulte' AND EXCLUDED.age_group = 'enfant' THEN 'enfant' ELSE products.age_group END
-        RETURNING id
-      `;
-
-      await sql`
-        INSERT INTO deals (
-          title, brand, category, image_url, original_price, discounted_price,
-          discount_percentage, merchant_id, affiliate_url, status, is_active,
-          color, product_id
-        )
-        VALUES (
-          ${title}, ${MERCHANT_NAME}, ${category.dbCategory}, ${product.image}, ${listPrice},
-          ${price}, ${discountPercentage}, ${merchant.id}, ${product.url}, 'active', true,
-          ${color}, ${upsertedProduct.id}
-        )
-        ON CONFLICT (merchant_id, affiliate_url) DO UPDATE SET
-          title = EXCLUDED.title,
-          image_url = EXCLUDED.image_url,
-          original_price = EXCLUDED.original_price,
-          discounted_price = EXCLUDED.discounted_price,
-          discount_percentage = EXCLUDED.discount_percentage,
-          status = 'active',
-          is_active = true,
-          color = EXCLUDED.color,
-          product_id = EXCLUDED.product_id,
-          updated_at = NOW()
-      `;
+      if (!outcome.inserted) {
+        excluded[outcome.reason] = (excluded[outcome.reason] ?? 0) + 1;
+        console.log(`  exclu (${outcome.reason}) : ${title}`);
+        continue;
+      }
 
       seenUrls.push(product.url);
-      inserted += 1;
+      if (outcome.status === "active") active += 1;
+      else tracked += 1;
       categoryCount += 1;
     }
     console.log(`  ${categoryCount} offre(s) retenue(s) pour ${category.dbCategory} (${category.cgid}).`);
   }
 
+  const excludedTotal = Object.values(excluded).reduce((sum, n) => sum + n, 0);
   console.log(
-    `${inserted} offre(s) insérée(s)/mise(s) à jour au total, ${skippedUnparsable} non parsable(s), ` +
-      `${skippedNoDiscount} sans remise réelle, ${skippedOtherSport} hors tennis.`
+    `${active} offre(s) active(s), ${tracked} offre(s) suivie(s) sans remise (tracked), ` +
+      `${excludedTotal} exclue(s) ${JSON.stringify(excluded)}, ${skippedOtherSport} hors tennis, ` +
+      `${skippedUnparsable} non parsable(s).`
   );
 
-  if (seenUrls.length > 0) {
-    const evicted = await sql`
-      UPDATE deals
-      SET status = 'expired', is_active = false, updated_at = NOW()
-      WHERE merchant_id = ${merchant.id}
-        AND is_active = true
-        AND NOT (affiliate_url = ANY(${seenUrls}))
-      RETURNING id
-    `;
-    console.log(`${evicted.length} offre(s) Babolat expirée(s) (disparue(s) du catalogue).`);
-  } else {
+  // Éviction : garde-fous (0 URL vue, moins de la moitié des offres connues
+  // revues) dans `evictMerchantOffers` (R3-Q5).
+  const eviction = await evictMerchantOffers(sql, merchant.id, seenUrls);
+  if (eviction.guard === "aucune_url_vue") {
     console.log("Aucune offre vue ce passage : éviction ignorée (garde-fou anti-vidage en masse).");
+  } else if (eviction.guard === "moins_de_moitie") {
+    console.log("Moins de la moitié des offres connues revues : éviction ignorée (garde-fou 50 %).");
+  } else {
+    console.log(`${eviction.evicted} offre(s) Babolat expirée(s) (disparue(s) du catalogue).`);
   }
 }
 
