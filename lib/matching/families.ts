@@ -5,11 +5,11 @@
  * normalisé, même marque, même catégorie (`config/model-families.ts`).
  */
 
-import { ACCESSORY_FAMILIES } from "@/config/model-families-accessoires";
-import { SHOE_FAMILIES } from "@/config/model-families-chaussures";
-import { BRAND_ALIASES, MODEL_FAMILIES, type FamilyEntry } from "@/config/model-families";
-import type { DealCategory } from "@/types/database";
-import { fullNormalize, phraseRegExp } from "./text";
+import { ACCESSORY_FAMILIES } from "../../config/model-families-accessoires.ts";
+import { SHOE_FAMILIES } from "../../config/model-families-chaussures.ts";
+import { BRAND_ALIASES, MODEL_FAMILIES, type FamilyEntry } from "../../config/model-families.ts";
+import type { DealCategory } from "../../types/database.ts";
+import { fullNormalize, phraseRegExp } from "./text.ts";
 
 export interface FamilyMatch {
   entry: FamilyEntry;

@@ -1,9 +1,9 @@
 /** Briques communes à l'extraction raquettes et cordages (R4.2). */
 
-import type { FamilyEntry, Generation } from "@/config/model-families";
-import { extractAgeGroup } from "@/lib/product-matching";
-import type { AttributeSource, AttributeValue, ExtractedAttribute, OfferInput } from "./types";
-import { fullNormalize, lightNormalize, phraseRegExp, removePhrase } from "./text";
+import type { FamilyEntry, Generation } from "../../config/model-families.ts";
+import { extractAgeGroup } from "../product-matching.ts";
+import type { AttributeSource, AttributeValue, ExtractedAttribute, OfferInput } from "./types.ts";
+import { fullNormalize, lightNormalize, phraseRegExp, removePhrase } from "./text.ts";
 
 export type Attributes = Record<string, ExtractedAttribute>;
 

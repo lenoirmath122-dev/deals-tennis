@@ -11,12 +11,12 @@ import {
   SHOE_JUNIOR_MARKERS,
   SHOE_SURFACE_MARKERS,
   SHOE_WIDTH_MARKERS,
-} from "@/config/model-families-chaussures";
-import type { FamilyEntry } from "@/config/model-families";
-import { shortestAliasIn } from "./families";
-import { extractEdition, extractGeneration, extractVersion, setAttr, type Attributes } from "./shared";
-import { escapeRegExp, fullNormalize, phraseRegExp, removePhrase } from "./text";
-import type { OfferInput } from "./types";
+} from "../../config/model-families-chaussures.ts";
+import type { FamilyEntry } from "../../config/model-families.ts";
+import { shortestAliasIn } from "./families.ts";
+import { extractEdition, extractGeneration, extractVersion, setAttr, type Attributes } from "./shared.ts";
+import { escapeRegExp, fullNormalize, phraseRegExp, removePhrase } from "./text.ts";
+import type { OfferInput } from "./types.ts";
 
 /**
  * Marqueurs ajoutés à ceux du référentiel, vus sur les titres du jeu R1 :

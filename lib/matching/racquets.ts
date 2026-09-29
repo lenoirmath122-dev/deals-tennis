@@ -7,8 +7,8 @@
  * jamais utilisé (R4_cadrage.md §2.3).
  */
 
-import type { FamilyEntry } from "@/config/model-families";
-import { shortestAliasIn } from "./families";
+import type { FamilyEntry } from "../../config/model-families.ts";
+import { shortestAliasIn } from "./families.ts";
 import {
   ageGroupOf,
   extractCorded,
@@ -21,9 +21,9 @@ import {
   setAttr,
   sportSystemFeatures,
   type Attributes,
-} from "./shared";
-import { fullNormalize, lightNormalize, removePhrase } from "./text";
-import type { OfferInput } from "./types";
+} from "./shared.ts";
+import { fullNormalize, lightNormalize, removePhrase } from "./text.ts";
+import type { OfferInput } from "./types.ts";
 
 const WEIGHT_RANGE = { min: 230, max: 340 };
 const HEAD_SIZE_RANGE = { min: 85, max: 135 };

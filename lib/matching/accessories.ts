@@ -12,10 +12,10 @@
  * (`R4_3_complement_referentiel.md`).
  */
 
-import { SUBCATEGORY_RULES, type AccessorySubcategory } from "@/config/accessory-subcategories";
-import { BALL_LEVEL_MARKERS, type AccessoryFamilyEntry } from "@/config/model-families-accessoires";
-import type { FamilyEntry } from "@/config/model-families";
-import { shortestAliasIn } from "./families";
+import { SUBCATEGORY_RULES, type AccessorySubcategory } from "../../config/accessory-subcategories.ts";
+import { BALL_LEVEL_MARKERS, type AccessoryFamilyEntry } from "../../config/model-families-accessoires.ts";
+import type { FamilyEntry } from "../../config/model-families.ts";
+import { shortestAliasIn } from "./families.ts";
 import {
   ageGroupOf,
   extractEdition,
@@ -24,9 +24,9 @@ import {
   extractVersion,
   setAttr,
   type Attributes,
-} from "./shared";
-import { fullNormalize, lightNormalize, phraseRegExp, removePhrase } from "./text";
-import type { OfferInput } from "./types";
+} from "./shared.ts";
+import { fullNormalize, lightNormalize, phraseRegExp, removePhrase } from "./text.ts";
+import type { OfferInput } from "./types.ts";
 
 /** Sous-catégorie d'après le titre (mêmes règles que l'ingestion, `SUBCATEGORY_RULES`), sinon `null`. */
 export function subcategoryOf(title: string): AccessorySubcategory | null {

@@ -178,7 +178,7 @@ export const ACCESSORY_FAMILIES: AccessoryFamilyEntry[] = [
       "Q16/Q18 vérifié (2026-09-28, babolat.com, tenniscompanion.org, revendeurs) : formes/matériaux réellement différents, pas de simples coloris — Sonic Damp (silicone creux, effet sonore), Custom Damp (capsule à billes métalliques ajustable, modèle Nadal), Strike Damp (coloris assortis à la 4e génération Pure Strike mais forme dédiée). Confirmé en versions (différent).",
     ],
   },
-  { brand: "Tecnifibre", category: "accessoires", subcategory: "antivibrateurs", family: "Logo Damp", aliases: ["logo damp", "s logo damp"], editions: ["Neon", "Tricolore"], statut: "observe" },
+  { brand: "Tecnifibre", category: "accessoires", subcategory: "antivibrateurs", family: "Logo Damp", aliases: ["logo damp"], versions: ["S"], editions: ["Neon", "Tricolore"], statut: "observe" },
   { brand: "Tecnifibre", category: "accessoires", subcategory: "antivibrateurs", family: "Spirit Damp", aliases: ["spirit damp"], editions: ["Neon"], statut: "observe" },
   { brand: "Tecnifibre", category: "accessoires", subcategory: "antivibrateurs", family: "Vibra-clip", aliases: ["vibra clip"], statut: "observe" },
 

@@ -6,9 +6,9 @@
  * `COMMON_ATTRIBUTES`).
  */
 
-import type { AccessorySubcategory } from "@/config/accessory-subcategories";
-import type { ATTRIBUTE_SOURCES } from "@/config/matching-rules";
-import type { DealCategory } from "@/types/database";
+import type { AccessorySubcategory } from "../../config/accessory-subcategories.ts";
+import type { ATTRIBUTE_SOURCES } from "../../config/matching-rules.ts";
+import type { DealCategory } from "../../types/database.ts";
 
 export type AttributeSource = (typeof ATTRIBUTE_SOURCES)[number];
 

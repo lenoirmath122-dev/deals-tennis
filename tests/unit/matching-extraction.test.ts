@@ -271,3 +271,38 @@ describe("jeu R1 figé : toutes les raquettes et cordages sont reconnus", () => 
     }
   });
 });
+
+describe("jauge de la fiche SportSystem (R4.4)", () => {
+  const sheet = (variants: { name: string; group: string; reference: string }[]) => ({
+    marchand: "SportSystem",
+    titre: "Bobine de cordage de tennis Luxilon Alu Power Rough bobine 220m",
+    marque: "Luxilon",
+    categorie: "cordages" as const,
+    raw_attributes: { features: [], variants },
+  });
+
+  it("lit la jauge unique du groupe « Jauge »", () => {
+    const result = extractOfferAttributes(sheet([{ name: "1.25 mm", group: "Jauge", reference: "WRZ990200" }]));
+    expect(result.attributes.jauge).toEqual({ value: 1.25, source: "fiche_marchand" });
+    expect(result.alertes).not.toContain("jauges_multiples");
+  });
+
+  it("plusieurs jauges : la première et l'alerte jauges_multiples", () => {
+    const result = extractOfferAttributes(
+      sheet([
+        { name: "1.20 mm", group: "Jauge", reference: "A" },
+        { name: "1.25 mm", group: "Jauge", reference: "B" },
+      ]),
+    );
+    expect(result.attributes.jauge?.value).toBe(1.2);
+    expect(result.alertes).toContain("jauges_multiples");
+  });
+
+  it("le titre reste prioritaire sur la fiche", () => {
+    const result = extractOfferAttributes({
+      ...sheet([{ name: "1.30 mm", group: "Jauge", reference: "C" }]),
+      titre: "Bobine de cordage de tennis Luxilon Alu Power 1.25mm (220 Metres)",
+    });
+    expect(result.attributes.jauge).toEqual({ value: 1.25, source: "titre_description" });
+  });
+});
