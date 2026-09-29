@@ -42,7 +42,12 @@ export function extractRacquetAttributes(
   let light = lightNormalize(offer.titre);
 
   // Lot et cadeau d'abord : leurs chiffres ne doivent pas être relus ailleurs.
-  const lot = extractLot(light);
+  // « x2 » collé à la fin du modèle = pack de 2 raquettes (Babolat « Pure Aero 98 x2 », 599,95 € = 2 × 299,95 €,
+  // référence différente). Lu seulement pour les raquettes : « 16x19 » est exclu (chiffre avant le « x »).
+  const packSuffix = /(?<![a-z0-9])x(\d)(?![a-z0-9])/.exec(light);
+  const lot =
+    extractLot(light) ??
+    (packSuffix && Number(packSuffix[1]) >= 2 ? { count: Number(packSuffix[1]), text: packSuffix[0], assumed: false } : null);
   if (lot) {
     setAttr(attrs, "lot", lot.count, "titre_description");
     if (lot.assumed) alertes.push("lot_quantite_supposee");

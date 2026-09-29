@@ -161,3 +161,11 @@ Relecture faite : **cordages 3/3 justes** (Alu Power Rough, Rip Control, RPM Bla
 - « Babolat Pure Aero 98 **x2** Gen9 » réuni avec « Pure Aero 98 Gen9 » : le « x2 » n'est pas lu comme un lot pour les raquettes (pack de 2 ? à contrôler sur la fiche).
 - Deux modèles « divergents » (D5) : jauge 1,25 | 1,35 (Babolat Xcel, bobine à jauges au choix) et longueur 27,5 | 27,6 (Pure Drive +) : bénins probables, à confirmer.
 - Raquettes Head : toujours regroupées seulement SportSystem ↔ Tennispro.fr (blocage A non traité).
+
+### 8.2 Pack « x2 » corrigé et relecture complète (2026-09-29)
+
+- **« x2 » des raquettes** : confirmé sur la prod (Babolat « Pure Aero 98 x2 Gen9 », 599,95 € = 2 × 299,95 €, référence 101568 ≠ 101567) : c'est un pack de 2. `racquets.ts` lit désormais « x2 » à « x9 » (collé, sans chiffre avant : « 16x19 » exclu) comme `lot`, donc « différent » de la raquette seule. Tests ajoutés (pack et plan de cordage). La Pure Aero 98 forme maintenant un modèle correct (SportSystem + Babolat).
+- **Nouveau passage à blanc (lecture seule)** : 1 454 modèles, **103 multi-marchands (77 en `active`)** : chaussures 60, raquettes 35, accessoires 5, cordages 3. 2 modèles « divergents » restent (jauge 1,25 | 1,35 sur une bobine à jauges au choix ; longueur 27,5 | 27,6 sur la Pure Drive + : écarts d'arrondi ou de choix de fiche, bénins).
+- **Relecture complète** des 103 modèles (titres, marchand, statut) : **aucun faux regroupement repéré** (60 chaussures, 35 raquettes, 3 cordages, 5 accessoires). Précision observée 103 / 103 (avant : ≈ 94 %, 5 faux sur 90), à lire comme « aucune erreur vue à la relecture », pas comme une vérité de terrain (relecture sur titres et prix, sans ouvrir les fiches).
+- **Points de vigilance** : Babolat / Tennispro.fr « Pure Drive (Lite) » sans génération écrite réunis par référence avec des « Gén 11 » SportSystem (cohérent, à garder à l'œil) ; 12 conflits GTIN / référence non fusionnés (dont Avacourt Y-3, packs de 2 raquettes contre raquette seule), attendus.
+- **Reste avant R4.5** : point 3 de §7 (paires pièges versionnées sur titres réels) et point 4 (GTIN par déclinaison), puis **écriture du passage en prod (tables `match_*`) : accord de Mathieu requis**.

@@ -183,3 +183,16 @@ describe("R4.4-bis : C-Q4, Sensation Comfort", () => {
     expect(compare(comfort, control).niveau).toBe("different");
   });
 });
+
+describe("R4.4-bis : pack « x2 » des raquettes", () => {
+  const racket = (titre: string) => extractOfferAttributes({ marchand: "Test", titre, marque: "Babolat", categorie: "raquettes" });
+  it("« Pure Aero 98 x2 » est un lot de 2, donc différent de la raquette seule", () => {
+    const pack = racket("Raquette de tennis Babolat Pure Aero 98 x2 Gen9 Non Cordée");
+    const single = racket("Raquette de tennis Babolat Pure Aero 98 Gen9 Non Cordée");
+    expect(pack.attributes.lot?.value).toBe(2);
+    expect(compare(pack, single).niveau).toBe("different");
+  });
+  it("le plan de cordage « 16x19 » n'est pas un pack", () => {
+    expect(racket("Raquette Babolat Pure Drive 16x19 Gen11").attributes.lot).toBeUndefined();
+  });
+});
