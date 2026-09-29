@@ -7,7 +7,7 @@
  * (réponses aux questions Q13-Q20, chaussures et accessoires).
  *
  * Statut : validé par Mathieu (D-2026-09-28-02 et D-2026-09-28-03, 2026-09-28).
- * Aucun code ne lit encore ce fichier : il sera consommé par le moteur en R4.
+ * Lu par le moteur en mode fantôme (`lib/matching/compare.ts`, R4.4).
  *
  * Lecture : pour deux offres de la même famille, chaque attribut a un « rôle » :
  * - `variante` : sans effet sur la comparaison (même modèle) ;
@@ -200,6 +200,9 @@ export const CATEGORY_RULES: Record<DealCategory, CategoryRules> = {
       niveau: "different",
       // Q18 (D-2026-09-28-03) : grip de remplacement ≠ surgrip, même marque/gamme.
       typeGrip: "different",
+      // Proposé en R4.3 (`R4_3_complement_referentiel.md` §2), lu seulement s'il est écrit
+      // dans le titre (thermobag / sac à dos / duffle / housse / tote) : à valider.
+      type_sac: "different",
     },
     unitType: "unite", // prix à la pièce par défaut (grips, antivibrateurs…)
     unitTypeBySubcategory: {

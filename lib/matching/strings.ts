@@ -3,8 +3,8 @@
  * (garniture / bobine), matière, lot, cadeau, édition, version.
  */
 
-import type { FamilyEntry } from "@/config/model-families";
-import { shortestAliasIn } from "./families";
+import type { FamilyEntry } from "../../config/model-families.ts";
+import { shortestAliasIn } from "./families.ts";
 import {
   extractEdition,
   extractGift,
@@ -12,9 +12,9 @@ import {
   extractVersion,
   setAttr,
   type Attributes,
-} from "./shared";
-import { fullNormalize, lightNormalize, removePhrase } from "./text";
-import type { OfferInput } from "./types";
+} from "./shared.ts";
+import { fullNormalize, lightNormalize, removePhrase } from "./text.ts";
+import type { OfferInput } from "./types.ts";
 
 /** Longueur maximale d'une garniture (12 m, 12,2 m…) ; au-delà, bobine. */
 const SET_MAX_METERS = 13;
@@ -57,6 +57,21 @@ export function extractStringAttributes(
     setAttr(attrs, "jauge", gauges[0], "titre_description");
     if (new Set(gauges).size > 1) alertes.push("jauges_multiples");
     light = light.replace(/(?<![0-9])1[.,]\d{1,2}\s?mm\b/g, " ");
+  }
+
+  // Jauge de la fiche SportSystem : variantes du groupe « Jauge » (« 1.25 mm »). Une seule = la jauge ;
+  // plusieurs = choix laissé au client (alerte, comme les jauges multiples du titre).
+  if (!attrs.jauge) {
+    const variants = Array.isArray(offer.raw_attributes?.variants) ? (offer.raw_attributes!.variants as unknown[]) : [];
+    const sheetGauges = variants
+      .filter((v): v is { group: string; name: string } => typeof v === "object" && v !== null && "group" in v && "name" in v)
+      .filter((v) => lightNormalize(String(v.group)) === "jauge")
+      .map((v) => Number(/(1[.,]\d{1,2})\s?mm/.exec(lightNormalize(String(v.name)))?.[1].replace(",", ".")))
+      .filter((g) => Number.isFinite(g));
+    if (sheetGauges.length > 0) {
+      setAttr(attrs, "jauge", sheetGauges[0], "fiche_marchand");
+      if (new Set(sheetGauges).size > 1) alertes.push("jauges_multiples");
+    }
   }
 
   // Longueur en mètres : « (200 Metres) », « 12,2 mètres », « bobine 220m », « (200m) ».

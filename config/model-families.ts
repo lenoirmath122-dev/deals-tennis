@@ -58,6 +58,12 @@ export interface FamilyEntry {
   editions?: string[];
   /** Ligne junior : l'âge est un attribut « différent » (COMMON_ATTRIBUTES). */
   junior?: boolean;
+  /**
+   * Génération unique sur le marché (R4-Q4) : lève la règle « génération non écrite des
+   * deux côtés → proche » pour les raquettes, chaussures et sacs. Aucune famille n'est
+   * marquée à ce jour : la liste est à proposer à Mathieu sur les données du rapport.
+   */
+  generationUnique?: boolean;
   excludes?: string[];
   statut: "observe" | "a_confirmer";
   notes?: string[];

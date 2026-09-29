@@ -54,3 +54,6 @@ next-env.d.ts
 
 # artefacts locaux de l'outil playwright-cli (snapshots/logs de session)
 .playwright-cli/
+
+# rapport de passage du moteur fantôme (R4.4)
+/rapport-passage/

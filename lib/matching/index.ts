@@ -6,18 +6,18 @@
  * écrit les tables `match_*` viendra en R4.4.
  */
 
-import { extractAccessoryAttributes, accessorySubcategory, SUBCATEGORIES_WITH_FAMILIES } from "./accessories";
-import type { AccessoryFamilyEntry } from "@/config/model-families-accessoires";
-import { familyKey, recognizeFamily } from "./families";
-import { extractRacquetAttributes } from "./racquets";
-import { extractShoeAttributes } from "./shoes";
-import { cleanGtin, manufacturerReferences, residualTerms, setAttr, type Attributes } from "./shared";
-import { extractStringAttributes } from "./strings";
-import { fullNormalize } from "./text";
-import type { ExtractedOffer, OfferInput } from "./types";
+import { extractAccessoryAttributes, accessorySubcategory, SUBCATEGORIES_WITH_FAMILIES } from "./accessories.ts";
+import type { AccessoryFamilyEntry } from "../../config/model-families-accessoires.ts";
+import { familyKey, recognizeFamily } from "./families.ts";
+import { extractRacquetAttributes } from "./racquets.ts";
+import { extractShoeAttributes } from "./shoes.ts";
+import { cleanGtin, manufacturerReferences, residualTerms, setAttr, type Attributes } from "./shared.ts";
+import { extractStringAttributes } from "./strings.ts";
+import { fullNormalize } from "./text.ts";
+import type { ExtractedOffer, OfferInput } from "./types.ts";
 
-export type { ExtractedAttribute, ExtractedOffer, OfferInput } from "./types";
-export { familyKey } from "./families";
+export type { ExtractedAttribute, ExtractedOffer, OfferInput } from "./types.ts";
+export { familyKey } from "./families.ts";
 
 /** Catégories couvertes par cette version de l'extraction. */
 export const SUPPORTED_CATEGORIES = ["raquettes", "cordages", "chaussures", "accessoires"] as const;
