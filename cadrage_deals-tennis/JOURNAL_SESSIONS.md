@@ -113,3 +113,11 @@
 - Passage réel sur la branche Neon : ~40 min (crawl-delay 60 s, 7 catégories), puis identique en prod. Le lancement prod a d abord été refusé par le classifieur du mode auto (écriture en base partagée) ; règle `Bash(node --env-file=.env.local scripts/scraping/tennispro.ts)` ajoutée dans `.claude/settings.local.json` (non versionné) à la demande de Mathieu, puis lancement.
 - `deals` prod : 4203 active / 198 expired / 28 invalid / 359 tracked. `tsc`/`eslint` propres ; `npm test` : mêmes 4 échecs préexistants (`catalog-query`, `product-suggestions`), identiques sans le changement.
 - Prochaine étape : **R3.10** (Head) ou R3.13, au choix de Mathieu.
+
+## 2026-09-29 (session desktop Sonnet) — R3.10 : script Head réécrit sur `lib/ingest.ts`
+
+- Reprise. `git fetch` : branche locale en retard (PR #103 mergée), passage sur `master` à jour. Modèle actuel = recommandé (Sonnet). Mathieu a choisi R3.10 (question posée, réponse reçue).
+- Inspection réelle (Playwright) : cartes Head = 48 par page, prix présents sur 8 cartes seulement au chargement de la page 1 (hydratation client pour le reste), `data-index` = identifiant Magento, SKU = suffixe numérique de l'URL (absent pour balles et quelques accessoires), pas de GTIN/mpn, `__NEXT_DATA__` limité à 8 articles en page 1 (non utilisé), aucune remise sur raquettes, cordages, chaussures.
+- Décision mineure (raisonnement ci-dessus, non structurante) : `merchant_sku` = SKU seulement, jamais l'identifiant interne (celui-ci va dans `raw_attributes`), pour ne pas mélanger deux identifiants dans la même colonne.
+- Vérifié sur branche Neon puis en prod : 523 offres Head (100 active, 423 tracked, 1 expired), 0 doublon, une observation de prix par offre. `deals` prod : 4237 active / 199 expired / 28 invalid / 782 tracked. Le lancement prod n'a pas été bloqué (règle `mcp__claude_ai_Neon__run_sql` déjà en place ; le script est lancé via `node`, sans blocage constaté).
+- Prochaine étape : **R3.11** (Amazon) ou R3.13, au choix de Mathieu.
