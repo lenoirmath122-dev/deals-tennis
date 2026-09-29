@@ -1207,3 +1207,11 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 - **R4-Q7 révisée** : la référence SportSystem (vérifiée comme référence fabricant pour Head, Babolat, Tecnifibre) n'est **pas copiée dans `mpn`**. Le moteur la lit directement (`reference` de chaque variante ; `merchant_sku` seulement sans variantes et non concaténé). Raisons : aucune écriture sur `deals` pendant R4 (principe fantôme), une référence par variante conservée (Dunlop : varie avec la taille de manche), correction par une ligne de code si une marque se révèle fausse. La correction de `scripts/scraping/sportsystem.ts` (remplir `mpn` à la source) est reportée à R5.
 
 **Statut** : Actée (2026-09-29).
+
+### D-2026-09-29-03 — Phase de correction R4.4-bis ajoutée avant R4.5
+
+**Contexte** : contrôle de R4.1 à R4.4 demandé par Mathieu (session Opus du 2026-09-29, détail dans `R4_4_controle.md`). Code et tests conformes, mais la relecture des 90 modèles multi-marchands du premier passage en prod trouve 5 faux regroupements (précision ≈ 94 %, objectif 95 %) et 5 des 9 modèles de cordages à plusieurs offres faux. Cinq défauts confirmés sur les fonctions du moteur : version des cordages jamais comparée (D1), « All Court » lu comme la version « Court » (D2), « PRM » non reconnu comme Premium (D3), Hydrosorb Comfort absent du référentiel (D4), indicateur « modèles incohérents » aveugle à ces erreurs (D5). Le jeu R1 ne contenait aucune paire de ces formes. Constat séparé sur les raquettes : aucun rapprochement Babolat / Head / Tennis Point FR (blocages A et B, `R4_4_controle.md` §5).
+
+**Décision (Mathieu, 2026-09-29)** : ajouter une **phase de correction R4.4-bis** à la feuille de route (`R4_cadrage.md` §4) **avant de poursuivre les autres phases** : R4.5 ne démarre qu'après les corrections, un nouveau passage fantôme et une nouvelle relecture des modèles multi-marchands. Contenu proposé dans `R4_4_controle.md` §7 ; les questions C-Q1 à C-Q4 (version des cordages, collaborations type Y-3, levier du blocage B des raquettes, Wilson Sensation Comfort) sont posées à Mathieu en début de phase et ne sont pas tranchées par cette décision.
+
+**Statut** : Actée (2026-09-29).

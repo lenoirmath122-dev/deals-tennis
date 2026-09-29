@@ -1,5 +1,34 @@
 # Points ouverts
 
+## GAP-2026-09-29-01 — Raquettes : aucun rapprochement entre le fabricant (Babolat, Head), Tennis Point FR et les revendeurs (OUVERT)
+
+Constat du contrôle R4.4 (`R4_4_controle.md` §5, mesure en prod du
+2026-09-29) : les 21 modèles de raquettes multi-marchands sont tous
+SportSystem / Tennispro.fr par référence fabricant ; aucun par signature,
+aucun par GTIN (0 GTIN de raquette partagé entre deux marchands). Deux
+blocages :
+
+- **A — génération non écrite** : Head 0 / 135 raquettes, Tennispro.fr
+  6 / 125 ; règle R4-Q4 (raquettes : génération inconnue d'un côté →
+  « proche »).
+- **B — même génération des deux côtés, mais poids / tamis / plan de
+  cordage connus d'un seul côté** (fiche SportSystem face à un titre
+  Babolat) → « proche ». Exemple : Babolat « Pure Drive Gen11 » (269,95 €,
+  `tracked`) et SportSystem « Pure Drive Gen 11 2025 » (215,96 €).
+  Touche 29 paires Babolat / SportSystem, 12 Babolat / Tennispro.fr,
+  4 SportSystem / Tennis Point FR, 1 Tennis Point FR / Tennispro.fr.
+
+Enjeu : le prix public du fabricant (226 raquettes `tracked` Babolat et
+Head) est la meilleure référence pour le verdict « vrai bon plan ».
+
+Pistes (non décidées) : lever B quand famille + version + génération sont
+écrites et égales (question C-Q3 de R4.4-bis) ; pour A, hypothèse « site du
+fabricant = génération en cours » à vérifier, ou levier « valeur dominante »
+(R4.5) ; vérifier les GTIN par déclinaison (Tennis Point FR, SportSystem).
+
+**Moment de traitement** : question C-Q3 en début de R4.4-bis ; le reste
+en R4.5 / R4.6.
+
 ## GAP-2026-09-25-19 — Produits multi-marchands distincts : 10 → 1 (OUVERT)
 
 Point de départ chiffré du chantier de rapprochement produit multi-niveaux
