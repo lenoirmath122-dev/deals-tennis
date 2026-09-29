@@ -22,10 +22,26 @@
 // badminton a été trouvé mélangé dans la page outlet accessoires pendant la
 // vérification (2026-09-25) — même filet de sécurité que ProTennis/Tecnifibre
 // (GAP-2026-09-22-09) appliqué sur le titre ET l'URL.
+//
+// R3.9 (`cadrage_deals-tennis/R3_cadrage.md`) : réécrit pour passer par
+// `lib/ingest.ts` (upsert products/deals, statut active/tracked, exclusions,
+// sous-catégorie, unité, corrections de marque, éviction avec garde-fou 50 %).
+// Toutes les offres vues jusqu'ici avaient un prix public barré (pages outlet) ;
+// une carte sans prix public exploitable est désormais gardée en
+// `status='tracked'` (R3-Q3) au lieu d'être ignorée.
+// Capture ajoutée sans requête supplémentaire (vérifié le 2026-09-29 sur
+// `outlet/accessoires.html`) : `merchant_sku` = identifiant Magento de la carte
+// (`view_product_N`, aussi le suffixe de l'URL, présent sur 100 % des cartes) ;
+// le `dataLayer.push({"products":[...]})` de la page donne en plus `mpn`
+// (référence fabricant), `color` et `size`, mais seulement pour les 10 premiers
+// articles de chaque page (10 sur 25 constatés) : `mpn` reste donc partiel
+// (~40 %), le reste est l'objet de R3.12 (fiche produit, 1 requête / 60 s).
+// Pas de GTIN (R0 : aucun JSON-LD ni microdata GTIN sur ce site).
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { neon } from "@neondatabase/serverless";
-import { extractColor, extractModel } from "../../lib/product-matching.ts";
+import { evictMerchantOffers, ingestOffer } from "../../lib/ingest.ts";
+import type { DealCategory } from "../../types/database.ts";
 
 const execFileAsync = promisify(execFile);
 
@@ -52,7 +68,7 @@ interface TypeEntry {
 
 interface CategoryConfig {
   urlPath: string;
-  dbCategory: string;
+  dbCategory: DealCategory;
   entries: TypeEntry[]; // du préfixe le plus long au plus court
   defaultLabel: string;
 }
@@ -136,12 +152,19 @@ const CATEGORIES: CategoryConfig[] = [
 ];
 
 interface ScrapedProduct {
+  id: string;
   url: string;
   brand: string;
   name: string;
   image: string;
   price: number;
-  originalPrice: number;
+  originalPrice: number | null;
+}
+
+interface DataLayerEntry {
+  mpn: string | null;
+  color: string | null;
+  size: string | null;
 }
 
 function sleep(ms: number): Promise<void> {
@@ -192,6 +215,22 @@ function getMaxPage(html: string): number {
   return Math.min(max, MAX_PAGES_PER_CATEGORY);
 }
 
+// `dataLayer.push({"products":[{...,"magento_id":"209655","mpn":"900182",...}]})` :
+// uniquement les 10 premiers articles de la page, indexés par identifiant Magento.
+function parseDataLayer(html: string): Map<string, DataLayerEntry> {
+  const entries = new Map<string, DataLayerEntry>();
+  for (const m of html.matchAll(/\{"id":[^{}]*"magento_id":"(\d+)"[^{}]*\}/g)) {
+    try {
+      const item = JSON.parse(m[0]) as { mpn?: unknown; color?: unknown; size?: unknown };
+      const text = (v: unknown) => (typeof v === "string" && v.trim() !== "" ? v.trim() : null);
+      entries.set(m[1], { mpn: text(item.mpn), color: text(item.color), size: text(item.size) });
+    } catch {
+      // entrée illisible : on ignore, la carte reste ingérée sans mpn
+    }
+  }
+  return entries;
+}
+
 function splitProductBlocks(html: string): string[] {
   const indices: number[] = [];
   const re = /<li class="product item"[^>]*id="view_product_\d+"/g;
@@ -218,18 +257,20 @@ function parseProduct(block: string): ScrapedProduct | null {
   const imageMatch = block.match(/(?:data-orig|src)="(https:\/\/media\.tennispro\.fr[^"]+)"/);
   const priceMatch = block.match(/<span class="regular-price"[^>]*>\s*<span class="price">([^<]*)<\/span>/);
   const originalPriceMatch = block.match(/<div class="public-price">([^<]*)<\/div>/);
+  const idMatch = block.match(/id="view_product_(\d+)"/);
 
-  if (!urlMatch || !brandMatch || !nameMatch || !imageMatch || !priceMatch || !originalPriceMatch) {
+  if (!urlMatch || !brandMatch || !nameMatch || !imageMatch || !priceMatch || !idMatch) {
     return null;
   }
 
   return {
+    id: idMatch[1],
     url: urlMatch[1],
     brand: brandMatch[1].trim(),
     name: nameMatch[1].trim().replace(/\s+/g, " "),
     image: imageMatch[1],
     price: parsePrice(priceMatch[1]),
-    originalPrice: parsePrice(originalPriceMatch[1]),
+    originalPrice: originalPriceMatch ? parsePrice(originalPriceMatch[1]) : null,
   };
 }
 
@@ -251,10 +292,12 @@ async function main() {
     RETURNING id
   `;
 
-  let inserted = 0;
-  let skippedNoDiscount = 0;
+  let active = 0;
+  let tracked = 0;
+  const excluded: Record<string, number> = {};
   let skippedOtherSport = 0;
   let skippedUnparsable = 0;
+  let withMpn = 0;
   const seenUrls: string[] = [];
 
   for (const category of CATEGORIES) {
@@ -272,20 +315,12 @@ async function main() {
 
     let categoryCount = 0;
     for (const html of htmls) {
+      const dataLayer = parseDataLayer(html);
       const blocks = splitProductBlocks(html);
       for (const block of blocks) {
         const product = parseProduct(block);
-        if (!product) {
+        if (!product || !Number.isFinite(product.price) || product.price <= 0) {
           skippedUnparsable += 1;
-          continue;
-        }
-
-        if (
-          !Number.isFinite(product.price) ||
-          !Number.isFinite(product.originalPrice) ||
-          product.originalPrice <= product.price
-        ) {
-          skippedNoDiscount += 1;
           continue;
         }
 
@@ -298,70 +333,60 @@ async function main() {
           continue;
         }
 
-        const model = extractModel(title, brand, category.dbCategory);
-        const color = extractColor(title);
-        const discountPercentage = Math.round(
-          ((product.originalPrice - product.price) / product.originalPrice) * 100
-        );
+        const extra = dataLayer.get(product.id);
+        if (extra?.mpn) withMpn += 1;
 
-        const [upsertedProduct] = await sql`
-          INSERT INTO products (brand, model, category)
-          VALUES (${brand}, ${model}, ${category.dbCategory})
-          ON CONFLICT (LOWER(brand), LOWER(model), category)
-          DO UPDATE SET brand = EXCLUDED.brand
-          RETURNING id
-        `;
+        const outcome = await ingestOffer(sql, {
+          title,
+          brand,
+          category: category.dbCategory,
+          imageUrl: product.image,
+          originalPrice: product.originalPrice ?? product.price,
+          discountedPrice: product.price,
+          merchantId: merchant.id,
+          affiliateUrl: product.url,
+          mpn: extra?.mpn ?? null,
+          merchantSku: product.id,
+          rawAttributes: {
+            magentoId: product.id,
+            color: extra?.color ?? null,
+            size: extra?.size ?? null,
+            merchantBrand: product.brand,
+            merchantName: product.name,
+          },
+        });
 
-        await sql`
-          INSERT INTO deals (
-            title, brand, category, image_url, original_price, discounted_price,
-            discount_percentage, merchant_id, affiliate_url, status, is_active,
-            color, product_id
-          )
-          VALUES (
-            ${title}, ${brand}, ${category.dbCategory}, ${product.image}, ${product.originalPrice},
-            ${product.price}, ${discountPercentage}, ${merchant.id}, ${product.url}, 'active', true,
-            ${color}, ${upsertedProduct.id}
-          )
-          ON CONFLICT (merchant_id, affiliate_url) DO UPDATE SET
-            title = EXCLUDED.title,
-            brand = EXCLUDED.brand,
-            image_url = EXCLUDED.image_url,
-            original_price = EXCLUDED.original_price,
-            discounted_price = EXCLUDED.discounted_price,
-            discount_percentage = EXCLUDED.discount_percentage,
-            status = 'active',
-            is_active = true,
-            color = EXCLUDED.color,
-            product_id = EXCLUDED.product_id,
-            updated_at = NOW()
-        `;
+        if (!outcome.inserted) {
+          excluded[outcome.reason] = (excluded[outcome.reason] ?? 0) + 1;
+          console.log(`  exclu (${outcome.reason}) : ${title}`);
+          continue;
+        }
 
         seenUrls.push(product.url);
-        inserted += 1;
+        if (outcome.status === "active") active += 1;
+        else tracked += 1;
         categoryCount += 1;
       }
     }
     console.log(`  ${categoryCount} offre(s) retenue(s) pour ${category.dbCategory}.`);
   }
 
+  const excludedTotal = Object.values(excluded).reduce((sum, n) => sum + n, 0);
   console.log(
-    `${inserted} offre(s) insérée(s)/mise(s) à jour au total, ${skippedNoDiscount} sans remise réelle, ` +
-      `${skippedOtherSport} hors tennis, ${skippedUnparsable} bloc(s) non parsable(s).`
+    `${active} offre(s) active(s), ${tracked} offre(s) suivie(s) sans remise (tracked), ` +
+      `${excludedTotal} exclue(s) ${JSON.stringify(excluded)}, ${skippedOtherSport} hors tennis, ` +
+      `${skippedUnparsable} bloc(s) non parsable(s), ${withMpn} avec mpn.`
   );
 
-  if (seenUrls.length > 0) {
-    const evicted = await sql`
-      UPDATE deals
-      SET status = 'expired', is_active = false, updated_at = NOW()
-      WHERE merchant_id = ${merchant.id}
-        AND is_active = true
-        AND NOT (affiliate_url = ANY(${seenUrls}))
-      RETURNING id
-    `;
-    console.log(`${evicted.length} offre(s) Tennispro.fr expirée(s) (disparue(s) de l'outlet).`);
-  } else {
+  // Éviction : garde-fous (0 URL vue, moins de la moitié des offres connues
+  // revues) dans `evictMerchantOffers` (R3-Q5).
+  const eviction = await evictMerchantOffers(sql, merchant.id, seenUrls);
+  if (eviction.guard === "aucune_url_vue") {
     console.log("Aucune offre vue ce passage : éviction ignorée (garde-fou anti-vidage en masse).");
+  } else if (eviction.guard === "moins_de_moitie") {
+    console.log("Moins de la moitié des offres connues revues : éviction ignorée (garde-fou 50 %).");
+  } else {
+    console.log(`${eviction.evicted} offre(s) Tennispro.fr expirée(s) (disparue(s) de l'outlet).`);
   }
 }
 
