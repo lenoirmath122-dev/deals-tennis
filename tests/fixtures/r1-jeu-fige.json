@@ -1,0 +1,5105 @@
+{
+ "description": "Jeu R1 fige (R4.1) : 67 paires validees (32 identiques / 15 proches / 20 differents) et les 123 offres distinctes qu'elles referencent, extraites de la base de prod le 2026-09-29. Independant de la base (des offres expirent). `attendu` = decision finale (R1_mesure.md §10) ; `algo_reference` = sortie de l'algorithme actuel mesuree en R1.",
+ "extrait_le": "2026-09-29",
+ "pairs": [
+  {
+   "id": 1,
+   "attendu": "identique",
+   "niveau": "offre",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "f668962b-6689-4d3f-aace-164d80e3b86b",
+   "offre_b": "5b10fead-b09c-4f26-afa7-625a623da04c"
+  },
+  {
+   "id": 2,
+   "attendu": "identique",
+   "niveau": "variante",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "2b657638-a1ae-4af8-8226-e28ab89415ad",
+   "offre_b": "3aafe09a-392c-4441-ad03-1e99a07a2ee5"
+  },
+  {
+   "id": 3,
+   "attendu": "différent",
+   "niveau": "modèle",
+   "piege": "génération (V2.0 / V3)",
+   "algo_reference": "non rapproché",
+   "offre_a": "61116541-63b7-4f3e-8d93-8b714c3d7d99",
+   "offre_b": "c32b2b3e-39bd-40c2-a806-9a75f67c90a1"
+  },
+  {
+   "id": 4,
+   "attendu": "différent",
+   "niveau": "modèle",
+   "piege": "tamis (98 / 97)",
+   "algo_reference": "non rapproché",
+   "offre_a": "b85c39af-11b8-4728-9ce9-c75ec1993c55",
+   "offre_b": "75c87430-2c63-4042-a953-35897d0dc742"
+  },
+  {
+   "id": 5,
+   "attendu": "identique",
+   "niveau": "offre",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "d01177ed-4cd2-4093-ae3c-44788532d491",
+   "offre_b": "f6ddc056-9ed6-4d9b-94a7-fbceecb88e7a"
+  },
+  {
+   "id": 6,
+   "attendu": "différent",
+   "niveau": "modèle",
+   "piege": "génération (antérieure / 2026)",
+   "algo_reference": "non rapproché",
+   "offre_a": "3b42c575-f460-424a-9176-df436af5f429",
+   "offre_b": "06808839-7068-41d7-b6cb-ec6eee8ccfd3"
+  },
+  {
+   "id": 7,
+   "attendu": "différent",
+   "niveau": "modèle",
+   "piege": "génération (antérieure / 2026)",
+   "algo_reference": "non rapproché",
+   "offre_a": "3b42c575-f460-424a-9176-df436af5f429",
+   "offre_b": "06b4d11b-e69d-4dc8-911c-592cc5152211"
+  },
+  {
+   "id": 8,
+   "attendu": "proche",
+   "niveau": "modèle",
+   "piege": "génération non vérifiable",
+   "algo_reference": "non rapproché",
+   "offre_a": "2133f7ce-5dc2-4a96-966a-3ed4bc1ee6d5",
+   "offre_b": "1386aa0b-02b6-4d45-ab8d-020445abec25"
+  },
+  {
+   "id": 9,
+   "attendu": "proche",
+   "niveau": "modèle",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "9e3c11e4-d4a6-4f85-addc-26d6ef161ba6",
+   "offre_b": "6eaf37a4-7f28-4ff9-a74a-3857622ae914"
+  },
+  {
+   "id": 10,
+   "attendu": "différent",
+   "niveau": "modèle",
+   "piege": "version Lite / poids",
+   "algo_reference": "non rapproché",
+   "offre_a": "1d86368d-217a-4841-aacf-ecc31a347519",
+   "offre_b": "f03384df-9fc6-4fca-bb77-3219baa9cb1c"
+  },
+  {
+   "id": 11,
+   "attendu": "différent",
+   "niveau": "modèle",
+   "piege": "taille junior (19\" / 25\")",
+   "algo_reference": "non rapproché",
+   "offre_a": "cc1f7ad7-7a19-4c34-b62d-bface9a65239",
+   "offre_b": "ac70f223-97f2-4986-8446-20c60772cb18"
+  },
+  {
+   "id": 12,
+   "attendu": "identique",
+   "niveau": "offre",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "4330eda7-eea2-41bd-b355-67c61d4984f2",
+   "offre_b": "1af23b88-d660-402c-b037-a8233dd5c79c"
+  },
+  {
+   "id": 13,
+   "attendu": "identique",
+   "niveau": "offre",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "3d017179-ff3d-4d87-b934-134840a8765f",
+   "offre_b": "cf87935c-a257-4a4e-9283-0369db9bb8ff"
+  },
+  {
+   "id": 14,
+   "attendu": "proche",
+   "niveau": "modèle",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "710bd0a0-161c-4016-af5c-cab47495940c",
+   "offre_b": "0de21340-1719-4cbb-8531-89de008c7183"
+  },
+  {
+   "id": 15,
+   "attendu": "identique",
+   "niveau": "offre",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "087b5a65-6467-46ef-ac01-9ce2c2b7c886",
+   "offre_b": "10352d38-dd6e-4e35-9f12-d79a1812cf58"
+  },
+  {
+   "id": 16,
+   "attendu": "différent",
+   "niveau": "modèle",
+   "piege": "genre (femme / homme)",
+   "algo_reference": "non rapproché",
+   "offre_a": "087b5a65-6467-46ef-ac01-9ce2c2b7c886",
+   "offre_b": "0768d4be-1d26-43aa-9c60-268e6e637e9b"
+  },
+  {
+   "id": 17,
+   "attendu": "proche",
+   "niveau": "modèle",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "b37708a1-7670-4d83-9a86-3a4751d1a5f0",
+   "offre_b": "b3195ae2-e9c5-42d1-929a-5a6ff5585e35"
+  },
+  {
+   "id": 18,
+   "attendu": "identique",
+   "niveau": "offre",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "e8072e32-6e69-4fd8-99de-1d9e6a28ba02",
+   "offre_b": "28ac8f38-2633-49e6-9475-29ec60493062"
+  },
+  {
+   "id": 19,
+   "attendu": "identique",
+   "niveau": "offre",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "9e987acd-b1ac-4d4c-ad76-47ad3e402270",
+   "offre_b": "cd43bc1d-4df6-443a-b3cb-19f085a47f84"
+  },
+  {
+   "id": 20,
+   "attendu": "proche",
+   "niveau": "modèle",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "9acf4d4a-db62-48d1-8ed3-1d0d3a5515cb",
+   "offre_b": "bd5ae4bc-83dd-4e8a-b5d6-00387355f524"
+  },
+  {
+   "id": 21,
+   "attendu": "proche",
+   "niveau": "modèle",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "f6b22d7f-8431-40c8-9309-50fb4e5fd431",
+   "offre_b": "9a54ba6f-1d96-4968-9da7-04faa1d53e5c"
+  },
+  {
+   "id": 22,
+   "attendu": "proche",
+   "niveau": "modèle",
+   "piege": "collection non vérifiable",
+   "algo_reference": "non rapproché",
+   "offre_a": "0f895bf4-741a-49a4-ad2a-02f2081cbf7b",
+   "offre_b": "7579ff83-aea5-474d-a0b6-8f0e2b007ae9"
+  },
+  {
+   "id": 23,
+   "attendu": "proche",
+   "niveau": "modèle",
+   "piege": "collection (2023-2024 / non vérifiable)",
+   "algo_reference": "non rapproché",
+   "offre_a": "7579ff83-aea5-474d-a0b6-8f0e2b007ae9",
+   "offre_b": "310d7bcb-4818-4ccb-b75b-e3ff93d9b412"
+  },
+  {
+   "id": 24,
+   "attendu": "différent",
+   "niveau": "modèle",
+   "piege": "genre (femme / homme)",
+   "algo_reference": "non rapproché",
+   "offre_a": "7affbc6a-b484-4384-b785-d10447795e29",
+   "offre_b": "4ee045da-5091-4064-bd06-becb0f06963f"
+  },
+  {
+   "id": 25,
+   "attendu": "proche",
+   "niveau": "modèle",
+   "piege": "jauge non déterminable",
+   "algo_reference": "rapproché",
+   "offre_a": "7ef9a098-b8d8-4bbb-9d63-45862bbf9238",
+   "offre_b": "869a7cb3-bc43-46e9-93f9-55f249cbe0c8"
+  },
+  {
+   "id": 26,
+   "attendu": "identique",
+   "niveau": "offre",
+   "piege": "",
+   "algo_reference": "rapproché",
+   "offre_a": "1a03c2d4-6c33-4209-af0c-4d2bef850562",
+   "offre_b": "76e7e242-c6e0-42f6-b4b4-b9d0b00fa530"
+  },
+  {
+   "id": 27,
+   "attendu": "identique",
+   "niveau": "offre",
+   "piege": "",
+   "algo_reference": "rapproché",
+   "offre_a": "78d50eee-0162-48c3-a849-c1da61049c69",
+   "offre_b": "820634fe-9ba4-442f-9066-770c061c7d8c"
+  },
+  {
+   "id": 28,
+   "attendu": "différent",
+   "niveau": "modèle",
+   "piege": "génération (2022 / 2026)",
+   "algo_reference": "rapproché",
+   "offre_a": "bc2f1e86-3a39-4493-adf7-d376234e0f61",
+   "offre_b": "5e4b822f-0501-4a50-8e2e-f788c595f4ec"
+  },
+  {
+   "id": 29,
+   "attendu": "différent",
+   "niveau": "modèle",
+   "piege": "génération (2023 / Gen11)",
+   "algo_reference": "rapproché",
+   "offre_a": "c070f495-f2c1-419f-8b35-8b0a14fa89e4",
+   "offre_b": "7e40d680-a728-41bd-81a9-85a46a4134a8"
+  },
+  {
+   "id": 30,
+   "attendu": "identique",
+   "niveau": "variante",
+   "piege": "cordée / non cordée",
+   "algo_reference": "rapproché",
+   "offre_a": "5e4b822f-0501-4a50-8e2e-f788c595f4ec",
+   "offre_b": "fdbc6992-a387-4c75-9a64-72a5b952cac5"
+  },
+  {
+   "id": 31,
+   "attendu": "identique",
+   "niveau": "variante",
+   "piege": "",
+   "algo_reference": "rapproché",
+   "offre_a": "a8535bc7-242a-4415-aa08-dd677673505d",
+   "offre_b": "510a618b-44de-4d25-a772-9718cc392689"
+  },
+  {
+   "id": 32,
+   "attendu": "identique",
+   "niveau": "variante",
+   "piege": "",
+   "algo_reference": "rapproché",
+   "offre_a": "269c6fe4-ce59-4a33-a5ec-24cf45f6ee72",
+   "offre_b": "7366ce09-1bb1-46c3-bee1-6c51a353169f"
+  },
+  {
+   "id": 33,
+   "attendu": "différent",
+   "niveau": "modèle",
+   "piege": "génération (Mirage 100 / 100 II)",
+   "algo_reference": "non rapproché",
+   "offre_a": "d8ac3d8c-7157-4b5b-a49c-2f34f7606969",
+   "offre_b": "682ec8b4-b4ab-4703-9303-58bbacaa132e"
+  },
+  {
+   "id": 34,
+   "attendu": "différent",
+   "niveau": "modèle",
+   "piege": "tamis (100 / 107)",
+   "algo_reference": "non rapproché",
+   "offre_a": "fdf55957-c5d5-44bd-9db0-d0cd71c48e46",
+   "offre_b": "de19d491-0d9e-4046-a3d4-714bc32974ef"
+  },
+  {
+   "id": 35,
+   "attendu": "différent",
+   "niveau": "modèle",
+   "piege": "version Lite / S Lite (poids)",
+   "algo_reference": "non rapproché",
+   "offre_a": "a6121ee3-a5f7-4dc4-a3a5-cee7d4aa31e9",
+   "offre_b": "5eabbddf-74ba-49bc-98d9-d592676007be"
+  },
+  {
+   "id": 36,
+   "attendu": "identique",
+   "niveau": "variante",
+   "piege": "cordée / non cordée",
+   "algo_reference": "non rapproché",
+   "offre_a": "1e6d9a80-b8f0-4668-bfb0-f0994e731297",
+   "offre_b": "879f60d1-8fea-43c2-816e-92b08ffd7994"
+  },
+  {
+   "id": 37,
+   "attendu": "différent",
+   "niveau": "conditionnement",
+   "piege": "conditionnement (balles)",
+   "algo_reference": "non rapproché",
+   "offre_a": "76ceb494-ca05-427d-ab00-3cf89fe09d40",
+   "offre_b": "8b5cef08-9e43-4d58-b9c7-8a538fa251f5"
+  },
+  {
+   "id": 38,
+   "attendu": "différent",
+   "niveau": "conditionnement",
+   "piege": "conditionnement (bobine / garniture)",
+   "algo_reference": "non rapproché",
+   "offre_a": "8c41d1a2-0c4f-4c24-949b-c671fdb117e2",
+   "offre_b": "869a7cb3-bc43-46e9-93f9-55f249cbe0c8"
+  },
+  {
+   "id": 39,
+   "attendu": "identique",
+   "niveau": "offre",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "46d06c8c-b783-41eb-b3a7-f7c0369e34cf",
+   "offre_b": "29164c8b-8ff1-4bb9-9b89-d37fe32328c5"
+  },
+  {
+   "id": 40,
+   "attendu": "identique",
+   "niveau": "offre",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "e427ef9d-8e44-4aec-88bc-815dfe356b74",
+   "offre_b": "fe1d6424-349b-48f3-b9d3-62e96922fc9b"
+  },
+  {
+   "id": 41,
+   "attendu": "identique",
+   "niveau": "offre",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "22bb2d7a-aa25-4843-a5ed-9b209c6e0e34",
+   "offre_b": "50098ab4-807d-4f68-8b62-fb78ac27dc6d"
+  },
+  {
+   "id": 42,
+   "attendu": "identique",
+   "niveau": "variante",
+   "piege": "titre trompeur (poids / « new »)",
+   "algo_reference": "non rapproché",
+   "offre_a": "b8e9e2ce-a5d3-4e01-85e1-ee071283f4a1",
+   "offre_b": "6228a9f3-85a5-4976-99c5-5b4c855227cf"
+  },
+  {
+   "id": 43,
+   "attendu": "différent",
+   "niveau": "modèle",
+   "piege": "version (Plus / Rafa)",
+   "algo_reference": "non rapproché",
+   "offre_a": "26bcd6a6-88aa-427f-b9e7-adbf156d69f0",
+   "offre_b": "5f95f718-4625-4574-afea-6d0e7139395c"
+  },
+  {
+   "id": 44,
+   "attendu": "différent",
+   "niveau": "conditionnement",
+   "piege": "conditionnement (pack de 2 raquettes)",
+   "algo_reference": "non rapproché",
+   "offre_a": "9d8d1c33-f203-4ba9-ace8-065dd62dd99b",
+   "offre_b": "75c87430-2c63-4042-a953-35897d0dc742"
+  },
+  {
+   "id": 45,
+   "attendu": "proche",
+   "niveau": "modèle",
+   "piege": "plan de cordage (16x19 / 18x20)",
+   "algo_reference": "non rapproché",
+   "offre_a": "f02c335c-816b-4913-90de-81c1aeb8faa4",
+   "offre_b": "954e0f1c-9391-4c85-b4d3-265999abf18b"
+  },
+  {
+   "id": 46,
+   "attendu": "proche",
+   "niveau": "modèle",
+   "piege": "génération non vérifiable",
+   "algo_reference": "non rapproché",
+   "offre_a": "b594e3da-a998-4c60-8f78-2dcda2869b4c",
+   "offre_b": "db0849db-6380-4da1-89f4-292715ea18e3"
+  },
+  {
+   "id": 47,
+   "attendu": "identique",
+   "niveau": "variante",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "ab32bdd7-0524-49b1-9366-59285f314f94",
+   "offre_b": "722b2f38-2fad-4446-91e8-4a024fe6fb11"
+  },
+  {
+   "id": 48,
+   "attendu": "identique",
+   "niveau": "variante",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "104ba84f-c918-4ba5-91a8-3e973f7e41cf",
+   "offre_b": "8730ed49-bfb6-408f-b1c3-90c64fda20b9"
+  },
+  {
+   "id": 49,
+   "attendu": "identique",
+   "niveau": "variante",
+   "piege": "genre non écrit d'un côté",
+   "algo_reference": "non rapproché",
+   "offre_a": "edadef1f-edc7-4223-a5eb-464c7af84f45",
+   "offre_b": "18160c32-5768-42bc-9d17-c04683918a34"
+  },
+  {
+   "id": 50,
+   "attendu": "identique",
+   "niveau": "variante",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "2f344c19-7f32-48f2-88f5-1351ba624492",
+   "offre_b": "2d315ac4-988c-4720-8cca-2e3bb061984a"
+  },
+  {
+   "id": 51,
+   "attendu": "proche",
+   "niveau": "modèle",
+   "piege": "surface (toutes surfaces / terre battue)",
+   "algo_reference": "non rapproché",
+   "offre_a": "5993da41-5819-48f1-b88f-9258d48c823d",
+   "offre_b": "26d68122-ebe5-450f-80c9-cd3739bd208f"
+  },
+  {
+   "id": 52,
+   "attendu": "identique",
+   "niveau": "variante",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "1d284975-5852-4091-a16f-df90acf80d49",
+   "offre_b": "904bca98-12bf-423a-abe7-75fb7a265d5e"
+  },
+  {
+   "id": 53,
+   "attendu": "proche",
+   "niveau": "modèle",
+   "piege": "surface (toutes surfaces / terre battue)",
+   "algo_reference": "non rapproché",
+   "offre_a": "1d34bf34-4b15-4e28-a129-93d73df07bf1",
+   "offre_b": "b96cedd7-bca6-475b-9fdd-9d1d8d4e72a7"
+  },
+  {
+   "id": 54,
+   "attendu": "identique",
+   "niveau": "offre",
+   "piege": "collection non écrite (textile)",
+   "algo_reference": "non rapproché",
+   "offre_a": "cd43bc1d-4df6-443a-b3cb-19f085a47f84",
+   "offre_b": "ff82ed8e-d407-4a6b-8dd3-3e774e631f8d"
+  },
+  {
+   "id": 55,
+   "attendu": "différent",
+   "niveau": "modèle",
+   "piege": "type de vêtement (débardeur / jupe)",
+   "algo_reference": "non rapproché",
+   "offre_a": "cf87935c-a257-4a4e-9283-0369db9bb8ff",
+   "offre_b": "ff82ed8e-d407-4a6b-8dd3-3e774e631f8d"
+  },
+  {
+   "id": 56,
+   "attendu": "différent",
+   "niveau": "modèle",
+   "piege": "sous-modèle (Club / Club Pleat)",
+   "algo_reference": "non rapproché",
+   "offre_a": "cd43bc1d-4df6-443a-b3cb-19f085a47f84",
+   "offre_b": "606af1f1-0ae7-45f1-83da-5c25ffaa7245"
+  },
+  {
+   "id": 57,
+   "attendu": "identique",
+   "niveau": "variante",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "503ab9b5-00b2-469f-8033-080dc2a276f9",
+   "offre_b": "c204a39b-3796-4c42-9de1-18f719bc8767"
+  },
+  {
+   "id": 58,
+   "attendu": "identique",
+   "niveau": "variante",
+   "piege": "collection écrite d'un seul côté (textile)",
+   "algo_reference": "non rapproché",
+   "offre_a": "eea29d50-4967-41a3-a87b-7f4477f3af01",
+   "offre_b": "0bcd7491-475d-48ed-a1c8-d90b3492d2e3"
+  },
+  {
+   "id": 59,
+   "attendu": "proche",
+   "niveau": "modèle",
+   "piege": "édition (RG / standard)",
+   "algo_reference": "non rapproché",
+   "offre_a": "e433f664-f1d0-4894-a3de-344c75729f06",
+   "offre_b": "71d85de2-0efd-4abe-bc03-fa6f0d04e8bf"
+  },
+  {
+   "id": 60,
+   "attendu": "identique",
+   "niveau": "offre",
+   "piege": "collection non écrite (textile)",
+   "algo_reference": "non rapproché",
+   "offre_a": "3df7d270-aadd-4972-a795-96f9f98e9483",
+   "offre_b": "5fb3dc1b-a5b1-4ef7-ad7e-6d3f3419d5b0"
+  },
+  {
+   "id": 61,
+   "attendu": "identique",
+   "niveau": "variante",
+   "piege": "",
+   "algo_reference": "non rapproché",
+   "offre_a": "d11b6a0d-b235-4c67-8824-babf81d845b1",
+   "offre_b": "d3f4b262-8d21-4eac-b97d-aef2be40a5f8"
+  },
+  {
+   "id": 62,
+   "attendu": "proche",
+   "niveau": "modèle",
+   "piege": "génération non vérifiable",
+   "algo_reference": "non rapproché",
+   "offre_a": "70e6569d-fe47-4bb9-858c-690834e6b6b1",
+   "offre_b": "0c271f44-8db6-48ad-a23b-fdd979b98c95"
+  },
+  {
+   "id": 63,
+   "attendu": "identique",
+   "niveau": "variante",
+   "piege": "jauge au choix dans la fiche",
+   "algo_reference": "non rapproché",
+   "offre_a": "798667ef-55fe-4c1d-9fa0-874438ea386c",
+   "offre_b": "127c7610-9385-4bf7-96b5-385824f2f62a"
+  },
+  {
+   "id": 64,
+   "attendu": "différent",
+   "niveau": "conditionnement",
+   "piege": "longueur (220 m / 200 m) et jauge",
+   "algo_reference": "non rapproché",
+   "offre_a": "798667ef-55fe-4c1d-9fa0-874438ea386c",
+   "offre_b": "f817f08b-17ee-4365-b85f-2e6b269da0f0"
+  },
+  {
+   "id": 65,
+   "attendu": "identique",
+   "niveau": "variante",
+   "piege": "ancienne dénomination / jauge au choix",
+   "algo_reference": "non rapproché",
+   "offre_a": "7b8b6265-de57-489e-abf6-f31a8d20a471",
+   "offre_b": "86ad1e2b-5c07-450a-a5c5-cba4d87d9b59"
+  },
+  {
+   "id": 66,
+   "attendu": "identique",
+   "niveau": "variante",
+   "piege": "marque (Wilson / Luxilon)",
+   "algo_reference": "non rapproché",
+   "offre_a": "3e203aca-ca88-4daf-a153-d665968342cd",
+   "offre_b": "e7f13712-628f-41dc-965a-3d5d77eb6871"
+  },
+  {
+   "id": 67,
+   "attendu": "identique",
+   "niveau": "offre",
+   "piege": "conditionnement mal écrit / marque",
+   "algo_reference": "non rapproché",
+   "offre_a": "3265fe17-650c-471c-9a06-99a68080d515",
+   "offre_b": "613be644-b79e-48ff-80a6-962f8526d836"
+  }
+ ],
+ "offers": [
+  {
+   "id": "06808839-7068-41d7-b6cb-ec6eee8ccfd3",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Dunlop Fx 500 Lite (270 Gr)",
+   "marque": "Dunlop",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "10369906",
+   "merchant_sku": "846865",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "846865",
+    "merchantName": "RAQUETTE FX 500 LITE (270 GR)",
+    "merchantBrand": "dunlop",
+    "enrichissement": {
+     "date": "2026-09-29"
+    }
+   }
+  },
+  {
+   "id": "06b4d11b-e69d-4dc8-911c-592cc5152211",
+   "marchand": "SportSystem",
+   "titre": "Raquette de tennis Dunlop Dunlop FX 500 Lite 2026",
+   "marque": "Dunlop",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "0045566185143",
+   "mpn": null,
+   "merchant_sku": null,
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Technologie(s)",
+      "value": "Sonic Core Infinergy, Power Boost, Power Grid"
+     },
+     {
+      "name": "Tamis",
+      "value": "645 cm² / 100 sq. in."
+     },
+     {
+      "name": "Poids (gr.)",
+      "value": "270"
+     },
+     {
+      "name": "Equilibre",
+      "value": "330 mm."
+     },
+     {
+      "name": "Profil maxi.",
+      "value": "26 mm."
+     },
+     {
+      "name": "Longueur",
+      "value": "27 in. / 68.5 cm."
+     },
+     {
+      "name": "Plan de cordage",
+      "value": "16x18"
+     }
+    ],
+    "variants": [
+     {
+      "name": "1 (4 1/8)",
+      "ean13": "0045566185143",
+      "group": "1-Taille de manche",
+      "reference": "10369907"
+     }
+    ]
+   }
+  },
+  {
+   "id": "0768d4be-1d26-43aa-9c60-268e6e637e9b",
+   "marchand": "Tennis Point FR",
+   "titre": "Chaussures de tennis adidas adizero Ubersonic 5 Chaussures toutes surfaces Hommes - menthe, noir",
+   "marque": "adidas",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": "4068807208001",
+   "mpn": null,
+   "merchant_sku": "0051760684200015",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0051760684200015",
+      "grams": 769,
+      "title": "mint, schwarz / 40"
+     },
+     {
+      "sku": "0051760684200016",
+      "grams": 771,
+      "title": "mint, schwarz / 40 2/3"
+     },
+     {
+      "sku": "0051760684200017",
+      "grams": 806,
+      "title": "mint, schwarz / 41 1/3"
+     },
+     {
+      "sku": "0051760684200018",
+      "grams": 801,
+      "title": "mint, schwarz / 42"
+     },
+     {
+      "sku": "0051760684200019",
+      "grams": 828,
+      "title": "mint, schwarz / 42 2/3"
+     },
+     {
+      "sku": "0051760684200020",
+      "grams": 909,
+      "title": "mint, schwarz / 43 1/3"
+     },
+     {
+      "sku": "0051760684200021",
+      "grams": 888,
+      "title": "mint, schwarz / 44"
+     },
+     {
+      "sku": "0051760684200022",
+      "grams": 907,
+      "title": "mint, schwarz / 44 2/3"
+     },
+     {
+      "sku": "0051760684200023",
+      "grams": 940,
+      "title": "mint, schwarz / 45 1/3"
+     },
+     {
+      "sku": "0051760684200024",
+      "grams": 954,
+      "title": "mint, schwarz / 46"
+     },
+     {
+      "sku": "0051760684200025",
+      "grams": 993,
+      "title": "mint, schwarz / 46 2/3"
+     },
+     {
+      "sku": "0051760684200026",
+      "grams": 999,
+      "title": "mint, schwarz / 47 1/3"
+     },
+     {
+      "sku": "0051760684200027",
+      "grams": 1024,
+      "title": "mint, schwarz / 48"
+     },
+     {
+      "sku": "0051760684200028",
+      "grams": 1090,
+      "title": "mint, schwarz / 48 2/3"
+     },
+     {
+      "sku": "0051760684200000",
+      "grams": 0,
+      "title": "mint, schwarz / 49 1/3"
+     },
+     {
+      "sku": "0051760684200030",
+      "grams": 1133,
+      "title": "mint, schwarz / 50"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0051760684200015",
+       "gtin": "4068807208001"
+      },
+      {
+       "sku": "0051760684200016",
+       "gtin": "4068807208087"
+      },
+      {
+       "sku": "0051760684200017",
+       "gtin": "4068807207981"
+      },
+      {
+       "sku": "0051760684200018",
+       "gtin": "4068807208049"
+      },
+      {
+       "sku": "0051760684200019",
+       "gtin": "4068807207998"
+      },
+      {
+       "sku": "0051760684200020",
+       "gtin": "4068807208124"
+      },
+      {
+       "sku": "0051760684200021",
+       "gtin": "4068807207974"
+      },
+      {
+       "sku": "0051760684200022",
+       "gtin": "4068807208025"
+      },
+      {
+       "sku": "0051760684200023",
+       "gtin": "4068807208131"
+      },
+      {
+       "sku": "0051760684200024",
+       "gtin": "4068807208117"
+      },
+      {
+       "sku": "0051760684200025",
+       "gtin": "4068807208100"
+      },
+      {
+       "sku": "0051760684200026",
+       "gtin": "4068807208018"
+      },
+      {
+       "sku": "0051760684200027",
+       "gtin": "4068807208032"
+      },
+      {
+       "sku": "0051760684200028",
+       "gtin": "4068807208094"
+      },
+      {
+       "sku": "0051760684200000",
+       "gtin": "4068807207967"
+      },
+      {
+       "sku": "0051760684200030",
+       "gtin": "4068807208070"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "087b5a65-6467-46ef-ac01-9ce2c2b7c886",
+   "marchand": "SportSystem",
+   "titre": "Chaussures de tennis Adidas Adidas Adizero Ubersonic 5 femme blanc et argent toutes surfaces Femme",
+   "marque": "Adidas",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": "4067892363855",
+   "mpn": null,
+   "merchant_sku": "IH8103",
+   "raw_attributes": {
+    "features": [],
+    "variants": [
+     {
+      "name": "Blanc",
+      "ean13": "4067892363855",
+      "group": "Couleur",
+      "reference": "IH8103"
+     },
+     {
+      "name": "38 2/3",
+      "ean13": "4067892363855",
+      "group": "3-Pointures",
+      "reference": "IH8103"
+     }
+    ]
+   }
+  },
+  {
+   "id": "0bcd7491-475d-48ed-a1c8-d90b3492d2e3",
+   "marchand": "Tennis Point FR",
+   "titre": "Vêtement de tennis Nike Dri-FIT Victory Jupe Femmes - vert gris, blanc",
+   "marque": "Nike",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "A000000030020405",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "A000000030020405",
+      "grams": 180,
+      "title": "graugrün, weiß / XS"
+     },
+     {
+      "sku": "A000000030020404",
+      "grams": 191,
+      "title": "graugrün, weiß / S"
+     },
+     {
+      "sku": "A000000030020403",
+      "grams": 209,
+      "title": "graugrün, weiß / M"
+     },
+     {
+      "sku": "A000000030020401",
+      "grams": 229,
+      "title": "graugrün, weiß / L"
+     },
+     {
+      "sku": "A000000030020402",
+      "grams": 245,
+      "title": "graugrün, weiß / XL"
+     }
+    ]
+   }
+  },
+  {
+   "id": "0c271f44-8db6-48ad-a23b-fdd979b98c95",
+   "marchand": "Tennis Point FR",
+   "titre": "Accessoire de tennis Nike Big Mouth 650ml/22oz Gourde-Transparent, Noir",
+   "marque": "Nike",
+   "categorie": "accessoires",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "0047560211300000",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0047560211300000",
+      "grams": 87,
+      "title": "transparent, schwarz / nosize"
+     }
+    ]
+   }
+  },
+  {
+   "id": "0de21340-1719-4cbb-8531-89de008c7183",
+   "marchand": "Tecnifibre",
+   "titre": "Antivibrateur de tennis Tecnifibre Logo Damp Tricolore",
+   "marque": "Tecnifibre",
+   "categorie": "accessoires",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "53ATPLOTRN",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "53ATPLOTRN",
+      "grams": 40,
+      "title": "Default Title"
+     }
+    ]
+   }
+  },
+  {
+   "id": "0f895bf4-741a-49a4-ad2a-02f2081cbf7b",
+   "marchand": "SportSystem",
+   "titre": "Sac à dos de tennis Tecnifibre Sac à dos Tecnifibre Backpack Tour Endurance beige",
+   "marque": "Tecnifibre",
+   "categorie": "accessoires",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "40TOUBEIBP",
+   "raw_attributes": {
+    "features": [],
+    "variants": [
+     {
+      "name": "Beige",
+      "ean13": null,
+      "group": "Couleur",
+      "reference": "40TOUBEIBP"
+     }
+    ]
+   }
+  },
+  {
+   "id": "10352d38-dd6e-4e35-9f12-d79a1812cf58",
+   "marchand": "Tennispro.fr",
+   "titre": "Chaussures de tennis Adidas Femme Adizero Ubersonic 5 Toutes Surfaces",
+   "marque": "Adidas",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "IH9936",
+   "merchant_sku": "745330",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "745330",
+    "merchantName": "CHAUSSURES FEMME ADIZERO UBERSONIC 5 TOUTES SURFACES",
+    "merchantBrand": "adidas",
+    "enrichissement": {
+     "date": "2026-09-29"
+    }
+   }
+  },
+  {
+   "id": "104ba84f-c918-4ba5-91a8-3e973f7e41cf",
+   "marchand": "Tennispro.fr",
+   "titre": "Chaussures de tennis Adidas Femme Courtjam Control 3 Terre Battue",
+   "marque": "Adidas",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "KI3443",
+   "merchant_sku": "812700",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "812700",
+    "merchantName": "CHAUSSURES FEMME COURTJAM CONTROL 3 TERRE BATTUE",
+    "merchantBrand": "adidas"
+   }
+  },
+  {
+   "id": "127c7610-9385-4bf7-96b5-385824f2f62a",
+   "marchand": "Tennispro.fr",
+   "titre": "Bobine de cordage de tennis Luxilon Big Banger Alu Power Rough 1.25mm (220 Metres)",
+   "marque": "Luxilon",
+   "categorie": "cordages",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "75379",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "75379",
+    "merchantName": "BOBINE BIG BANGER ALU POWER ROUGH 1.25MM (220 METRES)",
+    "merchantBrand": "luxilon"
+   }
+  },
+  {
+   "id": "1386aa0b-02b6-4d45-ab8d-020445abec25",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Dunlop Cx Team 100 (275 Gr)",
+   "marque": "Dunlop",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "10350805",
+   "merchant_sku": "705181",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "705181",
+    "merchantName": "RAQUETTE CX TEAM 100 (275 GR)",
+    "merchantBrand": "dunlop"
+   }
+  },
+  {
+   "id": "18160c32-5768-42bc-9d17-c04683918a34",
+   "marchand": "Tennis Point FR",
+   "titre": "Chaussures de tennis adidas Adizero Ubersonic 5 Chaussures toutes surfaces Hommes - rose, noir",
+   "marque": "adidas",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": "4068802958208",
+   "mpn": null,
+   "merchant_sku": "0051710677600015",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0051710677600015",
+      "grams": 794,
+      "title": "pink, schwarz / 40"
+     },
+     {
+      "sku": "0051710677600016",
+      "grams": 788,
+      "title": "pink, schwarz / 40 2/3"
+     },
+     {
+      "sku": "0051710677600017",
+      "grams": 823,
+      "title": "pink, schwarz / 41 1/3"
+     },
+     {
+      "sku": "0051710677600018",
+      "grams": 829,
+      "title": "pink, schwarz / 42"
+     },
+     {
+      "sku": "0051710677600019",
+      "grams": 847,
+      "title": "pink, schwarz / 42 2/3"
+     },
+     {
+      "sku": "0051710677600020",
+      "grams": 891,
+      "title": "pink, schwarz / 43 1/3"
+     },
+     {
+      "sku": "0051710677600021",
+      "grams": 912,
+      "title": "pink, schwarz / 44"
+     },
+     {
+      "sku": "0051710677600022",
+      "grams": 924,
+      "title": "pink, schwarz / 44 2/3"
+     },
+     {
+      "sku": "0051710677600023",
+      "grams": 950,
+      "title": "pink, schwarz / 45 1/3"
+     },
+     {
+      "sku": "0051710677600024",
+      "grams": 988,
+      "title": "pink, schwarz / 46"
+     },
+     {
+      "sku": "0051710677600025",
+      "grams": 1005,
+      "title": "pink, schwarz / 46 2/3"
+     },
+     {
+      "sku": "0051710677600026",
+      "grams": 1015,
+      "title": "pink, schwarz / 47 1/3"
+     },
+     {
+      "sku": "0051710677600027",
+      "grams": 1048,
+      "title": "pink, schwarz / 48"
+     },
+     {
+      "sku": "0051710677600028",
+      "grams": 1102,
+      "title": "pink, schwarz / 48 2/3"
+     },
+     {
+      "sku": "0051710677600030",
+      "grams": 1147,
+      "title": "pink, schwarz / 50"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0051710677600015",
+       "gtin": "4068802958208"
+      },
+      {
+       "sku": "0051710677600016",
+       "gtin": "4068802958178"
+      },
+      {
+       "sku": "0051710677600017",
+       "gtin": "4068802961871"
+      },
+      {
+       "sku": "0051710677600018",
+       "gtin": "4068802961901"
+      },
+      {
+       "sku": "0051710677600019",
+       "gtin": "4068802961864"
+      },
+      {
+       "sku": "0051710677600020",
+       "gtin": "4068802958246"
+      },
+      {
+       "sku": "0051710677600021",
+       "gtin": "4068802961932"
+      },
+      {
+       "sku": "0051710677600022",
+       "gtin": "4068802958185"
+      },
+      {
+       "sku": "0051710677600023",
+       "gtin": "4068802961888"
+      },
+      {
+       "sku": "0051710677600024",
+       "gtin": "4068802958192"
+      },
+      {
+       "sku": "0051710677600025",
+       "gtin": "4068802961949"
+      },
+      {
+       "sku": "0051710677600026",
+       "gtin": "4068802961918"
+      },
+      {
+       "sku": "0051710677600027",
+       "gtin": "4068802961925"
+      },
+      {
+       "sku": "0051710677600028",
+       "gtin": "4068802958253"
+      },
+      {
+       "sku": "0051710677600030",
+       "gtin": "4068802958222"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "1a03c2d4-6c33-4209-af0c-4d2bef850562",
+   "marchand": "Babolat",
+   "titre": "Grip de tennis Babolat Syntec Team",
+   "marque": "Babolat",
+   "categorie": "accessoires",
+   "statut": "expired",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": null,
+   "raw_attributes": null
+  },
+  {
+   "id": "1af23b88-d660-402c-b037-a8233dd5c79c",
+   "marchand": "SportSystem",
+   "titre": "Raquette de tennis Tecnifibre TF X1 270 V2",
+   "marque": "Tecnifibre",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "14TFX1704",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Technologie(s)",
+      "value": "Isoflex, X-Damp"
+     },
+     {
+      "name": "Tamis",
+      "value": "645 cm² / 100 sq. in."
+     },
+     {
+      "name": "Poids (gr.)",
+      "value": "270"
+     },
+     {
+      "name": "Equilibre",
+      "value": "330 mm."
+     },
+     {
+      "name": "Profil maxi.",
+      "value": "25.4 mm."
+     },
+     {
+      "name": "Longueur",
+      "value": "27 in. / 68.5 cm."
+     },
+     {
+      "name": "Plan de cordage",
+      "value": "16x19"
+     }
+    ],
+    "variants": [
+     {
+      "name": "3 (4 3/8)",
+      "ean13": null,
+      "group": "1-Taille de manche",
+      "reference": "14TFX1704"
+     }
+    ]
+   }
+  },
+  {
+   "id": "1d284975-5852-4091-a16f-df90acf80d49",
+   "marchand": "SportSystem",
+   "titre": "Chaussures de tennis Babolat Babolat SFX Evo 2025 All Court bleu marine Homme",
+   "marque": "Babolat",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": "3324922223147",
+   "mpn": null,
+   "merchant_sku": "3A0S25A555-4131",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Poids (gr.)",
+      "value": "358"
+     }
+    ],
+    "variants": [
+     {
+      "name": "Bleu",
+      "ean13": "3324922223147",
+      "group": "Couleur",
+      "reference": "3A0S25A555-4131"
+     },
+     {
+      "name": "42",
+      "ean13": "3324922223147",
+      "group": "3-Pointures",
+      "reference": "3A0S25A555-4131"
+     }
+    ]
+   }
+  },
+  {
+   "id": "1d34bf34-4b15-4e28-a129-93d73df07bf1",
+   "marchand": "Tennispro.fr",
+   "titre": "Chaussures de tennis Adidas Femme Barricade 14 Toutes Surfaces",
+   "marque": "Adidas",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "JR1766",
+   "merchant_sku": "812732",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "812732",
+    "merchantName": "CHAUSSURES FEMME BARRICADE 14 TOUTES SURFACES",
+    "merchantBrand": "adidas"
+   }
+  },
+  {
+   "id": "1d86368d-217a-4841-aacf-ecc31a347519",
+   "marchand": "Tennis Point FR",
+   "titre": "Raquette de tennis HEAD Radical Team",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "724794624258",
+   "mpn": null,
+   "merchant_sku": "0060620425400001",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0060620425400001",
+      "grams": 356,
+      "title": "non cordée / 1"
+     },
+     {
+      "sku": "0060620425400002",
+      "grams": 360,
+      "title": "non cordée / 2"
+     },
+     {
+      "sku": "0060620425400003",
+      "grams": 364,
+      "title": "non cordée / 3"
+     },
+     {
+      "sku": "0060620425400004",
+      "grams": 365,
+      "title": "non cordée / 4"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0060620425400001",
+       "gtin": "724794624258"
+      },
+      {
+       "sku": "0060620425400002",
+       "gtin": "724794624265"
+      },
+      {
+       "sku": "0060620425400003",
+       "gtin": "724794624272"
+      },
+      {
+       "sku": "0060620425400004",
+       "gtin": "724794624289"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "1e6d9a80-b8f0-4668-bfb0-f0994e731297",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Babolat Pure Drive Lite (270 Gr)",
+   "marque": "Babolat",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "101555",
+   "merchant_sku": "737608",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "737608",
+    "merchantName": "RAQUETTE PURE DRIVE LITE (270 GR)",
+    "merchantBrand": "babolat"
+   }
+  },
+  {
+   "id": "2133f7ce-5dc2-4a96-966a-3ed4bc1ee6d5",
+   "marchand": "Tennis Point FR",
+   "titre": "Raquette de tennis Dunlop CX Team 100",
+   "marque": "Dunlop",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "045566181411",
+   "mpn": null,
+   "merchant_sku": "0160660233900006",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0160660233900006",
+      "grams": 360,
+      "title": "cordée / 0"
+     },
+     {
+      "sku": "0160660233900001",
+      "grams": 370,
+      "title": "cordée / 1"
+     },
+     {
+      "sku": "0160660233900002",
+      "grams": 365,
+      "title": "cordée / 2"
+     },
+     {
+      "sku": "0160660233900003",
+      "grams": 370,
+      "title": "cordée / 3"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0160660233900006",
+       "gtin": "045566181411"
+      },
+      {
+       "sku": "0160660233900001",
+       "gtin": "045566181428"
+      },
+      {
+       "sku": "0160660233900002",
+       "gtin": "045566181435"
+      },
+      {
+       "sku": "0160660233900003",
+       "gtin": "045566181442"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "22bb2d7a-aa25-4843-a5ed-9b209c6e0e34",
+   "marchand": "SportSystem",
+   "titre": "Raquette de tennis Head Head Extreme MP",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "231114",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Technologie(s)",
+      "value": "Auxetic 2.0, Graphene, Spin Pattern, Spin Grommets"
+     },
+     {
+      "name": "Tamis",
+      "value": "645 cm² / 100 sq. in."
+     },
+     {
+      "name": "Poids (gr.)",
+      "value": "300"
+     },
+     {
+      "name": "Equilibre",
+      "value": "320 mm."
+     },
+     {
+      "name": "Profil maxi.",
+      "value": "26 mm."
+     },
+     {
+      "name": "Longueur",
+      "value": "27 in. / 68.5 cm."
+     },
+     {
+      "name": "Plan de cordage",
+      "value": "16x19"
+     }
+    ],
+    "variants": [
+     {
+      "name": "2 (4 1/4)",
+      "ean13": null,
+      "group": "1-Taille de manche",
+      "reference": "231114"
+     }
+    ]
+   }
+  },
+  {
+   "id": "269c6fe4-ce59-4a33-a5ec-24cf45f6ee72",
+   "marchand": "Tennispro.fr",
+   "titre": "Bobine de cordage de tennis Luxilon Big Banger Alu Power (200 Metres)",
+   "marque": "Luxilon",
+   "categorie": "cordages",
+   "statut": "expired",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": null,
+   "raw_attributes": null
+  },
+  {
+   "id": "26bcd6a6-88aa-427f-b9e7-adbf156d69f0",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Babolat Pure Aero + (300 Gr)",
+   "marque": "Babolat",
+   "categorie": "raquettes",
+   "statut": "expired",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": null,
+   "raw_attributes": null
+  },
+  {
+   "id": "26d68122-ebe5-450f-80c9-cd3739bd208f",
+   "marchand": "Tennis Point FR",
+   "titre": "Chaussures de tennis ASICS Gel-Resolution X Chaussure terre battue Hommes - gris, vert",
+   "marque": "ASICS",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": "4571633435225",
+   "mpn": null,
+   "merchant_sku": "P000000128030243",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "P000000128030243",
+      "grams": 934,
+      "title": "grau, grün / 40"
+     },
+     {
+      "sku": "P000000128030231",
+      "grams": 935,
+      "title": "grau, grün / 40,5"
+     },
+     {
+      "sku": "P000000128030238",
+      "grams": 983,
+      "title": "grau, grün / 41,5"
+     },
+     {
+      "sku": "P000000128030230",
+      "grams": 996,
+      "title": "grau, grün / 42"
+     },
+     {
+      "sku": "P000000128030232",
+      "grams": 1034,
+      "title": "grau, grün / 42,5"
+     },
+     {
+      "sku": "P000000128030239",
+      "grams": 1061,
+      "title": "grau, grün / 43,5"
+     },
+     {
+      "sku": "P000000128030235",
+      "grams": 1071,
+      "title": "grau, grün / 44"
+     },
+     {
+      "sku": "P000000128030240",
+      "grams": 1099,
+      "title": "grau, grün / 44,5"
+     },
+     {
+      "sku": "P000000128030234",
+      "grams": 1112,
+      "title": "grau, grün / 45"
+     },
+     {
+      "sku": "P000000128030236",
+      "grams": 1168,
+      "title": "grau, grün / 46"
+     },
+     {
+      "sku": "P000000128030241",
+      "grams": 1172,
+      "title": "grau, grün / 46,5"
+     },
+     {
+      "sku": "P000000128030233",
+      "grams": 1205,
+      "title": "grau, grün / 47"
+     },
+     {
+      "sku": "P000000128030229",
+      "grams": 1251,
+      "title": "grau, grün / 48"
+     },
+     {
+      "sku": "P000000128030242",
+      "grams": 1312,
+      "title": "grau, grün / 49"
+     },
+     {
+      "sku": "P000000128030237",
+      "grams": 1349,
+      "title": "grau, grün / 50,5"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "P000000128030243",
+       "gtin": "4571633435225"
+      },
+      {
+       "sku": "P000000128030231",
+       "gtin": "4571633435102"
+      },
+      {
+       "sku": "P000000128030238",
+       "gtin": "4571633435195"
+      },
+      {
+       "sku": "P000000128030230",
+       "gtin": "4571633435096"
+      },
+      {
+       "sku": "P000000128030232",
+       "gtin": "4571633435119"
+      },
+      {
+       "sku": "P000000128030239",
+       "gtin": "4571633435201"
+      },
+      {
+       "sku": "P000000128030235",
+       "gtin": "4571633435164"
+      },
+      {
+       "sku": "P000000128030240",
+       "gtin": "4571633435218"
+      },
+      {
+       "sku": "P000000128030234",
+       "gtin": "4571633435140"
+      },
+      {
+       "sku": "P000000128030236",
+       "gtin": "4571633435171"
+      },
+      {
+       "sku": "P000000128030241",
+       "gtin": "4571633435232"
+      },
+      {
+       "sku": "P000000128030233",
+       "gtin": "4571633435126"
+      },
+      {
+       "sku": "P000000128030229",
+       "gtin": "4571633435089"
+      },
+      {
+       "sku": "P000000128030242",
+       "gtin": "4571633435249"
+      },
+      {
+       "sku": "P000000128030237",
+       "gtin": "4571633435188"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "28ac8f38-2633-49e6-9475-29ec60493062",
+   "marchand": "Tennispro.fr",
+   "titre": "Short de tennis Adidas Junior Club",
+   "marque": "Adidas",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "KB8002-128",
+   "merchant_sku": "827864",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "827864",
+    "merchantName": "SHORT JUNIOR CLUB",
+    "merchantBrand": "adidas"
+   }
+  },
+  {
+   "id": "29164c8b-8ff1-4bb9-9b89-d37fe32328c5",
+   "marchand": "SportSystem",
+   "titre": "Raquette de tennis Dunlop Dunlop FX 500 LS 2026",
+   "marque": "Dunlop",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "0045566185112",
+   "mpn": null,
+   "merchant_sku": null,
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Technologie(s)",
+      "value": "Sonic Core Infinergy, Power Boost, Power Grid"
+     },
+     {
+      "name": "Tamis",
+      "value": "645 cm² / 100 sq. in."
+     },
+     {
+      "name": "Poids (gr.)",
+      "value": "285"
+     },
+     {
+      "name": "Equilibre",
+      "value": "325 mm."
+     },
+     {
+      "name": "Profil maxi.",
+      "value": "26 mm."
+     },
+     {
+      "name": "Longueur",
+      "value": "27 in. / 68.5 cm."
+     },
+     {
+      "name": "Plan de cordage",
+      "value": "16x19"
+     }
+    ],
+    "variants": [
+     {
+      "name": "2 (4 1/4)",
+      "ean13": "0045566185112",
+      "group": "1-Taille de manche",
+      "reference": "10369903"
+     }
+    ]
+   }
+  },
+  {
+   "id": "2b657638-a1ae-4af8-8226-e28ab89415ad",
+   "marchand": "Tennis Point FR",
+   "titre": "Raquette de tennis HEAD Boom MP L Neon 2025",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "198772103682",
+   "mpn": null,
+   "merchant_sku": "0060700457600001",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0060700457600001",
+      "grams": 365,
+      "title": "non cordée / 1"
+     },
+     {
+      "sku": "0060700457600002",
+      "grams": 366,
+      "title": "non cordée / 2"
+     },
+     {
+      "sku": "0060700457600003",
+      "grams": 366,
+      "title": "non cordée / 3"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0060700457600001",
+       "gtin": "198772103682"
+      },
+      {
+       "sku": "0060700457600002",
+       "gtin": "198772103699"
+      },
+      {
+       "sku": "0060700457600003",
+       "gtin": "198772103705"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "2d315ac4-988c-4720-8cca-2e3bb061984a",
+   "marchand": "Tennis Point FR",
+   "titre": "Chaussures de tennis ASICS Solution Speed FF 4 Chaussure terre battue Hommes - blanc, rose",
+   "marque": "ASICS",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": "4571633431159",
+   "mpn": null,
+   "merchant_sku": "P000000126110143",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "P000000126110143",
+      "grams": 805,
+      "title": "weiß, pink / 40"
+     },
+     {
+      "sku": "P000000126110101",
+      "grams": 811,
+      "title": "weiß, pink / 40,5"
+     },
+     {
+      "sku": "P000000126110141",
+      "grams": 817,
+      "title": "weiß, pink / 41,5"
+     },
+     {
+      "sku": "P000000126110134",
+      "grams": 825,
+      "title": "weiß, pink / 42"
+     },
+     {
+      "sku": "P000000126110129",
+      "grams": 841,
+      "title": "weiß, pink / 42,5"
+     },
+     {
+      "sku": "P000000126110132",
+      "grams": 902,
+      "title": "weiß, pink / 43,5"
+     },
+     {
+      "sku": "P000000126110140",
+      "grams": 916,
+      "title": "weiß, pink / 44"
+     },
+     {
+      "sku": "P000000126110135",
+      "grams": 936,
+      "title": "weiß, pink / 44,5"
+     },
+     {
+      "sku": "P000000126110133",
+      "grams": 948,
+      "title": "weiß, pink / 45"
+     },
+     {
+      "sku": "P000000126110131",
+      "grams": 971,
+      "title": "weiß, pink / 46"
+     },
+     {
+      "sku": "P000000126110137",
+      "grams": 984,
+      "title": "weiß, pink / 46,5"
+     },
+     {
+      "sku": "P000000126110138",
+      "grams": 1015,
+      "title": "weiß, pink / 47"
+     },
+     {
+      "sku": "P000000126110136",
+      "grams": 1020,
+      "title": "weiß, pink / 48"
+     },
+     {
+      "sku": "P000000126110142",
+      "grams": 1092,
+      "title": "weiß, pink / 49"
+     },
+     {
+      "sku": "P000000126110139",
+      "grams": 1135,
+      "title": "weiß, pink / 50,5"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "P000000126110143",
+       "gtin": "4571633431159"
+      },
+      {
+       "sku": "P000000126110101",
+       "gtin": "4571633431029"
+      },
+      {
+       "sku": "P000000126110141",
+       "gtin": "4571633431142"
+      },
+      {
+       "sku": "P000000126110134",
+       "gtin": "4571633431074"
+      },
+      {
+       "sku": "P000000126110129",
+       "gtin": "4571633431012"
+      },
+      {
+       "sku": "P000000126110132",
+       "gtin": "4571633431043"
+      },
+      {
+       "sku": "P000000126110140",
+       "gtin": "4571633431135"
+      },
+      {
+       "sku": "P000000126110135",
+       "gtin": "4571633431081"
+      },
+      {
+       "sku": "P000000126110133",
+       "gtin": "4571633431050"
+      },
+      {
+       "sku": "P000000126110131",
+       "gtin": "4571633431036"
+      },
+      {
+       "sku": "P000000126110137",
+       "gtin": "4571633431104"
+      },
+      {
+       "sku": "P000000126110138",
+       "gtin": "4571633431111"
+      },
+      {
+       "sku": "P000000126110136",
+       "gtin": "4571633431098"
+      },
+      {
+       "sku": "P000000126110142",
+       "gtin": "4571633431166"
+      },
+      {
+       "sku": "P000000126110139",
+       "gtin": "4571633431128"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "2f344c19-7f32-48f2-88f5-1351ba624492",
+   "marchand": "SportSystem",
+   "titre": "Chaussures de tennis Asics Asics Solution Speed FF 4 Clay noir et vert spéciale terre battue Homme",
+   "marque": "Asics",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": "4571633418617",
+   "mpn": null,
+   "merchant_sku": "1041A533-001",
+   "raw_attributes": {
+    "features": [],
+    "variants": [
+     {
+      "name": "Noir",
+      "ean13": "4571633418617",
+      "group": "Couleur",
+      "reference": "1041A533-001"
+     },
+     {
+      "name": "43.5",
+      "ean13": "4571633418617",
+      "group": "3-Pointures",
+      "reference": "1041A533-001"
+     }
+    ]
+   }
+  },
+  {
+   "id": "310d7bcb-4818-4ccb-b75b-e3ff93d9b412",
+   "marchand": "SportSystem",
+   "titre": "Sac à dos de tennis Tecnifibre Sac à dos Backpack Navy Tour Endurance",
+   "marque": "Tecnifibre",
+   "categorie": "accessoires",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "40TOUNAVBP",
+   "raw_attributes": {
+    "features": [],
+    "variants": []
+   }
+  },
+  {
+   "id": "3265fe17-650c-471c-9a06-99a68080d515",
+   "marchand": "Amazon",
+   "titre": "WILSON Cordages pour Raquette Luxilon, 4G, Rouleau de 2 mètres, Couleur Or, 1,25 mm, Unisexe, WRZ990141",
+   "marque": "Luxilon",
+   "categorie": "cordages",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "B0093P2DE4",
+   "raw_attributes": {
+    "asin": "B0093P2DE4",
+    "source": "rayon 488345031 page 1",
+    "merchantName": "WILSON Cordages pour Raquette Luxilon, 4G, Rouleau de 2 mètres, Couleur Or, 1,25 mm, Unisexe, WRZ990141"
+   }
+  },
+  {
+   "id": "3aafe09a-392c-4441-ad03-1e99a07a2ee5",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Head Boom Mp L Neon 2025 (270 Gr) Cordee",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "231655",
+   "merchant_sku": "803351",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "803351",
+    "merchantName": "RAQUETTE BOOM MP L NEON 2025 (270 GR) CORDEE",
+    "merchantBrand": "head",
+    "enrichissement": {
+     "date": "2026-09-29"
+    }
+   }
+  },
+  {
+   "id": "3b42c575-f460-424a-9176-df436af5f429",
+   "marchand": "Tennis Point FR",
+   "titre": "Raquette de tennis Dunlop FX 500 Lite",
+   "marque": "Dunlop",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "0045566179739",
+   "mpn": null,
+   "merchant_sku": "0160620230900006",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0160620230900006",
+      "grams": 312,
+      "title": "non cordée / 0"
+     },
+     {
+      "sku": "0160620230900001",
+      "grams": 339,
+      "title": "non cordée / 1"
+     },
+     {
+      "sku": "0160620230900002",
+      "grams": 348,
+      "title": "non cordée / 2"
+     },
+     {
+      "sku": "0160620230900003",
+      "grams": 360,
+      "title": "non cordée / 3"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0160620230900006",
+       "gtin": "0045566179739"
+      },
+      {
+       "sku": "0160620230900001",
+       "gtin": "0045566179746"
+      },
+      {
+       "sku": "0160620230900002",
+       "gtin": "0045566179753"
+      },
+      {
+       "sku": "0160620230900003",
+       "gtin": "0045566179760"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "3d017179-ff3d-4d87-b934-134840a8765f",
+   "marchand": "SportSystem",
+   "titre": "Débardeur de tennis Adidas Débardeur tennis femme Club Femme",
+   "marque": "Adidas",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "HF4544",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Type de vêtement",
+      "value": "Débardeur"
+     }
+    ],
+    "variants": [
+     {
+      "name": "M",
+      "ean13": null,
+      "group": "2-Taille adulte",
+      "reference": "HF4544"
+     },
+     {
+      "name": "Bleu",
+      "ean13": null,
+      "group": "Couleur",
+      "reference": "HF4544"
+     }
+    ]
+   }
+  },
+  {
+   "id": "3df7d270-aadd-4972-a795-96f9f98e9483",
+   "marchand": "Head",
+   "titre": "POWER Short de tennis homme",
+   "marque": "Head",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "811255",
+   "raw_attributes": {
+    "externalId": "125605",
+    "sourcePage": "shop-sportswear/summer",
+    "merchantName": "POWER Short de tennis homme"
+   }
+  },
+  {
+   "id": "3e203aca-ca88-4daf-a153-d665968342cd",
+   "marchand": "Amazon",
+   "titre": "Wilson Cordages pour Raquette Luxilon, Alu Power 125, Rouleau de 12,2 mètres, Bleu, 1,25 mm, Unisexe, WRZ995100BL",
+   "marque": "Luxilon",
+   "categorie": "cordages",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "B07CNKJX7D",
+   "raw_attributes": {
+    "asin": "B07CNKJX7D",
+    "source": "rayon 488345031 page 2",
+    "merchantName": "Wilson Cordages pour Raquette Luxilon, Alu Power 125, Rouleau de 12,2 mètres, Bleu, 1,25 mm, Unisexe, WRZ995100BL"
+   }
+  },
+  {
+   "id": "4330eda7-eea2-41bd-b355-67c61d4984f2",
+   "marchand": "Tecnifibre",
+   "titre": "Raquette de tennis Tecnifibre Tf-x1 V2 270",
+   "marque": "Tecnifibre",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "3490150219846",
+   "mpn": null,
+   "merchant_sku": "14TFX27040",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "14TFX27040",
+      "grams": 500,
+      "title": "Grip 0"
+     },
+     {
+      "sku": "14TFX27041",
+      "grams": 500,
+      "title": "Grip 1"
+     },
+     {
+      "sku": "14TFX27042",
+      "grams": 500,
+      "title": "Grip 2"
+     },
+     {
+      "sku": "14TFX27043",
+      "grams": 500,
+      "title": "Grip 3"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "14TFX27040",
+       "gtin": "3490150219846"
+      },
+      {
+       "sku": "14TFX27041",
+       "gtin": "3490150219846"
+      },
+      {
+       "sku": "14TFX27042",
+       "gtin": "3490150219846"
+      },
+      {
+       "sku": "14TFX27043",
+       "gtin": "3490150219846"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "46d06c8c-b783-41eb-b3a7-f7c0369e34cf",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Dunlop Fx 500 Ls (285 Gr)",
+   "marque": "Dunlop",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "10369902",
+   "merchant_sku": "828031",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "828031",
+    "merchantName": "RAQUETTE FX 500 LS (285 GR)",
+    "merchantBrand": "dunlop",
+    "enrichissement": {
+     "date": "2026-09-29"
+    }
+   }
+  },
+  {
+   "id": "4ee045da-5091-4064-bd06-becb0f06963f",
+   "marchand": "Tennis Point FR",
+   "titre": "Chaussures de tennis adidas adizero Ubersonic 5 Chaussure terre battue Hommes - jaune lemon, noir",
+   "marque": "adidas",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": "4067892290779",
+   "mpn": null,
+   "merchant_sku": "0051750637900015",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0051750637900015",
+      "grams": 774,
+      "title": "limette, schwarz / 40"
+     },
+     {
+      "sku": "0051750637900016",
+      "grams": 781,
+      "title": "limette, schwarz / 40 2/3"
+     },
+     {
+      "sku": "0051750637900017",
+      "grams": 813,
+      "title": "limette, schwarz / 41 1/3"
+     },
+     {
+      "sku": "0051750637900018",
+      "grams": 826,
+      "title": "limette, schwarz / 42"
+     },
+     {
+      "sku": "0051750637900019",
+      "grams": 865,
+      "title": "limette, schwarz / 42 2/3"
+     },
+     {
+      "sku": "0051750637900020",
+      "grams": 876,
+      "title": "limette, schwarz / 43 1/3"
+     },
+     {
+      "sku": "0051750637900021",
+      "grams": 911,
+      "title": "limette, schwarz / 44"
+     },
+     {
+      "sku": "0051750637900022",
+      "grams": 935,
+      "title": "limette, schwarz / 44 2/3"
+     },
+     {
+      "sku": "0051750637900023",
+      "grams": 956,
+      "title": "limette, schwarz / 45 1/3"
+     },
+     {
+      "sku": "0051750637900024",
+      "grams": 969,
+      "title": "limette, schwarz / 46"
+     },
+     {
+      "sku": "0051750637900025",
+      "grams": 1003,
+      "title": "limette, schwarz / 46 2/3"
+     },
+     {
+      "sku": "0051750637900026",
+      "grams": 1020,
+      "title": "limette, schwarz / 47 1/3"
+     },
+     {
+      "sku": "0051750637900027",
+      "grams": 1050,
+      "title": "limette, schwarz / 48"
+     },
+     {
+      "sku": "0051750637900028",
+      "grams": 1093,
+      "title": "limette, schwarz / 48 2/3"
+     },
+     {
+      "sku": "0051750637900029",
+      "grams": 1176,
+      "title": "limette, schwarz / 49 1/3"
+     },
+     {
+      "sku": "0051750637900030",
+      "grams": 1173,
+      "title": "limette, schwarz / 50"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0051750637900015",
+       "gtin": "4067892290779"
+      },
+      {
+       "sku": "0051750637900016",
+       "gtin": "4067892287052"
+      },
+      {
+       "sku": "0051750637900017",
+       "gtin": "4067892287069"
+      },
+      {
+       "sku": "0051750637900018",
+       "gtin": "4067892287106"
+      },
+      {
+       "sku": "0051750637900019",
+       "gtin": "4067892287007"
+      },
+      {
+       "sku": "0051750637900020",
+       "gtin": "4067892287014"
+      },
+      {
+       "sku": "0051750637900021",
+       "gtin": "4067892287076"
+      },
+      {
+       "sku": "0051750637900022",
+       "gtin": "4067892287021"
+      },
+      {
+       "sku": "0051750637900023",
+       "gtin": "4067892290762"
+      },
+      {
+       "sku": "0051750637900024",
+       "gtin": "4067892287038"
+      },
+      {
+       "sku": "0051750637900025",
+       "gtin": "4067892287113"
+      },
+      {
+       "sku": "0051750637900026",
+       "gtin": "4067892287120"
+      },
+      {
+       "sku": "0051750637900027",
+       "gtin": "4067892287090"
+      },
+      {
+       "sku": "0051750637900028",
+       "gtin": "4067892290755"
+      },
+      {
+       "sku": "0051750637900029",
+       "gtin": "4067892290731"
+      },
+      {
+       "sku": "0051750637900030",
+       "gtin": "4067892287045"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "50098ab4-807d-4f68-8b62-fb78ac27dc6d",
+   "marchand": "Tennis Point FR",
+   "titre": "Raquette de tennis HEAD Extreme MP 2024",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "726423218104",
+   "mpn": null,
+   "merchant_sku": "0060670441900001",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0060670441900001",
+      "grams": 379,
+      "title": "non cordée / 1"
+     },
+     {
+      "sku": "0060670441900002",
+      "grams": 324,
+      "title": "non cordée / 2"
+     },
+     {
+      "sku": "0060670441900003",
+      "grams": 323,
+      "title": "non cordée / 3"
+     },
+     {
+      "sku": "0060670441900004",
+      "grams": 377,
+      "title": "non cordée / 4"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0060670441900001",
+       "gtin": "726423218104"
+      },
+      {
+       "sku": "0060670441900002",
+       "gtin": "726423218111"
+      },
+      {
+       "sku": "0060670441900003",
+       "gtin": "726423218128"
+      },
+      {
+       "sku": "0060670441900004",
+       "gtin": "726423218135"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "503ab9b5-00b2-469f-8033-080dc2a276f9",
+   "marchand": "Tecnifibre",
+   "titre": "Polo de tennis Tecnifibre Polo Waffle Homme Marine",
+   "marque": "Tecnifibre",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "25POWAMA51",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "25POWAMA51",
+      "grams": 0,
+      "title": "XS"
+     },
+     {
+      "sku": "25POWAMA52",
+      "grams": 0,
+      "title": "S"
+     },
+     {
+      "sku": "25POWAMA53",
+      "grams": 0,
+      "title": "M"
+     },
+     {
+      "sku": "25POWAMA54",
+      "grams": 0,
+      "title": "L"
+     },
+     {
+      "sku": "25POWAMA55",
+      "grams": 0,
+      "title": "XL"
+     },
+     {
+      "sku": "25POWAMA56",
+      "grams": 0,
+      "title": "XXL"
+     }
+    ]
+   }
+  },
+  {
+   "id": "510a618b-44de-4d25-a772-9718cc392689",
+   "marchand": "Sport 2000",
+   "titre": "Chaussures de tennis ASICS Homme GEL-DEDICATE 8 Bleu Homme",
+   "marque": "ASICS",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": "4550457678704",
+   "mpn": null,
+   "merchant_sku": "1041A408-401",
+   "raw_attributes": {
+    "color": "Bleu",
+    "sizes": [
+     "45"
+    ],
+    "gender": "HOMME",
+    "attributes": [
+     {
+      "13-Sport": "Tennis"
+     },
+     {
+      "14-Categories": "Chaussures de sport"
+     }
+    ]
+   }
+  },
+  {
+   "id": "5993da41-5819-48f1-b88f-9258d48c823d",
+   "marchand": "Sport 2000",
+   "titre": "Chaussures de tennis ASICS Homme GEL-RESOLUTION X Homme",
+   "marque": "ASICS",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": "4570158696401",
+   "mpn": null,
+   "merchant_sku": "1041A481-400",
+   "raw_attributes": {
+    "color": "Bleu",
+    "sizes": [
+     "41.5",
+     "42",
+     "44.5",
+     "45",
+     "46"
+    ],
+    "gender": "HOMME",
+    "attributes": [
+     {
+      "13-Sport": "Tennis"
+     },
+     {
+      "14-Categories": "Chaussures de sport"
+     }
+    ]
+   }
+  },
+  {
+   "id": "5b10fead-b09c-4f26-afa7-625a623da04c",
+   "marchand": "SportSystem",
+   "titre": "Raquette de tennis Wilson Pro Staff 97L V14",
+   "marque": "Wilson",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "WR125911U",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Technologie(s)",
+      "value": "FortyFive, New Paradigm Bending"
+     },
+     {
+      "name": "Tamis",
+      "value": "625 cm² / 97 sq. in."
+     },
+     {
+      "name": "Poids (gr.)",
+      "value": "290"
+     },
+     {
+      "name": "Equilibre",
+      "value": "325 mm."
+     },
+     {
+      "name": "Profil maxi.",
+      "value": "23 mm."
+     },
+     {
+      "name": "Longueur",
+      "value": "27 in. / 68.5 cm."
+     },
+     {
+      "name": "Plan de cordage",
+      "value": "16x19"
+     }
+    ],
+    "variants": [
+     {
+      "name": "1 (4 1/8)",
+      "ean13": null,
+      "group": "1-Taille de manche",
+      "reference": "WR125911U"
+     }
+    ]
+   }
+  },
+  {
+   "id": "5e4b822f-0501-4a50-8e2e-f788c595f4ec",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Head Speed Mp (300 Gr)",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "232026",
+   "merchant_sku": "839023",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "839023",
+    "merchantName": "RAQUETTE SPEED MP (300 GR)",
+    "merchantBrand": "head",
+    "enrichissement": {
+     "date": "2026-09-29"
+    }
+   }
+  },
+  {
+   "id": "5eabbddf-74ba-49bc-98d9-d592676007be",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Babolat Pure Aero Lite (270 Gr) (cordee)",
+   "marque": "Babolat",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "102491",
+   "merchant_sku": "666882",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "666882",
+    "merchantName": "RAQUETTE PURE AERO LITE (270 GR) (CORDEE)",
+    "merchantBrand": "babolat"
+   }
+  },
+  {
+   "id": "5f95f718-4625-4574-afea-6d0e7139395c",
+   "marchand": "SportSystem",
+   "titre": "Raquette de tennis Babolat Pure Aero Rafa",
+   "marque": "Babolat",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "101512",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Technologie(s)",
+      "value": "AeroModular, FSI, Cortex System"
+     },
+     {
+      "name": "Tamis",
+      "value": "640 cm² / 99 sq. in."
+     },
+     {
+      "name": "Poids (gr.)",
+      "value": "290"
+     },
+     {
+      "name": "Rigidité",
+      "value": "73 ra."
+     },
+     {
+      "name": "Equilibre",
+      "value": "330 mm."
+     },
+     {
+      "name": "Profil maxi.",
+      "value": "26 mm."
+     },
+     {
+      "name": "Longueur",
+      "value": "27 in. / 68.5 cm."
+     },
+     {
+      "name": "Plan de cordage",
+      "value": "16x19"
+     }
+    ],
+    "variants": [
+     {
+      "name": "4 (4 1/2)",
+      "ean13": null,
+      "group": "1-Taille de manche",
+      "reference": "101512"
+     }
+    ]
+   }
+  },
+  {
+   "id": "5fb3dc1b-a5b1-4ef7-ad7e-6d3f3419d5b0",
+   "marchand": "Tennis Point FR",
+   "titre": "Vêtement de tennis HEAD Power Shorts Hommes - bleu, blanc",
+   "marque": "Head",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "0064760870500054",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0064760870500054",
+      "grams": 132,
+      "title": "blau, weiß / S"
+     },
+     {
+      "sku": "0064760870500055",
+      "grams": 138,
+      "title": "blau, weiß / M"
+     },
+     {
+      "sku": "0064760870500056",
+      "grams": 142,
+      "title": "blau, weiß / L"
+     },
+     {
+      "sku": "0064760870500057",
+      "grams": 147,
+      "title": "blau, weiß / XL"
+     },
+     {
+      "sku": "0064760870500058",
+      "grams": 151,
+      "title": "blau, weiß / XXL"
+     },
+     {
+      "sku": "0064760870500059",
+      "grams": 158,
+      "title": "blau, weiß / 3XL"
+     }
+    ]
+   }
+  },
+  {
+   "id": "606af1f1-0ae7-45f1-83da-5c25ffaa7245",
+   "marchand": "Tennis Point FR",
+   "titre": "Vêtement de tennis adidas Club Pleat Jupe Femmes - noir",
+   "marque": "adidas",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "0054751976100048",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0054751976100048",
+      "grams": 149,
+      "title": "schwarz / XS"
+     },
+     {
+      "sku": "0054751976100049",
+      "grams": 161,
+      "title": "schwarz / S"
+     },
+     {
+      "sku": "0054751976100050",
+      "grams": 168,
+      "title": "schwarz / M"
+     },
+     {
+      "sku": "0054751976100051",
+      "grams": 187,
+      "title": "schwarz / L"
+     },
+     {
+      "sku": "0054751976100052",
+      "grams": 216,
+      "title": "schwarz / XL"
+     }
+    ]
+   }
+  },
+  {
+   "id": "61116541-63b7-4f3e-8d93-8b714c3d7d99",
+   "marchand": "Tennis Point FR",
+   "titre": "Raquette de tennis Wilson Clash 100 Pro V2.0 Raquette De Compétition",
+   "marque": "Wilson",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "00097512592130",
+   "mpn": null,
+   "merchant_sku": "0070550374300001",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0070550374300001",
+      "grams": 375,
+      "title": "non cordée / 1"
+     },
+     {
+      "sku": "0070550374300002",
+      "grams": 371,
+      "title": "non cordée / 2"
+     },
+     {
+      "sku": "0070550374300003",
+      "grams": 373,
+      "title": "non cordée / 3"
+     },
+     {
+      "sku": "0070550374300004",
+      "grams": 373,
+      "title": "non cordée / 4"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0070550374300001",
+       "gtin": "00097512592130"
+      },
+      {
+       "sku": "0070550374300002",
+       "gtin": "00097512592147"
+      },
+      {
+       "sku": "0070550374300003",
+       "gtin": "00097512592161"
+      },
+      {
+       "sku": "0070550374300004",
+       "gtin": "00097512592154"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "613be644-b79e-48ff-80a6-962f8526d836",
+   "marchand": "Tennispro.fr",
+   "titre": "Bobine de cordage de tennis Luxilon 4g (200 Metres)",
+   "marque": "Luxilon",
+   "categorie": "cordages",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "54572",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "54572",
+    "merchantName": "BOBINE 4G (200 METRES)",
+    "merchantBrand": "luxilon"
+   }
+  },
+  {
+   "id": "6228a9f3-85a5-4976-99c5-5b4c855227cf",
+   "marchand": "SportSystem",
+   "titre": "Raquette de tennis Babolat Babolat Evo Strike",
+   "marque": "Babolat",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "101515",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Technologie(s)",
+      "value": "Control Frame Technology, C2 Evo Feel"
+     },
+     {
+      "name": "Tamis",
+      "value": "660 cm² / 102 sq. in."
+     },
+     {
+      "name": "Poids (gr.)",
+      "value": "290"
+     },
+     {
+      "name": "Rigidité",
+      "value": "70 ra."
+     },
+     {
+      "name": "Equilibre",
+      "value": "320 mm."
+     },
+     {
+      "name": "Profil maxi.",
+      "value": "24 mm."
+     },
+     {
+      "name": "Longueur",
+      "value": "27 in. / 68.5 cm."
+     },
+     {
+      "name": "Plan de cordage",
+      "value": "16x19"
+     }
+    ],
+    "variants": [
+     {
+      "name": "1 (4 1/8)",
+      "ean13": null,
+      "group": "1-Taille de manche",
+      "reference": "101515"
+     }
+    ]
+   }
+  },
+  {
+   "id": "682ec8b4-b4ab-4703-9303-58bbacaa132e",
+   "marchand": "Tennis Point FR",
+   "titre": "Chaussures de tennis Lotto Mirage 100 Chaussure terre battue Hommes - blanc, bleu",
+   "marque": "Lotto",
+   "categorie": "chaussures",
+   "statut": "expired",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": null,
+   "raw_attributes": null
+  },
+  {
+   "id": "6eaf37a4-7f28-4ff9-a74a-3857622ae914",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Head Radical Pro (315 Gr)",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "231005",
+   "merchant_sku": "776103",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "776103",
+    "merchantName": "RAQUETTE RADICAL PRO (315 GR)",
+    "merchantBrand": "head",
+    "enrichissement": {
+     "date": "2026-09-29"
+    }
+   }
+  },
+  {
+   "id": "70e6569d-fe47-4bb9-858c-690834e6b6b1",
+   "marchand": "Tennispro.fr",
+   "titre": "Gourde de tennis Nike Big Mouth 2.0 22oz (650ml)",
+   "marque": "Nike",
+   "categorie": "accessoires",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "856351",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "856351",
+    "merchantName": "GOURDE BIG MOUTH 2.0 22OZ (650ML)",
+    "merchantBrand": "nike"
+   }
+  },
+  {
+   "id": "710bd0a0-161c-4016-af5c-cab47495940c",
+   "marchand": "Tennispro.fr",
+   "titre": "Antivibrateur de tennis Tecnifibre S Logo Damp Tricolore",
+   "marque": "Tecnifibre",
+   "categorie": "accessoires",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "778987",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "778987",
+    "merchantName": "ANTIVIBRATEURS LOGO DAMP TRICOLORE",
+    "merchantBrand": "tecnifibre"
+   }
+  },
+  {
+   "id": "71d85de2-0efd-4abe-bc03-fa6f0d04e8bf",
+   "marchand": "Tennis Point FR",
+   "titre": "Vêtement de tennis adidas Freelift Pro Polo Hommes - bleu",
+   "marque": "adidas",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "P000000516020103",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "P000000516020103",
+      "grams": 179,
+      "title": "blau / S"
+     },
+     {
+      "sku": "P000000516020104",
+      "grams": 198,
+      "title": "blau / M"
+     },
+     {
+      "sku": "P000000516020102",
+      "grams": 215,
+      "title": "blau / L"
+     },
+     {
+      "sku": "P000000516020105",
+      "grams": 233,
+      "title": "blau / XL"
+     },
+     {
+      "sku": "P000000516020101",
+      "grams": 265,
+      "title": "blau / XXL"
+     }
+    ]
+   }
+  },
+  {
+   "id": "722b2f38-2fad-4446-91e8-4a024fe6fb11",
+   "marchand": "Tennis Point FR",
+   "titre": "Chaussures de tennis adidas Defiant Speed 2 Chaussures toutes surfaces Femmes - blanc, beige",
+   "marque": "adidas",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": "4067906264987",
+   "mpn": null,
+   "merchant_sku": "0051710657500050",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0051710657500050",
+      "grams": 723,
+      "title": "weiß, beige / 36"
+     },
+     {
+      "sku": "0051710657500051",
+      "grams": 779,
+      "title": "weiß, beige / 36 2/3"
+     },
+     {
+      "sku": "0051710657500052",
+      "grams": 768,
+      "title": "weiß, beige / 37 1/3"
+     },
+     {
+      "sku": "0051710657500053",
+      "grams": 772,
+      "title": "weiß, beige / 38"
+     },
+     {
+      "sku": "0051710657500054",
+      "grams": 785,
+      "title": "weiß, beige / 38 2/3"
+     },
+     {
+      "sku": "0051710657500055",
+      "grams": 835,
+      "title": "weiß, beige / 39 1/3"
+     },
+     {
+      "sku": "0051710657500056",
+      "grams": 826,
+      "title": "weiß, beige / 40"
+     },
+     {
+      "sku": "0051710657500057",
+      "grams": 851,
+      "title": "weiß, beige / 40 2/3"
+     },
+     {
+      "sku": "0051710657500058",
+      "grams": 892,
+      "title": "weiß, beige / 41 1/3"
+     },
+     {
+      "sku": "0051710657500059",
+      "grams": 926,
+      "title": "weiß, beige / 42"
+     },
+     {
+      "sku": "0051710657500060",
+      "grams": 921,
+      "title": "weiß, beige / 42 2/3"
+     },
+     {
+      "sku": "0051710657500061",
+      "grams": 939,
+      "title": "weiß, beige / 43 1/3"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0051710657500050",
+       "gtin": "4067906264987"
+      },
+      {
+       "sku": "0051710657500051",
+       "gtin": "4067906268633"
+      },
+      {
+       "sku": "0051710657500052",
+       "gtin": "4067906268664"
+      },
+      {
+       "sku": "0051710657500053",
+       "gtin": "4067906268619"
+      },
+      {
+       "sku": "0051710657500054",
+       "gtin": "4067906264963"
+      },
+      {
+       "sku": "0051710657500055",
+       "gtin": "4067906268626"
+      },
+      {
+       "sku": "0051710657500056",
+       "gtin": "4067906268596"
+      },
+      {
+       "sku": "0051710657500057",
+       "gtin": "4067906264970"
+      },
+      {
+       "sku": "0051710657500058",
+       "gtin": "4067906268640"
+      },
+      {
+       "sku": "0051710657500059",
+       "gtin": "4067906268657"
+      },
+      {
+       "sku": "0051710657500060",
+       "gtin": "4067906268671"
+      },
+      {
+       "sku": "0051710657500061",
+       "gtin": "4067906268688"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "7366ce09-1bb1-46c3-bee1-6c51a353169f",
+   "marchand": "Tennispro.fr",
+   "titre": "Bobine de cordage de tennis Luxilon Big Banger Alu Power Black (200 Metres)",
+   "marque": "Luxilon",
+   "categorie": "cordages",
+   "statut": "expired",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": null,
+   "raw_attributes": null
+  },
+  {
+   "id": "7579ff83-aea5-474d-a0b6-8f0e2b007ae9",
+   "marchand": "Tecnifibre",
+   "titre": "Sac de tennis Tecnifibre Sac A Dos Tour Endurance Backpack White-blue",
+   "marque": "Tecnifibre",
+   "categorie": "accessoires",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "40TOUWBLBA",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "40TOUWBLBA",
+      "grams": 500,
+      "title": "Default Title"
+     }
+    ]
+   }
+  },
+  {
+   "id": "75c87430-2c63-4042-a953-35897d0dc742",
+   "marchand": "Tennis Point FR",
+   "titre": "Raquette de tennis Babolat Pure Strike 97",
+   "marque": "Babolat",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "3324922082324",
+   "mpn": null,
+   "merchant_sku": "0090660293400002",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0090660293400002",
+      "grams": 380,
+      "title": "non cordée / 2"
+     },
+     {
+      "sku": "0090660293400003",
+      "grams": 361,
+      "title": "non cordée / 3"
+     },
+     {
+      "sku": "0090660293400004",
+      "grams": 375,
+      "title": "non cordée / 4"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0090660293400002",
+       "gtin": "3324922082324"
+      },
+      {
+       "sku": "0090660293400003",
+       "gtin": "3324922082331"
+      },
+      {
+       "sku": "0090660293400004",
+       "gtin": "3324922082348"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "76ceb494-ca05-427d-ab00-3cf89fe09d40",
+   "marchand": "Tennispro.fr",
+   "titre": "Balles de tennis Dunlop Tube De 3 Balles Atp Tour",
+   "marque": "Dunlop",
+   "categorie": "accessoires",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "601313/601598",
+   "merchant_sku": "301896",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "301896",
+    "merchantName": "TUBE DE 3 BALLES ATP TOUR",
+    "merchantBrand": "dunlop"
+   }
+  },
+  {
+   "id": "76e7e242-c6e0-42f6-b4b4-b9d0b00fa530",
+   "marchand": "Tennispro.fr",
+   "titre": "Grip de tennis Babolat Syntec Team",
+   "marque": "Babolat",
+   "categorie": "accessoires",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "670065-105",
+   "merchant_sku": "854818",
+   "raw_attributes": {
+    "size": null,
+    "color": "NOIR",
+    "magentoId": "854818",
+    "merchantName": "GRIP SYNTEC TEAM",
+    "merchantBrand": "babolat"
+   }
+  },
+  {
+   "id": "78d50eee-0162-48c3-a849-c1da61049c69",
+   "marchand": "Babolat",
+   "titre": "Sac de tennis Babolat Court L",
+   "marque": "Babolat",
+   "categorie": "accessoires",
+   "statut": "tracked",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "751243",
+   "raw_attributes": {
+    "label": "Nouveau",
+    "colors": [
+     "Bordeaux / Noir"
+    ],
+    "benefits": [
+     "Pensé Pour Le Tennis",
+     "Polyvalence",
+     "Robustesse"
+    ]
+   }
+  },
+  {
+   "id": "798667ef-55fe-4c1d-9fa0-874438ea386c",
+   "marchand": "SportSystem",
+   "titre": "Bobine de cordage de tennis Luxilon Alu Power Rough bobine 220m",
+   "marque": "Luxilon",
+   "categorie": "cordages",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "WRZ990200-WR8302801",
+   "raw_attributes": {
+    "features": [],
+    "variants": [
+     {
+      "name": "1.25 mm",
+      "ean13": null,
+      "group": "Jauge",
+      "reference": "WRZ990200"
+     }
+    ]
+   }
+  },
+  {
+   "id": "7affbc6a-b484-4384-b785-d10447795e29",
+   "marchand": "Tennispro.fr",
+   "titre": "Chaussures de tennis Adidas Femme Adizero Ubersonic 5 Terre Battue",
+   "marque": "Adidas",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "JS2890",
+   "merchant_sku": "745263",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "745263",
+    "merchantName": "CHAUSSURES FEMME ADIZERO UBERSONIC 5 TERRE BATTUE",
+    "merchantBrand": "adidas",
+    "enrichissement": {
+     "date": "2026-09-29"
+    }
+   }
+  },
+  {
+   "id": "7b8b6265-de57-489e-abf6-f31a8d20a471",
+   "marchand": "Tennispro.fr",
+   "titre": "Bobine de cordage de tennis Babolat Rpm Hurricane (200 Metres) (ex Pro Hurricane Tour)",
+   "marque": "Babolat",
+   "categorie": "cordages",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "885761",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "885761",
+    "merchantName": "BOBINE RPM HURRICANE (200 METRES) (EX PRO HURRICANE TOUR)",
+    "merchantBrand": "babolat"
+   }
+  },
+  {
+   "id": "7e40d680-a728-41bd-81a9-85a46a4134a8",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Babolat Pure Drive 98 (305 Gr)",
+   "marque": "Babolat",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "101551",
+   "merchant_sku": "737587",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "737587",
+    "merchantName": "RAQUETTE PURE DRIVE 98 (305 GR)",
+    "merchantBrand": "babolat"
+   }
+  },
+  {
+   "id": "7ef9a098-b8d8-4bbb-9d63-45862bbf9238",
+   "marchand": "Amazon",
+   "titre": "Head RIP Control",
+   "marque": "Head",
+   "categorie": "cordages",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "B0023P16KI",
+   "raw_attributes": {
+    "asin": "B0023P16KI",
+    "source": "rayon 488345031 page 1",
+    "merchantName": "Head RIP Control"
+   }
+  },
+  {
+   "id": "820634fe-9ba4-442f-9066-770c061c7d8c",
+   "marchand": "Tennispro.fr",
+   "titre": "Sac de tennis Babolat Court L",
+   "marque": "Babolat",
+   "categorie": "accessoires",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "751235-102",
+   "merchant_sku": "779358",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "779358",
+    "merchantName": "SAC DE TENNIS COURT L",
+    "merchantBrand": "babolat"
+   }
+  },
+  {
+   "id": "869a7cb3-bc43-46e9-93f9-55f249cbe0c8",
+   "marchand": "Tennispro.fr",
+   "titre": "Cordage de tennis Head Rip Control",
+   "marque": "Head",
+   "categorie": "cordages",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "281099-WH",
+   "merchant_sku": "886435",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "886435",
+    "merchantName": "CORDAGE RIP CONTROL",
+    "merchantBrand": "head"
+   }
+  },
+  {
+   "id": "86ad1e2b-5c07-450a-a5c5-cba4d87d9b59",
+   "marchand": "SportSystem",
+   "titre": "Cordage de tennis Babolat RPM Hurricane (200m)",
+   "marque": "Babolat",
+   "categorie": "cordages",
+   "statut": "active",
+   "gtin": "3324922104828",
+   "mpn": null,
+   "merchant_sku": "243141-113",
+   "raw_attributes": {
+    "features": [],
+    "variants": [
+     {
+      "name": "1.25 mm",
+      "ean13": "3324922104828",
+      "group": "Jauge",
+      "reference": "243141-101"
+     },
+     {
+      "name": "Blanc",
+      "ean13": "3324922104828",
+      "group": "Couleur",
+      "reference": "243141-101"
+     }
+    ]
+   }
+  },
+  {
+   "id": "8730ed49-bfb6-408f-b1c3-90c64fda20b9",
+   "marchand": "Tennis Point FR",
+   "titre": "Chaussures de tennis adidas CourtJam Control 3 Chaussure terre battue Femmes - blanc, argent",
+   "marque": "adidas",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": "4067904413400",
+   "mpn": null,
+   "merchant_sku": "0051750636700050",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0051750636700050",
+      "grams": 736,
+      "title": "weiß, silber / 36"
+     },
+     {
+      "sku": "0051750636700051",
+      "grams": 760,
+      "title": "weiß, silber / 36 2/3"
+     },
+     {
+      "sku": "0051750636700052",
+      "grams": 772,
+      "title": "weiß, silber / 37 1/3"
+     },
+     {
+      "sku": "0051750636700053",
+      "grams": 817,
+      "title": "weiß, silber / 38"
+     },
+     {
+      "sku": "0051750636700054",
+      "grams": 809,
+      "title": "weiß, silber / 38 2/3"
+     },
+     {
+      "sku": "0051750636700055",
+      "grams": 823,
+      "title": "weiß, silber / 39 1/3"
+     },
+     {
+      "sku": "0051750636700056",
+      "grams": 832,
+      "title": "weiß, silber / 40"
+     },
+     {
+      "sku": "0051750636700057",
+      "grams": 887,
+      "title": "weiß, silber / 40 2/3"
+     },
+     {
+      "sku": "0051750636700058",
+      "grams": 905,
+      "title": "weiß, silber / 41 1/3"
+     },
+     {
+      "sku": "0051750636700059",
+      "grams": 933,
+      "title": "weiß, silber / 42"
+     },
+     {
+      "sku": "0051750636700060",
+      "grams": 947,
+      "title": "weiß, silber / 42 2/3"
+     },
+     {
+      "sku": "0051750636700061",
+      "grams": 977,
+      "title": "weiß, silber / 43 1/3"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0051750636700050",
+       "gtin": "4067904413400"
+      },
+      {
+       "sku": "0051750636700051",
+       "gtin": "4067904413370"
+      },
+      {
+       "sku": "0051750636700052",
+       "gtin": "4067904409731"
+      },
+      {
+       "sku": "0051750636700053",
+       "gtin": "4067904409694"
+      },
+      {
+       "sku": "0051750636700054",
+       "gtin": "4067904409687"
+      },
+      {
+       "sku": "0051750636700055",
+       "gtin": "4067904413394"
+      },
+      {
+       "sku": "0051750636700056",
+       "gtin": "4067904409717"
+      },
+      {
+       "sku": "0051750636700057",
+       "gtin": "4067904413387"
+      },
+      {
+       "sku": "0051750636700058",
+       "gtin": "4067904409748"
+      },
+      {
+       "sku": "0051750636700059",
+       "gtin": "4067904409700"
+      },
+      {
+       "sku": "0051750636700060",
+       "gtin": "4067904409724"
+      },
+      {
+       "sku": "0051750636700061",
+       "gtin": "4067904413363"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "879f60d1-8fea-43c2-816e-92b08ffd7994",
+   "marchand": "Babolat",
+   "titre": "Raquette de tennis Babolat Pure Drive Lite Gen11 cordée",
+   "marque": "Babolat",
+   "categorie": "raquettes",
+   "statut": "tracked",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "102555",
+   "raw_attributes": {
+    "label": null,
+    "colors": [
+     "Bleu métallic / Bleu nuit"
+    ],
+    "benefits": [
+     "Puissance",
+     "Sensations",
+     "Polyvalence"
+    ]
+   }
+  },
+  {
+   "id": "8b5cef08-9e43-4d58-b9c7-8a538fa251f5",
+   "marchand": "Tennispro.fr",
+   "titre": "Balles de tennis Dunlop Carton De 24 Tubes De 3 Balles Atp Tour",
+   "marque": "Dunlop",
+   "categorie": "accessoires",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "669288",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "669288",
+    "merchantName": "CARTON DE 24 TUBES DE 3 BALLES ATP TOUR",
+    "merchantBrand": "dunlop"
+   }
+  },
+  {
+   "id": "8c41d1a2-0c4f-4c24-949b-c671fdb117e2",
+   "marchand": "SportSystem",
+   "titre": "Cordage de tennis Head Rip Control (200m)",
+   "marque": "Head",
+   "categorie": "cordages",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "281109",
+   "raw_attributes": {
+    "features": [],
+    "variants": [
+     {
+      "name": "1.30 mm",
+      "ean13": null,
+      "group": "Jauge",
+      "reference": "281109"
+     },
+     {
+      "name": "Noir",
+      "ean13": null,
+      "group": "Couleur",
+      "reference": "281109"
+     }
+    ]
+   }
+  },
+  {
+   "id": "904bca98-12bf-423a-abe7-75fb7a265d5e",
+   "marchand": "Sport 2000",
+   "titre": "Chaussures de tennis BABOLAT Homme SFX EVO ALL COURT MEN Bleu Homme",
+   "marque": "BABOLAT",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": "3324922223307",
+   "mpn": null,
+   "merchant_sku": "3A0S25A555-3036",
+   "raw_attributes": {
+    "color": "Bleu",
+    "sizes": [
+     "41",
+     "42",
+     "42.5",
+     "43",
+     "44",
+     "45",
+     "46",
+     "47"
+    ],
+    "gender": "HOMME",
+    "attributes": [
+     {
+      "13-Sport": "Tennis"
+     },
+     {
+      "14-Categories": "Chaussures de sport"
+     }
+    ]
+   }
+  },
+  {
+   "id": "954e0f1c-9391-4c85-b4d3-265999abf18b",
+   "marchand": "Tennis Point FR",
+   "titre": "Raquette de tennis HEAD Radical Pro 18X20",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "0724794624593",
+   "mpn": null,
+   "merchant_sku": "0060670440700001",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0060670440700001",
+      "grams": 391,
+      "title": "non cordée / 1"
+     },
+     {
+      "sku": "0060670440700002",
+      "grams": 396,
+      "title": "non cordée / 2"
+     },
+     {
+      "sku": "0060670440700003",
+      "grams": 394,
+      "title": "non cordée / 3"
+     },
+     {
+      "sku": "0060670440700004",
+      "grams": 397,
+      "title": "non cordée / 4"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0060670440700001",
+       "gtin": "0724794624593"
+      },
+      {
+       "sku": "0060670440700002",
+       "gtin": "0724794624609"
+      },
+      {
+       "sku": "0060670440700003",
+       "gtin": "0724794624616"
+      },
+      {
+       "sku": "0060670440700004",
+       "gtin": "0724794624623"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "9a54ba6f-1d96-4968-9da7-04faa1d53e5c",
+   "marchand": "SportSystem",
+   "titre": "Chaussures de tennis Adidas Barricade Clay noir Homme",
+   "marque": "Adidas",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "ID1558",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Poids (gr.)",
+      "value": "397"
+     }
+    ],
+    "variants": [
+     {
+      "name": "Noir-blanc",
+      "ean13": null,
+      "group": "Couleur",
+      "reference": "ID1558"
+     },
+     {
+      "name": "46 2/3",
+      "ean13": null,
+      "group": "3-Pointures",
+      "reference": "ID1558"
+     }
+    ]
+   }
+  },
+  {
+   "id": "9acf4d4a-db62-48d1-8ed3-1d0d3a5515cb",
+   "marchand": "Sport 2000",
+   "titre": "Chaussures de tennis ADIDAS Junior Barricade K Enfant",
+   "marque": "ADIDAS",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": "4067903942079",
+   "mpn": null,
+   "merchant_sku": "JH5128",
+   "raw_attributes": {
+    "color": "Gris",
+    "sizes": [
+     "35.5",
+     "36",
+     "36 2/3",
+     "38 2/3"
+    ],
+    "gender": "ENFANT",
+    "attributes": [
+     {
+      "13-Sport": "Tennis"
+     },
+     {
+      "14-Categories": "Chaussures de sport"
+     }
+    ]
+   }
+  },
+  {
+   "id": "9d8d1c33-f203-4ba9-ace8-065dd62dd99b",
+   "marchand": "Tennispro.fr",
+   "titre": "Pack de raquettes de tennis Babolat Pure Strike 97 (310 Gr)",
+   "marque": "Babolat",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "101530",
+   "merchant_sku": "684822",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "684822",
+    "merchantName": "PACK DE 2 RAQUETTES PURE STRIKE 97 (310 GR)",
+    "merchantBrand": "babolat",
+    "enrichissement": {
+     "date": "2026-09-29"
+    }
+   }
+  },
+  {
+   "id": "9e3c11e4-d4a6-4f85-addc-26d6ef161ba6",
+   "marchand": "Tennis Point FR",
+   "titre": "Raquette de tennis HEAD Graphene 360+ Radical Pro (2021) Raquette de compétition non cordée",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "724794047323",
+   "mpn": null,
+   "merchant_sku": "0060540399900002",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0060540399900002",
+      "grams": 0,
+      "title": "non cordée / 2"
+     },
+     {
+      "sku": "0060540399900003",
+      "grams": 386,
+      "title": "non cordée / 3"
+     },
+     {
+      "sku": "0060540399900004",
+      "grams": 386,
+      "title": "non cordée / 4"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0060540399900002",
+       "gtin": "724794047323"
+      },
+      {
+       "sku": "0060540399900003",
+       "gtin": "724794047330"
+      },
+      {
+       "sku": "0060540399900004",
+       "gtin": "724794047347"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "9e987acd-b1ac-4d4c-ad76-47ad3e402270",
+   "marchand": "SportSystem",
+   "titre": "Jupe de tennis Adidas Jupe de tennis femme Adidas Club Femme",
+   "marque": "Adidas",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": "4066746002445",
+   "mpn": null,
+   "merchant_sku": "HS1456-HS1455",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Type de vêtement",
+      "value": "Jupe"
+     }
+    ],
+    "variants": [
+     {
+      "name": "S",
+      "ean13": "4066746002445",
+      "group": "2-Taille adulte",
+      "reference": "HS1456"
+     },
+     {
+      "name": "Bleu",
+      "ean13": "4066746002445",
+      "group": "Couleur",
+      "reference": "HS1456"
+     }
+    ]
+   }
+  },
+  {
+   "id": "a6121ee3-a5f7-4dc4-a3a5-cee7d4aa31e9",
+   "marchand": "SportSystem",
+   "titre": "Raquette de tennis Babolat Babolat Pure Aero S Lite Gén 9 2026",
+   "marque": "Babolat",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "3324922286715",
+   "mpn": null,
+   "merchant_sku": "101573",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Technologie(s)",
+      "value": "Aero Modular, NF² Tech, FSI Spin"
+     },
+     {
+      "name": "Tamis",
+      "value": "645 cm² / 100 sq. in."
+     },
+     {
+      "name": "Poids (gr.)",
+      "value": "255"
+     },
+     {
+      "name": "Rigidité",
+      "value": "70 ra."
+     },
+     {
+      "name": "Equilibre",
+      "value": "330 mm."
+     },
+     {
+      "name": "Profil maxi.",
+      "value": "26 mm."
+     },
+     {
+      "name": "Longueur",
+      "value": "27 in. / 68.5 cm."
+     },
+     {
+      "name": "Plan de cordage",
+      "value": "16x19"
+     }
+    ],
+    "variants": [
+     {
+      "name": "1 (4 1/8)",
+      "ean13": "3324922286715",
+      "group": "1-Taille de manche",
+      "reference": "101573"
+     }
+    ]
+   }
+  },
+  {
+   "id": "a8535bc7-242a-4415-aa08-dd677673505d",
+   "marchand": "Sport 2000",
+   "titre": "Chaussures de tennis ASICS Homme GEL-DEDICATE 8 Blanc Homme",
+   "marque": "ASICS",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": "4570158705240",
+   "mpn": null,
+   "merchant_sku": "1041A408-105",
+   "raw_attributes": {
+    "color": "Blanc",
+    "sizes": [
+     "44",
+     "45",
+     "46"
+    ],
+    "gender": "HOMME",
+    "attributes": [
+     {
+      "13-Sport": "Tennis"
+     },
+     {
+      "14-Categories": "Chaussures de sport"
+     }
+    ]
+   }
+  },
+  {
+   "id": "ab32bdd7-0524-49b1-9366-59285f314f94",
+   "marchand": "Tennispro.fr",
+   "titre": "Chaussures de tennis Adidas Femme Defiant Speed 2 Toutes Surfaces",
+   "marque": "Adidas",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "JP9738",
+   "merchant_sku": "789488",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "789488",
+    "merchantName": "CHAUSSURES FEMME DEFIANT SPEED 2 TOUTES SURFACES",
+    "merchantBrand": "adidas"
+   }
+  },
+  {
+   "id": "ac70f223-97f2-4986-8446-20c60772cb18",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Head Junior Novak 25",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "235004",
+   "merchant_sku": "727914",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "727914",
+    "merchantName": "RAQUETTE JUNIOR NOVAK 25",
+    "merchantBrand": "head",
+    "enrichissement": {
+     "date": "2026-09-29"
+    }
+   }
+  },
+  {
+   "id": "b3195ae2-e9c5-42d1-929a-5a6ff5585e35",
+   "marchand": "SportSystem",
+   "titre": "Short de tennis Adidas Short tennis SW Club Homme",
+   "marque": "Adidas",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "GH7222",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Type de vêtement",
+      "value": "Short"
+     }
+    ],
+    "variants": [
+     {
+      "name": "M",
+      "ean13": null,
+      "group": "2-Taille adulte",
+      "reference": "GH7222"
+     },
+     {
+      "name": "Blanc",
+      "ean13": null,
+      "group": "Couleur",
+      "reference": "GH7222"
+     }
+    ]
+   }
+  },
+  {
+   "id": "b37708a1-7670-4d83-9a86-3a4751d1a5f0",
+   "marchand": "Sport 2000",
+   "titre": "Vêtement de tennis ADIDAS Short Homme Club Homme",
+   "marque": "ADIDAS",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": "4067903590737",
+   "mpn": null,
+   "merchant_sku": "JG0994",
+   "raw_attributes": {
+    "color": "Noir",
+    "sizes": [
+     "XL 7"
+    ],
+    "gender": "HOMME",
+    "attributes": [
+     {
+      "13-Sport": "Tennis"
+     },
+     {
+      "14-Categories": "Pantalons, jeans, shorts"
+     }
+    ]
+   }
+  },
+  {
+   "id": "b594e3da-a998-4c60-8f78-2dcda2869b4c",
+   "marchand": "Amazon",
+   "titre": "Head Novak 23 Raquette de Tennis",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "B0CQYZMDC4",
+   "raw_attributes": {
+    "asin": "B0CQYZMDC4",
+    "source": "rayon 340151031 page 1",
+    "merchantName": "Head Novak 23 Raquette de Tennis"
+   }
+  },
+  {
+   "id": "b85c39af-11b8-4728-9ce9-c75ec1993c55",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Babolat Pure Strike 98 16/19 (305 Gr)",
+   "marque": "Babolat",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "101577",
+   "merchant_sku": "786569",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "786569",
+    "merchantName": "RAQUETTE PURE STRIKE 98 16/19 (305 GR)",
+    "merchantBrand": "babolat",
+    "enrichissement": {
+     "date": "2026-09-29"
+    }
+   }
+  },
+  {
+   "id": "b8e9e2ce-a5d3-4e01-85e1-ee071283f4a1",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Babolat Evo Strike (280 Gr) (new) (cordee)",
+   "marque": "Babolat",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "102515",
+   "merchant_sku": "684853",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "684853",
+    "merchantName": "RAQUETTE EVO STRIKE (280 GR) (NEW) (CORDEE)",
+    "merchantBrand": "babolat"
+   }
+  },
+  {
+   "id": "b96cedd7-bca6-475b-9fdd-9d1d8d4e72a7",
+   "marchand": "Tennis Point FR",
+   "titre": "Chaussures de tennis adidas Barricade 14 Chaussure terre battue Femmes - gris clair, bleu clair",
+   "marque": "adidas",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": "4068812316661",
+   "mpn": null,
+   "merchant_sku": "0051760679400050",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0051760679400050",
+      "grams": 719,
+      "title": "hellgrau, hellblau / 36"
+     },
+     {
+      "sku": "0051760679400051",
+      "grams": 729,
+      "title": "hellgrau, hellblau / 36 2/3"
+     },
+     {
+      "sku": "0051760679400052",
+      "grams": 751,
+      "title": "hellgrau, hellblau / 37 1/3"
+     },
+     {
+      "sku": "0051760679400053",
+      "grams": 759,
+      "title": "hellgrau, hellblau / 38"
+     },
+     {
+      "sku": "0051760679400054",
+      "grams": 798,
+      "title": "hellgrau, hellblau / 38 2/3"
+     },
+     {
+      "sku": "0051760679400055",
+      "grams": 807,
+      "title": "hellgrau, hellblau / 39 1/3"
+     },
+     {
+      "sku": "0051760679400056",
+      "grams": 841,
+      "title": "hellgrau, hellblau / 40"
+     },
+     {
+      "sku": "0051760679400057",
+      "grams": 849,
+      "title": "hellgrau, hellblau / 40 2/3"
+     },
+     {
+      "sku": "0051760679400058",
+      "grams": 876,
+      "title": "hellgrau, hellblau / 41 1/3"
+     },
+     {
+      "sku": "0051760679400059",
+      "grams": 904,
+      "title": "hellgrau, hellblau / 42"
+     },
+     {
+      "sku": "0051760679400060",
+      "grams": 952,
+      "title": "hellgrau, hellblau / 42 2/3"
+     },
+     {
+      "sku": "0051760679400061",
+      "grams": 950,
+      "title": "hellgrau, hellblau / 43 1/3"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0051760679400050",
+       "gtin": "4068812316661"
+      },
+      {
+       "sku": "0051760679400051",
+       "gtin": "4068812316692"
+      },
+      {
+       "sku": "0051760679400052",
+       "gtin": "4068812313035"
+      },
+      {
+       "sku": "0051760679400053",
+       "gtin": "4068812312960"
+      },
+      {
+       "sku": "0051760679400054",
+       "gtin": "4068812313042"
+      },
+      {
+       "sku": "0051760679400055",
+       "gtin": "4068812316654"
+      },
+      {
+       "sku": "0051760679400056",
+       "gtin": "4068812312984"
+      },
+      {
+       "sku": "0051760679400057",
+       "gtin": "4068812313028"
+      },
+      {
+       "sku": "0051760679400058",
+       "gtin": "4068812312991"
+      },
+      {
+       "sku": "0051760679400059",
+       "gtin": "4068812312977"
+      },
+      {
+       "sku": "0051760679400060",
+       "gtin": "4068812316685"
+      },
+      {
+       "sku": "0051760679400061",
+       "gtin": "4068812313004"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "bc2f1e86-3a39-4493-adf7-d376234e0f61",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Head Speed Mp (300 Gr)",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "233612",
+   "merchant_sku": "513707",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "513707",
+    "merchantName": "RAQUETTE SPEED MP (300 GR)",
+    "merchantBrand": "head",
+    "enrichissement": {
+     "date": "2026-09-29"
+    }
+   }
+  },
+  {
+   "id": "bd5ae4bc-83dd-4e8a-b5d6-00387355f524",
+   "marchand": "Tennispro.fr",
+   "titre": "Chaussures de tennis Adidas Junior Barricade Toutes Surfaces",
+   "marque": "Adidas",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "JQ9127",
+   "merchant_sku": "819855",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "819855",
+    "merchantName": "CHAUSSURES JUNIOR BARRICADE TOUTES SURFACES",
+    "merchantBrand": "adidas",
+    "enrichissement": {
+     "date": "2026-09-29"
+    }
+   }
+  },
+  {
+   "id": "c070f495-f2c1-419f-8b35-8b0a14fa89e4",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Babolat Pure Drive 98 (305 Gr)",
+   "marque": "Babolat",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "101474",
+   "merchant_sku": "590187",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "590187",
+    "merchantName": "RAQUETTE PURE DRIVE 98 (305 GR)",
+    "merchantBrand": "babolat"
+   }
+  },
+  {
+   "id": "c204a39b-3796-4c42-9de1-18f719bc8767",
+   "marchand": "SportSystem",
+   "titre": "Polo de tennis Tecnifibre Polo waffle homme Tecnifibre Tech bleu marine Homme",
+   "marque": "Tecnifibre",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": "3490150228480",
+   "mpn": null,
+   "merchant_sku": "25POWAMA5",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Type de vêtement",
+      "value": "Polo"
+     }
+    ],
+    "variants": [
+     {
+      "name": "M",
+      "ean13": "3490150228480",
+      "group": "2-Taille adulte",
+      "reference": "25POWAMA5"
+     },
+     {
+      "name": "Bleu",
+      "ean13": "3490150228480",
+      "group": "Couleur",
+      "reference": "25POWAMA5"
+     }
+    ]
+   }
+  },
+  {
+   "id": "c32b2b3e-39bd-40c2-a806-9a75f67c90a1",
+   "marchand": "SportSystem",
+   "titre": "Raquette de tennis Wilson Wilson Clash 100 Pro V3 - Raquette de tennis compétition confortable",
+   "marque": "Wilson",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "097512892223",
+   "mpn": null,
+   "merchant_sku": "WR172711",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Technologie(s)",
+      "value": "Forty Five, Si 3D"
+     },
+     {
+      "name": "Tamis",
+      "value": "645 cm² / 100 sq. in."
+     },
+     {
+      "name": "Poids (gr.)",
+      "value": "305"
+     },
+     {
+      "name": "Equilibre",
+      "value": "310 mm."
+     },
+     {
+      "name": "Profil maxi.",
+      "value": "24.5 mm."
+     },
+     {
+      "name": "Longueur",
+      "value": "27 in. / 68.5 cm."
+     },
+     {
+      "name": "Plan de cordage",
+      "value": "16x20"
+     }
+    ],
+    "variants": [
+     {
+      "name": "2 (4 1/4)",
+      "ean13": "097512892223",
+      "group": "1-Taille de manche",
+      "reference": "WR172711"
+     }
+    ]
+   }
+  },
+  {
+   "id": "cc1f7ad7-7a19-4c34-b62d-bface9a65239",
+   "marchand": "Tennis Point FR",
+   "titre": "Raquette de tennis HEAD Novak 19",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "724794748411",
+   "mpn": null,
+   "merchant_sku": "0060660434000016",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0060660434000016",
+      "grams": 271,
+      "title": "cordée / 000"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0060660434000016",
+       "gtin": "724794748411"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "cd43bc1d-4df6-443a-b3cb-19f085a47f84",
+   "marchand": "Tennispro.fr",
+   "titre": "Jupe de tennis Adidas Femme Club",
+   "marque": "Adidas",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "748337",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "748337",
+    "merchantName": "JUPE FEMME CLUB",
+    "merchantBrand": "adidas"
+   }
+  },
+  {
+   "id": "cf87935c-a257-4a4e-9283-0369db9bb8ff",
+   "marchand": "Tennispro.fr",
+   "titre": "Débardeur de tennis Adidas Femme Club",
+   "marque": "Adidas",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "KF0915",
+   "merchant_sku": "815277",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "815277",
+    "merchantName": "DEBARDEUR FEMME CLUB",
+    "merchantBrand": "adidas"
+   }
+  },
+  {
+   "id": "d01177ed-4cd2-4093-ae3c-44788532d491",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Babolat Pure Strike 100 16/20 (305 Gr)",
+   "marque": "Babolat",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "101576",
+   "merchant_sku": "786573",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "786573",
+    "merchantName": "RAQUETTE PURE STRIKE 100 16/20 (305 GR)",
+    "merchantBrand": "babolat",
+    "enrichissement": {
+     "date": "2026-09-29"
+    }
+   }
+  },
+  {
+   "id": "d11b6a0d-b235-4c67-8824-babf81d845b1",
+   "marchand": "Tennispro.fr",
+   "titre": "Sac à dos de tennis Wilson Clash V3",
+   "marque": "Wilson",
+   "categorie": "accessoires",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "WR8037901",
+   "merchant_sku": "772195",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "772195",
+    "merchantName": "SAC A DOS CLASH V3",
+    "merchantBrand": "wilson"
+   }
+  },
+  {
+   "id": "d3f4b262-8d21-4eac-b97d-aef2be40a5f8",
+   "marchand": "SportSystem",
+   "titre": "Sac à dos de tennis Wilson Sac à dos de tennis Wilson backpack Clash V3 noir et rouge",
+   "marque": "Wilson",
+   "categorie": "accessoires",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "WR803790",
+   "raw_attributes": {
+    "features": [],
+    "variants": []
+   }
+  },
+  {
+   "id": "d8ac3d8c-7157-4b5b-a49c-2f34f7606969",
+   "marchand": "SportSystem",
+   "titre": "Chaussures de tennis Lotto Lotto Mirage 100 2 Clay gris et bleu - Chaussure de tennis terre battue Homme",
+   "marque": "Lotto",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "218989-D0W",
+   "raw_attributes": {
+    "features": [],
+    "variants": [
+     {
+      "name": "Gris",
+      "ean13": null,
+      "group": "Couleur",
+      "reference": "218989-D0W"
+     },
+     {
+      "name": "40",
+      "ean13": null,
+      "group": "3-Pointures",
+      "reference": "218989-D0W"
+     }
+    ]
+   }
+  },
+  {
+   "id": "db0849db-6380-4da1-89f4-292715ea18e3",
+   "marchand": "Tennis Point FR",
+   "titre": "Raquette de tennis HEAD Novak 23 Raquettes enfants Cordé",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "724794748374",
+   "mpn": null,
+   "merchant_sku": "0060660433800016",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0060660433800016",
+      "grams": 322,
+      "title": "cordée / 000"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0060660433800016",
+       "gtin": "724794748374"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "de19d491-0d9e-4046-a3d4-714bc32974ef",
+   "marchand": "SportSystem",
+   "titre": "Raquette de tennis Babolat Babolat Pure Drive 107 Gén 11 2025 - Raquette de tennis puissante avec grand tamis",
+   "marque": "Babolat",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "101557",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Technologie(s)",
+      "value": "NF2 Tech 2.0, HTR, FSI Power, Woofer 2.0"
+     },
+     {
+      "name": "Tamis",
+      "value": "690 cm² / 107 sq. in."
+     },
+     {
+      "name": "Poids (gr.)",
+      "value": "285"
+     },
+     {
+      "name": "Equilibre",
+      "value": "320 mm."
+     },
+     {
+      "name": "Profil maxi.",
+      "value": "26 mm."
+     },
+     {
+      "name": "Longueur",
+      "value": "27.2 in. / 69 cm."
+     },
+     {
+      "name": "Plan de cordage",
+      "value": "16x19"
+     }
+    ],
+    "variants": [
+     {
+      "name": "1 (4 1/8)",
+      "ean13": null,
+      "group": "1-Taille de manche",
+      "reference": "101557"
+     }
+    ]
+   }
+  },
+  {
+   "id": "e427ef9d-8e44-4aec-88bc-815dfe356b74",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Head Speed Mp L (285 Gr)",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "232036",
+   "merchant_sku": "837680",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "837680",
+    "merchantName": "RAQUETTE SPEED MP L (285 GR)",
+    "merchantBrand": "head"
+   }
+  },
+  {
+   "id": "e433f664-f1d0-4894-a3de-344c75729f06",
+   "marchand": "SportSystem",
+   "titre": "Polo de tennis Adidas Polo tennis Adidas Freelift Pro RG Homme",
+   "marque": "Adidas",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": "4067887642224",
+   "mpn": null,
+   "merchant_sku": "IS8969",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Type de vêtement",
+      "value": "Polo"
+     }
+    ],
+    "variants": [
+     {
+      "name": "M",
+      "ean13": "4067887642224",
+      "group": "2-Taille adulte",
+      "reference": "IS8969"
+     },
+     {
+      "name": "Blanc-orange",
+      "ean13": "4067887642224",
+      "group": "Couleur",
+      "reference": "IS8969"
+     }
+    ]
+   }
+  },
+  {
+   "id": "e7f13712-628f-41dc-965a-3d5d77eb6871",
+   "marchand": "Tennispro.fr",
+   "titre": "Cordage de tennis Luxilon Big Banger Alu Power (12 Metres)",
+   "marque": "Luxilon",
+   "categorie": "cordages",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "75514",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "75514",
+    "merchantName": "CORDAGE BIG BANGER ALU POWER (12 METRES)",
+    "merchantBrand": "luxilon"
+   }
+  },
+  {
+   "id": "e8072e32-6e69-4fd8-99de-1d9e6a28ba02",
+   "marchand": "SportSystem",
+   "titre": "Short de tennis Adidas Short tennis junior Club Enfant",
+   "marque": "Adidas",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "H34763-HN6287",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Type de vêtement",
+      "value": "Short"
+     }
+    ],
+    "variants": [
+     {
+      "name": "Beige",
+      "ean13": null,
+      "group": "Couleur",
+      "reference": "HN6287"
+     },
+     {
+      "name": "XS / 6-8 ans / 116-128 cm.",
+      "ean13": null,
+      "group": "4-Taille enfant",
+      "reference": "HN6287"
+     }
+    ]
+   }
+  },
+  {
+   "id": "edadef1f-edc7-4223-a5eb-464c7af84f45",
+   "marchand": "Tennispro.fr",
+   "titre": "Chaussures de tennis Adidas Adizero Ubersonic 5 Toutes Surfaces",
+   "marque": "Adidas",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "JQ3778",
+   "merchant_sku": "788774",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "788774",
+    "merchantName": "CHAUSSURES ADIZERO UBERSONIC 5 TOUTES SURFACES",
+    "merchantBrand": "adidas"
+   }
+  },
+  {
+   "id": "eea29d50-4967-41a3-a87b-7f4477f3af01",
+   "marchand": "SportSystem",
+   "titre": "Jupe de tennis Nike Jupe tennis femme Victory Femme",
+   "marque": "Nike",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": "0195866135819",
+   "mpn": null,
+   "merchant_sku": "DH9552-010",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Type de vêtement",
+      "value": "Jupe"
+     }
+    ],
+    "variants": [
+     {
+      "name": "M",
+      "ean13": "0195866135819",
+      "group": "2-Taille adulte",
+      "reference": "DH9552-010"
+     },
+     {
+      "name": "Noir",
+      "ean13": "0195866135819",
+      "group": "Couleur",
+      "reference": "DH9552-010"
+     }
+    ]
+   }
+  },
+  {
+   "id": "f02c335c-816b-4913-90de-81c1aeb8faa4",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Head Radical Pro (315 Gr)",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "235103",
+   "merchant_sku": "599329",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "599329",
+    "merchantName": "RAQUETTE RADICAL PRO (315 GR)",
+    "merchantBrand": "head"
+   }
+  },
+  {
+   "id": "f03384df-9fc6-4fca-bb77-3219baa9cb1c",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Head Radical Team L (260 Gr)",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "231035",
+   "merchant_sku": "801962",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "801962",
+    "merchantName": "RAQUETTE RADICAL TEAM L (260 GR)",
+    "merchantBrand": "head",
+    "enrichissement": {
+     "date": "2026-09-29"
+    }
+   }
+  },
+  {
+   "id": "f668962b-6689-4d3f-aace-164d80e3b86b",
+   "marchand": "Tennis Point FR",
+   "titre": "Raquette de tennis Wilson Pro Staff 97L V14 Raquette de compétition non cordée",
+   "marque": "Wilson",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "00097512690799",
+   "mpn": null,
+   "merchant_sku": "0070620387700006",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0070620387700006",
+      "grams": 360,
+      "title": "non cordée / 0"
+     },
+     {
+      "sku": "0070620387700001",
+      "grams": 310,
+      "title": "non cordée / 1"
+     },
+     {
+      "sku": "0070620387700002",
+      "grams": 308,
+      "title": "non cordée / 2"
+     },
+     {
+      "sku": "0070620387700003",
+      "grams": 309,
+      "title": "non cordée / 3"
+     },
+     {
+      "sku": "0070620387700004",
+      "grams": 363,
+      "title": "non cordée / 4"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0070620387700006",
+       "gtin": "00097512690799"
+      },
+      {
+       "sku": "0070620387700001",
+       "gtin": "00097512684033"
+      },
+      {
+       "sku": "0070620387700002",
+       "gtin": "00097512684026"
+      },
+      {
+       "sku": "0070620387700003",
+       "gtin": "00097512684040"
+      },
+      {
+       "sku": "0070620387700004",
+       "gtin": "00097512684057"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "f6b22d7f-8431-40c8-9309-50fb4e5fd431",
+   "marchand": "Sport 2000",
+   "titre": "Chaussures de tennis ADIDAS Homme Barricade 13 M CL Homme",
+   "marque": "ADIDAS",
+   "categorie": "chaussures",
+   "statut": "active",
+   "gtin": "4066764849725",
+   "mpn": null,
+   "merchant_sku": "IF0463",
+   "raw_attributes": {
+    "color": "Noir",
+    "sizes": [
+     "42",
+     "42 2/3",
+     "44",
+     "44 2/3",
+     "45 1/3"
+    ],
+    "gender": "HOMME",
+    "attributes": [
+     {
+      "13-Sport": "Tennis"
+     },
+     {
+      "14-Categories": "Chaussures de sport"
+     }
+    ]
+   }
+  },
+  {
+   "id": "f6ddc056-9ed6-4d9b-94a7-fbceecb88e7a",
+   "marchand": "Tennis Point FR",
+   "titre": "Raquette de tennis Babolat Pure Strike 100 16x20",
+   "marque": "Babolat",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": "3324922083345",
+   "mpn": null,
+   "merchant_sku": "0090660293500002",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0090660293500002",
+      "grams": 356,
+      "title": "non cordée / 2"
+     },
+     {
+      "sku": "0090660293500003",
+      "grams": 354,
+      "title": "non cordée / 3"
+     },
+     {
+      "sku": "0090660293500004",
+      "grams": 362,
+      "title": "non cordée / 4"
+     }
+    ],
+    "enrichissement": {
+     "date": "2026-09-29",
+     "variants": [
+      {
+       "sku": "0090660293500002",
+       "gtin": "3324922083345"
+      },
+      {
+       "sku": "0090660293500003",
+       "gtin": "3324922083352"
+      },
+      {
+       "sku": "0090660293500004",
+       "gtin": "3324922083369"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "f817f08b-17ee-4365-b85f-2e6b269da0f0",
+   "marchand": "Tennispro.fr",
+   "titre": "Bobine de cordage de tennis Luxilon Big Banger Alu Power Rough 1.30 Mm (200 Metres)",
+   "marque": "Luxilon",
+   "categorie": "cordages",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "461892",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "461892",
+    "merchantName": "BOBINE BIG BANGER ALU POWER ROUGH 1.30 MM (200 METRES)",
+    "merchantBrand": "luxilon"
+   }
+  },
+  {
+   "id": "fdbc6992-a387-4c75-9a64-72a5b952cac5",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Head Speed Mp (300 Gr) Cordee",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "232026S",
+   "merchant_sku": "838575",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "838575",
+    "merchantName": "RAQUETTE SPEED MP (300 GR) CORDEE",
+    "merchantBrand": "head"
+   }
+  },
+  {
+   "id": "fdf55957-c5d5-44bd-9db0-d0cd71c48e46",
+   "marchand": "Tennispro.fr",
+   "titre": "Raquette de tennis Babolat Pure Drive (300 Gr)",
+   "marque": "Babolat",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": "101552",
+   "merchant_sku": "737588",
+   "raw_attributes": {
+    "size": null,
+    "color": null,
+    "magentoId": "737588",
+    "merchantName": "RAQUETTE PURE DRIVE (300 GR)",
+    "merchantBrand": "babolat"
+   }
+  },
+  {
+   "id": "fe1d6424-349b-48f3-b9d3-62e96922fc9b",
+   "marchand": "SportSystem",
+   "titre": "Raquette de tennis Head Head Speed MP L 2026 - Raquette de tennis polyvalente 285 grammes",
+   "marque": "Head",
+   "categorie": "raquettes",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "232036",
+   "raw_attributes": {
+    "features": [
+     {
+      "name": "Technologie(s)",
+      "value": "Hy-Bor, Auxetic"
+     },
+     {
+      "name": "Tamis",
+      "value": "645 cm² / 100 sq. in."
+     },
+     {
+      "name": "Poids (gr.)",
+      "value": "285"
+     },
+     {
+      "name": "Equilibre",
+      "value": "325 mm."
+     },
+     {
+      "name": "Profil maxi.",
+      "value": "23 mm."
+     },
+     {
+      "name": "Longueur",
+      "value": "27 in. / 68.5 cm."
+     },
+     {
+      "name": "Plan de cordage",
+      "value": "16x19"
+     }
+    ],
+    "variants": [
+     {
+      "name": "1 (4 1/8)",
+      "ean13": null,
+      "group": "1-Taille de manche",
+      "reference": "232036"
+     }
+    ]
+   }
+  },
+  {
+   "id": "ff82ed8e-d407-4a6b-8dd3-3e774e631f8d",
+   "marchand": "Tennis Point FR",
+   "titre": "Vêtement de tennis adidas Club Jupe Femmes - blanc",
+   "marque": "adidas",
+   "categorie": "textile",
+   "statut": "active",
+   "gtin": null,
+   "mpn": null,
+   "merchant_sku": "0054751976900048",
+   "raw_attributes": {
+    "variants": [
+     {
+      "sku": "0054751976900048",
+      "grams": 169,
+      "title": "weiß / XS"
+     },
+     {
+      "sku": "0054751976900049",
+      "grams": 183,
+      "title": "weiß / S"
+     },
+     {
+      "sku": "0054751976900050",
+      "grams": 195,
+      "title": "weiß / M"
+     },
+     {
+      "sku": "0054751976900051",
+      "grams": 215,
+      "title": "weiß / L"
+     },
+     {
+      "sku": "0054751976900052",
+      "grams": 244,
+      "title": "weiß / XL"
+     }
+    ]
+   }
+  }
+ ]
+}
