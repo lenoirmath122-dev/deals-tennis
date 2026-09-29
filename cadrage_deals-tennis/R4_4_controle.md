@@ -138,3 +138,26 @@ Réponses de Mathieu : C-Q1 oui (`version: "different"`), C-Q2 modèle séparé,
 - **Tests** : 211 unitaires passent (`tracking.test.ts` : `DATABASE_URL`, préexistant), `tsc` et `eslint` propres. Tests ajoutés : D1, D2, D3, D4, Y-3, Sensation, blocage B (dont le cas où une troisième offre contredit), D5.
 - **Limite connue** : « Avacourt Y-3 » sans numéro de génération pourrait lire le « 3 » de « Y-3 » comme génération (non testé sur titres réels).
 - **Reste à faire** : point 3 (paires pièges dans un jeu versionné, titres réels), point 4 (GTIN par déclinaison), points 5 et 6 (nouveau passage sur branche Neon puis prod, relecture des modèles multi-marchands et des paires de raquettes gagnées, mise à jour de `R4_4_rapport_passage.md`).
+
+### 8.1 Passage à blanc sur la prod (`--dry-run`, lecture seule, 2026-09-29)
+
+Aucune écriture en base. Le script `shadow-run.ts` écrit désormais aussi `modeles-multi-marchands.csv` (une ligne par offre des modèles à ≥ 2 marchands) pour la relecture.
+
+| | Avant (R4.4) | Après (R4.4-bis) |
+|---|---|---|
+| Modèles | 1 456 | 1 451 |
+| Modèles ≥ 2 marchands (active + tracked) | 90 | **103** |
+| … en `active` seulement | 71 | **77** |
+| Raquettes | 21 | **35** |
+| Cordages | 4 | 3 |
+| Chaussures / accessoires | 60 / 5 | 60 / 5 |
+| Conflits / incohérents | 11 / 0 | 14 lignes dans `conflits.csv` (12 conflits + 2 divergents) / 0 |
+
+Relecture faite : **cordages 3/3 justes** (Alu Power Rough, Rip Control, RPM Blast ; avant 5/9 faux) ; **raquettes 35 modèles relus**, gains du blocage B cohérents (Pure Aero, Pure Drive, Evo Aero Babolat ↔ SportSystem / Tennispro.fr, Gen 9 / 11 / 2) ; **défauts D2, D3, D4 disparus des modèles multi-marchands** (Sprint Evo / Pro / Court et Revolt Evo / Pro séparés, aucun Vapor « PRM » fusionné avec le standard, Hydrosorb Comfort absent des modèles ; Avacourt Y-3 absente).
+
+**Non fait** : relecture complète des 60 modèles de chaussures (seules les familles des défauts ont été relues) ; la précision globale n'est donc pas encore rechiffrée.
+
+**À vérifier** :
+- « Babolat Pure Aero 98 **x2** Gen9 » réuni avec « Pure Aero 98 Gen9 » : le « x2 » n'est pas lu comme un lot pour les raquettes (pack de 2 ? à contrôler sur la fiche).
+- Deux modèles « divergents » (D5) : jauge 1,25 | 1,35 (Babolat Xcel, bobine à jauges au choix) et longueur 27,5 | 27,6 (Pure Drive +) : bénins probables, à confirmer.
+- Raquettes Head : toujours regroupées seulement SportSystem ↔ Tennispro.fr (blocage A non traité).

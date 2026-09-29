@@ -203,3 +203,4 @@
 - Incident : l'outil Bash a été indisponible plusieurs tours (contrôle de sécurité sans verdict) ; aucun impact sur le dépôt, les tests ont été lancés après reprise.
 - Aucune écriture en base pendant cette session.
 - Prochaine étape : paires pièges dans un jeu versionné, GTIN par déclinaison (lecture seule), puis nouveau passage sur branche Neon (accord de Mathieu avant la prod), relecture des modèles multi-marchands et des ~45 paires de raquettes gagnées.
+- Passage à blanc en prod (`--dry-run`, lecture seule) : 103 modèles multi-marchands (90 avant), 35 raquettes (21), cordages 3/3 justes ; D2, D3 et D4 disparus ; `modeles-multi-marchands.csv` ajouté au script. À vérifier : « x2 » des raquettes, 2 modèles divergents ; relecture complète des chaussures non faite (`R4_4_controle.md` §8.1). Chaîne de connexion passée en variable d'environnement, non écrite dans le dépôt.
