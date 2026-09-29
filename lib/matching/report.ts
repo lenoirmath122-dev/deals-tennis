@@ -4,6 +4,7 @@
  * conflits. Produit un objet de compteurs (`match_runs.counters`), un Markdown et des CSV.
  */
 
+import { reviewTextilePairs } from "./approx.ts";
 import { compare } from "./compare.ts";
 import type { ClusterResult, EngineOffer } from "./cluster.ts";
 
@@ -25,11 +26,12 @@ export interface ReportInput {
 export interface PassReport {
   counters: Record<string, unknown>;
   markdown: string;
-  csv: { nonReconnus: string; proches: string; conflits: string };
+  csv: { nonReconnus: string; proches: string; conflits: string; revueTextile: string };
 }
 
 const PAIR_CAP_PER_FAMILY = 300;
 const PROCHES_CSV_LIMIT = 5000;
+const REVUE_CSV_LIMIT = 3000;
 
 function count<T>(items: T[], key: (item: T) => string): Record<string, number> {
   const out: Record<string, number> = {};
@@ -135,6 +137,10 @@ export function buildReport(input: ReportInput): PassReport {
       return [brand, category, list.length, top.map(([t, n]) => `${t} (${n})`).join(", ")];
     });
 
+  // Étape 3 (R4.5-b) : paires textiles à relire, aucune fusion.
+  const revue = reviewTextilePairs(offers, result);
+  const revueRows = revue.slice(0, REVUE_CSV_LIMIT);
+
   const counters = {
     offres_lues: offers.length + unsupported.length,
     offres_extraites: offers.length,
@@ -153,6 +159,8 @@ export function buildReport(input: ReportInput): PassReport {
     modeles_incoherents: result.incoherent.length,
     modeles_divergents: new Set(result.divergences.map((d) => d.model)).size,
     paires_famille_inter_marchands: pairLevels,
+    revue_textile_paires: revue.length,
+    revue_textile_paires_score_haut: revue.filter((p) => p.score >= 0.6).length,
   };
 
   const alertCounts = count(offers.flatMap((o) => o.extracted.alertes), (a) => a);
@@ -187,6 +195,10 @@ export function buildReport(input: ReportInput): PassReport {
     ),
     "",
     "Liste des paires « proche » : `proches.csv`.",
+    "",
+    "## 3 bis. File de revue textile (étape 3, R4.5-b)",
+    "",
+    `**${revue.length}** paires de modèles textiles de même marque, type, genre et âge, dont seul le nom de gamme diffère (score ≥ seuil de revue), dont ${counters.revue_textile_paires_score_haut} avec un score ≥ 0,6. Aucune n'est fusionnée : Mathieu tranche, chaque décision enrichit le lexique (\`config/textile-lexicon.ts\`). Liste triée par score : \`revue-textile.csv\`.`,
     "",
     "## 4. Non reconnus (GAP-2026-09-27-01)",
     "",
@@ -227,5 +239,23 @@ export function buildReport(input: ReportInput): PassReport {
     }),
   ]);
 
-  return { counters, markdown, csv: { nonReconnus, proches: csv(proches), conflits } };
+  const revueTextile = csv([
+    ["score", "famille", "marchand_a", "titre_a", "modele_a", "prix_a", "marchand_b", "titre_b", "modele_b", "prix_b", "mots_en_plus", "indices"],
+    ...revueRows.map((p) => [
+      p.score.toFixed(2),
+      p.famille,
+      p.a.marchand,
+      p.a.titre,
+      p.a.modele,
+      p.a.prix ?? "",
+      p.b.marchand,
+      p.b.titre,
+      p.b.modele,
+      p.b.prix ?? "",
+      p.motsEnPlus.join(" "),
+      p.indices.join(" ; "),
+    ]),
+  ]);
+
+  return { counters, markdown, csv: { nonReconnus, proches: csv(proches), conflits, revueTextile } };
 }

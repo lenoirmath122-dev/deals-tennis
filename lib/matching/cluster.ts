@@ -24,6 +24,8 @@ export interface EngineOffer {
   /** Statut en base (`active`, `tracked`) : sert à la couverture publiée deux fois (R4-Q3). */
   statut: string;
   titre: string;
+  /** Prix d'origine en base : simple indice pour le score de l'étape 3 (T-Q5). */
+  prixOrigine?: number | null;
   extracted: ExtractedOffer;
 }
 

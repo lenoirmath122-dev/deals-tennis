@@ -88,6 +88,8 @@ export const TEXTILE_REFINES: Partial<Record<TextileType, TextileType[]>> = {
   tshirt: ["haut_manches_longues"],
   sweat: ["sweat_capuche"],
   jupe: ["jupe_short"],
+  // R4.5-b : Tecnifibre écrit « Pantalon de tennis … Legging » (libellé de rayon puis vrai type).
+  pantalon: ["legging", "collant", "corsaire"],
 };
 
 /**
@@ -267,3 +269,17 @@ export const TEXTILE_STYLE_REFERENCE_BRANDS = ["adidas", "babolat", "head", "lac
  * Tennispro.fr) ou d'une forme non établie (Tecnifibre).
  */
 export const TEXTILE_SKU_IS_REFERENCE_MERCHANTS = ["Sport 2000", "Head", "Babolat"];
+
+// ── Étape 3 : file de revue (R4.5-b) ─────────────────────────────────────────
+
+/**
+ * Mots qui font un autre modèle (jugés distinctifs en revue) : une paire dont le mot en plus en fait
+ * partie n'entre pas dans la file. Chaque décision de Mathieu enrichit cette liste (T-Q4).
+ */
+export const TEXTILE_REVIEW_DISTINCTIVE_WORDS = ["pleat", "pro", "slam", "ann"];
+
+/**
+ * Mots probablement secondaires (jugés neutres en revue) : la paire remonte en haut de la file.
+ * Vide au départ ; à remplir à partir de la relecture, puis à basculer dans `TEXTILE_NEUTRAL_WORDS`.
+ */
+export const TEXTILE_REVIEW_SOFT_WORDS: string[] = [];

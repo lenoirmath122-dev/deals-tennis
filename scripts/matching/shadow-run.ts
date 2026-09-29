@@ -19,7 +19,7 @@ import type { AccessorySubcategory } from "../../config/accessory-subcategories.
 import type { DealCategory } from "../../types/database.ts";
 
 /** Version du moteur écrite dans `match_runs.engine_version`. */
-const ENGINE_VERSION = "r4.5-a-textile";
+const ENGINE_VERSION = "r4.5-b-textile";
 const BATCH = 500;
 
 if (!process.env.DATABASE_URL) {
@@ -43,13 +43,14 @@ interface DealRow {
   gtin: string | null;
   mpn: string | null;
   merchant_sku: string | null;
+  original_price: number | null;
   raw_attributes: Record<string, unknown> | null;
   merchant: string;
 }
 
 const rows = (await sql`
   SELECT d.id, d.title, d.brand, d.category, d.subcategory, d.status, d.gtin, d.mpn,
-         d.merchant_sku, d.raw_attributes, m.name AS merchant
+         d.merchant_sku, d.original_price, d.raw_attributes, m.name AS merchant
   FROM deals d
   JOIN merchants m ON m.id = d.merchant_id
   WHERE d.status IN ('active', 'tracked')
@@ -71,6 +72,7 @@ for (const row of rows) {
     marchand: row.merchant,
     statut: row.status,
     titre: row.title,
+    prixOrigine: row.original_price === null ? null : Number(row.original_price),
     extracted: extractOfferAttributes({
       marchand: row.merchant,
       titre: row.title,
@@ -99,6 +101,7 @@ writeFileSync(join(outDir, "rapport.md"), report.markdown);
 writeFileSync(join(outDir, "non-reconnus.csv"), report.csv.nonReconnus);
 writeFileSync(join(outDir, "proches.csv"), report.csv.proches);
 writeFileSync(join(outDir, "conflits.csv"), report.csv.conflits);
+writeFileSync(join(outDir, "revue-textile.csv"), report.csv.revueTextile);
 // Relecture des modèles réunissant au moins deux marchands (une ligne par offre).
 const byDealId = new Map(engineOffers.map((o) => [o.dealId, o]));
 const quote = (v: string | number) => `"${String(v).replaceAll('"', '""')}"`;
@@ -111,7 +114,7 @@ result.models.forEach((model, index) => {
   }
 });
 writeFileSync(join(outDir, "modeles-multi-marchands.csv"), multiLines.join("\n"));
-console.log(`Rapport écrit dans ${outDir}/ (rapport.md, non-reconnus.csv, proches.csv, conflits.csv, modeles-multi-marchands.csv).`);
+console.log(`Rapport écrit dans ${outDir}/ (rapport.md, non-reconnus.csv, proches.csv, conflits.csv, revue-textile.csv, modeles-multi-marchands.csv).`);
 
 if (dryRun) {
   console.log("--dry-run : rien n'est écrit en base.");

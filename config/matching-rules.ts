@@ -250,10 +250,10 @@ export const CATEGORY_RULES: Record<DealCategory, CategoryRules> = {
 
 /**
  * Seuils de confiance de la cascade §8 (étape 3, correspondance approchée).
- * Volontairement vides : ils sont réglés en R4 à partir du jeu de référence R1
- * (67 paires), pas choisis à l'avance.
+ * `autoMerge` reste vide (pas de fusion par score en R4.5, T-Q4 : à rediscuter en R4.6).
+ * `review` : score minimal d'une paire textile pour entrer dans la file de revue (R4.5-b).
  */
 export const CONFIDENCE_THRESHOLDS: { autoMerge: number | null; review: number | null } = {
   autoMerge: null,
-  review: null,
+  review: 0.4, // R4.5-b : seuil bas de la file de revue textile (aucune fusion par score, T-Q4)
 };
