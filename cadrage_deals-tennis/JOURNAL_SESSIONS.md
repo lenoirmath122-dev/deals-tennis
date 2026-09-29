@@ -141,3 +141,14 @@
 - Application en prod par une transaction unique (6 instructions, tout ou rien) sur la branche `main` ; résultat identique à la branche testée (4 tables, 7 index, 14 contraintes, 0 ligne) ; `deals` inchangé (5269 lignes, 4241 `active`, 794 `tracked`). Branche `test-r4-1-match-tables` supprimée ; il ne reste que `main`.
 - **R4.1 terminé.** Prochaine étape : **R4.2** (extraction des attributs raquettes + cordages, `lib/matching/`, Sonnet), dans une nouvelle session.
 
+
+## 2026-09-29 (session cloud, Sonnet) — R4.2 : extraction des attributs raquettes + cordages
+
+- Reprise (« On reprend 4.2 »). Modèle actuel = recommandé (Sonnet, R4.2 marquée Sonnet dans `R4_cadrage.md`).
+- Construit `lib/matching/` (fonctions pures, sans base) : `text.ts` (normalisation), `families.ts` (alias le plus long, même marque et catégorie, `BRAND_ALIASES` pris en compte), `shared.ts` (GTIN valide, `mpn` recopié du SKU écarté, lot, cadeau, génération, version, édition), `racquets.ts`, `strings.ts`, `index.ts` (`extractOfferAttributes`). Chaque attribut garde sa source (`fiche_marchand` pour la fiche SportSystem, sinon `titre_description`). Non lus volontairement : le poids `grams` de Tennis Point FR (poids d'expédition), toute génération non écrite (jamais déduite).
+- Attributs : famille, version, génération (+ année), tamis, poids, plan de cordage, longueur (pouces, « + » = 27,5), junior, cordée, édition, lot, cadeau ; cordages : jauge (mm, ou centièmes après le nom), longueur (m), conditionnement (≤ 13 m garniture, sinon bobine), matière. Longueur < 5 m jugée fausse (alerte `longueur_douteuse`, paire R1 67).
+- Défaut trouvé et corrigé en cours : « 16/19 » lu comme taille junior 19 (âge désormais lu après retrait du plan de cordage).
+- Tests : `tests/unit/matching-extraction.test.ts` (24) ; les 63 offres raquettes/cordages du jeu R1 sont toutes reconnues, les pièges des paires (3, 4, 7, 11, 38, 45, 64…) sont séparés par le bon attribut. `tsc` et `eslint` propres ; 124 tests unitaires passent (`tracking.test.ts` exige `DATABASE_URL`, préexistant).
+- Vérifié en lecture seule sur la prod : référence SportSystem (R4-Q7) et non-reconnus Head raquettes → `R4_2_complement_referentiel.md`, **à valider par Mathieu** ; aucune écriture en base, référentiel inchangé.
+- Limite : liste complète des non-reconnus sur toute la prod pas faite ici (pas de `DATABASE_URL` dans le processus, résultats SQL non exportables) ; elle sortira du rapport de passage de R4.4.
+- Prochaine étape : réponses de Mathieu (compléments Head, copie SportSystem → `mpn`), puis **R4.3** (chaussures + accessoires).

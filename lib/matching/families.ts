@@ -1,0 +1,85 @@
+/**
+ * Reconnaissance de la famille d'un titre dans le référentiel (R4.2).
+ *
+ * Règle du référentiel : famille = alias le plus long trouvé dans le titre
+ * normalisé, même marque, même catégorie (`config/model-families.ts`).
+ */
+
+import { BRAND_ALIASES, MODEL_FAMILIES, type FamilyEntry } from "@/config/model-families";
+import type { DealCategory } from "@/types/database";
+import { fullNormalize, phraseRegExp } from "./text";
+
+export interface FamilyMatch {
+  entry: FamilyEntry;
+  /** Alias trouvé, sous sa forme normalisée. */
+  alias: string;
+}
+
+interface AliasIndexEntry {
+  entry: FamilyEntry;
+  alias: string;
+  regexp: RegExp;
+}
+
+export function familyKey(entry: Pick<FamilyEntry, "brand" | "family" | "category">): string {
+  return `${entry.brand}|${entry.family}|${entry.category}`;
+}
+
+/** Marques que le référentiel accepte pour cette marque d'offre (cf. `BRAND_ALIASES`). */
+function acceptedBrands(brand: string | null, category: DealCategory): { all: boolean; names: Set<string> } {
+  const names = new Set<string>();
+  const normalized = brand ? fullNormalize(brand) : "";
+  if (normalized) names.add(normalized);
+  // Marque mal extraite (« SPORTSYSTEM ») : la vraie marque est dans le titre.
+  if (!normalized || normalized === "sportsystem") return { all: true, names };
+  for (const [key, value] of Object.entries(BRAND_ALIASES)) {
+    const parts = key.split("/");
+    if (parts.length === 3 && parts[0] === normalized && parts[1] === category) {
+      names.add(fullNormalize(value.canonical));
+    }
+  }
+  return { all: false, names };
+}
+
+const INDEX_CACHE = new WeakMap<FamilyEntry[], Map<string, AliasIndexEntry[]>>();
+
+function indexFor(category: DealCategory, families: FamilyEntry[]): AliasIndexEntry[] {
+  let byCategory = INDEX_CACHE.get(families);
+  if (!byCategory) {
+    byCategory = new Map();
+    INDEX_CACHE.set(families, byCategory);
+  }
+  let list = byCategory.get(category);
+  if (!list) {
+    list = [];
+    for (const entry of families) {
+      if (entry.category !== category) continue;
+      for (const raw of entry.aliases) {
+        const alias = fullNormalize(raw);
+        list.push({ entry, alias, regexp: phraseRegExp(alias) });
+      }
+    }
+    // Alias les plus longs d'abord : le premier qui correspond gagne.
+    list.sort((a, b) => b.alias.length - a.alias.length);
+    byCategory.set(category, list);
+  }
+  return list;
+}
+
+/**
+ * Cherche la famille d'un titre déjà normalisé (`fullNormalize`).
+ * `families` permet d'injecter un autre référentiel (chaussures, accessoires en R4.3).
+ */
+export function recognizeFamily(
+  normalizedTitle: string,
+  brand: string | null,
+  category: DealCategory,
+  families: FamilyEntry[] = MODEL_FAMILIES,
+): FamilyMatch | null {
+  const accepted = acceptedBrands(brand, category);
+  for (const { entry, alias, regexp } of indexFor(category, families)) {
+    if (!accepted.all && !accepted.names.has(fullNormalize(entry.brand))) continue;
+    if (regexp.test(normalizedTitle)) return { entry, alias };
+  }
+  return null;
+}
