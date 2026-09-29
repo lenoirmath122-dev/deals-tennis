@@ -260,3 +260,11 @@
 - État : PR #116 (R4.5-a) déjà fusionnée ; R4.5-b (commit `6e2b8fb`) est sur la branche `claude/cloud-credit-usage-bqgtxs`, **aucune PR ouverte pour l'instant, à ne pas ouvrir avant ces décisions**. Le point « millésime ou numéro écrit d'un seul côté » soulevé dans la PR #116 reste à confirmer aussi (règle Q6 de D-2026-09-28-02 non applicable au textile).
 - Prochaine étape : session Opus, trancher les 3 modèles Nike (puis la file `revue-textile.csv`), puis PR de R4.5-b.
 
+
+## 2026-09-29 (session cloud, Opus) — R4.5-b : les 3 cas « à confirmer » tranchés (D-2026-09-29-05)
+
+- Modèle actuel Opus, recommandé Opus (interprétation de données réelles, décision de Mathieu).
+- Relecture des données du passage à blanc (dump lu en lecture seule par la session précédente) : les cas Victory 7 et Advantage 7 réunissent deux générations Nike (Flex / Dri-FIT) aux références de style différentes ; même défaut sur **Victory 9**, non repéré. « Djokovic Dubai / RG » est du Lacoste avec une même référence GH5219, chez un seul marchand. Dans la file, la paire Head score 1,0 « TIE-BREAK » / « BREAK II TIE- » est en fait Tie Break II.
+- Décisions de Mathieu : références Nike différentes → proche ; même référence → identique malgré le nom de tournoi ; Tie Break II à refuser. Détail et consignes de code dans D-2026-09-29-05.
+- Aucun code modifié, aucune écriture en base.
+- Prochaine étape : session **Sonnet** pour coder D-2026-09-29-05, relancer le passage à blanc et relire ; puis PR de R4.5-b ; puis décisions de Mathieu sur `revue-textile.csv`. Le point « millésime écrit d'un seul côté » (PR #116) reste ouvert.

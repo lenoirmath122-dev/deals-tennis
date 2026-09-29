@@ -1240,3 +1240,24 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 **À reporter en R4.5-a (session Sonnet, spec = `R4_5_cadrage.md` + cette décision)** : paire 17 reclassée « identique » dans `R1_jeu-reference-candidat.csv`, dans le jeu R1 figé des tests et dans `R1_mesure.md` (33 identiques / 14 proches / 20 différents) ; compteurs attendus des tests ajustés.
 
 **Statut** : Actée (2026-09-29).
+
+### D-2026-09-29-05 — R4.5-b : références de style Nike différentes = proche ; même référence = identique malgré un nom de tournoi
+
+**Contexte** : relecture en session Opus des 3 cas « à confirmer » laissés par R4.5-b (passage à blanc textile, rien écrit en base). Constats sur les données :
+- les modèles « Victory 7 » (CV3048 + FD5380), « Advantage 7 » (DD8329 + FD5336) et « **Victory 9** » (CV2545 + FD5384 + FD5388, non repéré à la relecture) réunissent deux générations Nike : l'ancienne « Flex » et la nouvelle « Dri-FIT ». La référence rattache « Flex Victory » à CV3048, puis le titre (« Victory » + longueur) rattache CV3048 à FD5380 ;
+- « Djokovic Dubai / RG » est du **Lacoste** (pas du Nike) : même référence de style GH5219 (coloris 3A4 / 166), un seul marchand (SportSystem), même prix ;
+- pour adidas, les codes différents dans un même modèle (Club, Club SW) sont normaux : le code adidas désigne un coloris (§3.1 de `R4_5_cadrage.md`).
+
+**Décision (Mathieu, 2026-09-29)** :
+- **Nike : deux références de style différentes, connues des deux côtés → « proche », jamais « identique »**, même si la signature du titre est égale. Une référence de style Nike différente vaut génération différente écrite (D-2026-09-27-06). La règle est écrite **par marque** et ne vise que Nike. Une autre marque ne s'ajoute qu'après une vérification sur les données, et adidas en est exclu.
+- **Même référence de style → « identique »**, même si les titres portent des noms de tournoi différents (« Printemps Dubai » / « Printemps RG ») : ces noms sont alors des coloris (T-Q1 prime sur T-Q3 quand la référence est la même).
+- File de revue : la paire Head « TIE-BREAK » / « BREAK II TIE- » (score 1,0) est **Tie Break II**, une génération différente : **à refuser**, et « II » doit être lu comme marqueur de génération même quand le titre est désordonné.
+
+**À reporter en R4.5-b (session Sonnet)** :
+- liste de marques, par exemple `TEXTILE_STYLE_DISTINCT_BRANDS = ["nike"]` dans `config/textile-lexicon.ts` ;
+- dans le regroupement (`lib/matching/cluster.ts`), un modèle ne contient jamais deux références de style différentes d'une marque listée, y compris par transitivité ;
+- une offre sans référence (Tennis Point FR…) dont le titre correspond à plusieurs groupes de références n'est rattachée à aucun : elle est « proche » de chacun (proposition de la session Opus, à signaler à Mathieu si le nombre de modèles multi-marchands chute fortement) ;
+- tests versionnés : CV3048 / FD5380, DD8329 / FD5336, CV2545 / FD5384 (proche) ; GH5219-3A4 / GH5219-166 (identique) ; « TIE-BREAK » / « BREAK II TIE- » (génération différente) ;
+- nouveau passage à blanc, puis relecture des modèles multi-marchands, puis PR de R4.5-b.
+
+**Statut** : Actée (2026-09-29).
