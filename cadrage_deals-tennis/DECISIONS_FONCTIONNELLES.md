@@ -1297,3 +1297,16 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 
 **Statut** : Actée (2026-09-29).
 
+### D-2026-09-29-08 — Ménage de la documentation de suivi : périmètre et choix
+
+**Contexte** : inventaire de la documentation (session Opus). ETAT_ACTUEL porte tout l'historique R0-R4.5 sur sa ligne « Dernière mise à jour » (environ 40 000 caractères), JOURNAL à 301 lignes (seuil 150), 18 gaps déjà résolus encore présents, spec du MVP périmée, README par défaut de create-next-app. Deux sujets ne sont plus suivis nulle part depuis la fin de R3 : les 4 nouveaux marchands (D-2026-09-27-02, annoncés « périmètre R3 », absents de `R3_cadrage.md`) et l'étape 4 de GAP-2026-09-25-15 (détection junior par la description, « rattachée à R3 », non faite). Questions posées (AskUserQuestion), réponses explicites de Mathieu.
+
+**Décision (Mathieu, 2026-09-29)** :
+1. **Spec du MVP archivée** : `spec.md`, `plan.md`, `tasks.md`, `research.md`, `quickstart.md`, `data-model.md`, `contracts/`, `checklists/` déplacés tels quels dans `archive/mvp/` (`git mv`), une ligne dans INDEX (« état du MVP au 2026-09-24, non tenu à jour »).
+2. **Nouveaux marchands** : nouveau gap ouvert (Sports Raquettes, Tennis Compagnie, Extreme Tennis, puis Tennis Achat en dernier, « même opérateur » que Tennispro.fr ; Intersport via Kwanko seulement) ; construction **après R4.6**, sur `lib/ingest.ts` ; candidatures d'affiliation toujours bloquées par le renommage « Bonplantennis » (GAP-2026-09-25-10).
+3. **Détection junior** : GAP-2026-09-25-15 (étape 4) et GAP-2026-09-25-17 (17") fusionnés en un seul gap « détection junior restante », **hors chemin critique** ; les étapes 1 à 3 faites et l'étape 5 close sont retirées du texte.
+4. **README** remplacé par un README court (le site, la stack, les commandes utiles, renvoi vers `cadrage_deals-tennis/INDEX.md`).
+5. Le reste du ménage est mécanique et suit les seuils de D-2026-09-22-09 (détail et ordre d'exécution : JOURNAL, session du 2026-09-29 « Ménage de la documentation : cadrage »).
+
+**Statut** : Actée (2026-09-29). Exécution : session Sonnet.
+
