@@ -227,4 +227,5 @@
 - Mesures : 15 modèles réunis par la référence de style, tous justes (adidas JG0994 « Club » = « SW Stretch Woven », paire R1 17 ; Lacoste TH8917 « Core Performance » = « Sport Ultra Dry ») ; par le titre, 35 modèles exactement égaux chez ≥ 2 marchands, 316 paires proches dont 205 avec un mot en plus d'un seul côté ; prix d'origine divergent dans 7 groupes sur 35 (indice seulement).
 - Une tentative de lecture par script local avec la chaîne de connexion a été refusée par le contrôle de sécurité ; les données ont été lues par le connecteur Neon. Rien n'a été écrit en base à part la suppression de la branche.
 - Livrable : `R4_5_cadrage.md` (questions T-Q1 à T-Q7 ; découpage R4.5-a, R4.5-b, R4.5-c).
-- Prochaine étape : réponses de Mathieu, puis exécution de R4.5-a en Sonnet (nouvelle session).
+- Réponses de Mathieu aux questions T-Q1 à T-Q7 : toutes les propositions retenues (D-2026-09-29-04). Reclassement de la paire R1 17 laissé à R4.5-a (le jeu R1 figé des tests doit changer en même temps).
+- Prochaine étape : exécution de R4.5-a en Sonnet (nouvelle session).

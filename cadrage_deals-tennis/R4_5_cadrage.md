@@ -1,6 +1,6 @@
 # R4.5 — Textile et correspondance approchée (étape 3) : cadrage (2026-09-29)
 
-> Étape R4.5 de `R4_cadrage.md` §4. **Cadrage seulement, aucun code.** Proposition de Claude Code (Opus), **à valider par Mathieu** (questions au §6). L'exécution se fera ensuite en Sonnet, dans une nouvelle session.
+> Étape R4.5 de `R4_cadrage.md` §4. **Cadrage seulement, aucun code.** Proposition de Claude Code (Opus), **validée par Mathieu le 2026-09-29 (D-2026-09-29-04)** : toutes les propositions retenues (réponses au §6). L'exécution se fera ensuite en Sonnet, dans une nouvelle session.
 >
 > Données : lecture seule sur la prod (connecteur Neon, 2026-09-29), offres textiles `active` + `tracked` (2 829), et jeu R1.
 
@@ -139,23 +139,37 @@ Tennis Point FR publie une offre par couleur (« Club Jupe Femmes - blanc », «
 **T-Q1 — Référence avant le titre.** Deux offres textiles avec la même référence de style fabricant sont **identiques**, même si les titres diffèrent (adidas JG0994, Lacoste TH8917). La paire R1 17 passe de « proche » à « identique ».
 *Proposé : oui.*
 
+> **Réponse** : identique, paire R1 17 reclassée (à reporter en R4.5-a).
+
 **T-Q2 — Longueur.** Nike Advantage 7in / 9in : même gamme, longueurs différentes.
 *Proposé : **proche**, comme la longueur des raquettes (Q2 de D-2026-09-28-02).* Autre option : différent.
+
+> **Réponse** : proche.
 
 **T-Q3 — Collections de tournoi.** adidas « Pro Londres », « Pro Miami », « Freelift Pro New York » : coloris et finitions propres à un tournoi, souvent à un autre prix. Écrite d'un seul côté, est-ce une **collection** (→ identique, D-2026-09-27-06) ou une **édition** (→ proche, comme « RG ») ?
 *Proposé : **édition, donc proche**.* Ce sont des articles distincts chez adidas, avec leur propre code.
 
+> **Réponse** : édition, donc proche.
+
 **T-Q4 — Pas de fusion automatique par score en R4.5.** Le score remplit la file de revue ; seule la signature exacte (§3.2) et la référence (§3.1) fusionnent. Le seuil haut automatique se rediscute en R4.6, précision mesurée à l'appui.
 *Proposé : oui.* Autre option : fusion automatique au-dessus d'un seuil réglé sur le jeu R1, avec un rappel plus haut mais un risque de faux regroupements difficile à mesurer sur 10 paires.
+
+> **Réponse** : file de revue seulement, pas de fusion par score en R4.5.
 
 **T-Q5 — Prix d'origine.** Un écart de prix n'empêche pas la fusion ; il baisse seulement le score de l'étape 3.
 *Proposé : oui* (paire R1 18 : 28 € / 35 €, validée identique).
 
+> **Réponse** : simple indice.
+
 **T-Q6 — « Valeur dominante ».**
 *Proposé : non* (§5).
 
+> **Réponse** : non.
+
 **T-Q7 — Liste `generationUnique`.**
 *Proposé : étape à part R4.5-c, après le textile* (§5).
+
+> **Réponse** : étape à part R4.5-c.
 
 ## 7. Découpage de l'exécution (Sonnet)
 

@@ -1221,3 +1221,22 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 - **C-Q4** : fiche vérifiée puis version « Comfort » ajoutée à Sensation (voir `model-families.ts`).
 
 **Statut** : Actée (2026-09-29).
+
+---
+
+### D-2026-09-29-04 — Cadrage R4.5 (textile et étape 3) : réponses aux questions T-Q1 à T-Q7
+
+**Contexte** : cadrage `R4_5_cadrage.md` (session Opus du 2026-09-29), fondé sur les 2 829 offres textiles de la prod (lecture seule).
+
+**Décision (Mathieu, 2026-09-29)** : toutes les propositions retenues.
+- **T-Q1** : même référence de style fabricant → **identique**, même si les titres diffèrent. La paire R1 17 (adidas JG0994) passe de « proche » à « identique ».
+- **T-Q2** : longueur différente (7in / 9in) → **proche**.
+- **T-Q3** : collection de tournoi (« Pro Londres », « Pro Miami »…) écrite d'un seul côté = **édition**, donc **proche**.
+- **T-Q4** : pas de fusion automatique par score en R4.5 ; le score remplit une **file de revue** (`revue-textile.csv`). Seules la référence et la signature exacte fusionnent. Le seuil haut se rediscute en R4.6.
+- **T-Q5** : le prix d'origine est un **indice** qui baisse le score ; il ne bloque jamais une fusion.
+- **T-Q6** : pas de « valeur dominante ».
+- **T-Q7** : liste `generationUnique` dans une **étape à part, R4.5-c**, après le textile.
+
+**À reporter en R4.5-a (session Sonnet, spec = `R4_5_cadrage.md` + cette décision)** : paire 17 reclassée « identique » dans `R1_jeu-reference-candidat.csv`, dans le jeu R1 figé des tests et dans `R1_mesure.md` (33 identiques / 14 proches / 20 différents) ; compteurs attendus des tests ajustés.
+
+**Statut** : Actée (2026-09-29).
