@@ -379,12 +379,15 @@ export async function upsertDeal(sql: Sql, deal: PreparedDeal, productId: string
       is_active = EXCLUDED.is_active,
       color = EXCLUDED.color,
       product_id = EXCLUDED.product_id,
-      gtin = EXCLUDED.gtin,
-      mpn = EXCLUDED.mpn,
+      gtin = COALESCE(EXCLUDED.gtin, deals.gtin),
+      mpn = COALESCE(EXCLUDED.mpn, deals.mpn),
       merchant_sku = EXCLUDED.merchant_sku,
       unit_quantity = EXCLUDED.unit_quantity,
       unit_type = EXCLUDED.unit_type,
-      raw_attributes = EXCLUDED.raw_attributes,
+      raw_attributes = CASE
+        WHEN EXCLUDED.raw_attributes IS NULL THEN deals.raw_attributes
+        ELSE COALESCE(deals.raw_attributes, '{}'::jsonb) || EXCLUDED.raw_attributes
+      END,
       updated_at = NOW()
   `;
 }
