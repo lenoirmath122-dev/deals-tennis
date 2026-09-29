@@ -85,3 +85,12 @@
 - Constat (GAPS, GAP-2026-09-25-11) : « bracelet » absent du motif « textile porté » (2 Bracelets restent en `accessoires`) ; lexique déjà validé, non modifié, à trancher par Mathieu.
 - `tsc`/`eslint` propres ; `npm test` : mêmes 4 échecs de tests de contrat (dépendants de la base) avec et sans ce changement.
 - Prochaine étape : **R3.7** (SportSystem) ou R3.13, au choix de Mathieu.
+
+## 2026-09-29 (session desktop Sonnet) — R3.7 : script SportSystem réécrit sur `lib/ingest.ts`
+
+- Reprise. Modèle actuel = recommandé (Sonnet, exécution d'une spec validée). Mathieu choisit R3.7. Mode auto des permissions indisponible en début de session (classifieur en erreur), permissions accordées à la main par Mathieu.
+- `scripts/scraping/sportsystem.ts` réécrit sur `ingestOffer` / `evictMerchantOffers`. Inspection réelle d'une page de liste et de fiches : le `data-product` de la fiche (déjà chargée pour la marque) expose `reference` (→ `merchant_sku`), `attributes[].ean13` (→ `gtin`, renseigné sur une partie des articles seulement) et `features` (poids, tamis, plan de cordage, équilibre…) → `raw_attributes` avec les déclinaisons. Le `mpn` JSON-LD recopie la référence marchand : non capturé. Décodage de secours windows-1252 pour les fiches non UTF-8 (« cm² »).
+- Filtre par pages promo conservé (R3-Q3) : les cartes à prix de base <= prix passent désormais à `ingestOffer` (`tracked` possible) au lieu d'être ignorées, mais aucune n'a été constatée (0 `tracked`).
+- Vérifié sur la branche Neon `test-r3-7-sportsystem` (créée le matin même, intacte) : 764 actives (SKU 749, GTIN 302, `raw_attributes` 764, caractéristiques 658, 0 caractère corrompu), 15 expirées (dont 11 nouvelles = dérive du catalogue), relance idempotente (0 expirée). Puis appliqué en prod après accord de Mathieu : mêmes compteurs ; `deals` prod : 4190 active / 466 expired / 28 invalid / 9 tracked.
+- `tsc`/`eslint` propres ; `npm test` non relancé.
+- Prochaine étape : **R3.8** (Babolat) ou R3.13, au choix de Mathieu.
