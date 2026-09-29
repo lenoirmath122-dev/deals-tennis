@@ -268,3 +268,10 @@
 - Décisions de Mathieu : références Nike différentes → proche ; même référence → identique malgré le nom de tournoi ; Tie Break II à refuser. Détail et consignes de code dans D-2026-09-29-05.
 - Aucun code modifié, aucune écriture en base.
 - Prochaine étape : session **Sonnet** pour coder D-2026-09-29-05, relancer le passage à blanc et relire ; puis PR de R4.5-b ; puis décisions de Mathieu sur `revue-textile.csv`. Le point « millésime écrit d'un seul côté » (PR #116) reste ouvert.
+
+## 2026-09-29 (session cloud, Opus) — Mesure : offres séparées faute d'information
+
+- Question de Mathieu : ne sépare-t-on pas trop les offres ? Mesure dans `R4_5_mesure_separation.md`, faite sur les tables `match_*` de la prod (R4.4-bis), lues en lecture seule.
+- 539 paires inter-marchands de même famille et mêmes attributs, séparées seulement parce que la génération manque d'au moins un côté. Échantillon de 34 paires (une par famille) : 19 même produit, 13 différents, 2 incertains, soit environ 56 % de précision pour un assouplissement général : refusé.
+- Leviers ciblés proposés à Mathieu : L1 (SKU Babolat et Head, `mpn` Tennispro lus comme références), L2 (cordages : jauge absente des deux côtés → identique, avec un garde-fou de prix), L3 (`generationUnique` dès les chaussures, R4.5-c) ; raquettes et sacs maintenus stricts.
+- Aucun code modifié, aucune écriture en base.
