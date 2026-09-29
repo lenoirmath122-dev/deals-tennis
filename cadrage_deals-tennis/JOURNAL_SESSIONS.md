@@ -253,3 +253,10 @@
 - Lexique des mots neutres : non complété (les mots en plus de la file sont à trancher par Mathieu, cadrage §3.3).
 - 275 tests unitaires passent (`tracking.test.ts` échoue sans `DATABASE_URL`, comme avant), `tsc` et `eslint` propres.
 - Prochaine étape : Mathieu tranche `revue-textile.csv` et les 3 cas ; puis écriture du passage en prod (accord de Mathieu) ; puis R4.5-c (Opus).
+
+## 2026-09-29 (session cloud) — Consigne de séquence pour R4.5-b
+
+- Demande de Mathieu : les 3 points ouverts se tranchent **en Opus, à la prochaine session, avant la PR**. Lecture retenue : les 3 modèles Nike « à confirmer » relevés à la relecture des 70 modèles textiles multi-marchands de R4.5-b (Flex Victory / Victory 7in, Flex Advantage / Advantage 7in, Djokovic Dubai / RG : réunis par la référence de style, titres divergents). À corriger si Mathieu pensait à d'autres points.
+- État : PR #116 (R4.5-a) déjà fusionnée ; R4.5-b (commit `6e2b8fb`) est sur la branche `claude/cloud-credit-usage-bqgtxs`, **aucune PR ouverte pour l'instant, à ne pas ouvrir avant ces décisions**. Le point « millésime ou numéro écrit d'un seul côté » soulevé dans la PR #116 reste à confirmer aussi (règle Q6 de D-2026-09-28-02 non applicable au textile).
+- Prochaine étape : session Opus, trancher les 3 modèles Nike (puis la file `revue-textile.csv`), puis PR de R4.5-b.
+
