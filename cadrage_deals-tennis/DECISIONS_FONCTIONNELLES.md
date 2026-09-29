@@ -1275,3 +1275,25 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 
 **Statut** : Actée (2026-09-29).
 
+### D-2026-09-29-07 — Étape 0 : règles textile (millésime, édition), solution révisée de la séparation, place de R4.5-c
+
+**Contexte** : analyse de cohérence des fichiers de cadrage (session Opus). Quatre points contradictoires ou non tranchés : règle Q6 (D-2026-09-28-02) contredite par R4.5-a ; §4 bis (D-2026-09-29-06) contraire au §5 textile et à la paire R1 59 sur les éditions ; solution §5.4 de `R4_5_mesure_separation.md` non validée ; place de R4.5-c remise en cause par ce §5.4 sans être notée. Questions posées une à une (AskUserQuestion), réponses explicites de Mathieu.
+
+**Décision (Mathieu, 2026-09-29)** :
+1. **Textile, mention écrite d'un seul côté** : trois cas.
+   - Collection ou année écrite **hors du nom de modèle** (« Collection 2022 », paire R1 58) → **identique** (Q6 maintenu).
+   - **Numéro de génération dans le nom** (« Tie Break II », « 2 ») → **proche** (déjà appliqué à Tie Break II, D-2026-09-29-05).
+   - **Millésime dans le nom** (« Club 25 Tech » / « Club Tech ») → **indéterminé** dès que cet état existe (D-2026-09-29-06 : on ne sait pas si la fiche technique a changé) ; **proche** d'ici là (comportement actuel de R4.5-a).
+2. **Éditions spéciales (RG, Wimbledon, édition joueur), règle par catégorie** :
+   - raquettes, cordages, chaussures : **variante** (Q7, Q15, inchangé) ;
+   - textile : édition nommée écrite d'un seul côté → **proche** (paire R1 59 maintenue : autre dessin, autre prix), **sauf même référence de style → identique** (D-2026-09-29-05).
+   - La phrase du §4 bis du cadrage du rapprochement est corrigée en conséquence.
+3. **Solution révisée de la séparation (§5.4) validée** : (1) références de style dans toutes les catégories (SKU Babolat, Head, Sport 2000, partie « style » avant le premier tiret) ; (2) corrections d'extraction du §5.3, chacune avec une paire piège ; (3) seulement ensuite, assouplissement (génération absente, jauge absente) rediscuté sur un nouvel échantillon tiré paire par paire. **Tecnifibre n'est ajoutée qu'après vérification sur les données** de la forme de sa référence (écartée en R4.5-a faute de preuve).
+4. **R4.5-c déplacé** : la liste `generationUnique` se dresse **après** les références (étape 1 ci-dessus), les corrections d'extraction et l'état « indéterminé » dans `compare()`, dans le cadre de l'investigation des paires indéterminées (D-2026-09-29-06).
+
+**Ordre d'exécution qui en découle** : fin de R4.5-b (code de D-2026-09-29-05, passage à blanc, relecture, PR) → décisions de Mathieu sur `revue-textile.csv` → écriture du passage en prod → références de style toutes catégories → corrections d'extraction → état « indéterminé » → investigation des indéterminés (dont R4.5-c) → R4.6.
+
+**À reporter en code (Sonnet)** : point 1, troisième cas, avec l'état « indéterminé » ; rien à changer d'ici là (R4.5-a répond déjà « proche »). Point 2 : rien à changer (comportement actuel).
+
+**Statut** : Actée (2026-09-29).
+

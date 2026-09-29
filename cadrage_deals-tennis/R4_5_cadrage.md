@@ -177,6 +177,6 @@ Tennis Point FR publie une offre par couleur (« Club Jupe Femmes - blanc », «
 |---|---|
 | **R4.5-a** (**fait le 2026-09-29**) | Extraction textile (fonctions pures, lexique par marchand), référence de style par marque, signature et verdict de l'étape 2, paires pièges versionnées, jeu R1 ; tests. |
 | **R4.5-b** (**code et passage à blanc fait le 2026-09-29 ; écriture en prod après accord de Mathieu**) | Score de l'étape 3 et fichier `revue-textile.csv` dans le rapport ; passage à blanc en prod (lecture seule), relecture complète des modèles textiles multi-marchands ; écriture en prod après ton accord. |
-| **R4.5-c** (si T-Q7 validée) | Liste des familles `generationUnique` proposée (Opus, vérification web), validée par toi, puis reportée dans `config/model-families.ts` (Sonnet). |
+| **R4.5-c** (**déplacé, D-2026-09-29-07**) | Liste des familles `generationUnique` proposée (Opus, vérification web), validée par toi, puis reportée dans `config/model-families.ts` (Sonnet). Se fait **après** les références de style toutes catégories, les corrections d'extraction et l'état « indéterminé », dans l'investigation des paires indéterminées (`R4_5_mesure_separation.md` §5.4). |
 
 Toujours hors périmètre : tout changement visible sur le site (R5).

@@ -122,3 +122,5 @@ Ces défauts sont aujourd'hui masqués par la règle stricte des générations. 
 3. **Ensuite seulement**, sur ce qui reste sans référence commune, rediscuter la génération absente des deux côtés (pour les raquettes et les chaussures) et la jauge absente des deux côtés (pour les cordages). Il faudra un nouvel échantillon tiré paire par paire, puisque la règle actuelle ne masquera plus les défauts corrigés. `generationUnique` (R4.5-c) reste la voie prudente.
 
 Les leviers L2 et L3 du §4 sont repoussés à l'étape 3 : leur intérêt se mesurera après l'étape 1, qui couvre déjà une bonne partie de leurs cas (35 paires de cordages, Courtflash, SFX Evo…).
+
+**Décision (D-2026-09-29-07)** : solution révisée validée par Mathieu dans cet ordre ; le SKU Tecnifibre n'est ajouté qu'après vérification sur les données de la forme de sa référence ; R4.5-c (`generationUnique`) se place à l'étape 3.

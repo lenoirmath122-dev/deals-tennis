@@ -68,7 +68,7 @@ Le rapprochement doit distinguer ces trois cas, et l'affichage doit toujours dir
 
 **Identique** : deux offres sont identiques si l'acheteur reçoit le **même produit** en choisissant la même variante chez l'un ou l'autre marchand. Leurs prix se comparent alors directement.
 - Ce qui fait l'article : même marque, même gamme, même version, même génération (même fiche technique du fabricant), même conditionnement.
-- Ce qui ne change pas l'article : taille, pointure, grip, coloris ; un coloris d'une nouvelle saison si la fiche technique n'a pas changé ; une édition purement décorative (Wimbledon, édition joueur) ; un cadeau offert.
+- Ce qui ne change pas l'article : taille, pointure, grip, coloris ; un coloris d'une nouvelle saison si la fiche technique n'a pas changé ; une édition purement décorative (Wimbledon, édition joueur) pour les raquettes, cordages et chaussures (en textile, une édition nommée d'un seul côté reste « proche » sauf même référence de style, D-2026-09-29-07) ; un cadeau offert.
 - Ce qui change l'article : la génération, la version (Lite, Tour, UL, junior…) et le tamis ; le conditionnement (garniture / bobine, tube / carton, lot) ; le genre, l'âge, le type de pièce textile.
 - **Règle de groupe** : un regroupement n'est juste que si ses offres sont identiques **deux à deux**, pas seulement reliées de proche en proche (erreur des Nike Victory : Flex relié à Dri-FIT par une offre intermédiaire, D-2026-09-29-05).
 - Cas limite laissé à la relecture : raquette cordée ou non cordée. Variante aujourd'hui, mais écart de prix réel (230 € / 270 € chez Tennispro.fr) : même article, prix comparés seulement à option égale.
@@ -96,7 +96,7 @@ Le rapprochement doit distinguer ces trois cas, et l'affichage doit toujours dir
 | Balles | — | — | Pression (Q5), conditionnement (comparaison à la balle) |
 | Sacs | Coloris | — | Contenance (Q5, nombre de raquettes) |
 | Surgrips, accessoires | Coloris | — | Conditionnement (comparaison à l'unité) |
-| Textile | Taille, coloris ; collection/année non écrite ou écrite d'un seul côté (D-2026-09-27-06, Q6) | Édition spéciale nommée écrite d'un seul côté (RG, Wimbledon, US Open…, Q6) ; génération ou collection explicitement différente | Modèle, genre |
+| Textile | Taille, coloris ; collection/année non écrite ou écrite d'un seul côté **hors du nom de modèle** (D-2026-09-27-06, Q6) ; même référence de style malgré un nom de tournoi (D-2026-09-29-05) | Édition spéciale nommée écrite d'un seul côté (RG, Wimbledon, US Open…, Q6) ; numéro de génération dans le nom écrit d'un seul côté (« II ») ; génération ou collection explicitement différente ; référence de style Nike différente (D-2026-09-29-05). Millésime dans le nom écrit d'un seul côté (« Club 25 Tech ») : **indéterminé** dès que l'état existe, proche d'ici là (D-2026-09-29-07) | Modèle, genre |
 | Toutes catégories | Article + cadeau offert (« 6 cordages offerts », « sac offert »), cadeau indiqué sur l'offre (Q12) | — | Lot de N articles identiques (« Pack de 2 raquettes »), prix à l'unité affiché, jamais de « meilleur prix » entre un lot et l'unité (Q12) |
 
 **Règle des générations (décision de Mathieu, 2026-09-26, D-2026-09-26-01)** — s'applique à toutes les catégories et prime sur la mention « génération voisine » de la ligne Raquettes :

@@ -285,3 +285,17 @@
 - Écrit : D-2026-09-29-06 (`DECISIONS_FONCTIONNELLES.md`), §4 bis du cadrage du rapprochement. Aucun code modifié, aucune écriture en base.
 - Prochaine étape inchangée : session Sonnet pour coder D-2026-09-29-05, passage à blanc et relecture (avec cette grille), puis PR de R4.5-b.
 
+## 2026-09-29 (session cloud, Opus) — Analyse de cohérence du cadrage et étape 0 (D-2026-09-29-07)
+
+- Modèle actuel Opus, recommandé Opus (analyse du cadrage, décisions).
+- Relecture des fichiers de suivi, des décisions D-2026-09-29-04 à 06, des cadrages R4 / R4.5, de la mesure de séparation, comparée au code et à Git : D-2026-09-29-05 et l'état « indéterminé » ne sont pas codés ; R4.5-b (`6e2b8fb`) toujours sans PR.
+- Étape 0 tranchée par Mathieu (AskUserQuestion, recommandations retenues) : règle textile en trois cas (collection hors nom / numéro de génération / millésime dans le nom) ; éditions par catégorie ; §5.4 validé, Tecnifibre après vérification ; R4.5-c déplacé. Écrit : D-2026-09-29-07, §4 bis et §5 du cadrage du rapprochement, `R4_5_cadrage.md` §7, `R4_5_mesure_separation.md`, « Prochaine étape » d'ETAT_ACTUEL.
+- **Ménage du suivi à faire en tête de la prochaine session Sonnet** (sans décision) :
+  - ETAT_ACTUEL : condenser la ligne « Dernière mise à jour » (R0 à R4.4 terminés → une ligne chacun, détail dans `archive/`) ; retirer ou condenser les sections périmées (« Sous-catégories accessoires » fait en R3.13, « Filtre sexe/âge » en attente d'un déploiement n8n ProTennis devenu sans objet, liste « Plusieurs pistes ouvertes ») ;
+  - JOURNAL (287 lignes, seuil 150) : archiver les sessions anciennes ;
+  - GAPS : retirer les gaps RÉSOLU / CLOS / REMPLACÉ ; clore comme obsolètes ceux liés à ProTennis (GAP-2026-09-25-01 point 4, GAP-2026-09-25-08, GAP-2026-09-23-04 à vérifier) ;
+  - GAP-2026-09-25-15 étape 4 (détection junior pour les 6 autres marchands) : « rattachée à R3 » mais absente de `R3_cadrage.md`, R3 terminé sans elle ; la reclasser explicitement (titre du gap « reste tout le code » aussi périmé) ;
+  - INDEX : ajouter `R4_5_mesure_separation.md`.
+- Aucun code modifié, aucune écriture en base.
+- Prochaine étape : session **Sonnet** — ménage ci-dessus, puis fin de R4.5-b (code de D-2026-09-29-05, passage à blanc, relecture, PR).
+
