@@ -217,3 +217,14 @@
 - Écriture réelle `npm run match:shadow` : passage `e249074a-8bb6-4f0d-b905-e240d1a80b1f`, 1 454 modèles, 1 912 liens ; ancien passage supprimé par le script.
 - Vérification Neon (lecture seule, prod) : match_runs 1, match_models 1 454, match_offer_links 1 912, match_offer_attributes 2 206 ; deals inchangé (4 241 active, 794 tracked, 5 269).
 - Branche Neon `test-r4-4bis-passage` : peut être supprimée (non supprimée). Prochaine étape : R4.5.
+
+
+## 2026-09-29 (session cloud, Opus) — R4.5 : cadrage du textile et de l'étape 3
+
+- Modèle actuel Opus, recommandé Opus (cadrage, interprétation de données réelles).
+- Branche Git remise au niveau de master (R4.4-bis déjà fusionné, #112 à #114). Branche Neon `test-r4-4bis-passage` supprimée avec l'accord de Mathieu.
+- Lecture seule sur la prod (connecteur Neon) : 2 829 offres textiles `active` + `tracked` ; Tennis Point FR 1 749 sans aucune référence ; références fabricant chez SportSystem, Sport 2000, Head, Babolat, Tecnifibre, Tennispro.fr (adidas).
+- Mesures : 15 modèles réunis par la référence de style, tous justes (adidas JG0994 « Club » = « SW Stretch Woven », paire R1 17 ; Lacoste TH8917 « Core Performance » = « Sport Ultra Dry ») ; par le titre, 35 modèles exactement égaux chez ≥ 2 marchands, 316 paires proches dont 205 avec un mot en plus d'un seul côté ; prix d'origine divergent dans 7 groupes sur 35 (indice seulement).
+- Une tentative de lecture par script local avec la chaîne de connexion a été refusée par le contrôle de sécurité ; les données ont été lues par le connecteur Neon. Rien n'a été écrit en base à part la suppression de la branche.
+- Livrable : `R4_5_cadrage.md` (questions T-Q1 à T-Q7 ; découpage R4.5-a, R4.5-b, R4.5-c).
+- Prochaine étape : réponses de Mathieu, puis exécution de R4.5-a en Sonnet (nouvelle session).
