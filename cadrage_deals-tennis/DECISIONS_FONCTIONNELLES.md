@@ -1453,3 +1453,17 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 **À noter pour R5** : raquettes cordée et non cordée réunies comme variantes (§4 bis) ; le prix ne se compare qu'à option égale.
 
 **Statut** : Actée (2026-09-30).
+
+### D-2026-09-30-11 — R4.6-b : textile réuni par identifiant seulement, coupure des modèles incohérents
+
+**Contexte** : R4.6-b (`R4_6_cadrage.md` §6). Moteur `r4.5-etape7` rejoué en lecture seule sur la prod : 56 des 71 modèles textiles multi-marchands (50 des 57 en `active`) ne tiennent que par la signature, dont 50 avec Tennis Point FR (aucune référence textile). Le motif « même nom, plusieurs articles » est fréquent (gamme Babolat Play : 3MTG à 42 € ≠ 3MP2 / 3MTF à 30 €, fiches lues ; titres en double chez Tennis Point FR). Deux faux hors échantillon ou déjà connus confirmés : modèles 207 (Babolat Play Crew Neck Tee) et 878 (n° 12). Sur les 13 modèles « divergents », 11 ne sont que du bruit de libellé.
+
+**Décision (Mathieu, 2026-09-30)** :
+1. **Q4, option B** : en textile, seuls le GTIN et la référence fabricant réunissent des offres ; la signature (et les étapes qui s'y rattachent, dont l'étape 2 ter) ne fusionne plus. Coût accepté : textile multi-marchands d'environ 71 à 15, en `active` d'environ 57 à 7 (chiffres exacts au passage à blanc). Tennis Point FR ne se rapproche plus en textile tant que son GTIN n'est pas capté.
+2. **Q5** : filet de sécurité toutes catégories : un modèle signalé « incohérent » est coupé en ses composantes tenues par identifiant avant publication. « Divergent » reste un signal de rapport, sans effet.
+
+**Précision de Claude Code (décision mineure)** : les paires textiles que la signature réunissait vont dans la file de revue textile avec le motif « signature seule » (candidates à valider, cf. GAP-2026-09-27-02), plutôt que d'être perdues ; elles ne sont pas « identiques » pour le site.
+
+**Report en code** : Sonnet, session suivante, avec passage à blanc relu puis écriture en prod après accord de Mathieu.
+
+**Statut** : Actée (2026-09-30).
