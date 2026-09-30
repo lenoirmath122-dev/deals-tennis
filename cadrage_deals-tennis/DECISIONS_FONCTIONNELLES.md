@@ -1440,3 +1440,16 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 **À reporter en code (Sonnet)** : §8 de `R4_5_etape7_indetermines.md`, avec le report de R4.5-c (D-2026-09-30-02), passage à blanc, relecture de tous les modèles multi-marchands nouveaux, écriture en prod après accord de Mathieu.
 
 **Statut** : Actée (2026-09-30).
+
+### D-2026-09-30-10 — R4.6-a : échantillon de 30 modèles de prod (R4-Q6), découpage de R4.6
+
+**Contexte** : R4.6 (`R4_cadrage.md` §4). Tirage de 30 modèles au hasard parmi les 252 modèles multi-marchands du passage `8f17143b…` (graine fixe 20260930), relus par Claude Code (fiches lues pour les cas douteux), proposition soumise à Mathieu. Détail : `R4_6_cadrage.md`, `R4_6_echantillon.csv`.
+
+**Décision (Mathieu, 2026-09-30)** :
+1. **Verdicts** : 28 modèles identiques, 2 faux (n° 6 : deux jupes adidas Club de fiches techniques différentes chez Tennis Point FR ; n° 12 : short adidas Club 2025 relié par une référence aux shorts Club SW Aeroready de 2021). Les 5 cas douteux sont identiques (n° 8 : « Evo Drive Lite White » = coloris ; n° 11 : Propulse Junior 3 Boy / Girl, saisons 2025 / 2026 ; n° 20, 25, 27).
+2. **Précision mesurée** : 28 / 30 (93,3 %) ; hors textile 23 / 23 ; textile 5 / 7. Avec le jeu R1 (24 / 24), aucune erreur hors textile.
+3. **Découpage de R4.6** : R4.6-a (échantillon, fait) ; R4.6-b (suite à donner : sort du textile à la bascule, séparation des modèles incohérents) ; R4.6-c (règles de repérage des non-reconnus, GAP-2026-09-27-01) ; R4.6-d (dossier de bascule : mesure finale, option IA, seuil haut textile, GAP-2026-09-29-01, décision de bascule). Une étape par conversation, Opus.
+
+**À noter pour R5** : raquettes cordée et non cordée réunies comme variantes (§4 bis) ; le prix ne se compare qu'à option égale.
+
+**Statut** : Actée (2026-09-30).

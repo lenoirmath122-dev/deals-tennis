@@ -130,3 +130,11 @@
 - Accord de Mathieu : « Lance l'écriture en prod ». Passage `8f17143b-63c5-46c1-abd1-8f2eb75dc81c` (engine `r4.5-etape7`), 3 181 modèles, 4 732 liens ; un seul passage en base, rapport identique (diff) au passage à blanc. Tables `match_*` seulement, site non touché.
 - Mathieu ne sait pas ce que veut dire « SF » (Head Sprint Pro 4.0) : reste non vérifié.
 - Prochaine étape : R4.6.
+
+## 2026-09-30 (session desktop, Opus) — R4.6-a : échantillon de 30 modèles de prod, découpage de R4.6 (D-2026-09-30-10)
+
+- Session ouverte sur Sonnet ; Mathieu a basculé sur Opus à la question du modèle. `git fetch` : PR #135 fusionnée, contenu de `feat/r4.5-etape7-indetermines` identique à `origin/master`, aucune PR ouverte ; branche `doc/r4.6-cadrage` partie d'`origin/master` (`8dad85a`).
+- Lecture seule sur la prod (script jetable hors dépôt) : 30 modèles tirés parmi les 252 multi-marchands du passage `8f17143b…` (graine 20260930) ; attributs extraits relus pour les cas douteux ; fiches Tennis Point FR lues (2 jupes adidas Club, pantalon Nike Court Heritage) ; Tennispro.fr refuse (403) ; références adidas IG1679 et Nike DC0621 recherchées sur le web.
+- **Réponses de Mathieu (D-2026-09-30-10)** : 23 identiques et 2 faux validés tels que proposés ; les 5 cas douteux sont identiques ; découpage R4.6-a à R4.6-d validé. Précision 28 / 30 (hors textile 23 / 23, textile 5 / 7).
+- Écrit : `R4_6_cadrage.md`, `R4_6_echantillon.csv`, D-2026-09-30-10, ETAT_ACTUEL, INDEX, JOURNAL. Aucun code modifié, rien écrit en base.
+- Prochaine étape : R4.6-b (Opus) : sort du textile à la bascule, séparation des modèles signalés incohérents.
