@@ -124,3 +124,9 @@
 - Mesure : jeu R1 24/24 et 24/33 (avant 21/21 et 21/33, paires 32, 65 et 66, toutes attendues identiques), inter-marchands 22/22 et 22/30. Passage à blanc en prod (`--dry-run --out rapport-passage-etape7`) : voir ETAT_ACTUEL. Relecture des 23 modèles multi-marchands nouveaux ou modifiés : 4 fusions fausses trouvées (Head Lynx Power, Velocity MLT Power, Sonic Pro Tour rPET et Hawk Touch Rough réunis à la version de base, car le site Head écrit ces versions que le référentiel ignorait ; Courtflash Kid Velcro réuni au Courtflash K à lacets) : versions ajoutées au référentiel, tests ajoutés, passage à blanc refait. Un « divergent » de plus dans `conflits.csv` : Alu Power Amazon 12,2 m / Tennispro.fr 12 m (même garniture, paire R1 66), sans effet.
 - À signaler à Mathieu : « Sprint Pro 4.0 SF » (référence Head 273106) et « SF Clay » sont rapprochés du Sprint Pro 4.0 sans « SF », comme le prévoit la paire piège de la spec ; le sens de « SF » n'est pas vérifié. Longueur d'une garniture non déduite du prix : une garniture sans longueur écrite reste indéterminée face à « 12 m ».
 - Prochaine étape : écriture du passage en prod (accord de Mathieu), puis R4.6.
+
+## 2026-09-30 (session desktop, Sonnet) — Étape 7 : écriture en prod
+
+- Accord de Mathieu : « Lance l'écriture en prod ». Passage `8f17143b-63c5-46c1-abd1-8f2eb75dc81c` (engine `r4.5-etape7`), 3 181 modèles, 4 732 liens ; un seul passage en base, rapport identique (diff) au passage à blanc. Tables `match_*` seulement, site non touché.
+- Mathieu ne sait pas ce que veut dire « SF » (Head Sprint Pro 4.0) : reste non vérifié.
+- Prochaine étape : R4.6.
