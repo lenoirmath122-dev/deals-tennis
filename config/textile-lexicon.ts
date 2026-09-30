@@ -281,11 +281,13 @@ export const TEXTILE_STYLE_REFERENCE_BRANDS = ["adidas", "babolat", "head", "lac
  * Marques dont deux références de style différentes désignent deux articles différents
  * (D-2026-09-29-05) : Nike change de référence à chaque génération (Flex CV3048 / Dri-FIT FD5380).
  * Deux offres de ces marques aux références connues et différentes sont « proches », jamais
- * « identiques », et un modèle ne contient jamais deux références de style. adidas est exclue :
- * son code désigne un coloris (§3.1 de `R4_5_cadrage.md`). Une autre marque ne s'ajoute qu'après
- * vérification sur les données.
+ * « identiques », et un modèle ne contient jamais deux références de style. Lacoste s'y ajoute
+ * (D-2026-09-30-04, 1d) : `TH2508` / `TH2808` sont deux articles « Ultra Dry » distincts. adidas est
+ * exclue : son code désigne un coloris (§3.1 de `R4_5_cadrage.md`). Head et Babolat aussi : sur leur
+ * site, un même article porte plusieurs références (D-2026-09-30-05). Une autre marque ne s'ajoute
+ * qu'après vérification sur les données.
  */
-export const TEXTILE_STYLE_DISTINCT_BRANDS = ["nike"];
+export const TEXTILE_STYLE_DISTINCT_BRANDS = ["nike", "lacoste"];
 
 /**
  * Marchands dont le SKU est la référence fabricant (Sport 2000 : code fabricant ; Head : numéro
@@ -293,3 +295,11 @@ export const TEXTILE_STYLE_DISTINCT_BRANDS = ["nike"];
  * Tennispro.fr) ou d'une forme non établie (Tecnifibre).
  */
 export const TEXTILE_SKU_IS_REFERENCE_MERCHANTS = ["Sport 2000", "Head", "Babolat"];
+
+/**
+ * Hors textile (D-2026-09-30-05) : mêmes marchands, dont le SKU s'ajoute aux références fabricant
+ * (raquettes, cordages, chaussures, sacs). Seule la partie « style » est comparée (avant le premier
+ * tiret, chaque référence découpée sur « / ») ; le suffixe est le coloris. Exceptions : balles
+ * (le suffixe est le conditionnement) et marque Tecnifibre (pas de découpe stable, le GTIN suffit).
+ */
+export const SKU_IS_REFERENCE_MERCHANTS = ["Sport 2000", "Head", "Babolat"];

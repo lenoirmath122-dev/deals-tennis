@@ -54,10 +54,10 @@ export function extractOfferAttributes(offer: OfferInput): ExtractedOffer {
   else extractAccessoryAttributes(offer, entry, alias, subcategory, attrs, alertes);
 
   const gtin = cleanGtin(offer.gtin);
-  const referencesFabricant = manufacturerReferences(offer);
+  const marque = entry?.brand ?? offer.marque;
+  const referencesFabricant = manufacturerReferences(offer, { brand: marque, subcategory });
   if (offer.categorie === "cordages") setAttr(attrs, "age_group", "adulte", "titre_description");
 
-  const marque = entry?.brand ?? offer.marque;
   let nonReconnu: ExtractedOffer["nonReconnu"] = null;
   if (!entry) {
     const brandKnown = Boolean(offer.marque) && fullNormalize(offer.marque!) !== "sportsystem";
