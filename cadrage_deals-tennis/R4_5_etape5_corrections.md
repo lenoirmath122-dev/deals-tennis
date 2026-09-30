@@ -106,4 +106,4 @@ Code sur la branche `feat/r4.5-etape5-corrections` (PR ouverte, engine `r4.5-eta
 - File de revue textile 210 → 220 paires : 12 nouvelles, dont 11 « Club 3 Bandes » (Tennispro.fr, A8) qui ne sortaient plus de la file à cause du numéro 3, et Mizuno « 7in Amplify » / « Release Amplify 8 » (longueur 7 | 8) ; 2 retirées (Tie-Break II, réuni ; un t-shirt Tecnifibre devenu débardeur).
 - Proches 3 245 → 3 036 ; différents 10 343 → 10 510 (tailles junior, versions de sacs, ASMC / Y-3).
 
-**Reste** : écriture en prod du passage `r4.5-etape5`, après accord de Mathieu.
+**Écrit en prod le 2026-09-30** : passage `ed52d6ec-a113-4f6f-b729-7f5d8a1263fc` (engine `r4.5-etape5`, 3 268 modèles, 4 732 liens, 234 multi-marchands), rapport identique au passage à blanc.
