@@ -132,3 +132,12 @@
 - Écriture en prod (`npm run match:shadow -- --out rapport-passage-etape5`) : passage `ed52d6ec-a113-4f6f-b729-7f5d8a1263fc`, engine `r4.5-etape5`, **3 268 modèles, 4 732 liens**, 234 modèles multi-marchands, 220 paires en file de revue textile. Les 6 fichiers du rapport sont **identiques** à ceux du passage à blanc relu. Vérifié en base : 1 seul passage (`66f39305…` supprimé), 5 035 lignes d'attributs, `deals` inchangé (4 241 `active`, 794 `tracked`, 5 269 au total). Tables `match_*` seulement, site non touché.
 - PR #127 (doc de l'étape 4, base `d39c68a`) devenue redondante : `master` porte déjà ces lignes ; à fermer par Mathieu.
 - Prochaine étape : étape 6 (état « indéterminé » dans `compare()`, cadrage Opus).
+
+## 2026-09-30 (session desktop, Opus) — Étape 6 : état « indéterminé », cadrage
+
+- Modèle actuel Opus, recommandé Opus (cadrage). PR ouvertes #127 et #130 relues : aucune décision absente de `master`. Branche partie d'`origin/master` avec le commit de #130 repris (doc de l'étape 5), pour éviter un conflit sur `ETAT_ACTUEL.md` et `JOURNAL_SESSIONS.md`.
+- Constat : un attribut connu d'un seul côté et une génération manquante valent « proche » dans `compare()` ; le regroupement ne réunit que des « identique », donc l'étape 6 ne change aucun modèle.
+- Mesure en lecture seule sur les 5 035 offres de la prod (script jetable, hors dépôt) : 3 036 paires inter-marchands « proche » ; avec la frontière proposée, 1 690 deviennent « indéterminé » (chaussures 694, textile 381, cordages 214, raquettes 210, accessoires 191), 1 346 restent « proche ». Exemples relus (`R4_5_etape6_indetermine.md` §2).
+- Quatre questions (AskUserQuestion), réponses recommandées retenues : principe et `indetermines.csv` validés ; marqueur écrit d'un seul côté = proche ; sacs (type, taille, contenance) d'un seul côté = indéterminé ; longueur textile d'un seul côté = indéterminé. D-2026-09-30-08.
+- Aucun code modifié, rien écrit en base.
+- Prochaine étape : report en code (Sonnet), §4 de `R4_5_etape6_indetermine.md`.
