@@ -6,7 +6,7 @@
  * les refuse. Chaque décision enrichit ensuite le lexique (`config/textile-lexicon.ts`). Fonction pure.
  */
 
-import { compare } from "./compare.ts";
+import { compare, modelWords } from "./compare.ts";
 import type { ClusterResult, EngineOffer } from "./cluster.ts";
 
 export interface TextileReviewRow {
@@ -30,7 +30,8 @@ export const REVIEW_MIN_SCORE = 0.4;
 /** Plafond de lignes du fichier (les mieux classées d'abord). */
 export const REVIEW_MAX_ROWS = 3000;
 
-const words = (modele: string | undefined) => (modele ? modele.split(" ").filter(Boolean) : []);
+// Même forme que `compare()` : mots triés (l'ordre écrit par le marchand ne compte pas).
+const words = modelWords;
 
 /** Écart de prix d'origine : indice seulement (T-Q5), jamais une barrière. */
 function priceGap(a: number | null, b: number | null): number {

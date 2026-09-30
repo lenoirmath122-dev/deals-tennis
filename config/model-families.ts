@@ -59,6 +59,11 @@ export interface FamilyEntry {
   /** Ligne junior : l'âge est un attribut « différent » (COMMON_ATTRIBUTES). */
   junior?: boolean;
   /**
+   * Les alias contiennent la version (« pure aero » / version Aero ; « t fight club » / version Club) :
+   * la version est lue avant que l'alias soit retiré du titre (étape 5, A10).
+   */
+  versionInAlias?: boolean;
+  /**
    * Génération unique sur le marché (R4-Q4) : lève la règle « génération non écrite des
    * deux côtés → proche » pour les raquettes, chaussures et sacs. Aucune famille n'est
    * marquée à ce jour : la liste est à proposer à Mathieu sur les données du rapport.
@@ -121,7 +126,7 @@ export const MODEL_FAMILIES: FamilyEntry[] = [
       { label: "Gen 11", markers: ["gen 11", "gen11"], year: 2025, source: "titres « Pure Drive 98 Gén 11 2025 », « Pure Drive Gen 11 2025 »" },
     ],
     editions: ["Spectra Edition", "Wimbledon"],
-    excludes: ["evo drive", "boost drive", "drive junior"],
+    excludes: ["evo drive", "boost drive", "drive junior", "pure drive junior"],
     statut: "observe",
     notes: [
       "« S-Lite » et « S Lite » : même version.",
@@ -208,6 +213,18 @@ export const MODEL_FAMILIES: FamilyEntry[] = [
   {
     brand: "Babolat",
     category: "raquettes",
+    family: "Pure Drive Junior",
+    aliases: ["pure drive junior"],
+    generations: [{ label: "Gen 11", markers: ["gen11", "gen 11"], source: "titres « Pure Drive Junior 26 Gen11 » (Babolat, 119,95 €)" }],
+    junior: true,
+    statut: "observe",
+    notes: [
+      "Étape 5 (B2, D-2026-09-30-07) : raquette à part, pas la « Drive Junior » d'entrée de gamme (59,95 à 69,95 €). Alias plus long que « drive junior » : elle l'emporte. La taille (25, 26) est lue comme longueur.",
+    ],
+  },
+  {
+    brand: "Babolat",
+    category: "raquettes",
     family: "Pure Aero Junior",
     aliases: ["pure aero junior", "aero junior"],
     versions: ["25", "26"],
@@ -220,20 +237,22 @@ export const MODEL_FAMILIES: FamilyEntry[] = [
     category: "raquettes",
     family: "Drive Junior",
     aliases: ["drive junior"],
-    versions: ["23", "24", "25"],
     editions: ["Red"],
     junior: true,
     statut: "observe",
+    notes: ["Étape 5 (B1) : les tailles 23 / 24 / 25 ne sont plus des versions, mais la longueur en pouces (deux tailles différentes = « proche »)."],
   },
   {
     brand: "Babolat",
     category: "raquettes",
     family: "Carlitos Junior",
     aliases: ["carlitos junior"],
-    versions: ["19", "21", "25"],
     junior: true,
     statut: "observe",
-    notes: ["Q8 (D-2026-09-28-02) : une famille par ligne (éclaté de l'ancien regroupement junior Babolat)."],
+    notes: [
+      "Q8 (D-2026-09-28-02) : une famille par ligne (éclaté de l'ancien regroupement junior Babolat).",
+      "Étape 5 (B1) : les tailles 19 / 21 / 25 ne sont plus des versions, mais la longueur en pouces (deux tailles différentes = « proche »).",
+    ],
   },
   {
     brand: "Babolat",
@@ -303,9 +322,8 @@ export const MODEL_FAMILIES: FamilyEntry[] = [
     generations: [
       { label: "2021 (Graphene 360+)", markers: ["graphene 360+", "2021"], year: 2021, source: "titre « Graphene 360+ Radical Pro (2021) »" },
       { label: "2023", markers: ["2023"], year: 2023, source: "titre « Radical Team 2023 »" },
-      { label: "2025", markers: ["2025"], year: 2025, source: "titres « Radical MP 2025 », « Radical Team L 2025 »" },
+      { label: "2025", markers: ["2025", "palm tree crew", "palm tree"], year: 2025, source: "titres « Radical MP 2025 », « Radical Team L 2025 » ; « Palm Tree » = génération 2025 (D-2026-09-30-06 point 3)" },
     ],
-    editions: ["Palm Tree Crew"],
     excludes: ["junior radical", "radical junior"],
     statut: "observe",
     notes: [
@@ -318,11 +336,14 @@ export const MODEL_FAMILIES: FamilyEntry[] = [
     category: "raquettes",
     family: "Extreme",
     aliases: ["extreme"],
-    versions: ["MP", "MP L", "Pro", "Team", "Elite"],
+    versions: ["MP", "MP L", "MP UL", "MP XL", "Pro", "Team", "Elite"],
     generations: [{ label: "2024", markers: ["2024"], year: 2024, source: "titres « Extreme MP 2024 », R1 paire 41" }],
     excludes: ["extreme junior"],
     statut: "observe",
-    notes: ["« MP Lite » (Tennispro) = « MP L » (Tennis Point FR) : alias de version."],
+    notes: [
+      "« MP Lite » (Tennispro) = « MP L » (Tennis Point FR) : alias de version.",
+      "Étape 5 (B3) : « MP UL » (230 €) et « MP XL » (260 €) sont des versions à part, comme « MP » (260 €).",
+    ],
   },
   {
     brand: "Head",
@@ -771,9 +792,13 @@ export const MODEL_FAMILIES: FamilyEntry[] = [
     category: "raquettes",
     family: "T-Fight junior (Club, Team, Tour)",
     aliases: ["t fight club", "t fight team", "t fight tour"],
-    versions: ["Club 17", "Club 19", "Club 23", "Club 25", "Team 24", "Team 25", "Team 26", "Tour 25", "Tour 26"],
+    versions: ["Club", "Team", "Tour"],
+    versionInAlias: true,
     junior: true,
     statut: "observe",
+    notes: [
+      "Étape 5 (A10, B1) : la version (Club / Team / Tour) est lue avant le retrait de l'alias qui la contient ; la taille (17 à 26) est lue comme longueur en pouces (deux tailles différentes = « proche »).",
+    ],
   },
   {
     brand: "Lacoste",

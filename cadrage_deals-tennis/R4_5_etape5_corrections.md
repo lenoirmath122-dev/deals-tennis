@@ -78,3 +78,32 @@ Précision (décision mineure de Claude Code, écrite dans D-2026-09-30-07) : un
 16. **« Pat Patrouille »** : ajouté au lexique enfant du moteur seulement (`ageGroupOf`).
 17. **Paires pièges** : celles des §2 et §3, plus « Speed Jr.25 » / « Junior IG Speed 21 » → proche ; « Speed Jr.25 » / une Speed junior sans taille écrite → proche (pas de levée C-Q3) ; « Base L » / « Racquet Base S » → différent ; « Tour sac à chaussures » / « Tour Bag XL » → différent ; « Tour Endurance Backpack » / « Rackpack » → différent ; « Evo Court L » / « Court L » → pas « différent » par la famille ; « Asics Match 7 » → longueur 7, sans numéro.
 18. **Passage à blanc en prod** (`--dry-run`), comparaison avec `rapport-passage-etape4/`, relecture des modèles multi-marchands nouveaux ou défaits, puis PR ; écriture en prod après accord de Mathieu.
+
+## 7. Report en code (session Sonnet, 2026-09-30)
+
+Code sur la branche `feat/r4.5-etape5-corrections` (PR ouverte, engine `r4.5-etape5`). Tests : `tests/unit/matching-etape5.test.ts` (44 paires pièges, une par correction), 346 tests unitaires verts, `tsc` et `eslint` propres.
+
+**Choix techniques laissés à la session** :
+
+| Point | Choix |
+|---|---|
+| A1, B1 (longueur écrite dans le titre) | Nouvelle source d'attribut `titre_marqueur` (`ATTRIBUTE_SOURCES`, rang le plus bas) pour le « + » et la taille junior. `compare()` ne lève pas C-Q3 quand la valeur d'un côté a cette source. La signature n'est pas touchée (`longueur=27.5` / `-` différaient déjà). |
+| A2, B7 (chaussures adidas) | `SHOE_BRAND_EDITIONS` (`config/model-families-chaussures.ts`) : Y-3 et ASMC lus pour toute famille adidas, **avant** la génération, pour que le « 3 » de « Y-3 » ne soit pas lu comme génération 3 (« Y-3 Avacourt »). Rôles dans `attributeValueOverrides.edition` : `asmc` différent, `leather` proche. |
+| A5 (ordre des mots) | `modelWords()` (mots triés) appliquée par `token()`, donc par `compare()` et `signature()`, par la file de revue et par le contrôle des divergences (`findDivergences`) ; la valeur stockée de `modele` garde l'ordre écrit. |
+| A10 (alias qui avale la version) | Champ `versionInAlias` sur la famille (Babolat sacs « Pure », T-Fight junior) : `readVersionAndStripAlias()` lit la version avant de retirer l'alias. Les autres familles dont l'alias contient une version (Lacoste L23, Dunlop SX300, balles Stage, Giant / Mid, sacs Dunlop Performance) gardent l'ancien ordre, volontairement. |
+| A10, Q19 (sacs) | La version d'un **sac** est « différent » (`attributeRolesBySubcategory`) ; celle d'un antivibrateur reste « proche » (« S Logo Damp »). Sans cela, « RH12 Pure Aero » / « Pure Drive Rh12 » restait « proche ». |
+| B1 (familles junior) | Tailles retirées des versions de Drive Junior, Carlitos Junior et T-Fight junior seulement (§6 point 11). Novak, Coco, Paw, Extreme / Radical / Boom Junior, Pure Aero Junior, B Fly, Ballfighter, Wimbledon Junior, Tempo Iga gardent leurs tailles en version : « Novak 19 » ≠ « Novak 25 » reste « différent » (paire R1 11). |
+| B4 (Babolat Court) | XS / S / M / L quittent les versions (restent Hero, Lite) : la taille n'est lue qu'une fois, par `taille_sac`. |
+| B5 (types de sac) | `knownAloneIsDifferent` (`CATEGORY_RULES.accessoires`) : `sac_chaussures`, `porte_cles`, `gym`, `voyage` connus d'un seul côté donnent « différent ». Sans cela, « Tour sac à chaussures » / « Tour Bag XL » (type écrit d'un seul côté) sortait « proche », et non « différent » comme l'attend §6 point 17. `court_bag`, `sport_bag`, `rackpack` restent « proche » face à un titre sans type. |
+| A4 | Marqueurs « palm tree crew » et « palm tree » sur la génération 2025 de Radical ; l'édition « Palm Tree Crew » est retirée (jamais lue une fois le marqueur retiré). |
+| « Pat Patrouille » | `ENGINE_CHILD_WORDS` dans `ageGroupOf` (moteur seulement). |
+
+**Passage à blanc en prod** (`--dry-run --out rapport-passage-etape5`, 5 035 offres, lecture seule), comparé à `rapport-passage-etape4/` :
+
+- Modèles 3 273 → 3 268 ; **multi-marchands 228 → 234** (textile 67 → 71, chaussures 61 → 63). Les 6 nouveaux ou modifiés relus : Head Tie-Break II (Tennis Point FR / site Head, 60 €), Head Sprint Team 4.0 (Head / Sport 2000, « SPRINT TEAM 40 »), Head Sprint Court 4.0 junior (+ Sport 2000), Asics Match 7 (Tennis Point FR / SportSystem), leggings Tecnifibre fille (45 €), débardeurs Tecnifibre Team (50 €), Avacourt Y-3 (Tennispro.fr / SportSystem, 200 €). Le modèle « Tecnifibre pantalon » perd ses deux leggings (50 €), et garde le pantalon Team Pants (60 €) de deux marchands. Aucun modèle défait à tort.
+- A9, contrôlé sur les 133 offres textile du marchand Tecnifibre : **11 types changent**, tous justes (6 « Tank-top » : t-shirt → débardeur ; 5 « Legging » : pantalon → legging).
+- Conflits 14 → 13 : le conflit Avacourt Y-3 (génération 3 lue sur le « 3 » de Y-3) disparaît. Modèles divergents : 12 (un faux « divergent » sur l'ordre des mots de « Tie-Break II » corrigé dans `findDivergences`).
+- File de revue textile 210 → 220 paires : 12 nouvelles, dont 11 « Club 3 Bandes » (Tennispro.fr, A8) qui ne sortaient plus de la file à cause du numéro 3, et Mizuno « 7in Amplify » / « Release Amplify 8 » (longueur 7 | 8) ; 2 retirées (Tie-Break II, réuni ; un t-shirt Tecnifibre devenu débardeur).
+- Proches 3 245 → 3 036 ; différents 10 343 → 10 510 (tailles junior, versions de sacs, ASMC / Y-3).
+
+**Reste** : écriture en prod du passage `r4.5-etape5`, après accord de Mathieu.

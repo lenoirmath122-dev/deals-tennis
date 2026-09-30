@@ -90,10 +90,14 @@ function defaultSingleGeneration(offer: ExtractedOffer): boolean {
   return offer.categorie === "cordages" || (offer.categorie === "accessoires" && offer.subcategory !== "sacs");
 }
 
-/** Attributs comparés (hors `variante`), avec leur rôle : commun + catégorie. */
-function discriminantRoles(category: ExtractedOffer["categorie"]): Record<string, AttributeRole> {
+/** Attributs comparés (hors `variante`), avec leur rôle : commun + catégorie (+ sous-catégorie, accessoires). */
+function discriminantRoles(
+  category: ExtractedOffer["categorie"],
+  subcategory: ExtractedOffer["subcategory"] = null,
+): Record<string, AttributeRole> {
   const roles: Record<string, AttributeRole> = {};
-  const all = { ...COMMON_ATTRIBUTES, ...(CATEGORY_RULES[category]?.attributes ?? {}) };
+  const bySubcategory = subcategory ? (CATEGORY_RULES[category]?.attributeRolesBySubcategory?.[subcategory] ?? {}) : {};
+  const all = { ...COMMON_ATTRIBUTES, ...(CATEGORY_RULES[category]?.attributes ?? {}), ...bySubcategory };
   for (const [name, role] of Object.entries(all)) {
     // Marque et famille sont portées par la clé de famille ; la génération a sa règle.
     if (role === "variante" || name === "marque" || name === "famille") continue;
@@ -132,6 +136,9 @@ function token(offer: ExtractedOffer, name: string): string | null {
     return null;
   }
   const value = String(attr.value).toLowerCase();
+  // Textile : le nom du modèle est un ensemble de mots, l'ordre écrit par le marchand n'y change rien
+  // (« BREAK II TIE- » / « Tie-Break II », A5 de l'étape 5).
+  if (name === "modele" && offer.categorie === "textile") return modelWords(value).join(" ");
   // Garniture : 12 m et 12,2 m sont la même garniture (paire R1 66).
   if (name === "longueur" && offer.categorie === "cordages" && typeof attr.value === "number") {
     if (attr.value >= GARNITURE_METERS.min && attr.value <= GARNITURE_METERS.max) return "12";
@@ -139,6 +146,11 @@ function token(offer: ExtractedOffer, name: string): string | null {
   // Plusieurs jauges au choix : seule la première est lue, on ne prétend pas savoir laquelle.
   if (name === "jauge" && offer.alertes.includes("jauges_multiples")) return `${value}*`;
   return value;
+}
+
+/** Mots du nom de modèle textile, triés : forme comparée par `compare()` et `signature()`, et lue par la file de revue. */
+export function modelWords(modele: string | undefined): string[] {
+  return modele ? modele.split(" ").filter(Boolean).sort() : [];
 }
 
 /** Génération : l'année (si connue) identifie mieux que le libellé (`a2023` ou `lgen 6`). */
@@ -165,6 +177,14 @@ function roleFor(category: ExtractedOffer["categorie"], name: string, base: Attr
 const DERIVED_RACQUET_ATTRIBUTES = ["poids", "tamis", "plan_cordage", "longueur"];
 
 /**
+ * Une valeur lue sur un marqueur écrit du titre (« + », taille junior : source `titre_marqueur`) n'est
+ * pas une caractéristique dérivée : connue d'un seul côté, elle ne se lève pas (A1 et B1, D-2026-09-30-07).
+ */
+function writtenInTitle(a: ExtractedOffer, b: ExtractedOffer, name: string): boolean {
+  return a.attributes[name]?.source === "titre_marqueur" || b.attributes[name]?.source === "titre_marqueur";
+}
+
+/**
  * C-Q3 (D-2026-09-29-03, « blocage B » de `R4_4_controle.md` §5) : famille, version et génération
  * écrites et égales des deux côtés → une caractéristique connue d'un seul côté ne bloque plus
  * « identique ». Elle reste bloquante si elle est connue des deux côtés et différente.
@@ -182,7 +202,7 @@ function attributeDifferences(a: ExtractedOffer, b: ExtractedOffer): Difference[
   const out: Difference[] = [];
   const relaxed = derivedAttributesRelaxed(a, b);
 
-  for (const [name, base] of Object.entries(discriminantRoles(category))) {
+  for (const [name, base] of Object.entries(discriminantRoles(category, a.subcategory))) {
     const ta = token(a, name);
     const tb = token(b, name);
     if (ta === null && tb === null) {
@@ -191,7 +211,11 @@ function attributeDifferences(a: ExtractedOffer, b: ExtractedOffer): Difference[
     }
 
     if (ta === null || tb === null) {
-      if (relaxed && DERIVED_RACQUET_ATTRIBUTES.includes(name)) continue;
+      if (rules.knownAloneIsDifferent?.[name]?.includes((ta ?? tb)!)) {
+        out.push({ attribut: name, a: ta, b: tb, effet: "different" });
+        continue;
+      }
+      if (relaxed && DERIVED_RACQUET_ATTRIBUTES.includes(name) && !writtenInTitle(a, b, name)) continue;
       out.push({ attribut: name, a: ta, b: tb, effet: "inconnu" });
       continue;
     }
@@ -214,7 +238,7 @@ function attributeDifferences(a: ExtractedOffer, b: ExtractedOffer): Difference[
   // Attributs « variante » avec exception de valeur (édition Premium des chaussures) :
   // pris en compte seulement quand une des valeurs fait exception.
   for (const [name, overrides] of Object.entries(rules.attributeValueOverrides ?? {})) {
-    if (discriminantRoles(category)[name]) continue;
+    if (discriminantRoles(category, a.subcategory)[name]) continue;
     const ta = a.attributes[name] ? String(a.attributes[name].value).toLowerCase() : null;
     const tb = b.attributes[name] ? String(b.attributes[name].value).toLowerCase() : null;
     if (ta === tb) continue;
@@ -284,12 +308,12 @@ function sameBrandOrUnknown(a: ExtractedOffer, b: ExtractedOffer): boolean {
 export function signature(offer: ExtractedOffer, dealId: string): string | null {
   if (!offer.familyKey) return null;
   const parts = [offer.familyKey];
-  for (const name of Object.keys(discriminantRoles(offer.categorie)).sort()) {
+  for (const name of Object.keys(discriminantRoles(offer.categorie, offer.subcategory)).sort()) {
     parts.push(`${name}=${token(offer, name) ?? "-"}`);
   }
   // Attributs « variante » à exception de valeur (édition Premium).
   for (const name of Object.keys(CATEGORY_RULES[offer.categorie].attributeValueOverrides ?? {}).sort()) {
-    if (discriminantRoles(offer.categorie)[name]) continue;
+    if (discriminantRoles(offer.categorie, offer.subcategory)[name]) continue;
     const value = offer.attributes[name] ? String(offer.attributes[name].value).toLowerCase() : null;
     const overrides = CATEGORY_RULES[offer.categorie].attributeValueOverrides![name];
     parts.push(`${name}=${value !== null && overrides[value] ? value : "-"}`);

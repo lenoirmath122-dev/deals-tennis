@@ -15,13 +15,12 @@
 import { SUBCATEGORY_RULES, type AccessorySubcategory } from "../../config/accessory-subcategories.ts";
 import { BALL_LEVEL_MARKERS, type AccessoryFamilyEntry } from "../../config/model-families-accessoires.ts";
 import type { FamilyEntry } from "../../config/model-families.ts";
-import { shortestAliasIn } from "./families.ts";
 import {
   ageGroupOf,
   extractEdition,
   extractGeneration,
   extractGift,
-  extractVersion,
+  readVersionAndStripAlias,
   setAttr,
   type Attributes,
 } from "./shared.ts";
@@ -46,14 +45,28 @@ export function accessorySubcategory(offer: OfferInput): AccessorySubcategory | 
   return offer.subcategory ?? subcategoryOf(offer.titre);
 }
 
-/** Formats de sac écrits dans le titre (le premier de la liste qui correspond l'emporte). */
+/**
+ * Formats de sac écrits dans le titre (le premier de la liste qui correspond l'emporte).
+ * Étape 5 (B5, D-2026-09-30-07) : types propres ajoutés ; le « rackpack » Tecnifibre (99,99 €) n'est plus
+ * un sac à dos (69,99 €). Les plus précis d'abord.
+ */
 const BAG_FORMATS: [string, RegExp][] = [
   ["thermobag", /\b(?:thermobag|thermo bag|isotherme)\b/],
-  ["sac_a_dos", /\b(?:sac a dos|backpack|rackpack|back pack)\b/],
+  ["rackpack", /\brack ?pack\b/],
+  ["sac_chaussures", /\b(?:sacs? (?:a |de |pour )?chaussures?|shoes? ?bag)\b/],
+  ["porte_cles", /\b(?:key ?holder|porte[ -]?cles)\b/],
+  ["gym", /\bgym\b/],
+  ["voyage", /\b(?:sac de voyage|travel bag)\b/],
+  ["court_bag", /\bcourt bag\b/],
+  ["sport_bag", /\bsport bag\b/],
+  ["sac_a_dos", /\b(?:sac a dos|backpack|back pack)\b/],
   ["duffle", /\b(?:duffle|duffel|sac de sport|holdall)\b/],
   ["housse", /\bhousse\b/],
   ["tote", /\btote\b/],
 ];
+
+/** Taille d'un sac (XS à XL) écrite comme mot isolé : « Base S », « Tour Racquet S », « Pro X L ». */
+const BAG_SIZE = /(?<![a-z0-9])(xs|s|m|l|xl)(?![a-z0-9])/;
 
 const num = (value: string) => Number(value.replace(",", "."));
 
@@ -174,6 +187,13 @@ export function extractAccessoryAttributes(
       setAttr(attrs, "contenance", capacity.value, "titre_description");
       light = light.replace(capacity.text, " ");
     }
+    // Taille lue après la contenance : « 25 l » (litres) n'est pas la taille L. Attribut à part de la
+    // contenance : certains titres écrivent les deux (« Tour Racquet S 3 Raquettes »).
+    const size = BAG_SIZE.exec(light);
+    if (size) {
+      setAttr(attrs, "taille_sac", size[1], "titre_description");
+      light = `${light.slice(0, size.index)} ${light.slice(size.index + size[0].length)}`;
+    }
   } else if (subcategory === "protection_soins") {
     setAttr(attrs, "type", "protection_soins", "titre_description");
   } else if (subcategory === "accessoires_cordage") {
@@ -188,13 +208,9 @@ export function extractAccessoryAttributes(
   if (generation.year) setAttr(attrs, "annee", generation.year, "titre_description");
   if (generation.marker) text = removePhrase(text, generation.marker);
 
-  const removable = entry ? shortestAliasIn(text, entry) : alias;
-  if (removable) text = removePhrase(text, removable);
-  const versionResult = extractVersion(text, entry);
-  if (versionResult) {
-    setAttr(attrs, "version", versionResult.version, "titre_description");
-    text = versionResult.rest;
-  }
+  const stripped = readVersionAndStripAlias(text, entry, alias);
+  text = stripped.text;
+  if (stripped.version) setAttr(attrs, "version", stripped.version, "titre_description");
   const editionResult = extractEdition(text, entry);
   if (editionResult) {
     setAttr(attrs, "edition", editionResult.edition, "titre_description");

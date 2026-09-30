@@ -116,3 +116,12 @@
 - **Réponses de Mathieu (D-2026-09-30-07)** : taille junior lue, mais écart = proche (et non différent) ; Pure Drive Junior à part ; Extreme MP UL / XL ; Leather proche ; Evo Court L = Court L (proposition refusée) ; taille et types de sac ; longueur des shorts pour toutes les marques.
 - Écrit : `R4_5_etape5_corrections.md`, D-2026-09-30-07, ETAT_ACTUEL, GAPS, JOURNAL. Aucun code modifié, rien écrit en base ; copie locale des offres dans le dossier temporaire de session seulement.
 - Prochaine étape : report en code de l'étape 5 (Sonnet), §6 du document.
+
+## 2026-09-30 (session desktop, Sonnet) — Étape 5 : report en code des corrections d'extraction
+
+- Modèle actuel Sonnet, recommandé Sonnet (exécution d'une spec validée, D-2026-09-30-07). Mathieu : « On code l'étape 5 ? ». Branche `feat/r4.5-etape5-corrections` partie de `origin/master` (`c7f69de`, PR #128 fusionnée).
+- Codé : A1 à A10 et B1 à B8 (§6 de `R4_5_etape5_corrections.md`), « Pat Patrouille » dans `ageGroupOf`, 44 paires pièges (`tests/unit/matching-etape5.test.ts`). 346 tests unitaires verts, `tsc` et `eslint` propres (les tests `contract` et `tracking` exigent `DATABASE_URL`, comme avant).
+- Deux écarts à la spec, à valider : la version d'un **sac** devient « différent » (sinon « RH12 Pure Aero » / « Pure Drive Rh12 » restait « proche », alors que §2 A10 attend « différent ») ; un type « à chaussures / porte-clés / gym / voyage » connu d'un seul côté donne « différent » (« Tour sac à chaussures » / « Tour Bag XL »). Écrits comme précisions dans D-2026-09-30-07 et §7 du document.
+- Passage à blanc (`--dry-run --out rapport-passage-etape5`, 5 035 offres, lecture seule) : 228 → 234 modèles multi-marchands, conflit Avacourt Y-3 disparu, file de revue 220 paires. Faux « divergent » sur l'ordre des mots corrigé dans `findDivergences`. A9 contrôlé sur les 133 offres textile Tecnifibre : 11 types changés, tous justes.
+- Rien écrit en base ; `rapport-*` non versionnés. Engine `r4.5-etape5` dans `shadow-run.ts`.
+- Prochaine étape : merge de la PR (Mathieu, après la CI), puis écriture en prod du passage `r4.5-etape5`.

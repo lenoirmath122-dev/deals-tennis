@@ -13,6 +13,7 @@ import {
   derivedAttributesRelaxed,
   discriminantAttributeNames,
   distinctStyleReferences,
+  modelWords,
   normalizeReference,
   signature,
   type CompareMethod,
@@ -360,7 +361,10 @@ function findDivergences(members: EngineOffer[], model: number): ClusterResult["
     const values = new Set<string>();
     for (const member of members) {
       const attr = member.extracted.attributes[name];
-      if (attr) values.add(String(attr.value).toLowerCase());
+      if (!attr) continue;
+      const text = String(attr.value).toLowerCase();
+      // Nom de modèle textile : ensemble de mots, comme dans `compare()` (A5 de l'étape 5).
+      values.add(name === "modele" && category === "textile" ? modelWords(text).join(" ") : text);
     }
     if (values.size > 1) out.push({ model, attribut: name, valeurs: [...values].sort() });
   }

@@ -53,6 +53,15 @@ export const SHOE_LIFESTYLE_MARKERS = ["stan smith", "breaknet", "grand court", 
 
 const TITRES = "titres en base (2026-09-28)";
 
+/**
+ * Éditions lues pour toutes les familles d'une marque (étape 5, A2, D-2026-09-30-07) : collaborations qui
+ * changent le produit (C-Q2). Clé = marque normalisée (`fullNormalize`). Rôle : `attributeValueOverrides.edition`
+ * de `config/matching-rules.ts` (Y-3 et ASMC : « différent »).
+ */
+export const SHOE_BRAND_EDITIONS: Record<string, string[]> = {
+  adidas: ["Y-3", "ASMC"],
+};
+
 export const SHOE_FAMILIES: FamilyEntry[] = [
   // ───────────────────────────── adidas ─────────────────────────────
   {
@@ -85,11 +94,11 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
       { label: "13", markers: ["13"], source: TITRES },
       { label: "14", markers: ["14"], source: TITRES },
     ],
-    editions: ["Tsitsipas", "Pegula", "Leather", "ASMC"],
+    editions: ["Tsitsipas", "Pegula", "Leather"],
     statut: "observe",
     notes: [
       "Q16 vérifié (2026-09-28, adidas.com/us, tennis-warehouse.com) : « Barricade 13 Leather » est une déclinaison officielle adidas (tige cuir plutôt que mesh) du même modèle Barricade 13 — matériau différent, classée édition « proche » (même logique que Premium, Q15).",
-      "Q16 vérifié (2026-09-28) : « ASMC Barricade » (adidas by Stella McCartney) est une collaboration mode construite sur la plateforme Barricade (Torsion System, semelle Repetitor) mais vendue en ligne à part, sans numéro de génération aligné sur le Barricade grand public — matériaux/construction potentiellement différents, classée édition « proche » par précaution (principe R3).",
+      "Q16 vérifié (2026-09-28) : « ASMC Barricade » (adidas by Stella McCartney) est une collaboration mode construite sur la plateforme Barricade (Torsion System, semelle Repetitor) mais vendue en ligne à part, sans numéro de génération aligné sur le Barricade grand public. Classée d'abord édition « proche » par précaution ; étape 5 (A2, D-2026-09-30-07) : « différent », comme Y-3 (C-Q2 est postérieure), lue pour toutes les chaussures adidas (`SHOE_BRAND_EDITIONS`). « Leather » : « proche », comme l'écrit Q16 (B7).",
       "« Barricade pieds larges » : largeur différente.",
     ],
   },
@@ -125,11 +134,10 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
       { label: "2", markers: ["2"], source: TITRES },
       { label: "3", markers: ["3"], source: TITRES },
     ],
-    editions: ["Y-3"],
     statut: "observe",
     notes: [
       "« Avacourt3 » (collé) : la normalisation doit séparer lettres et chiffres.",
-      "C-Q2 (D-2026-09-29-03) : « Y-3 » est une collaboration qui change le produit : modèle séparé de l'Avacourt standard (`attributeValueOverrides.edition` → différent).",
+      "C-Q2 (D-2026-09-29-03) : « Y-3 » est une collaboration qui change le produit : modèle séparé de l'Avacourt standard (`attributeValueOverrides.edition` → différent). Étape 5 (A2) : lue pour toutes les chaussures adidas (`SHOE_BRAND_EDITIONS`), plus seulement pour l'Avacourt.",
     ],
   },
   { brand: "adidas", category: "chaussures", family: "Avaflash", aliases: ["avaflash"], generations: [{ label: "2", markers: ["2"], source: TITRES }], statut: "observe" },
@@ -325,11 +333,14 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
     aliases: ["sprint"],
     versions: ["Pro", "Team", "Court", "Evo", "Velcro"],
     generations: [
-      { label: "3.0", markers: ["3 0", "3.0"], source: TITRES },
-      { label: "4.0", markers: ["4 0", "4.0"], source: TITRES },
+      { label: "3.0", markers: ["3 0", "3.0", "30"], source: TITRES },
+      { label: "4.0", markers: ["4 0", "4.0", "40"], source: TITRES },
     ],
     statut: "observe",
-    notes: ["« Sprint Velcro » : junior probable (fermeture velcro)."],
+    notes: [
+      "« Sprint Velcro » : junior probable (fermeture velcro).",
+      "Étape 5 (A3) : Sport 2000 écrit « SPRINT COURT 40 » et « SPRINT TEAM 40 » pour la 4.0 (marqueurs « 30 » et « 40 »).",
+    ],
   },
   {
     brand: "Head",
