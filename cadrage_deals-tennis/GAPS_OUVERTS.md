@@ -1,5 +1,17 @@
 # Points ouverts
 
+## GAP-2026-09-30-02 — Affichage : autres générations de la même famille sur la fiche article (OUVERT, R5)
+
+D-2026-09-30-06 point 2 : les générations restent des articles séparés pour le prix, l'historique et le verdict, mais la fiche doit montrer, après la génération courante et ses prix comparés, les autres générations de la même famille dans une section à part, avec la différence écrite en clair (« Génération précédente : 2023, dès X € »), sans « meilleur prix » entre générations (principe R6).
+
+**À cadrer** : ordre et libellé des générations, choix de la « génération courante » (la plus récente en vente ?), place de cette section par rapport aux modèles « proches » ; en même temps que l'affichage des niveaux famille / article (R5).
+
+**Bloquant sur** : R5.
+
+**Statut** : ouvert au 2026-09-30.
+
+---
+
 ## GAP-2026-09-29-02 — Détection junior restante : étape 4 (description des 6 autres marchands) et raquettes 17" (OUVERT, hors chemin critique)
 
 Fusion de GAP-2026-09-25-15 (étape 4) et GAP-2026-09-25-17 (D-2026-09-29-08 point 3). Les étapes 1 à 3 (heuristique taille en pouces, description Tecnifibre / Tennis Point FR, backfill des raquettes de prod) sont faites et l'étape 5 est close ; textes d'origine dans `archive/GAPS_OUVERTS_retires_2026-09-29.md`.
