@@ -100,12 +100,12 @@ describe("étape 2 : famille et attributs discriminants", () => {
     expect(compare(a, b)).toMatchObject({ niveau: "identique", methode: "signature" });
   });
 
-  it("attribut discriminant connu d'un seul côté : proche, jamais identique", () => {
+  it("caractéristique descriptive connue d'un seul côté : indéterminé, jamais identique (§3 : tamis)", () => {
     // Génération non écrite d'un côté : le blocage B (C-Q3) ne joue pas, le tamis reste bloquant.
     const a = racket({ tamis: 100, generation: "Gen 11", annee: 2025 });
     const b = racket({});
     const result = compare(a, b);
-    expect(result.niveau).toBe("proche");
+    expect(result.niveau).toBe("indetermine");
     expect(result.differences).toContainEqual({ attribut: "tamis", a: "100", b: null, effet: "inconnu" });
   });
 
@@ -167,15 +167,15 @@ describe("étape 2 : famille et attributs discriminants", () => {
 describe("règle des générations (R4-Q4)", () => {
   const known = { tamis: 100 };
 
-  it("raquettes : génération non écrite des deux côtés = proche", () => {
-    expect(compare(racket(known), racket(known)).niveau).toBe("proche");
+  it("raquettes : génération non écrite des deux côtés = indéterminé (§3, génération)", () => {
+    expect(compare(racket(known), racket(known)).niveau).toBe("indetermine");
   });
 
   it("chaussures et sacs : règle stricte aussi", () => {
     const shoe = () => offer("chaussures", "Babolat|SFX|chaussures", { genre: "homme" });
     const bag = () => offer("accessoires", "Babolat|Court|accessoires", { type: "sac" }, { subcategory: "sacs" });
-    expect(compare(shoe(), shoe()).niveau).toBe("proche");
-    expect(compare(bag(), bag()).niveau).toBe("proche");
+    expect(compare(shoe(), shoe()).niveau).toBe("indetermine");
+    expect(compare(bag(), bag()).niveau).toBe("indetermine");
   });
 
   it("cordages et accessoires hors sacs : génération unique par défaut, identique", () => {
@@ -185,9 +185,9 @@ describe("règle des générations (R4-Q4)", () => {
     expect(compare(grip(), grip()).niveau).toBe("identique");
   });
 
-  it("génération connue d'un seul côté : proche, même pour un cordage", () => {
+  it("génération connue d'un seul côté : indéterminé, même pour un cordage (§3, génération)", () => {
     const attrs = { jauge: 1.25, conditionnement: "bobine" };
-    expect(compare(string({ ...attrs, generation: "Gen 2" }), string(attrs)).niveau).toBe("proche");
+    expect(compare(string({ ...attrs, generation: "Gen 2" }), string(attrs)).niveau).toBe("indetermine");
   });
 
   it("génération confirmée identique des deux côtés : identique", () => {
@@ -202,20 +202,20 @@ describe("règle des générations (R4-Q4)", () => {
     expect(compare(a, b).niveau).toBe("different");
   });
 
-  it("une année face à un libellé sans année : inconclusif, proche", () => {
+  it("une année face à un libellé sans année : inconclusif, indéterminé (§3, génération)", () => {
     const a = racket({ generation: "2025", annee: 2025 });
     const b = racket({ generation: "Gen 11" });
-    expect(compare(a, b).niveau).toBe("proche");
+    expect(compare(a, b).niveau).toBe("indetermine");
   });
 });
 
 describe("cordages : attributs requis et garniture", () => {
   const gen = {};
 
-  it("jauge absente des deux côtés : proche (la jauge est un choix de la fiche, paire R1 25)", () => {
+  it("jauge absente des deux côtés : indéterminé (§3, attribut requis absent ; la jauge est un choix de la fiche, paire R1 25)", () => {
     const attrs = { conditionnement: "garniture", longueur: 12, ...gen };
     const result = compare(string(attrs), string(attrs));
-    expect(result.niveau).toBe("proche");
+    expect(result.niveau).toBe("indetermine");
     expect(result.differences[0]).toMatchObject({ attribut: "jauge", effet: "inconnu" });
   });
 
@@ -243,9 +243,9 @@ describe("balles : nombre non écrit", () => {
   const balls = (attrs: AttrInput = {}) =>
     offer("accessoires", "Wilson|US Open|accessoires", { type: "balles", niveau: "standard", ...attrs }, { subcategory: "balles" });
 
-  it("nombre de balles inconnu des deux côtés ou d'un seul : proche", () => {
-    expect(compare(balls(), balls()).niveau).toBe("proche");
-    expect(compare(balls({ lot: 3 }), balls()).niveau).toBe("proche");
+  it("nombre de balles inconnu des deux côtés ou d'un seul : indéterminé (§3, lot)", () => {
+    expect(compare(balls(), balls()).niveau).toBe("indetermine");
+    expect(compare(balls({ lot: 3 }), balls()).niveau).toBe("indetermine");
   });
 
   it("même nombre = identique, nombre différent = différent", () => {

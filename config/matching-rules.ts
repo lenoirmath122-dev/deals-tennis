@@ -14,15 +14,26 @@
  * - `proche`   : une différence donne « modèle proche », affiché avec mention ;
  * - `different`: une différence donne « produit différent ».
  * Un attribut inconnu d'un côté ne permet jamais « identique » s'il est
- * discriminant (`proche` ou `different`) : le cas devient « proche » ou part en
- * revue (principe R3 : un faux rapprochement coûte plus qu'un rapprochement manqué).
+ * discriminant (`proche` ou `different`) : le cas devient « proche » (marqueur écrit
+ * d'un seul côté), « indéterminé » (caractéristique descriptive absente d'un côté) ou
+ * part en revue (principe R3 : un faux rapprochement coûte plus qu'un rapprochement
+ * manqué). Ordre des verdicts : différent > proche > indéterminé > identique
+ * (D-2026-09-30-08).
  */
 
 import type { DealCategory } from "@/types/database";
 
 export type AttributeRole = "variante" | "proche" | "different";
 
-export type MatchLevel = "identique" | "proche" | "different";
+export type MatchLevel = "identique" | "indetermine" | "proche" | "different";
+
+/**
+ * Attributs qui sont des marqueurs : leur absence veut dire « article de base ». Écrits d'un seul
+ * côté, ils donnent « proche » ; tout autre attribut discriminant écrit d'un seul côté est une
+ * caractéristique descriptive et donne « indéterminé » (D-2026-09-30-08). Une valeur à exception
+ * (`attributeValueOverrides`) ou de source `titre_marqueur` se comporte aussi comme un marqueur.
+ */
+export const MARKER_ATTRIBUTES = ["version", "largeur", "edition", "numero", "sous_gamme"];
 
 /** Unité de comparaison des prix quand le conditionnement varie (principe R5). */
 export type UnitType = "metre" | "balle" | "unite";
@@ -74,7 +85,7 @@ export interface CategoryRules {
  * Règle des générations.
  * - `standard` (D-2026-09-26-01, sacs inclus d'après D-2026-09-27-07) :
  *   différente et vérifiée des deux côtés → différent ; inconnue d'un côté →
- *   proche ; identique seulement si confirmée des deux côtés ou génération
+ *   indéterminé (D-2026-09-30-08) ; identique seulement si confirmée des deux côtés ou génération
  *   unique sur le marché.
  * - `textile` (D-2026-09-27-06, affiné par Q6/D-2026-09-28-02) : même modèle
  *   sans génération différente écrite → identique ; année ou collection écrite
@@ -96,9 +107,9 @@ export const GENERATION_RULES: Record<
   standard: {
     confirmeeIdentique: "identique",
     verifieeDifferente: "different",
-    inconnueUnCote: "proche",
+    inconnueUnCote: "indetermine",
     // Sauf génération unique sur le marché (à porter par le référentiel, §7).
-    nonEcriteDesDeuxCotes: "proche",
+    nonEcriteDesDeuxCotes: "indetermine",
   },
   textile: {
     confirmeeIdentique: "identique",

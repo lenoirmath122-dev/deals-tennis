@@ -141,3 +141,12 @@
 - Quatre questions (AskUserQuestion), réponses recommandées retenues : principe et `indetermines.csv` validés ; marqueur écrit d'un seul côté = proche ; sacs (type, taille, contenance) d'un seul côté = indéterminé ; longueur textile d'un seul côté = indéterminé. D-2026-09-30-08.
 - Aucun code modifié, rien écrit en base.
 - Prochaine étape : report en code (Sonnet), §4 de `R4_5_etape6_indetermine.md`.
+
+## 2026-09-30 (session desktop, Sonnet) — Étape 6 : report en code de l'état « indéterminé »
+
+- Modèle actuel Sonnet, recommandé Sonnet (exécution d'une spec validée, D-2026-09-30-08). Mathieu : « On repart en code ». Branche `feat/r4.5-etape6-indetermine` partie d'`origin/master` (`6cc31c3`, PR #131 fusionnée).
+- Codé (§4 de `R4_5_etape6_indetermine.md`) : `MatchLevel` + `"indetermine"`, `MARKER_ATTRIBUTES`, règle `standard` des générations en « indéterminé », gravités `inconnu` 1 / `proche` 2 / `different` 3, `indetermines.csv` (colonne `manques`), engine `r4.5-etape6`. Consommateurs relus (`cluster.ts`, `textile-review.ts`) : rien à changer.
+- Tests : 11 tests existants mis à jour (information manquante : « proche » devient « indéterminé », chacun renvoie à la ligne du §3 qui le justifie, plus la paire « Club Tech / Club 25 Tech » de la fixture textile) ; nouveau `matching-etape6.test.ts` (paires pièges du §4 point 7). 362 tests unitaires verts, `tsc` et `eslint` propres (`tracking` exige `DATABASE_URL`, comme avant).
+- Passage à blanc (`--dry-run --out rapport-passage-etape6`, 5 035 offres, lecture seule) : 3 268 modèles, 4 732 liens, 234 multi-marchands, file de revue 220 paires, `modeles-multi-marchands.csv` et `revue-textile.csv` identiques à l'étape 5 ; paires **proche 1 346 / indéterminé 1 690** (exactement le §2). Échantillon relu dans `indetermines.csv` et `proches.csv` (chaque catégorie) : justes.
+- Rien écrit en base ; `rapport-*` non versionnés.
+- Prochaine étape : merge de la PR (Mathieu, après la CI), puis écriture en prod du passage `r4.5-etape6`.

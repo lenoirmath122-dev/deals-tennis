@@ -179,7 +179,7 @@ describe("verdicts de l'étape 2", () => {
     const a = title("Tennis Point FR", "Lacoste", "Vêtement de tennis Lacoste T-shirt Hommes - abricot, orange");
     const b = title("Tennis Point FR", "Lacoste", "Vêtement de tennis Lacoste T-shirt Hommes - jaune lemon, vert");
     expect(value(a, "modele")).toBeUndefined();
-    expect(compare(a, b).niveau).toBe("proche");
+    expect(compare(a, b).niveau).toBe("indetermine");
     expect(signature(a, "a")).not.toBe(signature(b, "b"));
   });
 
@@ -201,7 +201,7 @@ describe("verdicts de l'étape 2", () => {
   it("genre écrit d'un seul côté : jamais identique", () => {
     const a = title("SportSystem", "Lacoste", "T-shirt de tennis Lacoste Tee-shirt Lacoste Sport Ultra Dry bleu clair");
     const b = title("SportSystem", "Lacoste", "T-shirt de tennis Lacoste Tee-shirt Lacoste Sport Ultra Dry bleu clair Homme");
-    expect(compare(a, b).niveau).toBe("proche");
+    expect(compare(a, b).niveau).toBe("indetermine");
   });
 
   it("un lot n'est pas l'unité", () => {

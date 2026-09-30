@@ -110,12 +110,12 @@ describe("A5 : ordre des mots du nom de modèle textile", () => {
 });
 
 describe("A6 : chiffres romains et arabes", () => {
-  it("« Tech IV 7in » / « Tech 4 » (Lotto) : proche, par la longueur écrite d'un seul côté", () => {
+  it("« Tech IV 7in » / « Tech 4 » (Lotto) : indéterminé, par la longueur écrite d'un seul côté (D-2026-09-30-08, réponse 4)", () => {
     const roman = textile("Lotto", "Short de tennis Lotto Tech IV 7in Homme");
     const arabic = textile("Lotto", "Short de tennis Lotto Tech 4 Homme");
     expect(value(roman, "numero")).toBe(4);
     expect(value(arabic, "numero")).toBe(4);
-    expect(niveau(roman, arabic)).toBe("proche");
+    expect(niveau(roman, arabic)).toBe("indetermine");
   });
 });
 
