@@ -1407,3 +1407,20 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 **À reporter en code (Sonnet)** : A1 à A10 et les points 1, 2, 4 et 5 ci-dessus, chacun avec sa paire piège (§2 et §6 de `R4_5_etape5_corrections.md`), puis passage à blanc en prod, comparaison avec `66f39305…` et relecture des modèles multi-marchands nouveaux ou défaits ; écriture en prod après accord de Mathieu.
 
 **Statut** : Actée (2026-09-30).
+
+### D-2026-09-30-08 — Étape 6 : état « indéterminé » dans `compare()`, frontière marqueur / caractéristique descriptive
+
+**Contexte** : étape 6 de l'ordre du chantier (D-2026-09-29-07, D-2026-09-30-03), cadrage en session Opus, `R4_5_etape6_indetermine.md`. Dans `compare()`, une information manquante vaut aujourd'hui « proche ». Mesure en lecture seule sur les 5 035 offres de la prod : sur 3 036 paires inter-marchands « proche », 1 690 n'ont aucune différence connue, seulement des informations manquantes. Le regroupement ne réunit que des paires « identique » : aucun modèle ne change.
+
+**Décision (Mathieu, 2026-09-30, AskUserQuestion)** :
+1. **Principe validé** : « indéterminé » = aucune différence connue, seulement des informations manquantes. Ordre des verdicts : différent > proche > indéterminé > identique ; une différence connue suffit pour « proche ». Les paires indéterminées sont listées dans un nouveau fichier `indetermines.csv` du rapport, pour l'étape 7.
+2. **Marqueur écrit d'un seul côté → proche (inchangé)** : son absence veut dire l'article de base. Marqueurs : `version` (toutes catégories), `largeur`, `edition` (textile), `numero`, `sous_gamme`, valeurs à exception (Premium, Leather, Y-3, ASMC) et valeurs de source `titre_marqueur` (« + », taille junior). Cohérent avec C-Q1 et D-2026-09-29-07.
+3. **Caractéristique descriptive écrite d'un seul côté → indéterminé** : genre, surface, poids, tamis, plan de cordage, longueur, jauge, conditionnement, matière, nom de modèle textile, millésime textile (D-2026-09-29-07 point 1), etc. Même chose pour la génération inconnue ou non écrite (règle `standard`), l'année face à un libellé sans année, et un attribut requis absent des deux côtés.
+4. **Sacs** : type, taille et contenance écrits d'un seul côté → **indéterminé**. Les types de B5 (sac à chaussures, porte-clés, gym, voyage) restent « différent ».
+5. **Textile, longueur écrite d'un seul côté** (« Short 7in » / « Short ») → **indéterminé** ; modifie R4.5-a pour ce cas seulement. Deux longueurs différentes restent « proche » (T-Q2).
+
+**Inchangés** : levée C-Q3, `knownAloneIsDifferent`, conflits, deux valeurs écrites et différentes (rôle de l'attribut, tolérances), génération vérifiée différente, règle textile des générations.
+
+**À reporter en code (Sonnet)** : §4 de `R4_5_etape6_indetermine.md` (type `MatchLevel`, liste des marqueurs, `compare()`, rapport et `indetermines.csv`, engine `r4.5-etape6`, paires pièges), puis passage à blanc en prod : modèles, liens, multi-marchands et file de revue textile identiques à `ed52d6ec…`, répartition proche / indéterminé comparée à la mesure ; écriture en prod après accord de Mathieu.
+
+**Statut** : Actée (2026-09-30).

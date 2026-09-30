@@ -86,6 +86,8 @@ Le rapprochement doit distinguer ces trois cas, et l'affichage doit toujours dir
 
 **Effet sur le code** : aujourd'hui un attribut connu d'un seul côté donne « proche » (`lib/matching/compare.ts`). Distinguer « indéterminé » est un changement ciblé de `compare()` et des mesures, à planifier ; il ne remplace ni l'extraction, ni le référentiel, ni la cascade.
 
+**Frontière (D-2026-09-30-08, étape 6, `R4_5_etape6_indetermine.md`)** : ordre des verdicts différent > proche > indéterminé > identique. Un **marqueur** écrit d'un seul côté (son absence veut dire l'article de base : version, largeur, édition textile, numéro, sous-gamme, « + », taille junior, Premium…) reste une différence connue : **proche**. Une **caractéristique descriptive** absente d'un côté (genre, surface, poids, tamis, plan de cordage, longueur, jauge, conditionnement, génération, nom de modèle et millésime textile, type / taille / contenance de sac) donne **indéterminé**.
+
 ## 5. Règles de tolérance par catégorie (v1, validée — D-2026-09-28-02)
 
 | Catégorie | Variante (sans importance) | Modèle proche (affiché avec mention) | Produit différent |
@@ -96,7 +98,7 @@ Le rapprochement doit distinguer ces trois cas, et l'affichage doit toujours dir
 | Balles | — | — | Pression (Q5), conditionnement (comparaison à la balle) |
 | Sacs | Coloris | — | Contenance (Q5, nombre de raquettes) |
 | Surgrips, accessoires | Coloris | — | Conditionnement (comparaison à l'unité) |
-| Textile | Taille, coloris ; collection/année non écrite ou écrite d'un seul côté **hors du nom de modèle** (D-2026-09-27-06, Q6) ; même référence de style malgré un nom de tournoi (D-2026-09-29-05) | Édition spéciale nommée écrite d'un seul côté (RG, Wimbledon, US Open…, Q6) ; numéro de génération dans le nom écrit d'un seul côté (« II ») ; génération ou collection explicitement différente ; référence de style Nike différente (D-2026-09-29-05). Millésime dans le nom écrit d'un seul côté (« Club 25 Tech ») : **indéterminé** dès que l'état existe, proche d'ici là (D-2026-09-29-07) | Modèle, genre |
+| Textile | Taille, coloris ; collection/année non écrite ou écrite d'un seul côté **hors du nom de modèle** (D-2026-09-27-06, Q6) ; même référence de style malgré un nom de tournoi (D-2026-09-29-05) | Édition spéciale nommée écrite d'un seul côté (RG, Wimbledon, US Open…, Q6) ; numéro de génération dans le nom écrit d'un seul côté (« II ») ; génération ou collection explicitement différente ; référence de style Nike différente (D-2026-09-29-05). Millésime dans le nom écrit d'un seul côté (« Club 25 Tech ») : **indéterminé** dès que l'état existe, proche d'ici là (D-2026-09-29-07) ; longueur écrite d'un seul côté (« Short 7in » / « Short ») : **indéterminé** (D-2026-09-30-08) | Modèle, genre |
 | Toutes catégories | Article + cadeau offert (« 6 cordages offerts », « sac offert »), cadeau indiqué sur l'offre (Q12) | — | Lot de N articles identiques (« Pack de 2 raquettes »), prix à l'unité affiché, jamais de « meilleur prix » entre un lot et l'unité (Q12) |
 
 **Règle des générations (décision de Mathieu, 2026-09-26, D-2026-09-26-01)** — s'applique à toutes les catégories et prime sur la mention « génération voisine » de la ligne Raquettes :
