@@ -1241,6 +1241,75 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 
 **Statut** : Actée (2026-09-29).
 
+### D-2026-09-29-05 — R4.5-b : références de style Nike différentes = proche ; même référence = identique malgré un nom de tournoi
+
+**Contexte** : relecture en session Opus des 3 cas « à confirmer » laissés par R4.5-b (passage à blanc textile, rien écrit en base). Constats sur les données :
+- les modèles « Victory 7 » (CV3048 + FD5380), « Advantage 7 » (DD8329 + FD5336) et « **Victory 9** » (CV2545 + FD5384 + FD5388, non repéré à la relecture) réunissent deux générations Nike : l'ancienne « Flex » et la nouvelle « Dri-FIT ». La référence rattache « Flex Victory » à CV3048, puis le titre (« Victory » + longueur) rattache CV3048 à FD5380 ;
+- « Djokovic Dubai / RG » est du **Lacoste** (pas du Nike) : même référence de style GH5219 (coloris 3A4 / 166), un seul marchand (SportSystem), même prix ;
+- pour adidas, les codes différents dans un même modèle (Club, Club SW) sont normaux : le code adidas désigne un coloris (§3.1 de `R4_5_cadrage.md`).
+
+**Décision (Mathieu, 2026-09-29)** :
+- **Nike : deux références de style différentes, connues des deux côtés → « proche », jamais « identique »**, même si la signature du titre est égale. Une référence de style Nike différente vaut génération différente écrite (D-2026-09-27-06). La règle est écrite **par marque** et ne vise que Nike. Une autre marque ne s'ajoute qu'après une vérification sur les données, et adidas en est exclu.
+- **Même référence de style → « identique »**, même si les titres portent des noms de tournoi différents (« Printemps Dubai » / « Printemps RG ») : ces noms sont alors des coloris (T-Q1 prime sur T-Q3 quand la référence est la même).
+- File de revue : la paire Head « TIE-BREAK » / « BREAK II TIE- » (score 1,0) est **Tie Break II**, une génération différente : **à refuser**, et « II » doit être lu comme marqueur de génération même quand le titre est désordonné.
+
+**À reporter en R4.5-b (session Sonnet)** :
+- liste de marques, par exemple `TEXTILE_STYLE_DISTINCT_BRANDS = ["nike"]` dans `config/textile-lexicon.ts` ;
+- dans le regroupement (`lib/matching/cluster.ts`), un modèle ne contient jamais deux références de style différentes d'une marque listée, y compris par transitivité ;
+- une offre sans référence (Tennis Point FR…) dont le titre correspond à plusieurs groupes de références n'est rattachée à aucun : elle est « proche » de chacun (proposition de la session Opus, à signaler à Mathieu si le nombre de modèles multi-marchands chute fortement) ;
+- tests versionnés : CV3048 / FD5380, DD8329 / FD5336, CV2545 / FD5384 (proche) ; GH5219-3A4 / GH5219-166 (identique) ; « TIE-BREAK » / « BREAK II TIE- » (génération différente) ;
+- nouveau passage à blanc, puis relecture des modèles multi-marchands, puis PR de R4.5-b.
+
+**Statut** : Actée (2026-09-29).
+
+### D-2026-09-29-06 — Définition de « identique » ; « proche » séparé d'un nouvel état « indéterminé »
+
+**Contexte** : la mesure de séparation (`R4_5_mesure_separation.md`) montre que, sur l'échantillon, 56 % des paires séparées faute d'information étaient en réalité le même produit. Dans le moteur, un attribut connu d'un seul côté vaut une différence « proche » (`lib/matching/compare.ts`) : « proche » mélange donc une vraie différence mineure et une information manquante. Définitions proposées en session Opus, validées par Mathieu.
+
+**Décision (Mathieu, 2026-09-29)** :
+1. **Identique** : deux offres sont identiques si l'acheteur reçoit le même produit en choisissant la même variante chez l'un ou l'autre marchand. Les variantes (taille, pointure, grip, **coloris**, y compris un coloris d'une nouvelle saison si la fiche technique ne change pas) ne changent pas l'article : « un modèle rose ou vert sera identique » (Mathieu). Définition complète : §4 bis du cadrage du rapprochement. Validée.
+2. **« Proche » (différence connue) séparé de « indéterminé » (information manquante)** : validé, **à condition de faire plus tard le travail d'investigation** sur les paires indéterminées (référence fabricant, fiche, familles à génération unique). Ce travail est un engagement, pas une option.
+3. **Sort des paires indéterminées** (A : les laisser à part ; B : « identique présumé » ; C : validation une à une) : **tranché plus tard, catégorie par catégorie**, après les mesures de la relecture. Validé.
+
+**Portée** : ces définitions deviennent la grille de la relecture. Elles ne remplacent pas le travail fait (extraction, référentiel, cascade, R4.5-a et R4.5-b restent en place) ; elles servent à juger les résultats et à cibler les ajustements. Seul changement de code déjà identifié : distinguer « indéterminé » de « proche » dans `compare()` (étape à planifier, non faite).
+
+**Statut** : Actée (2026-09-29).
+
+### D-2026-09-29-07 — Étape 0 : règles textile (millésime, édition), solution révisée de la séparation, place de R4.5-c
+
+**Contexte** : analyse de cohérence des fichiers de cadrage (session Opus). Quatre points contradictoires ou non tranchés : règle Q6 (D-2026-09-28-02) contredite par R4.5-a ; §4 bis (D-2026-09-29-06) contraire au §5 textile et à la paire R1 59 sur les éditions ; solution §5.4 de `R4_5_mesure_separation.md` non validée ; place de R4.5-c remise en cause par ce §5.4 sans être notée. Questions posées une à une (AskUserQuestion), réponses explicites de Mathieu.
+
+**Décision (Mathieu, 2026-09-29)** :
+1. **Textile, mention écrite d'un seul côté** : trois cas.
+   - Collection ou année écrite **hors du nom de modèle** (« Collection 2022 », paire R1 58) → **identique** (Q6 maintenu).
+   - **Numéro de génération dans le nom** (« Tie Break II », « 2 ») → **proche** (déjà appliqué à Tie Break II, D-2026-09-29-05).
+   - **Millésime dans le nom** (« Club 25 Tech » / « Club Tech ») → **indéterminé** dès que cet état existe (D-2026-09-29-06 : on ne sait pas si la fiche technique a changé) ; **proche** d'ici là (comportement actuel de R4.5-a).
+2. **Éditions spéciales (RG, Wimbledon, édition joueur), règle par catégorie** :
+   - raquettes, cordages, chaussures : **variante** (Q7, Q15, inchangé) ;
+   - textile : édition nommée écrite d'un seul côté → **proche** (paire R1 59 maintenue : autre dessin, autre prix), **sauf même référence de style → identique** (D-2026-09-29-05).
+   - La phrase du §4 bis du cadrage du rapprochement est corrigée en conséquence.
+3. **Solution révisée de la séparation (§5.4) validée** : (1) références de style dans toutes les catégories (SKU Babolat, Head, Sport 2000, partie « style » avant le premier tiret) ; (2) corrections d'extraction du §5.3, chacune avec une paire piège ; (3) seulement ensuite, assouplissement (génération absente, jauge absente) rediscuté sur un nouvel échantillon tiré paire par paire. **Tecnifibre n'est ajoutée qu'après vérification sur les données** de la forme de sa référence (écartée en R4.5-a faute de preuve).
+4. **R4.5-c déplacé** : la liste `generationUnique` se dresse **après** les références (étape 1 ci-dessus), les corrections d'extraction et l'état « indéterminé » dans `compare()`, dans le cadre de l'investigation des paires indéterminées (D-2026-09-29-06).
+
+**Ordre d'exécution qui en découle** : fin de R4.5-b (code de D-2026-09-29-05, passage à blanc, relecture, PR) → décisions de Mathieu sur `revue-textile.csv` → écriture du passage en prod → références de style toutes catégories → corrections d'extraction → état « indéterminé » → investigation des indéterminés (dont R4.5-c) → R4.6.
+
+**À reporter en code (Sonnet)** : point 1, troisième cas, avec l'état « indéterminé » ; rien à changer d'ici là (R4.5-a répond déjà « proche »). Point 2 : rien à changer (comportement actuel).
+
+**Statut** : Actée (2026-09-29).
+
+### D-2026-09-29-08 — Ménage de la documentation de suivi : périmètre et choix
+
+**Contexte** : inventaire de la documentation (session Opus). ETAT_ACTUEL porte tout l'historique R0-R4.5 sur sa ligne « Dernière mise à jour » (environ 40 000 caractères), JOURNAL à 301 lignes (seuil 150), 18 gaps déjà résolus encore présents, spec du MVP périmée, README par défaut de create-next-app. Deux sujets ne sont plus suivis nulle part depuis la fin de R3 : les 4 nouveaux marchands (D-2026-09-27-02, annoncés « périmètre R3 », absents de `R3_cadrage.md`) et l'étape 4 de GAP-2026-09-25-15 (détection junior par la description, « rattachée à R3 », non faite). Questions posées (AskUserQuestion), réponses explicites de Mathieu.
+
+**Décision (Mathieu, 2026-09-29)** :
+1. **Spec du MVP archivée** : `spec.md`, `plan.md`, `tasks.md`, `research.md`, `quickstart.md`, `data-model.md`, `contracts/`, `checklists/` déplacés tels quels dans `archive/mvp/` (`git mv`), une ligne dans INDEX (« état du MVP au 2026-09-24, non tenu à jour »).
+2. **Nouveaux marchands** : nouveau gap ouvert (Sports Raquettes, Tennis Compagnie, Extreme Tennis, puis Tennis Achat en dernier, « même opérateur » que Tennispro.fr ; Intersport via Kwanko seulement) ; construction **après R4.6**, sur `lib/ingest.ts` ; candidatures d'affiliation toujours bloquées par le renommage « Bonplantennis » (GAP-2026-09-25-10).
+3. **Détection junior** : GAP-2026-09-25-15 (étape 4) et GAP-2026-09-25-17 (17") fusionnés en un seul gap « détection junior restante », **hors chemin critique** ; les étapes 1 à 3 faites et l'étape 5 close sont retirées du texte.
+4. **README** remplacé par un README court (le site, la stack, les commandes utiles, renvoi vers `cadrage_deals-tennis/INDEX.md`).
+5. Le reste du ménage est mécanique et suit les seuils de D-2026-09-22-09 (détail et ordre d'exécution : JOURNAL, session du 2026-09-29 « Ménage de la documentation : cadrage »).
+
+**Statut** : Actée (2026-09-29). Exécution : session Sonnet.
+
 ### D-2026-09-30-01 — Relecture R4.5-b : sous-gamme adidas, « Flouncy » Nike, millésime
 
 **Contexte** : relecture des 69 modèles textiles multi-marchands du passage à blanc en prod (`JOURNAL_SESSIONS.md`, 2026-09-30).
@@ -1253,6 +1322,8 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 
 **Statut** : Actée (2026-09-30), sauf le millésime (ouvert).
 
+> Note du 2026-09-30 (D-2026-09-30-03) : la question du millésime avait déjà été tranchée la veille par D-2026-09-29-07 point 1 (millésime dans le nom → « proche » aujourd'hui, « indéterminé » dès que cet état existe ; numéro de génération dans le nom → « proche »), restée sur la PR #117 et donc invisible pour la session du 2026-09-30. Le comportement est le même (« proche » aujourd'hui) ; D-2026-09-29-07 fait foi. La note Nike « Flouncy » reste compatible avec D-2026-09-29-05 (même référence de style → identique).
+
 ### D-2026-09-30-02 — R4.5-c : familles `generationUnique`, défauts d'extraction (R4.5-d)
 
 **Contexte** : proposition `R4_5_c_generation_unique.md` (session Opus, 2026-09-30), tirée de `proches.csv` du passage `r4.5-b-textile` et vérifiée sur le web. Dans 9 des 27 familles bloquées seulement par une génération non écrite, le blocage masque des défauts d'extraction (taille S/M/L des sacs, RH6/9/12, version des sacs Pure, type de sac, taille et version des T-Fight junior, taille des Speed junior, etc.).
@@ -1264,4 +1335,14 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 - **Q4** : les défauts d'extraction du §2 sont corrigés dans une étape à part, **R4.5-d** (Sonnet, paires pièges tirées du tableau), avant R4.6. Tant que ce n'est pas fait, ces familles ne sont pas marquées.
 - **Q5** : pour une famille marquée `generationUnique`, une année ou une génération écrite d'un seul côté ne bloque plus « identique » (modification de `generationDifference`).
 
-**Statut** : Actée (2026-09-30). Report dans `config/model-families-chaussures.ts` et `lib/matching/compare.ts` à faire en Sonnet (R4.5-c, report), puis R4.5-d.
+**Statut** : Actée (2026-09-30). Report dans `config/model-families-chaussures.ts` et `lib/matching/compare.ts` à faire en Sonnet (R4.5-c, report), puis R4.5-d. **Ordre modifié par D-2026-09-30-03** : report de R4.5-c après l'état « indéterminé », R4.5-d fondue dans les corrections d'extraction.
+
+### D-2026-09-30-03 — PR #117 fermée sans merge, report sur `master`, ordre de D-2026-09-29-07 confirmé
+
+**Contexte** : la PR #117 (session cloud du 2026-09-29, brouillon) portait sa propre implémentation de R4.5-b (`lib/matching/approx.ts`), le code de D-2026-09-29-05 et les décisions D-2026-09-29-05 à 08 avec le ménage de la documentation. Une session desktop a refait R4.5-b le 2026-09-30 à partir de `master` (`textile-review.ts`, PR #118, fusionnée, passage écrit en prod), sans voir ces décisions ; la session Opus du même jour a conduit R4.5-c sans voir D-2026-09-29-07 point 4. #117 était en conflit.
+
+**Décision (Mathieu, 2026-09-30)** :
+1. **#117 fermée sans merge.** Son contenu propre est reporté sur `master` : décisions D-2026-09-29-05 à 08 (insérées telles quelles), `R4_5_mesure_separation.md`, §4 bis de `CADRAGE_rapprochement-multi-niveaux.md`, ménage de D-2026-09-29-08 (spec MVP dans `archive/mvp/`, README, gaps retirés archivés, ETAT_ACTUEL court). L'implémentation R4.5-b de `master` est gardée ; **le code de D-2026-09-29-05 y sera reporté** dans une session Sonnet (premier point de l'ordre), avec les tests de #117.
+2. **Ordre de D-2026-09-29-07 retenu** (recommandation acceptée) : (1) code de D-2026-09-29-05 ; (2) décisions sur `revue-textile.csv` ; (3) écriture en prod ; (4) références de style toutes catégories ; (5) corrections d'extraction, qui absorbent R4.5-d ; (6) état « indéterminé » ; (7) investigation des indéterminés, dont le report de R4.5-c ; (8) R4.6. Motifs : `generationDifference` n'est modifiée qu'une fois (Q5 de D-2026-09-30-02 s'écrit directement avec l'état « indéterminé ») ; les faux regroupements Nike passent avant les rapprochements manqués. La liste de D-2026-09-30-02 reste validée.
+
+**Statut** : Actée (2026-09-30).

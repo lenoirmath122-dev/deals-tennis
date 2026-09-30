@@ -77,5 +77,7 @@ Liste finale : Head Endure Pro, Babolat SFX Evo, adidas Avaluxe, ASICS Game FF, 
 
 ## 6. Suite
 
-1. **R4.5-c, report (Sonnet)** : `generationUnique: true` sur les 7 familles (avec une note de source), marqueur « ultra » pour AG-LT23, `generationDifference` modifiée pour Q5, tests (dont les paires SFX Evo et Courtflash), passage à blanc en prod et comparaison avec `r4.5-b-textile`.
-2. **R4.5-d (Sonnet)** : corriger les défauts d'extraction du §2, paires pièges versionnées.
+> **Ordre corrigé le 2026-09-30 (D-2026-09-30-03).** Cette proposition a été conduite sans voir D-2026-09-29-07 (restée sur la PR #117, non fusionnée), qui place R4.5-c après les références de style, les corrections d'extraction et l'état « indéterminé ». Mathieu a confirmé cet ordre : la liste ci-dessus reste validée, son report attend l'étape 7 de l'ordre (`ETAT_ACTUEL.md`). Q5 sera écrit directement dans la version de `generationDifference` qui distingue « indéterminé ».
+
+1. **Défauts d'extraction du §2** : traités dans l'étape « corrections d'extraction » (étape 5), avec des paires pièges versionnées. L'ancienne étape R4.5-d y est fondue.
+2. **Report de R4.5-c (Sonnet, étape 7)** : `generationUnique: true` sur les 7 familles (avec une note de source), marqueur « ultra » pour AG-LT23, Q5 dans `generationDifference`, tests (dont les paires SFX Evo et Courtflash), passage à blanc en prod et comparaison avec le passage précédent.
