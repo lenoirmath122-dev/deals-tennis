@@ -101,3 +101,18 @@
 - Constat : le nom « Palm Tree » ne sépare rien (édition décorative, Q7) ; c'est l'année absente d'un côté (`generation: ? | a2025`, `proches.csv`) ; le Palm Tree du site Head et celui de Tennispro.fr sont déjà réunis par référence (modèle 960). Vérification web : la Palm Tree Crew est une Radical MP 2025 (mêmes caractéristiques, décor seul).
 - **Réponse de Mathieu (D-2026-09-30-06)**, selon la recommandation : générations séparées pour les prix et le verdict, regroupées par famille à l'affichage (GAP-2026-09-30-02, R5) ; « palm tree » = marqueur 2025 de la famille Radical, à coder à l'étape 5.
 - Écrit : D-2026-09-30-06, ETAT_ACTUEL (étape 5), GAPS, JOURNAL. Aucun code modifié, rien écrit en base.
+
+## 2026-09-30 (session desktop, Sonnet) — Étape 4 : écriture du passage en prod
+
+- Reprise : modèle actuel Sonnet, recommandé Sonnet (exécution d'une étape validée). Code déjà sur `master` (PR #125). Accord de Mathieu : « Fais toute l'étape 4 ».
+- Passage à blanc de contrôle (`--dry-run --out rapport-controle-etape4`, 5 035 offres) : les 6 fichiers **identiques** à ceux de `rapport-etape4-references/`.
+- Écriture en prod (`npm run match:shadow -- --out rapport-passage-etape4`) : passage `66f39305-5be7-4898-af3c-9f1d50e312eb`, engine `r4.5-etape4`, **3 273 modèles, 4 732 liens**, 228 modèles multi-marchands, 210 paires en file de revue textile. Vérifié en base : 1 seul passage. `253341ec…` supprimé. Tables `match_*` seulement, site non touché.
+- Prochaine étape : étape 5 (corrections d'extraction, Opus pour le cadrage si besoin).
+
+## 2026-09-30 (session desktop, Opus) — Étape 5 : corrections d'extraction, cadrage (D-2026-09-30-07)
+
+- Modèle actuel Opus, recommandé Opus (liste mêlant règles décidées et défauts sans règle : cadrage d'abord). Mathieu : « On relance l'étape 5 ». PR #127 encore ouverte : branche partie de la sienne.
+- Chaque défaut rejoué sur une copie locale des 5 035 offres de la prod (lecture seule, moteur `r4.5-etape4`). Trouvé en plus : « Pure Drive + » encore « identique » à « Pure Drive » dans `compare()` (levée C-Q3 sur la longueur), séparés seulement par les références de l'étape 4 ; alias qui avale la version (sacs Babolat Pure, T-Fight junior) ; ASMC et Leather lus « variante » malgré Q16 ; chiffres romains déjà dans le code ; t-shirts adidas junior non réunis parce que la médiane du groupe « Club » est de 28 € (10,7 % d'écart), la règle 2 ter fonctionne.
+- **Réponses de Mathieu (D-2026-09-30-07)** : taille junior lue, mais écart = proche (et non différent) ; Pure Drive Junior à part ; Extreme MP UL / XL ; Leather proche ; Evo Court L = Court L (proposition refusée) ; taille et types de sac ; longueur des shorts pour toutes les marques.
+- Écrit : `R4_5_etape5_corrections.md`, D-2026-09-30-07, ETAT_ACTUEL, GAPS, JOURNAL. Aucun code modifié, rien écrit en base ; copie locale des offres dans le dossier temporaire de session seulement.
+- Prochaine étape : report en code de l'étape 5 (Sonnet), §6 du document.

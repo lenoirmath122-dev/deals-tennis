@@ -19,6 +19,7 @@ Fusion de GAP-2026-09-25-15 (étape 4) et GAP-2026-09-25-17 (D-2026-09-29-08 poi
 **Reste** :
 1. Lire la description de la fiche produit (requête HTTP supplémentaire par produit) pour les 6 autres marchands (SportSystem, Sport 2000, Babolat, Tennispro.fr, Head, Amazon), afin de repérer les raquettes juniors identifiées seulement par la description. Cette étape était « rattachée à R3 » mais n'a pas été faite : absente de `R3_cadrage.md`.
 2. Étendre `RACQUET_JUNIOR_SIZE_PATTERN` (`lib/product-matching.ts`) aux raquettes 17" (exemple : Tecnifibre « T-fight Club 17 », encore `adulte`), puis relancer `npm run db:backfill-racquet-junior-size`.
+3. « Pat Patrouille » (sac à dos Head, Tennispro.fr) lu `adulte` par le lexique de l'ingestion. L'étape 5 de R4.5 ne l'ajoute qu'au moteur de rapprochement (D-2026-09-30-07) ; le filtre âge du site reste à corriger ici.
 
 **Bloquant sur** : rien. Hors chemin critique.
 

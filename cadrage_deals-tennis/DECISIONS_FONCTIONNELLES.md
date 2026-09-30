@@ -1387,3 +1387,21 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 **À reporter en code (Sonnet)** : point 3 avec les corrections d'extraction (étape 5), avec une paire piège (Radical MP Palm Tree / Radical MP 2023 → différent). Les offres « Radical MP » sans année ni référence commune restent à l'étape 6 (état « indéterminé ») et 7 (investigation). Point 2 : GAP ouvert pour R5.
 
 **Statut** : Actée (2026-09-30).
+
+### D-2026-09-30-07 — Étape 5 : corrections d'extraction, règles nouvelles
+
+**Contexte** : cadrage de l'étape 5 (session Opus), `R4_5_etape5_corrections.md`. Chaque défaut listé (§5.3 de `R4_5_mesure_separation.md`, §2 de `R4_5_c_generation_unique.md`, D-2026-09-30-04, §7 de `R4_5_references_style.md`, D-2026-09-30-06) a été rejoué sur les 5 035 offres de la prod (lecture seule). Dix corrections appliquent une règle déjà décidée (§2 du document, A1 à A10). Huit demandaient une règle nouvelle (§3, B1 à B8), soumises par AskUserQuestion.
+
+**Décision (Mathieu, 2026-09-30)** :
+1. **Taille des raquettes junior (B1)** : un nombre de 17 à 26 sur une raquette enfant est lu comme la longueur en pouces, y compris collé (« Jr.25 ») ; les tailles quittent les versions des familles junior. **Deux tailles différentes = « proche »** (rôle actuel de la longueur, inchangé), et non « différent » comme proposé.
+2. **Référentiel (B2, B3, B7)** : famille à part « Pure Drive Junior » (Babolat, Gen11) ; versions « MP UL » et « MP XL » ajoutées à Head Extreme ; édition « Leather » (Barricade) = « proche », comme l'écrivait Q16.
+3. **Evo Court (B6)** : « Evo Court L » et « Court L » sont **le même sac** ; pas de famille à part (la proposition est refusée), « evo court » reste un alias de Babolat Court.
+4. **Sacs (B4, B5)** : nouvel attribut `taille_sac` (XS / S / M / L / XL), « différent », distinct de `contenance` ; types de sac ajoutés (`sac_chaussures`, `porte_cles`, `gym`, `voyage`, `court_bag`, `sport_bag`), « rackpack » distinct du sac à dos.
+5. **Longueur des shorts (B8)** : la règle Nike / adidas (nombre de 5 à 10 dans un short = longueur en pouces) s'applique à toutes les marques ; 1 à 4 restent des numéros de génération.
+6. **Constats sans correction** (§4 du document) : t-shirts adidas junior « Club » / « Club Climacool » laissés tels quels (médiane du groupe 28 € contre 25 €, 10,7 % d'écart, règle de D-2026-09-30-01 appliquée correctement) ; éditions des sacs Wilson Super Tour sans effet (Q19) ; « Homme W » sans règle.
+
+**Précision (Claude Code, décision mineure)** : une longueur lue dans le titre (« + » de A1, taille junior de B1) n'est pas une caractéristique dérivée au sens de C-Q3 : elle n'est pas levée quand elle est connue d'un seul côté. Sinon « Speed Jr.25 » et une « Speed junior » sans taille écrite pourraient être dites identiques par la levée C-Q3, ce que le principe R3 exclut.
+
+**À reporter en code (Sonnet)** : A1 à A10 et les points 1, 2, 4 et 5 ci-dessus, chacun avec sa paire piège (§2 et §6 de `R4_5_etape5_corrections.md`), puis passage à blanc en prod, comparaison avec `66f39305…` et relecture des modèles multi-marchands nouveaux ou défaits ; écriture en prod après accord de Mathieu.
+
+**Statut** : Actée (2026-09-30).
