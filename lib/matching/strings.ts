@@ -21,6 +21,20 @@ const SET_MAX_METERS = 13;
 /** En dessous, la longueur écrite est jugée fausse (« Rouleau de 2 mètres » pour une bobine, R1 paire 67). */
 const MIN_RELIABLE_METERS = 5;
 
+/**
+ * Conditionnement déduit du prix d'origine quand le titre ne l'écrit pas (D-2026-09-30-09) : garnitures de
+ * 7,95 € à 64,95 €, bobines de 54,95 € à 359,95 € ; entre les deux, inconnu.
+ */
+const SET_MAX_PRICE = 40;
+const REEL_MIN_PRICE = 90;
+
+/**
+ * Marchands dont la fiche propose la jauge comme un choix de taille (Tennispro.fr, vérifié le 2026-09-30 ;
+ * site Head, même règle sans vérification, choix de Mathieu, D-2026-09-30-09) : sans jauge dans le titre,
+ * la jauge est une variante de l'offre.
+ */
+const GAUGE_IS_VARIANT_MERCHANTS = ["Tennispro.fr", "Head"];
+
 const MATERIALS: [string, RegExp][] = [
   ["boyau naturel", /\b(?:boyau naturel|natural gut)\b/],
   ["polyester", /\b(?:polyester|co ?poly|monofilament polyester)\b/],
@@ -96,6 +110,14 @@ export function extractStringAttributes(
     setAttr(attrs, "conditionnement", "garniture", "titre_description");
   }
 
+  // Titre muet : conditionnement lu sur le prix d'origine, source moins prioritaire que le titre.
+  if (!attrs.conditionnement) {
+    const price = offer.original_price;
+    if (typeof price === "number" && price > 0 && price <= SET_MAX_PRICE) setAttr(attrs, "conditionnement", "garniture", "prix");
+    else if (typeof price === "number" && price >= REEL_MIN_PRICE) setAttr(attrs, "conditionnement", "bobine", "prix");
+    else alertes.push("conditionnement_prix_incertain");
+  }
+
   for (const [material, pattern] of MATERIALS) {
     if (pattern.test(light)) {
       setAttr(attrs, "matiere", material, "titre_description");
@@ -115,6 +137,8 @@ export function extractStringAttributes(
       text = removePhrase(text, centi[1]);
     }
   }
+
+  if (!attrs.jauge && GAUGE_IS_VARIANT_MERCHANTS.includes(offer.marchand)) alertes.push("jauge_variante_fiche");
 
   const versionResult = extractVersion(text, entry);
   if (versionResult) {

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { compare, derivedAttributesRelaxed, signature } from "@/lib/matching/compare";
+import { compare, derivedAttributesRelaxed, gaugeIsOfferVariant, signature } from "@/lib/matching/compare";
 import { buildModels, type EngineOffer } from "@/lib/matching/cluster";
 import { buildReport } from "@/lib/matching/report";
 import { extractOfferAttributes, isSupportedCategory, type ExtractedOffer } from "@/lib/matching";
@@ -69,13 +69,13 @@ function measure(pairs: Pair[]) {
 }
 
 describe("moteur R4.4 sur le jeu R1", () => {
-  it("précision 21/21 et rappel 21/33 (R4.5 étape 4 ; R4.5-a : 20/20 et 20/33 ; R4.4-bis : 12/12 et 12/32, textile non pris en charge)", () => {
-    expect(measure(fixture.pairs)).toEqual({ vp: 21, fp: 0, identical: 33 });
+  it("précision 24/24 et rappel 24/33 (R4.5 étape 7 : paires 32, 65 et 66, jauge des cordages Tennispro.fr ; R4.5 étape 4 : 21/21 ; R4.5-a : 20/20 et 20/33 ; R4.4-bis : 12/12 et 12/32, textile non pris en charge)", () => {
+    expect(measure(fixture.pairs)).toEqual({ vp: 24, fp: 0, identical: 33 });
   });
 
-  it("inter-marchands : précision 20/20 et rappel 20/30 (R4.5 étape 4 ; R4.5-a : 19/19 et 19/30 ; R4.4-bis : 11/29 ; algorithme actuel : 2/30)", () => {
+  it("inter-marchands : précision 22/22 et rappel 22/30 (R4.5 étape 7 : paires 65 et 66 ; R4.5 étape 4 : 20/20 ; R4.5-a : 19/19 et 19/30 ; R4.4-bis : 11/29 ; algorithme actuel : 2/30)", () => {
     const inter = fixture.pairs.filter((p) => offersById.get(p.offre_a)!.marchand !== offersById.get(p.offre_b)!.marchand);
-    expect(measure(inter)).toEqual({ vp: 20, fp: 0, identical: 30 });
+    expect(measure(inter)).toEqual({ vp: 22, fp: 0, identical: 30 });
   });
 
   it("aucun faux positif (la paire 14, « S Logo Damp », est « proche » grâce à la version « S »)", () => {
@@ -122,7 +122,10 @@ describe("cohérence signature / comparaison", () => {
         const result = compare(a, b);
         const sameSignature = sa !== null && sa === sb;
         if (sameSignature) expect(result.niveau, `${idA} / ${idB}`).toBe("identique");
-        if (result.methode === "signature" && !derivedAttributesRelaxed(a, b)) expect(sameSignature, `${idA} / ${idB}`).toBe(true);
+        // Exceptions réunies par `cluster.ts` (étapes 2 bis et 2 quater) : caractéristique dérivée d'un seul côté (C-Q3),
+        // jauge non écrite chez Tennispro.fr ou sur le site Head (D-2026-09-30-09).
+        const relaxed = derivedAttributesRelaxed(a, b) || gaugeIsOfferVariant(a) || gaugeIsOfferVariant(b);
+        if (result.methode === "signature" && !relaxed) expect(sameSignature, `${idA} / ${idB}`).toBe(true);
       }
     }
   });

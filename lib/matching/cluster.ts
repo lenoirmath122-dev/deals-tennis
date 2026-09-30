@@ -13,6 +13,7 @@ import {
   derivedAttributesRelaxed,
   discriminantAttributeNames,
   distinctStyleReferences,
+  gaugeIsOfferVariant,
   modelWords,
   normalizeReference,
   signature,
@@ -275,6 +276,34 @@ export function buildModels(input: EngineOffer[]): ClusterResult {
         const priceY = medianPrice(groupY);
         if (priceX === null || priceY === null) continue;
         if (Math.abs(priceX - priceY) / Math.max(priceX, priceY) <= SUBRANGE_PRICE_TOLERANCE) guardedUnion(x.dealId, y.dealId);
+      }
+    }
+  }
+
+  // Étape 2 quater (D-2026-09-30-09, cordages) : chez Tennispro.fr et sur le site Head, une jauge non écrite est
+  // une variante de l'offre. Les signatures diffèrent (`jauge=-` / `jauge=1.25`) mais `compare()` dit « identique ».
+  // Réunies seulement si un seul groupe à jauge écrite est « identique » à l'offre (sinon la jauge ferait un pont
+  // entre 1,25 et 1,30) et si toutes les paires des deux groupes le disent.
+  const stringsByFamily = new Map<string, EngineOffer[]>();
+  for (const offer of offers) {
+    if (offer.extracted.categorie !== "cordages" || offer.extracted.familyKey === null) continue;
+    const list = stringsByFamily.get(offer.extracted.familyKey) ?? [];
+    list.push(offer);
+    stringsByFamily.set(offer.extracted.familyKey, list);
+  }
+  for (const members of stringsByFamily.values()) {
+    for (const x of members.filter((m) => gaugeIsOfferVariant(m.extracted))) {
+      const candidates = new Set<string>();
+      for (const y of members) {
+        if (y.extracted.attributes.jauge === undefined || uf.find(y.dealId) === uf.find(x.dealId)) continue;
+        if (compare(x.extracted, y.extracted).niveau === "identique") candidates.add(uf.find(y.dealId));
+      }
+      if (candidates.size !== 1) continue;
+      const [root] = [...candidates];
+      const groupX = members.filter((m) => uf.find(m.dealId) === uf.find(x.dealId));
+      const groupY = members.filter((m) => uf.find(m.dealId) === root);
+      if (groupX.every((p) => groupY.every((q) => compare(p.extracted, q.extracted).niveau === "identique"))) {
+        guardedUnion(x.dealId, groupY[0].dealId);
       }
     }
   }

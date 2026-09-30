@@ -1424,3 +1424,19 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 **À reporter en code (Sonnet)** : §4 de `R4_5_etape6_indetermine.md` (type `MatchLevel`, liste des marqueurs, `compare()`, rapport et `indetermines.csv`, engine `r4.5-etape6`, paires pièges), puis passage à blanc en prod : modèles, liens, multi-marchands et file de revue textile identiques à `ed52d6ec…`, répartition proche / indéterminé comparée à la mesure ; écriture en prod après accord de Mathieu.
 
 **Statut** : Actée (2026-09-30).
+
+### D-2026-09-30-09 — Étape 7 : sort des paires indéterminées (A partout), nouvelles sources
+
+**Contexte** : étape 7 de l'ordre du chantier, engagement de D-2026-09-29-06 point 2 (investigation) et point 3 (sort A, B ou C par catégorie). Cadrage en session Opus, `R4_5_etape7_indetermines.md`. Lecture seule sur les 5 035 offres de la prod : 2 387 paires indéterminées sans plafond ; 4 seulement partagent un GTIN. Sort B testé : appliqué tel quel, 37 regroupements contradictoires par transitivité ; restreint aux paires sans ambiguïté, 93 regroupements relus, 13 faux (Speed Pro 2022 + 2026, Gel-Resolution X terre battue + toutes surfaces, Play Polo + Polo 150 ans…) et environ 26 incertains. Défauts trouvés au passage (génération V4 / V5 face à une année, « 3.5 », « Carpet », « Strap », faute « Caly »).
+
+**Décision (Mathieu, 2026-09-30, AskUserQuestion)** :
+1. **Sort A dans toutes les catégories** : les paires indéterminées restent à part. Ni « identique présumé » (B), ni validation une à une (C).
+2. **Cordages, conditionnement déduit du prix d'origine** quand le titre ne l'écrit pas : ≤ 40 € garniture, ≥ 90 € bobine, entre les deux inconnu.
+3. **Site Head, surface et genre lus dans l'URL de la fiche** quand le titre ne les donne pas.
+4. **Jauge des cordages** : vérifiée sur 5 fiches Tennispro.fr sur 5 (sélecteur de la fiche, comme une pointure). **Tennispro.fr : jauge ignorée** quand le titre ne l'écrit pas (choix de Mathieu ; recommandation : lire la liste des jauges à la collecte). **Site Head : même règle, sans vérification** (fiches refusées, « 429 » ; choix de Mathieu ; recommandation : laisser indéterminé).
+
+**Corrections de règles déjà décidées** (sans question) : libellés de génération comparés entre eux quand les deux côtés en ont un ; « 3.5 » Head Sprint ; « carpet » = « tapis » ; « strap » = version.
+
+**À reporter en code (Sonnet)** : §8 de `R4_5_etape7_indetermines.md`, avec le report de R4.5-c (D-2026-09-30-02), passage à blanc, relecture de tous les modèles multi-marchands nouveaux, écriture en prod après accord de Mathieu.
+
+**Statut** : Actée (2026-09-30).

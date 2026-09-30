@@ -188,6 +188,8 @@ const VERSION_SYNONYMS: [RegExp, string][] = [
   [/(?<![a-z0-9])mp light(?![a-z0-9])/g, "mp l"],
   [/(?<![a-z0-9])pro hurricane tour(?![a-z0-9])/g, "hurricane"],
   [/(?<![a-z0-9])light(?![a-z0-9])/g, "lite"],
+  // Site Head : « Tour rEPT » pour « Tour rPET » (Sonic Pro, étape 7).
+  [/(?<![a-z0-9])tour rept(?![a-z0-9])/g, "tour rpet"],
 ];
 
 export function applyVersionSynonyms(text: string): string {

@@ -65,8 +65,9 @@ export interface FamilyEntry {
   versionInAlias?: boolean;
   /**
    * Génération unique sur le marché (R4-Q4) : lève la règle « génération non écrite des
-   * deux côtés → proche » pour les raquettes, chaussures et sacs. Aucune famille n'est
-   * marquée à ce jour : la liste est à proposer à Mathieu sur les données du rapport.
+   * deux côtés → proche » pour les raquettes, chaussures et sacs. Depuis l'étape 7 (R4.5-c,
+   * D-2026-09-30-02), la génération n'est plus comparée du tout pour une famille marquée : une année
+   * écrite d'un seul côté ne la sépare pas (Q5). Sept familles de chaussures sont marquées.
    */
   generationUnique?: boolean;
   excludes?: string[];
@@ -991,20 +992,40 @@ export const MODEL_FAMILIES: FamilyEntry[] = [
     category: "cordages",
     family: "Hawk",
     aliases: ["hawk"],
-    versions: ["Touch", "Power", "Tour", "Tour Rpet"],
+    versions: ["Touch", "Power", "Tour", "Tour Rpet", "Touch Rough"],
     statut: "observe",
-    notes: ["Q9 (D-2026-09-28-02) : « Hawk Tour Rpet » (polyester recyclé) est une version à part, distincte de « Tour »."],
+    notes: [
+      "Q9 (D-2026-09-28-02) : « Hawk Tour Rpet » (polyester recyclé) est une version à part, distincte de « Tour ».",
+      "Étape 7 (relecture des fusions, D-2026-09-30-09) : version écrite par le site Head, jusque-là ignorée ; la jauge lue comme variante la rendait décisive. « Touch Rough ».",
+    ],
   },
   {
     brand: "Head",
     category: "cordages",
     family: "Lynx",
     aliases: ["lynx"],
-    versions: ["Touch", "Tour"],
+    versions: ["Touch", "Tour", "Power"],
     statut: "observe",
+    notes: ["Étape 7 (relecture des fusions, D-2026-09-30-09) : version écrite par le site Head, jusque-là ignorée ; la jauge lue comme variante la rendait décisive. « Power »."],
   },
-  { brand: "Head", category: "cordages", family: "Sonic Pro", aliases: ["sonic pro"], statut: "observe" },
-  { brand: "Head", category: "cordages", family: "Velocity MLT", aliases: ["velocity mlt", "velocity"], statut: "observe" },
+  {
+    brand: "Head",
+    category: "cordages",
+    family: "Sonic Pro",
+    aliases: ["sonic pro"],
+    versions: ["Tour Rpet"],
+    statut: "observe",
+    notes: ["Étape 7 (relecture des fusions, D-2026-09-30-09) : version écrite par le site Head, jusque-là ignorée ; la jauge lue comme variante la rendait décisive. « Tour rPET » (le site Head écrit aussi « Tour rEPT », lu comme synonyme)."],
+  },
+  {
+    brand: "Head",
+    category: "cordages",
+    family: "Velocity MLT",
+    aliases: ["velocity mlt", "velocity"],
+    versions: ["Power"],
+    statut: "observe",
+    notes: ["Étape 7 (relecture des fusions, D-2026-09-30-09) : version écrite par le site Head, jusque-là ignorée ; la jauge lue comme variante la rendait décisive. « Velocity MLT Power » (URL `velocity-mlt-power-set`)."],
+  },
   { brand: "Head", category: "cordages", family: "Reflex MLT", aliases: ["reflex mlt", "reflex"], statut: "observe" },
   {
     brand: "Head",

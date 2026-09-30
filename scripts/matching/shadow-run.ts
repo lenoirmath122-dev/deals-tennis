@@ -20,7 +20,7 @@ import type { AccessorySubcategory } from "../../config/accessory-subcategories.
 import type { DealCategory } from "../../types/database.ts";
 
 /** Version du moteur écrite dans `match_runs.engine_version`. */
-const ENGINE_VERSION = "r4.5-etape6";
+const ENGINE_VERSION = "r4.5-etape7";
 const BATCH = 500;
 
 if (!process.env.DATABASE_URL) {
@@ -45,6 +45,7 @@ interface DealRow {
   mpn: string | null;
   merchant_sku: string | null;
   original_price: string | number | null;
+  affiliate_url: string;
   raw_attributes: Record<string, unknown> | null;
   merchant: string;
 }
@@ -54,7 +55,7 @@ const rows: DealRow[] = [];
 for (let last = "00000000-0000-0000-0000-000000000000"; ; ) {
   const page = (await sql`
     SELECT d.id, d.title, d.brand, d.category, d.subcategory, d.status, d.gtin, d.mpn,
-           d.merchant_sku, d.original_price, d.raw_attributes, m.name AS merchant
+           d.merchant_sku, d.original_price, d.affiliate_url, d.raw_attributes, m.name AS merchant
     FROM deals d
     JOIN merchants m ON m.id = d.merchant_id
     WHERE d.status IN ('active', 'tracked') AND d.id > ${last}
@@ -91,6 +92,8 @@ for (const row of rows) {
       gtin: row.gtin,
       mpn: row.mpn,
       merchant_sku: row.merchant_sku,
+      affiliate_url: row.affiliate_url,
+      original_price: row.original_price === null ? null : Number(row.original_price),
       raw_attributes: row.raw_attributes,
     }),
   });
