@@ -1346,3 +1346,17 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 2. **Ordre de D-2026-09-29-07 retenu** (recommandation acceptée) : (1) code de D-2026-09-29-05 ; (2) décisions sur `revue-textile.csv` ; (3) écriture en prod ; (4) références de style toutes catégories ; (5) corrections d'extraction, qui absorbent R4.5-d ; (6) état « indéterminé » ; (7) investigation des indéterminés, dont le report de R4.5-c ; (8) R4.6. Motifs : `generationDifference` n'est modifiée qu'une fois (Q5 de D-2026-09-30-02 s'écrit directement avec l'état « indéterminé ») ; les faux regroupements Nike passent avant les rapprochements manqués. La liste de D-2026-09-30-02 reste validée.
 
 **Statut** : Actée (2026-09-30).
+
+### D-2026-09-30-04 — Relecture de la file de revue textile : règles et sort des paires
+
+**Contexte** : relecture des 215 paires de `revue-textile.csv` (passage à blanc avec le code de D-2026-09-29-05) par la session Opus, avec les références en base et les GTIN des fiches Tennis Point FR : `R4_5_revue_textile.md` et `R4_5_revue_textile.csv`. Propositions de Claude Code : 18 identiques sûres, 5 identiques à confirmer, 81 proches, 104 différentes, 7 incertaines. Questions posées (AskUserQuestion), recommandations retenues par Mathieu.
+
+**Décision (Mathieu, 2026-09-30)** :
+1. **Règles à coder** : (a) le nom de modèle textile est comparé **sans tenir compte de l'ordre des mots**, « II » restant un marqueur de génération (clôt GAP-2026-09-30-01) ; (b) **chiffres romains = chiffres arabes** (« Tech IV » = « Tech 4 ») ; (c) **RG = Paris** dans le lexique des éditions ; (d) **Lacoste traitée comme Nike** : deux références de style Lacoste différentes, connues des deux côtés → « proche » (`TEXTILE_STYLE_DISTINCT_BRANDS`, D-2026-09-29-05 étendue après vérification sur les données : 5 paires, 5 références TH différentes).
+2. **18 paires identiques sûres** : consignées dans `R4_5_revue_textile.csv`, sans liste de liens manuels ; elles se réuniront par les règles ci-dessus et les références de l'étape 4. La mécanique de validation manuelle reste pour R5 (GAP-2026-09-27-02).
+3. **20 paires à confirmer** (identique?, proche?, incertain) : non réunies, reprises à l'étape 7 (investigation des indéterminés).
+4. **Exclusion de la file par numéro de génération** (question laissée ouverte le 2026-09-30) : règle gardée ; « 3 bandes » en sous-gamme et longueurs en pouces hors Nike / adidas corrigées à l'étape 5, chacune avec une paire piège.
+
+**À reporter en code (Sonnet)** : 1(d) avec les références de style (étape 4) ; 1(a), 1(b), 1(c) et 4 avec les corrections d'extraction (étape 5), plus le cas des t-shirts adidas junior non réunis par l'étape 2 ter (lignes 24, 54, 56). L'écriture en prod (étape 3) ne dépend d'aucun de ces reports.
+
+**Statut** : Actée (2026-09-30).

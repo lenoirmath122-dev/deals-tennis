@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-30 (session Sonnet) : code de D-2026-09-29-05 reporté sur `master` (branche `feat/r4.5-b-nike-style`), passage à blanc relu. Avant, même jour (session Opus, D-2026-09-30-03) : report sur `master` de la documentation de la PR #117 (restée en brouillon, en conflit, fermée sans merge) : décisions D-2026-09-29-05 à 08, mesure de séparation, ménage de la documentation. Deux sessions avaient mené R4.5-b en parallèle ; la version de `master` (PR #118) est gardée, le code de D-2026-09-29-05 reste à y reporter. Même jour : R4.5-c proposé et validé (D-2026-09-30-02), son report placé plus loin dans l'ordre. Session du 2026-09-29 (Sonnet, D-2026-09-29-08) : ménage de la documentation de suivi.
+**Dernière mise à jour** : 2026-09-30 (session Opus) : relecture de la file de revue textile (215 paires) et arbitrages de Mathieu (D-2026-09-30-04, `R4_5_revue_textile.md`) ; étape 2 de l'ordre faite. Avant, même jour (session Sonnet, PR #121 fusionnée) : code de D-2026-09-29-05 reporté sur `master` (branche `feat/r4.5-b-nike-style`), passage à blanc relu. Avant, même jour (session Opus, D-2026-09-30-03) : report sur `master` de la documentation de la PR #117 (restée en brouillon, en conflit, fermée sans merge) : décisions D-2026-09-29-05 à 08, mesure de séparation, ménage de la documentation. Deux sessions avaient mené R4.5-b en parallèle ; la version de `master` (PR #118) est gardée, le code de D-2026-09-29-05 reste à y reporter. Même jour : R4.5-c proposé et validé (D-2026-09-30-02), son report placé plus loin dans l'ordre. Session du 2026-09-29 (Sonnet, D-2026-09-29-08) : ménage de la documentation de suivi.
 
 > Détail antérieur de cette page (R0 à R4.5, chantiers du 2026-09-21 au 2026-09-29) archivé tel quel dans `archive/ETAT_ACTUEL_detail_2026-09-29-R0_a_R4-5.md`. Détails plus anciens : `archive/ETAT_ACTUEL_detail_2026-09-22.md` et `archive/ETAT_ACTUEL_detail_2026-09-23-recherche_a_retour-accueil.md`.
 
@@ -8,10 +8,11 @@
 
 - **R4.5-a** (extraction textile, référence de style, signature) : fait, PR #116 fusionnée.
 - **R4.5-b** (étape 3 en file de revue) : fait, PR #118 fusionnée (`lib/matching/textile-review.ts`, D-2026-09-30-01 : sous-gamme adidas, « Flouncy » Nike, bermuda). Passage écrit en prod le 2026-09-30 (`f196b689…`, engine `r4.5-b-textile`, 3 368 modèles, 69 modèles textiles multi-marchands, 250 paires en file de revue). **Ce passage ne contient pas encore D-2026-09-29-05** : les modèles Nike Victory 7, Advantage 7 et Victory 9 y réunissent deux générations (Flex et Dri-FIT) à tort (tables `match_*` seulement, site non touché).
-- **Code de D-2026-09-29-05 reporté sur `master`** (branche `feat/r4.5-b-nike-style`, PR à ouvrir, 2026-09-30) : Nike, références de style distinctes (transitivité comprise), offres sans référence ambiguës, Tie Break II hors file ; passage à blanc et relecture faits (69 → 67 modèles textiles multi-marchands, 215 paires en file). **Le passage écrit en prod (`f196b689…`) ne le contient toujours pas** : à réécrire à l'étape 3. Point à trancher par Mathieu : l'exclusion de la file par `numero` retire aussi 36 paires dont des cas non générationnels (adidas « 3 Bandes », voir JOURNAL).
+- **Code de D-2026-09-29-05 reporté sur `master`** (PR #121 fusionnée, 2026-09-30) : Nike, références de style distinctes (transitivité comprise), offres sans référence ambiguës, Tie Break II hors file ; passage à blanc et relecture faits (69 → 67 modèles textiles multi-marchands, 215 paires en file). **Le passage écrit en prod (`f196b689…`) ne le contient toujours pas** : à réécrire à l'étape 3. Exclusion par `numero` : gardée, corrigée à l'étape 5 (D-2026-09-30-04 point 4).
+- **Relecture de `revue-textile.csv` faite** (D-2026-09-30-04, `R4_5_revue_textile.md` et `.csv`) : 18 identiques sûres (consignées), 20 à confirmer (étape 7), le reste proche ou différent. Règles à coder : ordre des mots, romains = arabes, RG = Paris (étape 5) ; Lacoste comme Nike (étape 4).
 - **R4.5-c** : liste validée (D-2026-09-30-02 : 7 familles de chaussures, « ultra » = AG-LT23, année d'un seul côté pour une famille unique) ; **report en code à l'étape 7 ci-dessous** (D-2026-09-30-03). Les défauts d'extraction trouvés (`R4_5_c_generation_unique.md` §2) rejoignent l'étape 5.
 - Définitions des verdicts validées (D-2026-09-29-06) ; étape 0 et ordre du chantier (D-2026-09-29-07) ; mesure de séparation dans `R4_5_mesure_separation.md`.
-- En attente de Mathieu : relecture de `revue-textile.csv` ; GAP-2026-09-30-01 (ordre des mots). Millésime textile : réglé par D-2026-09-29-07 point 1 (« proche » d'ici l'état « indéterminé »).
+- Millésime textile : réglé par D-2026-09-29-07 point 1 (« proche » d'ici l'état « indéterminé »).
 
 ## Chantiers terminés
 
@@ -47,11 +48,11 @@ Next.js 16.3.5 (App Router), React 19, TypeScript, Tailwind CSS v4, PostgreSQL (
 ## Prochaine étape
 
 Ordre acté (D-2026-09-29-07, confirmé et précisé par D-2026-09-30-03) :
-1. ~~Code de D-2026-09-29-05 sur `master`~~ **fait le 2026-09-30** (PR à ouvrir).
-2. Décisions de Mathieu sur `revue-textile.csv`.
-3. Écriture du passage en prod (accord de Mathieu).
-4. Références de style toutes catégories.
-5. Corrections d'extraction (§5.3 de `R4_5_mesure_separation.md` et §2 de `R4_5_c_generation_unique.md`), chacune avec une paire piège.
+1. ~~Code de D-2026-09-29-05 sur `master`~~ **fait le 2026-09-30** (PR #121).
+2. ~~Décisions de Mathieu sur `revue-textile.csv`~~ **fait le 2026-09-30** (D-2026-09-30-04).
+3. Écriture du passage en prod (accord de Mathieu) : **prochaine étape** (Sonnet).
+4. Références de style toutes catégories, dont Lacoste comme Nike (D-2026-09-30-04) ; pistes du §5 de `R4_5_revue_textile.md`.
+5. Corrections d'extraction (§5.3 de `R4_5_mesure_separation.md`, §2 de `R4_5_c_generation_unique.md`, D-2026-09-30-04 points 1a à 1c et 4, t-shirts adidas junior non réunis par l'étape 2 ter), chacune avec une paire piège.
 6. État « indéterminé » dans `compare()`.
 7. Investigation des indéterminés, dont le report de R4.5-c (liste déjà validée).
 8. R4.6.

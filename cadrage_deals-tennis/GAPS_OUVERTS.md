@@ -1,11 +1,5 @@
 # Points ouverts
 
-## GAP-2026-09-30-01 — Textile : l'ordre des mots du nom de modèle empêche des regroupements (OUVERT)
-
-Constat de la relecture R4.5-b (`JOURNAL_SESSIONS.md`, 2026-09-30) : le nom de modèle textile est comparé comme un texte ordonné. Head écrit « BREAK II TIE- » pour « Tie-Break II », SportSystem « Pro Freelift » pour « Freelift Pro » : ces paires ont les mêmes mots mais ne sont pas réunies à l'étape 2 ; elles arrivent en tête de `revue-textile.csv` (score 0,8 à 0,9). Piste : comparer les mots sans tenir compte de l'ordre (signature triée), à valider sur la file de revue avant de le faire (un ordre différent peut désigner un autre article, cas non observé pour l'instant). Attention : « II » doit rester lu comme marqueur de génération même quand le titre est désordonné (D-2026-09-29-05, Tie Break II ≠ Tie Break). À traiter avec la relecture de `revue-textile.csv` ou en R4.6.
-
-**Statut** : ouvert le 2026-09-30.
-
 ## GAP-2026-09-29-02 — Détection junior restante : étape 4 (description des 6 autres marchands) et raquettes 17" (OUVERT, hors chemin critique)
 
 Fusion de GAP-2026-09-25-15 (étape 4) et GAP-2026-09-25-17 (D-2026-09-29-08 point 3). Les étapes 1 à 3 (heuristique taille en pouces, description Tecnifibre / Tennis Point FR, backfill des raquettes de prod) sont faites et l'étape 5 est close ; textes d'origine dans `archive/GAPS_OUVERTS_retires_2026-09-29.md`.
