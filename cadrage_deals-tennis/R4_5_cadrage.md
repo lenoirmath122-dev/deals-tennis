@@ -176,8 +176,8 @@ Tennis Point FR publie une offre par couleur (« Club Jupe Femmes - blanc », «
 | Étape | Contenu |
 |---|---|
 | **R4.5-a** (**fait le 2026-09-29**) | Extraction textile (fonctions pures, lexique par marchand), référence de style par marque, signature et verdict de l'étape 2, paires pièges versionnées, jeu R1 ; tests. |
-| **R4.5-b** | Score de l'étape 3 et fichier `revue-textile.csv` dans le rapport ; passage à blanc en prod (lecture seule), relecture complète des modèles textiles multi-marchands ; écriture en prod après ton accord. |
-| **R4.5-c** (si T-Q7 validée) | Liste des familles `generationUnique` proposée (Opus, vérification web), validée par toi, puis reportée dans `config/model-families.ts` (Sonnet). **Proposition faite et validée le 2026-09-30** (`R4_5_c_generation_unique.md`, D-2026-09-30-02) ; report à faire. |
-| **R4.5-d** (ajoutée le 2026-09-30, D-2026-09-30-02) | Correction des défauts d'extraction masqués par le blocage de génération (taille des sacs, RH6/9/12, version des sacs Pure, type de sac, T-Fight junior, Speed junior…), paires pièges versionnées (Sonnet). |
+| **R4.5-b** (**fait, PR #118, écrit en prod le 2026-09-30**) | Score de l'étape 3 et fichier `revue-textile.csv` dans le rapport ; passage à blanc en prod (lecture seule), relecture complète des modèles textiles multi-marchands ; écriture en prod après ton accord. Code de D-2026-09-29-05 (Nike) **à reporter** (écrit sur la PR #117, non fusionnée). |
+| **R4.5-c** (**déplacé, D-2026-09-29-07 ; liste validée, D-2026-09-30-02**) | Liste des familles `generationUnique` proposée (Opus, vérification web) et validée le 2026-09-30 (`R4_5_c_generation_unique.md`). Le **report en code** se fait **après** les références de style toutes catégories, les corrections d'extraction et l'état « indéterminé », dans l'investigation des paires indéterminées (`R4_5_mesure_separation.md` §5.4, D-2026-09-30-03). |
+| ~~R4.5-d~~ (D-2026-09-30-02, **fondue** dans l'étape « corrections d'extraction » de D-2026-09-29-07 par D-2026-09-30-03) | Défauts d'extraction masqués par le blocage de génération (taille des sacs, RH6/9/12, version des sacs Pure, type de sac, T-Fight junior, Speed junior…), liste dans `R4_5_c_generation_unique.md` §2. |
 
 Toujours hors périmètre : tout changement visible sur le site (R5).

@@ -58,6 +58,34 @@ Le rapprochement doit distinguer ces trois cas, et l'affichage doit toujours dir
 - sur `deals` : un champ d'attributs de variante (JSONB ou colonnes, à justifier), l'identifiant universel (`gtin`), la référence fabricant (`mpn`) si disponible, et la quantité unitaire (`unit_quantity`, `unit_type`) pour les catégories concernées ;
 - la relation « modèle proche » est **calculée à la lecture** (même famille + attributs dans la tolérance), pas stockée, sauf si R0 montre une bonne raison de faire autrement.
 
+## 4 bis. Définitions des verdicts (D-2026-09-29-06)
+
+**Vocabulaire**
+- **Offre** : une fiche chez un marchand, avec un prix et un lien. Elle couvre souvent plusieurs variantes.
+- **Variante** : ce que l'acheteur choisit lui-même sur la fiche (taille, pointure, grip, coloris, jauge proposée au choix).
+- **Article** : le produit tel que le fabricant le vend, toutes variantes confondues. C'est le « modèle » du moteur, l'unité de comparaison des prix, de l'historique et du verdict.
+- **Famille** : la gamme (Pure Aero, Gel-Resolution, Club). Elle sert à la navigation et à relier les articles proches.
+
+**Identique** : deux offres sont identiques si l'acheteur reçoit le **même produit** en choisissant la même variante chez l'un ou l'autre marchand. Leurs prix se comparent alors directement.
+- Ce qui fait l'article : même marque, même gamme, même version, même génération (même fiche technique du fabricant), même conditionnement.
+- Ce qui ne change pas l'article : taille, pointure, grip, coloris ; un coloris d'une nouvelle saison si la fiche technique n'a pas changé ; une édition purement décorative (Wimbledon, édition joueur) pour les raquettes, cordages et chaussures (en textile, une édition nommée d'un seul côté reste « proche » sauf même référence de style, D-2026-09-29-07) ; un cadeau offert.
+- Ce qui change l'article : la génération, la version (Lite, Tour, UL, junior…) et le tamis ; le conditionnement (garniture / bobine, tube / carton, lot) ; le genre, l'âge, le type de pièce textile.
+- **Règle de groupe** : un regroupement n'est juste que si ses offres sont identiques **deux à deux**, pas seulement reliées de proche en proche (erreur des Nike Victory : Flex relié à Dri-FIT par une offre intermédiaire, D-2026-09-29-05).
+- Cas limite laissé à la relecture : raquette cordée ou non cordée. Variante aujourd'hui, mais écart de prix réel (230 € / 270 € chez Tennispro.fr) : même article, prix comparés seulement à option égale.
+
+**Proche** : deux articles **différents**, dont on **sait** en quoi ils diffèrent, avec un écart assez faible pour qu'un acheteur puisse prendre l'un pour l'autre. Les règles du §5 et les décisions suivantes restent la liste de départ ; la relecture vérifie chaque entrée.
+
+**Différent** : ni identiques, ni proches.
+
+**Indéterminé** (nouvel état) : les données ne permettent pas de trancher entre « identique » et « proche » ou « différent ». Ce n'est pas un verdict sur le produit mais un état de ce qu'on sait :
+- une paire indéterminée n'est plus confondue avec « proche » (aucune différence à écrire) ;
+- chaque paire indéterminée est un regroupement possible, **à investiguer** (référence fabricant, fiche, familles à génération unique) : condition posée par Mathieu à la validation de cet état ;
+- mesures : la **précision** (objectif 95 %) porte sur les regroupements faits ; le **rappel**, sur les articles identiques restés indéterminés ou mal classés.
+
+**Sort des paires indéterminées** : A (les laisser à part), B (« identique présumé » quand tous les indices concordent, seulement dans une catégorie mesurée à ≥ 95 %, marqué « présumé » et réversible) ou C (validation une à une, 539 paires hors textile : ne passe pas à l'échelle). **Choisi plus tard, catégorie par catégorie**, chiffres de la relecture en main.
+
+**Effet sur le code** : aujourd'hui un attribut connu d'un seul côté donne « proche » (`lib/matching/compare.ts`). Distinguer « indéterminé » est un changement ciblé de `compare()` et des mesures, à planifier ; il ne remplace ni l'extraction, ni le référentiel, ni la cascade.
+
 ## 5. Règles de tolérance par catégorie (v1, validée — D-2026-09-28-02)
 
 | Catégorie | Variante (sans importance) | Modèle proche (affiché avec mention) | Produit différent |
@@ -68,7 +96,7 @@ Le rapprochement doit distinguer ces trois cas, et l'affichage doit toujours dir
 | Balles | — | — | Pression (Q5), conditionnement (comparaison à la balle) |
 | Sacs | Coloris | — | Contenance (Q5, nombre de raquettes) |
 | Surgrips, accessoires | Coloris | — | Conditionnement (comparaison à l'unité) |
-| Textile | Taille, coloris ; collection/année non écrite ou écrite d'un seul côté (D-2026-09-27-06, Q6) | Édition spéciale nommée écrite d'un seul côté (RG, Wimbledon, US Open…, Q6) ; génération ou collection explicitement différente | Modèle, genre |
+| Textile | Taille, coloris ; collection/année non écrite ou écrite d'un seul côté **hors du nom de modèle** (D-2026-09-27-06, Q6) ; même référence de style malgré un nom de tournoi (D-2026-09-29-05) | Édition spéciale nommée écrite d'un seul côté (RG, Wimbledon, US Open…, Q6) ; numéro de génération dans le nom écrit d'un seul côté (« II ») ; génération ou collection explicitement différente ; référence de style Nike différente (D-2026-09-29-05). Millésime dans le nom écrit d'un seul côté (« Club 25 Tech ») : **indéterminé** dès que l'état existe, proche d'ici là (D-2026-09-29-07) | Modèle, genre |
 | Toutes catégories | Article + cadeau offert (« 6 cordages offerts », « sac offert »), cadeau indiqué sur l'offre (Q12) | — | Lot de N articles identiques (« Pack de 2 raquettes »), prix à l'unité affiché, jamais de « meilleur prix » entre un lot et l'unité (Q12) |
 
 **Règle des générations (décision de Mathieu, 2026-09-26, D-2026-09-26-01)** — s'applique à toutes les catégories et prime sur la mention « génération voisine » de la ligne Raquettes :
