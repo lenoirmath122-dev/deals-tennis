@@ -142,3 +142,10 @@
 - **Réponses de Mathieu (D-2026-09-30-04)**, toutes selon la recommandation : ordre des mots ignoré, romains = arabes, RG = Paris, Lacoste comme Nike ; identiques consignées sans liens manuels ; paires à confirmer reportées à l'étape 7 ; exclusion par numéro gardée et corrigée à l'étape 5. GAP-2026-09-30-01 retiré (texte dans `archive/GAPS_OUVERTS_retires_2026-09-30.md`).
 - Écrit : `R4_5_revue_textile.md`, `R4_5_revue_textile.csv` (verdicts = propositions de Claude Code, `decision_mathieu` vide), D-2026-09-30-04, ETAT_ACTUEL, INDEX, GAPS. Aucun code modifié, rien écrit en base ; scripts de lecture temporaires supprimés. Dossier local `rapport-revue-textile/` non versionné.
 - Prochaine étape : **écriture du passage en prod** (étape 3, Sonnet, accord de Mathieu).
+
+## 2026-09-30 (session desktop, Sonnet) — R4.5-b : écriture du passage en prod (étape 3)
+
+- Reprise : modèle actuel Sonnet, recommandé Sonnet (exécution d'une étape déjà validée). Accord de Mathieu : « On passe sur l'écriture en prod ».
+- Passage à blanc de contrôle (`--dry-run --out rapport-controle-ecriture`, 5 035 offres) : les 6 fichiers du rapport sont **identiques** (hash) à ceux de `rapport-revue-textile/` (215 paires).
+- Écriture en prod (`npm run match:shadow -- --out rapport-passage`) : passage `253341ec-1b4d-4d64-9727-85ce2c6a7536`, engine `r4.5-b-nike`, **3 375 modèles, 4 722 liens** (D-2026-09-29-05 compris). Passage précédent `f196b689…` supprimé (comportement par défaut). Vérifié en base : 1 seul passage, 3 375 modèles et 4 722 liens rattachés, aucun autre passage. Tables `match_*` seulement, site non touché.
+- Prochaine étape : étape 4 de l'ordre (références de style toutes catégories, dont Lacoste comme Nike ; Opus pour le cadrage).
