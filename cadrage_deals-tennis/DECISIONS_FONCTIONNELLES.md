@@ -1252,3 +1252,16 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 - Correction sans décision à prendre : « bermuda » n'est plus un synonyme de « short » (Head publie « CLUB Bermuda » et « CLUB Short » comme deux articles).
 
 **Statut** : Actée (2026-09-30), sauf le millésime (ouvert).
+
+### D-2026-09-30-02 — R4.5-c : familles `generationUnique`, défauts d'extraction (R4.5-d)
+
+**Contexte** : proposition `R4_5_c_generation_unique.md` (session Opus, 2026-09-30), tirée de `proches.csv` du passage `r4.5-b-textile` et vérifiée sur le web. Dans 9 des 27 familles bloquées seulement par une génération non écrite, le blocage masque des défauts d'extraction (taille S/M/L des sacs, RH6/9/12, version des sacs Pure, type de sac, taille et version des T-Fight junior, taille des Speed junior, etc.).
+
+**Décision (Mathieu, 2026-09-30)** :
+- **Q1** : `generationUnique` sur Head Endure Pro, Babolat SFX Evo, adidas Avaluxe, ASICS Game FF, Wilson Intrigue (chaussures).
+- **Q2** : une chaussure sans numéro, ressortie chaque saison dans de nouveaux coloris, est une génération unique : **adidas Courtflash et Babolat Pulsion** aussi (Pulsion retenue malgré le doute sur une refonte 2017-2025, noté dans la famille).
+- **Q3** : « ultra » devient le marqueur de la génération AG-LT23 de la famille Lacoste AG-LT (pas de marquage unique) ; à revoir si une « AG-LT25 Ultra » sort.
+- **Q4** : les défauts d'extraction du §2 sont corrigés dans une étape à part, **R4.5-d** (Sonnet, paires pièges tirées du tableau), avant R4.6. Tant que ce n'est pas fait, ces familles ne sont pas marquées.
+- **Q5** : pour une famille marquée `generationUnique`, une année ou une génération écrite d'un seul côté ne bloque plus « identique » (modification de `generationDifference`).
+
+**Statut** : Actée (2026-09-30). Report dans `config/model-families-chaussures.ts` et `lib/matching/compare.ts` à faire en Sonnet (R4.5-c, report), puis R4.5-d.
