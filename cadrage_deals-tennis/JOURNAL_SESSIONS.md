@@ -138,3 +138,11 @@
 - **Réponses de Mathieu (D-2026-09-30-10)** : 23 identiques et 2 faux validés tels que proposés ; les 5 cas douteux sont identiques ; découpage R4.6-a à R4.6-d validé. Précision 28 / 30 (hors textile 23 / 23, textile 5 / 7).
 - Écrit : `R4_6_cadrage.md`, `R4_6_echantillon.csv`, D-2026-09-30-10, ETAT_ACTUEL, INDEX, JOURNAL. Aucun code modifié, rien écrit en base.
 - Prochaine étape : R4.6-b (Opus) : sort du textile à la bascule, séparation des modèles signalés incohérents.
+
+## 2026-09-30 (session desktop, Opus) — R4.6-b : sort du textile et des modèles incohérents (D-2026-09-30-11)
+
+- `git fetch` : PR #136 fusionnée, aucune PR ouverte ; branche `doc/r4.6-b-textile` partie d'`origin/master` (`c9c8c02`).
+- Lecture seule sur la prod (script jetable hors dépôt) : moteur `r4.5-etape7` rejoué en mémoire, résultat identique au passage `8f17143b…`. Mesure du mode de tenue des modèles multi-marchands par catégorie ; relecture des 13 modèles signalés (incohérents / divergents) ; fiches Babolat Play Crew Neck Tee lues (3MTG011 ≠ 3MP2011 / 3MTF011).
+- **Réponses de Mathieu (D-2026-09-30-11)** : Q4 option B (textile par GTIN / référence seulement) ; Q5 couper les modèles incohérents.
+- Écrit : `R4_6_cadrage.md` §6, D-2026-09-30-11, ETAT_ACTUEL, JOURNAL. Aucun code modifié, rien écrit en base.
+- Prochaine étape : report en code (Sonnet, `R4_6_cadrage.md` §6.6), puis R4.6-c.

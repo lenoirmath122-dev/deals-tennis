@@ -85,3 +85,67 @@ Sur l'échantillon entier : **23 à 28 justes sur 30 (77 % à 93 %)**, sous l'ob
 Avec le jeu R1 (24 / 24) : hors textile, aucune erreur sur les deux jeux ; les deux erreurs sont textiles, de même cause (nom commercial sans référence couvrant deux fiches techniques, et pont par une référence pour le n° 12).
 
 **Prochaine étape : R4.6-b** (Opus) : suite à donner (sort du textile à la bascule, séparation des modèles signalés incohérents).
+
+## 6. R4.6-b : sort du textile et des modèles signalés
+
+**Session** : 2026-09-30, Opus. Lecture seule : moteur `r4.5-etape7` rejoué en mémoire sur les 5 035 offres de la prod (résultat identique au passage `8f17143b…` : 3 181 modèles, 252 multi-marchands, 147 en `active`), fiches Babolat lues. Aucun code modifié, rien écrit en base.
+
+### 6.1 Comment tiennent les modèles multi-marchands
+
+Un modèle est « tenu par identifiant » quand tous ses marchands sont reliés entre eux par un GTIN ou une référence fabricant partagés ; « signature seule » quand aucun lien entre marchands n'est un identifiant.
+
+| Catégorie | Multi-marchands | Tenus par identifiant | Partiel | Signature seule | … dont en `active` (signature seule / total) |
+|---|---|---|---|---|---|
+| Textile | 71 | 14 | 1 | **56** | **50 / 57** |
+| Chaussures | 72 | 10 | 9 | 53 | 35 / 52 |
+| Raquettes | 66 | 60 | 1 | 5 | 5 / 27 |
+| Cordages | 24 | 13 | 1 | 10 | 4 / 9 |
+| Accessoires | 19 | 15 | 0 | 4 | 1 / 2 |
+
+Textile réuni par signature seule : **Tennis Point FR est présent dans 50 des 56 modèles** (Head + Tennis Point FR 20, SportSystem + Tennis Point FR 13, Tecnifibre + Tennis Point FR 6, Sport 2000 + Tennis Point FR 5…). Tennis Point FR n'a aucune référence fabricant en textile : ces rapprochements reposent sur le nom commercial.
+
+Dans l'échantillon (§2), sur les 7 textiles : signature seule 4 (3 justes, n° 6 faux) ; tenus par identifiant 3 (2 justes, n° 12 faux à cause d'un pont par signature).
+
+### 6.2 Le motif « même nom, plusieurs articles » est fréquent
+
+- **Gamme Babolat Play** (site Babolat, fiches lues le 2026-09-30) : trois références par article sous le même titre. Exemple « Play Crew Neck Tee Homme » : 3MP2011 et 3MTF011 à 30 € (100 % polyester recyclé), **3MTG011 à 42 € (83 % polyester / 17 % élasthanne), autre article**. Même schéma pour le short (3MP2061 / 3MTF061 à 37 €, 3MTG061 à 45 €), le débardeur (29 / 29 / 40 €) et la jupe (40 / 40 / 45 €). Les modèles 169, 207, 629 et 916 réunissent ces références par la signature. **Modèle 207 faux** (hors échantillon), 169, 629 et 916 très probablement aussi.
+- **Tennis Point FR** écrit parfois deux fois le même titre pour deux fiches (jupe adidas Club n° 6 ; short Nike Court Dri-FIT Slam « Bleu » ×2 à 74,99 € et d'autres à 89,99 € ; t-shirt Head Topspin « Blanc, Rouge » ×2).
+
+Conclusion : en textile, sans GTIN ni référence, le nom commercial ne suffit pas à prouver le même article. L'échantillon (5 / 7) n'était pas un accident.
+
+### 6.3 Les 13 modèles signalés (2 incohérents, 13 divergents, recouvrement)
+
+| Modèle | Signal | Verdict proposé |
+|---|---|---|
+| 878 short adidas Club (n° 12) | incohérent | **faux** : pont par la signature « club » entre JG0994 et GL5409 / GH7222 |
+| 207 Babolat Play Crew Neck Tee | incohérent | **faux** : 3MTG011 est un autre article (§6.2) ; le signal vient pourtant d'un bruit (« crew neck play » / « crew play ») |
+| 141 Lacoste Djokovic (GH5219), 347 Nike Victory (CV3048), 749 Nike Nadal (DV2881), 834 Nike polo Solid (DH0857), 860 Lacoste TH8917, 1085 Nike Advantage (FD5336), 1651 Babolat Exercise Club (4US26446) | divergent (nom de modèle ou édition) | identiques : même référence de style, écarts de libellé seulement |
+| 487 Babolat Xcel bobine (243110) | divergent (jauge 1,25 / 1,35) | identique, conforme à D-2026-09-30-05 (jauge = variante si référence commune) |
+| 1010 Luxilon Alu Power, 2507 Pure Drive + | divergent (12 / 12,2 m ; 27,5 / 27,6 po) | identiques (arrondis) |
+| 1370 Babolat Evo Strike Gen2 | divergent (poids 280 / 290) | identique (cordée / non cordée, poids écrit par Tennispro.fr) |
+
+Le contrôle « divergent » signale surtout du bruit de libellé (11 sur 13) ; les deux vrais faux sont textiles et réunis par la signature.
+
+### 6.4 Questions pour Mathieu
+
+- **Q4 — Textile à la bascule.** Options :
+  - **B (proposée)** : en textile, seuls le GTIN et la référence fabricant réunissent des offres ; la signature ne fusionne plus (les paires qu'elle trouvait deviennent « proches » ou vont en file de revue). Corrige n° 6, n° 12 et 207 sans règle ad hoc. Coût : textile multi-marchands d'environ 71 à 15, **en `active` d'environ 57 à 7** (chiffres exacts au passage à blanc) ; Tennis Point FR ne se rapproche plus en textile tant qu'on n'a pas son GTIN.
+  - C : garder la signature, ajouter des gardes (même titre deux fois chez un marchand = ambigu ; écart de prix d'origine > 10 % = distinct), puis tirer un second échantillon textile (20 modèles) pour mesurer ; repli sur B si < 95 %.
+  - D : pas de textile multi-marchands du tout à la première bascule.
+  - A : garder tel quel (précision mesurée 5 / 7).
+- **Q5 — Modèles incohérents, toutes catégories.** Proposé : filet de sécurité générique : un modèle signalé « incohérent » est coupé en ses composantes tenues par identifiant avant publication (aucun modèle concerné hors textile aujourd'hui) ; « divergent » reste un signal de rapport, sans effet.
+
+### 6.5 Réponses de Mathieu (AskUserQuestion, 2026-09-30, D-2026-09-30-11)
+
+- **Q4** : **option B**. En textile, seuls le GTIN et la référence fabricant réunissent ; la signature ne fusionne plus.
+- **Q5** : **couper**. Un modèle signalé « incohérent » est coupé en ses composantes tenues par identifiant avant publication, toutes catégories ; « divergent » reste un signal.
+
+### 6.6 À reporter en code (Sonnet)
+
+1. `lib/matching/cluster.ts` : en textile, l'étape 2 (signature) et l'étape 2 ter ne réunissent plus d'offres ; seules l'étape 1 (GTIN, référence) réunit. Une offre textile sans identifiant partagé forme son propre modèle.
+2. Les paires textiles de même signature (anciennement fusionnées) vont dans la file de revue textile avec le motif « signature seule ».
+3. Après regroupement, toutes catégories : un modèle où le contrôle trouve deux membres « différents » est coupé en composantes connexes des liens GTIN / référence ; les offres qui n'y sont reliées que par la signature forment leur propre modèle (ou rejoignent leur groupe de signature propre). Le rapport garde la liste des modèles coupés.
+4. Tests : paires pièges n° 6 (deux jupes adidas Club Tennis Point FR), n° 12 (JG0994 / GL5409 / GH7222), modèle 207 (3MTG011 / 3MTF011 / 3MP2011 : seul 3MP2011 réuni à SportSystem).
+5. Passage à blanc relu (textile multi-marchands attendu autour de 15, 7 en `active` ; aucune autre catégorie ne doit bouger sauf modèles coupés), nouvel engine `r4.6-b`, puis écriture en prod après accord de Mathieu.
+
+**Prochaine étape** : report en code de D-2026-09-30-11 (Sonnet), puis R4.6-c.
