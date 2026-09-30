@@ -1,6 +1,6 @@
 # État actuel
 
-**Dernière mise à jour** : 2026-09-30 (session Opus, D-2026-09-30-03) : report sur `master` de la documentation de la PR #117 (restée en brouillon, en conflit, fermée sans merge) : décisions D-2026-09-29-05 à 08, mesure de séparation, ménage de la documentation. Deux sessions avaient mené R4.5-b en parallèle ; la version de `master` (PR #118) est gardée, le code de D-2026-09-29-05 reste à y reporter. Même jour : R4.5-c proposé et validé (D-2026-09-30-02), son report placé plus loin dans l'ordre. Session du 2026-09-29 (Sonnet, D-2026-09-29-08) : ménage de la documentation de suivi.
+**Dernière mise à jour** : 2026-09-30 (session Sonnet) : code de D-2026-09-29-05 reporté sur `master` (branche `feat/r4.5-b-nike-style`), passage à blanc relu. Avant, même jour (session Opus, D-2026-09-30-03) : report sur `master` de la documentation de la PR #117 (restée en brouillon, en conflit, fermée sans merge) : décisions D-2026-09-29-05 à 08, mesure de séparation, ménage de la documentation. Deux sessions avaient mené R4.5-b en parallèle ; la version de `master` (PR #118) est gardée, le code de D-2026-09-29-05 reste à y reporter. Même jour : R4.5-c proposé et validé (D-2026-09-30-02), son report placé plus loin dans l'ordre. Session du 2026-09-29 (Sonnet, D-2026-09-29-08) : ménage de la documentation de suivi.
 
 > Détail antérieur de cette page (R0 à R4.5, chantiers du 2026-09-21 au 2026-09-29) archivé tel quel dans `archive/ETAT_ACTUEL_detail_2026-09-29-R0_a_R4-5.md`. Détails plus anciens : `archive/ETAT_ACTUEL_detail_2026-09-22.md` et `archive/ETAT_ACTUEL_detail_2026-09-23-recherche_a_retour-accueil.md`.
 
@@ -8,7 +8,7 @@
 
 - **R4.5-a** (extraction textile, référence de style, signature) : fait, PR #116 fusionnée.
 - **R4.5-b** (étape 3 en file de revue) : fait, PR #118 fusionnée (`lib/matching/textile-review.ts`, D-2026-09-30-01 : sous-gamme adidas, « Flouncy » Nike, bermuda). Passage écrit en prod le 2026-09-30 (`f196b689…`, engine `r4.5-b-textile`, 3 368 modèles, 69 modèles textiles multi-marchands, 250 paires en file de revue). **Ce passage ne contient pas encore D-2026-09-29-05** : les modèles Nike Victory 7, Advantage 7 et Victory 9 y réunissent deux générations (Flex et Dri-FIT) à tort (tables `match_*` seulement, site non touché).
-- **Code de D-2026-09-29-05 à reporter** sur l'implémentation de `master` : il a été écrit sur la PR #117 (`lib/matching/approx.ts`, commit `2798664`), une autre implémentation de R4.5-b, non fusionnée.
+- **Code de D-2026-09-29-05 reporté sur `master`** (branche `feat/r4.5-b-nike-style`, PR à ouvrir, 2026-09-30) : Nike, références de style distinctes (transitivité comprise), offres sans référence ambiguës, Tie Break II hors file ; passage à blanc et relecture faits (69 → 67 modèles textiles multi-marchands, 215 paires en file). **Le passage écrit en prod (`f196b689…`) ne le contient toujours pas** : à réécrire à l'étape 3. Point à trancher par Mathieu : l'exclusion de la file par `numero` retire aussi 36 paires dont des cas non générationnels (adidas « 3 Bandes », voir JOURNAL).
 - **R4.5-c** : liste validée (D-2026-09-30-02 : 7 familles de chaussures, « ultra » = AG-LT23, année d'un seul côté pour une famille unique) ; **report en code à l'étape 7 ci-dessous** (D-2026-09-30-03). Les défauts d'extraction trouvés (`R4_5_c_generation_unique.md` §2) rejoignent l'étape 5.
 - Définitions des verdicts validées (D-2026-09-29-06) ; étape 0 et ordre du chantier (D-2026-09-29-07) ; mesure de séparation dans `R4_5_mesure_separation.md`.
 - En attente de Mathieu : relecture de `revue-textile.csv` ; GAP-2026-09-30-01 (ordre des mots). Millésime textile : réglé par D-2026-09-29-07 point 1 (« proche » d'ici l'état « indéterminé »).
@@ -47,7 +47,7 @@ Next.js 16.3.5 (App Router), React 19, TypeScript, Tailwind CSS v4, PostgreSQL (
 ## Prochaine étape
 
 Ordre acté (D-2026-09-29-07, confirmé et précisé par D-2026-09-30-03) :
-1. **Code de D-2026-09-29-05 sur `master`** (Sonnet) : Nike, références de style distinctes (y compris par transitivité), offre sans référence ambiguë rattachée à aucun groupe, Tie Break II exclu de la file ; tests de la PR #117 repris ; passage à blanc et relecture (grille D-2026-09-29-06).
+1. ~~Code de D-2026-09-29-05 sur `master`~~ **fait le 2026-09-30** (PR à ouvrir).
 2. Décisions de Mathieu sur `revue-textile.csv`.
 3. Écriture du passage en prod (accord de Mathieu).
 4. Références de style toutes catégories.

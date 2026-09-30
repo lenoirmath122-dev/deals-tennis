@@ -94,6 +94,9 @@ export function buildTextileReview(offers: EngineOffer[], result: ClusterResult)
 
         const result = compare(x.extracted, y.extracted);
         if (result.niveau === "identique") continue;
+        // Génération différente déjà connue, pas à valider : numéro écrit d'un seul côté ou différent
+        // (« Tie Break II », D-2026-09-29-05), références de style Nike différentes (Flex / Dri-FIT).
+        if (result.differences.some((d) => d.attribut === "numero" || d.attribut === "reference_style")) continue;
         // Genre ou âge différents : différent, toujours (§3.2). Écart de modèle : c'est justement ce que le score mesure.
         const hard = result.differences.filter((d) => d.attribut !== "modele" && d.effet === "different");
         if (hard.length > 0) continue;

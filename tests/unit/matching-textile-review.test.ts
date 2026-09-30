@@ -71,13 +71,14 @@ describe("file de revue textile", () => {
     expect(rows.some((r) => r.titreA.includes("Hommes") || r.titreB.includes("Hommes"))).toBe(false);
   });
 
-  it("garde en file un numéro de génération écrit d'un seul côté quand deux marchands le vendent", () => {
-    const { rows: gen } = review([
-      ["a", "Tennis Point FR", "Head", "Vêtement de tennis HEAD Tie-Break T-shirt Femmes - violet", 60],
-      ["b", "Head", "Head", "TIE-BREAK II- T-shirt de tennis femme", 60],
-    ]);
-    expect(gen).toHaveLength(1);
-    expect(gen[0].raison).toContain("numero");
+  it("Tie Break II (D-2026-09-29-05) : autre génération, refusée avant la file, titre ordonné ou non", () => {
+    for (const headTitle of ["TIE-BREAK II- T-shirt de tennis femme", "BREAK II TIE- T-shirt de tennis femme"]) {
+      const { rows: gen } = review([
+        ["a", "Tennis Point FR", "Head", "Vêtement de tennis HEAD Tie-Break T-shirt Femmes - violet", 60],
+        ["b", "Head", "Head", headTitle, 60],
+      ]);
+      expect(gen).toEqual([]);
+    }
   });
 
   it("classe par score décroissant", () => {

@@ -253,3 +253,68 @@ describe("regroupement en modèles (textile)", () => {
     expect(result.divergences).toEqual([]);
   });
 });
+
+// D-2026-09-29-05 : références de style Nike différentes = proche ; même référence = identique.
+describe("références de style Nike (D-2026-09-29-05)", () => {
+  const nike = (marchand: string, titre: string, sku: string | null) =>
+    extract({ marchand, marque: "Nike", categorie: "textile", titre, merchant_sku: sku } as FixtureOffer);
+  const engine = (rows: [string, string, string, string | null][]): EngineOffer[] =>
+    rows.map(([dealId, marchand, titre, sku]) => ({ dealId, marchand, statut: "active", titre, extracted: nike(marchand, titre, sku) }));
+
+  const cases: [string, [string, string, string], [string, string, string]][] = [
+    ["CV3048 / FD5380 (Victory 7)", ["Sport 2000", "Vêtement de tennis NIKE Short Victory 7in Homme", "CV3048-010"], ["Sport 2000", "Vêtement de tennis NIKE Short Victory 7in Homme", "FD5380-010"]],
+    ["DD8329 / FD5336 (Advantage 7)", ["Sport 2000", "Vêtement de tennis NIKE Short Advantage 7in Homme", "DD8329-010"], ["Sport 2000", "Vêtement de tennis NIKE Short Advantage 7in Homme", "FD5336-010"]],
+    ["CV2545 / FD5384 (Victory 9)", ["Sport 2000", "Vêtement de tennis NIKE Short Victory 9in Homme", "CV2545-010"], ["Sport 2000", "Vêtement de tennis NIKE Short Victory 9in Homme", "FD5384-010"]],
+  ];
+  for (const [nom, a, b] of cases) {
+    it(`${nom} : même titre, références différentes → proche`, () => {
+      const result = compare(nike(...a), nike(...b));
+      expect(result.niveau).toBe("proche");
+      expect(result.differences.some((d) => d.attribut === "reference_style")).toBe(true);
+    });
+  }
+
+  it("Nike : un modèle ne contient jamais deux références de style, même par transitivité", () => {
+    const result = buildModels(
+      engine([
+        ["1", "Sport 2000", "Vêtement de tennis NIKE Short Flex Victory 7in Homme", "CV3048-010"],
+        ["2", "Sport 2000", "Vêtement de tennis NIKE Short Victory 7in Homme", "CV3048-020"],
+        ["3", "Sport 2000", "Vêtement de tennis NIKE Short Victory 7in Homme", "FD5380-010"],
+        ["4", "Tennis Point FR", "Vêtement de tennis Nike Court Victory 7in Shorts Hommes-noir", null],
+      ]),
+    );
+    const model = (id: string) => result.links.get(id)?.modelIndex;
+    expect(model("1")).toBe(model("2"));
+    expect(model("3")).not.toBe(model("1"));
+    // L'offre sans référence correspond aux deux groupes : rattachée à aucun.
+    expect(model("4")).not.toBe(model("1"));
+    expect(model("4")).not.toBe(model("3"));
+    expect(result.ambiguousWithoutReference.map((o) => o.dealId)).toEqual(["4"]);
+    expect(result.ambiguousWithoutReference[0].references).toEqual(["CV3048", "FD5380"]);
+  });
+
+  it("une offre sans référence dont le titre ne correspond qu'à un groupe s'y rattache", () => {
+    const result = buildModels(
+      engine([
+        ["1", "Sport 2000", "Vêtement de tennis NIKE Short Victory 7in Homme", "FD5380-010"],
+        ["2", "Tennis Point FR", "Vêtement de tennis Nike Court Victory 7in Shorts Hommes-noir", null],
+      ]),
+    );
+    expect(result.links.get("1")?.modelIndex).toBe(result.links.get("2")?.modelIndex);
+    expect(result.ambiguousWithoutReference).toEqual([]);
+  });
+
+  it("adidas n'est pas concernée : des codes différents restent comparés sur le titre", () => {
+    const a = extract({ marchand: "Sport 2000", marque: "adidas", categorie: "textile", titre: "Vêtement de tennis ADIDAS Club Short Homme", merchant_sku: "HZ4321" } as FixtureOffer);
+    const b = extract({ marchand: "Sport 2000", marque: "adidas", categorie: "textile", titre: "Vêtement de tennis ADIDAS Club Short Homme", merchant_sku: "HZ4322" } as FixtureOffer);
+    expect(compare(a, b).niveau).toBe("identique");
+  });
+
+  it("Lacoste GH5219 : même référence, noms de tournoi différents → identique", () => {
+    const a = extract({ marchand: "Sport 2000", marque: "Lacoste", categorie: "textile", titre: "T-shirt de tennis Lacoste Djokovic Printemps Dubai Homme", merchant_sku: "GH5219-3A4" } as FixtureOffer);
+    const b = extract({ marchand: "Sport 2000", marque: "Lacoste", categorie: "textile", titre: "T-shirt de tennis Lacoste Djokovic Printemps RG Homme", merchant_sku: "GH5219-166" } as FixtureOffer);
+    const result = compare(a, b);
+    expect(result.niveau).toBe("identique");
+    expect(result.methode).toBe("reference");
+  });
+});
