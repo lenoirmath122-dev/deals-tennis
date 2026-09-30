@@ -1360,3 +1360,17 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 **À reporter en code (Sonnet)** : 1(d) avec les références de style (étape 4) ; 1(a), 1(b), 1(c) et 4 avec les corrections d'extraction (étape 5), plus le cas des t-shirts adidas junior non réunis par l'étape 2 ter (lignes 24, 54, 56). L'écriture en prod (étape 3) ne dépend d'aucun de ces reports.
 
 **Statut** : Actée (2026-09-30).
+
+### D-2026-09-30-05 — Étape 4 : références de style hors textile, jauge, marques textile
+
+**Contexte** : cadrage de l'étape 4 (session Opus, `R4_5_references_style.md`). Simulation en mémoire du moteur sur les 5 035 offres de prod : lire le SKU des sites Babolat et Head et de Sport 2000, et comparer la partie « style » des références hors textile, fait passer les modèles multi-marchands de 170 à 229 ; les 94 fusions relues réunissent toutes le même produit. Le suffixe est le coloris, sauf pour les balles (conditionnement). La référence Tecnifibre n'a pas de découpe stable. En textile, Head et Babolat changent de référence au sein d'un même article. Questions posées (AskUserQuestion), recommandations retenues par Mathieu.
+
+**Décision (Mathieu, 2026-09-30)** :
+1. **Hors textile** : le `merchant_sku` des sites Babolat et Head et de Sport 2000 devient une référence fabricant ; toutes les références sont comparées sur leur partie « style » (découpe sur « / », puis avant le premier tiret). Deux exceptions : les **balles** gardent leur référence complète ; **Tecnifibre** hors textile n'est pas ajoutée (le GTIN suffit).
+2. **Cordages** : la référence désigne le cordage, la jauge se choisit sur la fiche. **Jauge = variante quand la référence est commune** ; sans référence commune, la jauge reste « proche » (D-2026-09-27-05).
+3. **Textile** : Lacoste rejoint Nike (D-2026-09-30-04, 1d) ; **ni Head ni Babolat** ne sont traitées comme Nike ; la découpe Tecnifibre à 6 caractères n'est pas retenue (1 modèle gagné, 48 conflits junior / adulte), reprise à l'étape 7.
+4. **GTIN des fiches textile de Tennis Point FR** : reporté à l'étape 7.
+
+**À reporter en code (Sonnet)** : §6 de `R4_5_references_style.md` (`manufacturerReferences`, liste de marchands, `TEXTILE_STYLE_DISTINCT_BRANDS`, tests, passage à blanc, PR). Constats pour l'étape 5 : « Pure Drive + » non lu (faux regroupement actuel par l'étape 2 bis), « Pat Patrouille » lu adulte.
+
+**Statut** : Actée (2026-09-30).
