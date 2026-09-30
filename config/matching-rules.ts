@@ -236,6 +236,9 @@ export const CATEGORY_RULES: Record<DealCategory, CategoryRules> = {
       millesime: "proche",
       numero: "proche",
       longueur: "proche",
+      // Sous-gamme adidas (3-Stripes, Climacool) : proche ; réunie seulement si le prix d'origine est
+      // proche (≤ 10 %, D-2026-09-30-01, `cluster.ts` étape 2 ter).
+      sous_gamme: "proche",
       // Édition spéciale nommée (RG, Wimbledon, US Open…) écrite d'un seul
       // côté → proche (Q6, D-2026-09-28-02, paire R1 n° 59). Distincte de
       // l'année/collection, qui reste gérée par `generationRule` (→ identique).

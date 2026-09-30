@@ -31,7 +31,7 @@ import type { ExtractedOffer } from "./types.ts";
  * Textile, étape 1 (T-Q1, D-2026-09-29-04) : la référence de style identifie l'article, quels que
  * soient les titres. Ces attributs sont lus dans le titre : leur écart ne contredit pas la référence.
  */
-const TEXTILE_TITLE_ONLY_ATTRIBUTES = new Set(["modele", "edition", "millesime", "numero", "longueur"]);
+const TEXTILE_TITLE_ONLY_ATTRIBUTES = new Set(["modele", "edition", "millesime", "numero", "longueur", "sous_gamme"]);
 
 export type CompareMethod = "gtin" | "reference" | "signature";
 

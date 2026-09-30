@@ -24,6 +24,8 @@ export interface EngineOffer {
   /** Statut en base (`active`, `tracked`) : sert à la couverture publiée deux fois (R4-Q3). */
   statut: string;
   titre: string;
+  /** Prix d'origine : indice de l'étape 3 textile seulement (R4.5-b). */
+  prixOrigine?: number | null;
   extracted: ExtractedOffer;
 }
 
@@ -63,6 +65,15 @@ export interface ClusterResult {
 
 const METHOD_RANK: Record<CompareMethod, number> = { gtin: 3, reference: 2, signature: 1 };
 const INCOHERENCE_PAIR_LIMIT = 40;
+/** Textile, étape 2 ter : écart de prix d'origine maximal pour réunir deux groupes à sous-gamme différente. */
+const SUBRANGE_PRICE_TOLERANCE = 0.1;
+
+function medianPrice(group: EngineOffer[]): number | null {
+  const prices = group.map((o) => o.prixOrigine).filter((p): p is number => typeof p === "number" && p > 0).sort((a, b) => a - b);
+  if (prices.length === 0) return null;
+  const mid = Math.floor(prices.length / 2);
+  return prices.length % 2 ? prices[mid] : (prices[mid - 1] + prices[mid]) / 2;
+}
 
 class UnionFind {
   private parent = new Map<string, string>();
@@ -189,6 +200,38 @@ export function buildModels(input: EngineOffer[]): ClusterResult {
         const groupY = members.filter((m) => uf.find(m.dealId) === uf.find(y.dealId));
         const allIdentical = groupX.every((p) => groupY.every((q) => compare(p.extracted, q.extracted).niveau === "identique"));
         if (allIdentical) uf.union(x.dealId, y.dealId);
+      }
+    }
+  }
+
+  // Étape 2 ter (D-2026-09-30-01, textile) : une sous-gamme écrite d'un seul côté (« Club » / « Club 3-Stripes »)
+  // ne prouve pas un autre article si le prix d'origine est proche (≤ 10 %, médiane de chaque groupe) ;
+  // sinon les deux groupes restent distincts. Réunis seulement si toutes les paires des deux groupes ne
+  // diffèrent que par cette sous-gamme absente d'un côté.
+  const textileByFamily = new Map<string, EngineOffer[]>();
+  for (const offer of offers) {
+    if (offer.extracted.categorie !== "textile" || offer.extracted.familyKey === null) continue;
+    const list = textileByFamily.get(offer.extracted.familyKey) ?? [];
+    list.push(offer);
+    textileByFamily.set(offer.extracted.familyKey, list);
+  }
+  const onlySubrangeMissing = (x: EngineOffer, y: EngineOffer) => {
+    const diffs = compare(x.extracted, y.extracted).differences;
+    return diffs.length === 1 && diffs[0].attribut === "sous_gamme" && (diffs[0].a === null || diffs[0].b === null);
+  };
+  for (const members of textileByFamily.values()) {
+    if (!members.some((m) => m.extracted.attributes.sous_gamme)) continue;
+    for (let i = 0; i < members.length; i++) {
+      for (let j = i + 1; j < members.length; j++) {
+        const [x, y] = [members[i], members[j]];
+        if (uf.find(x.dealId) === uf.find(y.dealId) || !onlySubrangeMissing(x, y)) continue;
+        const groupX = members.filter((m) => uf.find(m.dealId) === uf.find(x.dealId));
+        const groupY = members.filter((m) => uf.find(m.dealId) === uf.find(y.dealId));
+        if (!groupX.every((p) => groupY.every((q) => onlySubrangeMissing(p, q)))) continue;
+        const priceX = medianPrice(groupX);
+        const priceY = medianPrice(groupY);
+        if (priceX === null || priceY === null) continue;
+        if (Math.abs(priceX - priceY) / Math.max(priceX, priceY) <= SUBRANGE_PRICE_TOLERANCE) uf.union(x.dealId, y.dealId);
       }
     }
   }
