@@ -101,3 +101,10 @@
 - Constat : le nom « Palm Tree » ne sépare rien (édition décorative, Q7) ; c'est l'année absente d'un côté (`generation: ? | a2025`, `proches.csv`) ; le Palm Tree du site Head et celui de Tennispro.fr sont déjà réunis par référence (modèle 960). Vérification web : la Palm Tree Crew est une Radical MP 2025 (mêmes caractéristiques, décor seul).
 - **Réponse de Mathieu (D-2026-09-30-06)**, selon la recommandation : générations séparées pour les prix et le verdict, regroupées par famille à l'affichage (GAP-2026-09-30-02, R5) ; « palm tree » = marqueur 2025 de la famille Radical, à coder à l'étape 5.
 - Écrit : D-2026-09-30-06, ETAT_ACTUEL (étape 5), GAPS, JOURNAL. Aucun code modifié, rien écrit en base.
+
+## 2026-09-30 (session desktop, Sonnet) — Étape 4 : écriture du passage en prod
+
+- Reprise : modèle actuel Sonnet, recommandé Sonnet (exécution d'une étape validée). Code déjà sur `master` (PR #125). Accord de Mathieu : « Fais toute l'étape 4 ».
+- Passage à blanc de contrôle (`--dry-run --out rapport-controle-etape4`, 5 035 offres) : les 6 fichiers **identiques** à ceux de `rapport-etape4-references/`.
+- Écriture en prod (`npm run match:shadow -- --out rapport-passage-etape4`) : passage `66f39305-5be7-4898-af3c-9f1d50e312eb`, engine `r4.5-etape4`, **3 273 modèles, 4 732 liens**, 228 modèles multi-marchands, 210 paires en file de revue textile. Vérifié en base : 1 seul passage. `253341ec…` supprimé. Tables `match_*` seulement, site non touché.
+- Prochaine étape : étape 5 (corrections d'extraction, Opus pour le cadrage si besoin).
