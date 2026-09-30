@@ -95,9 +95,10 @@ export const TEXTILE_REFINES: Partial<Record<TextileType, TextileType[]>> = {
 
 /**
  * Marchands dont le type de tête est un libellé de rayon et où le vrai type est écrit en dernier
- * (Sport 2000 : « T-shirt Homme M NKCT DF ADVTG POLO » = un polo).
+ * (Sport 2000 : « T-shirt Homme M NKCT DF ADVTG POLO » = un polo ; Tecnifibre : « T-shirt de tennis
+ * Tecnifibre Team Tank-top » = un débardeur, A9 de l'étape 5).
  */
-export const TEXTILE_TYPE_LAST_MERCHANTS = ["Sport 2000"];
+export const TEXTILE_TYPE_LAST_MERCHANTS = ["Sport 2000", "Tecnifibre"];
 
 /** Marchand dont le coloris suit le genre, après un tiret (« … Femmes - bleu foncé, blanc »). */
 export const TEXTILE_COLOR_AFTER_GENDER_MERCHANTS = ["Tennis Point FR"];
@@ -192,6 +193,8 @@ export const TEXTILE_ABBREVIATIONS: Record<string, string> = {
 export const TEXTILE_GLUED_PHRASES: Record<string, string> = {
   "cap sleeve": "capsleeve",
   "3 stripes": "3stripes",
+  // « 3 Bandes » (Tennispro.fr) : la sous-gamme, pas le numéro 3 (A8 de l'étape 5).
+  "3 bandes": "3stripes",
 };
 
 /**
@@ -229,12 +232,12 @@ export const TEXTILE_BRAND_SPELLINGS: Record<string, string[]> = {
  * D-2026-09-29-04, comme « RG »). Clé = valeur canonique ; valeurs = écritures.
  */
 export const TEXTILE_EDITIONS: Record<string, string[]> = {
-  rg: ["rg", "roland garros"],
+  // RG = Roland Garros = Paris : une seule édition (D-2026-09-30-04, 1c).
+  rg: ["rg", "roland garros", "paris"],
   londres: ["londres", "london", "wimbledon"],
   melbourne: ["melbourne", "open d australie", "australie", "australian open"],
   "new york": ["new york", "us open", "ny", "us series", "flushing"],
   miami: ["miami"],
-  paris: ["paris"],
   turin: ["turin"],
   dubai: ["dubai"],
   madrid: ["madrid"],

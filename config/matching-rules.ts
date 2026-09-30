@@ -44,6 +44,16 @@ export interface CategoryRules {
    * (minuscules). Absent = pas d'exception, le rôle de `attributes` s'applique.
    */
   attributeValueOverrides?: Record<string, Record<string, AttributeRole>>;
+  /**
+   * Valeurs d'un attribut qui suffisent à séparer deux offres même quand l'autre côté ne l'écrit pas
+   * (règle générale : connu d'un seul côté = « proche »). Clé = attribut, valeurs normalisées.
+   */
+  knownAloneIsDifferent?: Record<string, string[]>;
+  /**
+   * Rôle d'un attribut propre à une sous-catégorie (accessoires : `AccessorySubcategory`, non importé
+   * ici pour éviter un cycle) ; remplace le rôle de `attributes` pour cette sous-catégorie.
+   */
+  attributeRolesBySubcategory?: Record<string, Record<string, AttributeRole>>;
   /** Tolérances chiffrées, par attribut numérique. */
   numeric?: Record<string, NumericTolerance>;
   /** Unité de comparaison des prix, si le conditionnement varie. */
@@ -112,6 +122,9 @@ export const ATTRIBUTE_SOURCES = [
   "donnees_structurees", // JSON-LD, JSON Shopify, Algolia
   "fiche_marchand", // fiche technique, filtres
   "titre_description",
+  // Étape 5 (D-2026-09-30-07) : valeur lue sur un marqueur écrit du titre (« + » des raquettes, taille
+  // d'une raquette junior). Ce n'est pas une caractéristique dérivée du modèle : C-Q3 ne la lève pas.
+  "titre_marqueur",
 ] as const;
 
 /** Attributs qui séparent toujours deux produits, toutes catégories. */
@@ -165,7 +178,10 @@ export const CATEGORY_RULES: Record<DealCategory, CategoryRules> = {
     },
     attributeValueOverrides: {
       // C-Q2 (D-2026-09-29-03) : une collaboration (Y-3…) est un autre produit, pas une édition.
-      edition: { premium: "proche", prm: "proche", "y-3": "different", "y 3": "different" },
+      // Étape 5 (D-2026-09-30-07, A2 et B7) : ASMC (adidas by Stella McCartney) est une collaboration comme
+      // Y-3 ; « Leather » est « proche » comme l'écrit Q16. Lus pour toutes les chaussures adidas
+      // (`SHOE_BRAND_EDITIONS`).
+      edition: { premium: "proche", prm: "proche", "y-3": "different", "y 3": "different", asmc: "different", leather: "proche" },
     },
     generationRule: "standard",
     notes: [
@@ -213,7 +229,16 @@ export const CATEGORY_RULES: Record<DealCategory, CategoryRules> = {
       // Proposé en R4.3 (`R4_3_complement_referentiel.md` §2), lu seulement s'il est écrit
       // dans le titre (thermobag / sac à dos / duffle / housse / tote) : à valider.
       type_sac: "different",
+      // Étape 5 (D-2026-09-30-07, B4) : taille du sac (XS / S / M / L / XL), distincte de la contenance.
+      taille_sac: "different",
     },
+    // Étape 5 (A10, Q19 de D-2026-09-28-03) : la version d'un sac (Pure Aero / Drive / Strike) le distingue :
+    // « différent », alors que la version d'un antivibrateur reste « proche » (« S Logo Damp »).
+    attributeRolesBySubcategory: { sacs: { version: "different" } },
+    // Étape 5 (B5, D-2026-09-30-07) : un sac à chaussures, un porte-clés, un « gym sac » ou un sac de voyage
+    // n'est jamais le sac de raquettes de la même gamme, même si l'autre titre n'écrit pas de type
+    // (« Tour sac à chaussures » 20 € / « Tour Bag XL »).
+    knownAloneIsDifferent: { type_sac: ["sac_chaussures", "porte_cles", "gym", "voyage"] },
     unitType: "unite", // prix à la pièce par défaut (grips, antivibrateurs…)
     unitTypeBySubcategory: {
       // Q17 : conditionnement de balles (tube, bipack, carton, sachet, baril)

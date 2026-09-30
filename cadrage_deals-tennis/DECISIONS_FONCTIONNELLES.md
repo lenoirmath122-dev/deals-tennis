@@ -1402,6 +1402,8 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 
 **Précision (Claude Code, décision mineure)** : une longueur lue dans le titre (« + » de A1, taille junior de B1) n'est pas une caractéristique dérivée au sens de C-Q3 : elle n'est pas levée quand elle est connue d'un seul côté. Sinon « Speed Jr.25 » et une « Speed junior » sans taille écrite pourraient être dites identiques par la levée C-Q3, ce que le principe R3 exclut.
 
+**Précisions du report en code (Claude Code, décisions mineures, 2026-09-30)** : (a) la version d'un **sac** est « différent » (Q19 : Pure Aero / Drive / Strike sont trois sacs), celle d'un antivibrateur reste « proche » ; (b) un type de sac « à chaussures », « porte-clés », « gym » ou « voyage » écrit d'un seul côté donne « différent » (« Tour sac à chaussures » / « Tour Bag XL » l'exigeait) ; (c) Y-3 et ASMC sont lus avant la génération, pour que le « 3 » de « Y-3 » ne soit plus une génération ; (d) les tailles ne quittent les versions que de Drive Junior, Carlitos Junior et T-Fight junior (§6 point 11), les autres familles junior gardent « Novak 19 ≠ Novak 25 » (paire R1 11). Détail : §7 de `R4_5_etape5_corrections.md`.
+
 **À reporter en code (Sonnet)** : A1 à A10 et les points 1, 2, 4 et 5 ci-dessus, chacun avec sa paire piège (§2 et §6 de `R4_5_etape5_corrections.md`), puis passage à blanc en prod, comparaison avec `66f39305…` et relecture des modèles multi-marchands nouveaux ou défaits ; écriture en prod après accord de Mathieu.
 
 **Statut** : Actée (2026-09-30).

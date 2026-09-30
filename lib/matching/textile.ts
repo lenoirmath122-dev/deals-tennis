@@ -268,8 +268,9 @@ export function extractTextileAttributes(offer: OfferInput, attrs: Attributes, a
   const remaining: Tokens = [];
   for (const token of tokens) {
     if (numero === null && token in TEXTILE_ROMAN_NUMERALS) numero = TEXTILE_ROMAN_NUMERALS[token];
-    else if (longueur === null && (brandKey === "nike" || brandKey === "adidas") && /^\d{1,2}$/.test(token) && Number(token) >= 5 && Number(token) <= 10 && (type === "short" || type === "jupe_short")) {
-      // Nike, adidas : « Short NikeCourt 9 Victory », « Short Ergo 7 » = 9 et 7 pouces.
+    else if (longueur === null && /^\d{1,2}$/.test(token) && Number(token) >= 5 && Number(token) <= 10 && (type === "short" || type === "jupe_short")) {
+      // Toutes les marques (B8, D-2026-09-30-07) : « Short NikeCourt 9 Victory », « Asics Match 7 », « Flex 8.0 »
+      // = 9, 7 et 8 pouces. Les numéros 1 à 4 restent des numéros (« Lotto Tech 4 »).
       longueur = Number(token);
     } else if (millesime === null && /^(19|2\d)$/.test(token)) millesime = 2000 + Number(token);
     else if (numero === null && /^[1-9]$/.test(token)) numero = Number(token);

@@ -8,7 +8,6 @@
  */
 
 import type { FamilyEntry } from "../../config/model-families.ts";
-import { shortestAliasIn } from "./families.ts";
 import {
   ageGroupOf,
   extractCorded,
@@ -16,13 +15,13 @@ import {
   extractGeneration,
   extractGift,
   extractLot,
-  extractVersion,
   feature,
+  readVersionAndStripAlias,
   setAttr,
   sportSystemFeatures,
   type Attributes,
 } from "./shared.ts";
-import { fullNormalize, lightNormalize, removePhrase } from "./text.ts";
+import { fullNormalize, lightNormalize } from "./text.ts";
 import type { OfferInput } from "./types.ts";
 
 const WEIGHT_RANGE = { min: 230, max: 340 };
@@ -30,6 +29,9 @@ const HEAD_SIZE_RANGE = { min: 85, max: 135 };
 
 /** Plan de cordage : « 16x19 », « 16/19 », « 18*20 » (le `*` est déjà devenu `x`). */
 const STRING_PATTERN = /(?<![0-9])(1[4-9]|20)\s?[x/]\s?(1[6-9]|2[0-3])(?![0-9])/;
+
+/** Taille d'une raquette enfant, en pouces (17 à 26) : nombre isolé, « Jr.25 » compris (le point est une espace). */
+const JUNIOR_SIZE_PATTERN = /(?<![0-9a-z])(1[7-9]|2[0-6])(?![0-9a-z])/;
 
 export function extractRacquetAttributes(
   offer: OfferInput,
@@ -102,9 +104,10 @@ export function extractRacquetAttributes(
   const lengthFromFeature = lengthFeature ? /(\d{2}(?:\.\d)?)\s?in/.exec(lightNormalize(lengthFeature)) : null;
   const plusLength = /(?<![a-z0-9+])\+(?![a-z0-9+])/.test(light);
   if (lengthFromFeature) setAttr(attrs, "longueur", Number(lengthFromFeature[1]), "fiche_marchand");
-  else if (plusLength) setAttr(attrs, "longueur", 27.5, "titre_description");
+  else if (plusLength) setAttr(attrs, "longueur", 27.5, "titre_marqueur");
 
   const cleanedForAge = light;
+  const age = ageGroupOf(cleanedForAge, entry, "raquettes");
 
   // À partir d'ici : texte de famille (alias, versions, générations).
   let text = fullNormalize(light);
@@ -115,22 +118,29 @@ export function extractRacquetAttributes(
   if (generation.marker) text = fullNormalize(text.replace(generation.marker, " "));
 
   // L'alias de famille est retiré : ses chiffres (« tf 40 », « l23 ») ne sont ni tamis ni poids.
-  const removable = entry ? shortestAliasIn(text, entry) : alias;
-  if (removable) text = removePhrase(text, removable);
-  const versionResult = extractVersion(text, entry);
-  if (versionResult) {
-    setAttr(attrs, "version", versionResult.version, "titre_description");
-    text = versionResult.rest;
-  }
+  const stripped = readVersionAndStripAlias(text, entry, alias);
+  text = stripped.text;
+  const version = stripped.version;
+  if (version) setAttr(attrs, "version", version, "titre_description");
   const editionResult = extractEdition(text, entry);
   if (editionResult) {
     setAttr(attrs, "edition", editionResult.edition, "titre_description");
     text = editionResult.rest;
   }
 
+  // Raquette enfant (B1, D-2026-09-30-07) : un nombre de 17 à 26, isolé ou collé à « jr. », est la
+  // longueur en pouces. Marqueur écrit du titre, jamais levé par C-Q3 ; deux tailles différentes = « proche ».
+  if (age === "enfant" && !attrs.longueur) {
+    const size = JUNIOR_SIZE_PATTERN.exec(text);
+    if (size) {
+      setAttr(attrs, "longueur", Number(size[1]), "titre_marqueur");
+      text = `${text.slice(0, size.index)} ${text.slice(size.index + size[0].length)}`.replace(/\s+/g, " ").trim();
+    }
+  }
+
   // Tamis lu dans la version (« 98 », « 100 Pro », « Team 103 »), sinon dans un nombre isolé.
   if (!attrs.tamis) {
-    const source = versionResult?.version ? fullNormalize(versionResult.version) : "";
+    const source = version ? fullNormalize(version) : "";
     const fromVersion = /(?<![0-9])(\d{2,3})(?![0-9])/.exec(source);
     if (fromVersion && inRange(Number(fromVersion[1]), HEAD_SIZE_RANGE)) {
       setAttr(attrs, "tamis", Number(fromVersion[1]), "titre_description");
@@ -140,7 +150,7 @@ export function extractRacquetAttributes(
   // Poids écrit dans le nom du modèle (T-Fight 300, Tempo 270, Q1) : poids ordinaire.
   const bareNumbers = [...text.matchAll(/(?<![0-9a-z])(\d{2,3})(?![0-9a-z])/g)].map((m) => Number(m[1]));
   if (!attrs.poids) {
-    const fromVersion = versionResult ? Number(/(?<![0-9])(\d{3})(?![0-9])/.exec(fullNormalize(versionResult.version))?.[1]) : NaN;
+    const fromVersion = version ? Number(/(?<![0-9])(\d{3})(?![0-9])/.exec(fullNormalize(version))?.[1]) : NaN;
     const candidate = inRange(fromVersion, WEIGHT_RANGE) ? fromVersion : bareNumbers.find((n) => inRange(n, WEIGHT_RANGE));
     if (candidate !== undefined) setAttr(attrs, "poids", candidate, "titre_description");
   }
@@ -150,7 +160,6 @@ export function extractRacquetAttributes(
   }
 
   // Âge lu sur le titre sans plan de cordage ni poids (« 16/19 » ne contient pas la taille junior 19).
-  const age = ageGroupOf(cleanedForAge, entry, "raquettes");
   setAttr(attrs, "age_group", age, "titre_description");
 
   return { residual: text };

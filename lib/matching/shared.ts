@@ -3,6 +3,7 @@
 import type { FamilyEntry, Generation } from "../../config/model-families.ts";
 import { SKU_IS_REFERENCE_MERCHANTS } from "../../config/textile-lexicon.ts";
 import { extractAgeGroup } from "../product-matching.ts";
+import { shortestAliasIn } from "./families.ts";
 import type { AttributeSource, AttributeValue, ExtractedAttribute, OfferInput } from "./types.ts";
 import { fullNormalize, lightNormalize, phraseRegExp, removePhrase } from "./text.ts";
 
@@ -220,6 +221,37 @@ export function extractVersion(text: string, entry: FamilyEntry | null): { versi
   return null;
 }
 
+/**
+ * Retire l'alias de famille du titre, puis lit la version. Famille `versionInAlias` : la version est
+ * lue d'abord, l'alias encore présent, car il la contient (A10 de l'étape 5 : « Pure Aero » des sacs
+ * Babolat, « T-Fight Club » des raquettes junior).
+ */
+export function readVersionAndStripAlias(
+  text: string,
+  entry: FamilyEntry | null,
+  alias: string | null,
+): { text: string; version: string | null } {
+  const removable = entry ? shortestAliasIn(text, entry) : alias;
+  let current = text;
+  let version: string | null = null;
+  if (entry?.versionInAlias) {
+    const early = extractVersion(current, entry);
+    if (early) {
+      version = early.version;
+      current = early.rest;
+    }
+  }
+  if (removable) current = removePhrase(current, removable);
+  if (version === null) {
+    const late = extractVersion(current, entry);
+    if (late) {
+      version = late.version;
+      current = late.rest;
+    }
+  }
+  return { text: current, version };
+}
+
 /** Édition nommée (Q7) présente dans le texte. */
 export function extractEdition(text: string, entry: FamilyEntry | null): { edition: string; rest: string } | null {
   if (!entry?.editions) return null;
@@ -233,8 +265,15 @@ export function extractEdition(text: string, entry: FamilyEntry | null): { editi
   return null;
 }
 
+/**
+ * Mots d'enfant lus par le moteur seulement (étape 5) : le filtre âge du site (`extractAgeGroup`,
+ * ingestion) est un autre chantier (GAP-2026-09-29-02). « Pat Patrouille » : sac à dos Head enfant.
+ */
+const ENGINE_CHILD_WORDS = /(?<![a-z])pat[ -]?patrouille(?![a-z])/;
+
 export function ageGroupOf(title: string, entry: FamilyEntry | null, category: string): "adulte" | "enfant" {
   if (entry?.junior) return "enfant";
+  if (ENGINE_CHILD_WORDS.test(lightNormalize(title))) return "enfant";
   return extractAgeGroup(title, category);
 }
 

@@ -7,6 +7,7 @@
  */
 
 import {
+  SHOE_BRAND_EDITIONS,
   SHOE_GENDER_MARKERS,
   SHOE_JUNIOR_MARKERS,
   SHOE_SURFACE_MARKERS,
@@ -59,6 +60,14 @@ export function extractShoeAttributes(
 ): { residual: string } {
   let text = fullNormalize(offer.titre);
 
+  // Collaboration de la marque (Y-3, ASMC), lue d'abord et retirée du titre : son « 3 » n'est pas une
+  // génération (« Y-3 Avacourt »). Elle l'emporte sur l'édition de la famille (A2 de l'étape 5).
+  const collaboration = entry ? extractEdition(text, { ...entry, editions: SHOE_BRAND_EDITIONS[fullNormalize(entry.brand)] }) : null;
+  if (collaboration) {
+    setAttr(attrs, "edition", collaboration.edition, "titre_description");
+    text = collaboration.rest;
+  }
+
   // Genre : fiche Sport 2000, sinon titre. Les deux genres écrits = mixte.
   const sheetGender = genderFromSheet(offer.raw_attributes?.gender);
   const male = firstPosition(text, SHOE_GENDER_MARKERS.homme) >= 0;
@@ -108,7 +117,7 @@ export function extractShoeAttributes(
     setAttr(attrs, "version", versionResult.version, "titre_description");
     text = versionResult.rest;
   }
-  const editionResult = extractEdition(text, entry);
+  const editionResult = collaboration ? null : extractEdition(text, entry);
   if (editionResult) {
     setAttr(attrs, "edition", editionResult.edition, "titre_description");
     text = editionResult.rest;
