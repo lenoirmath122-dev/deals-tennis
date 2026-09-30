@@ -42,6 +42,18 @@ function firstPosition(text: string, markers: string[]): number {
   return best;
 }
 
+/**
+ * Site Head (D-2026-09-30-09) : le slug de l'URL (`sprint-pro-4-0-sf-clay-men-bkte-273116`) écrit la surface
+ * et le genre quand le titre ne les donne pas (faute « Caly », « tapis Men »). Lu mot par mot : `women`
+ * contient `men`. Source moins prioritaire que le titre.
+ */
+function headUrlWords(offer: OfferInput): string[] {
+  if (offer.marchand !== "Head" || !offer.affiliate_url) return [];
+  const path = offer.affiliate_url.split(/[?#]/)[0];
+  const slug = /\/product\/([^/]+)\/?$/.exec(path)?.[1];
+  return slug ? slug.toLowerCase().split("-").filter(Boolean) : [];
+}
+
 function genderFromSheet(value: unknown): "homme" | "femme" | "mixte" | null {
   if (typeof value !== "string") return null;
   const v = fullNormalize(value);
@@ -81,6 +93,12 @@ export function extractShoeAttributes(
     alertes.push("genre_titre_different_de_la_fiche");
   }
 
+  const urlWords = headUrlWords(offer);
+  if (!attrs.genre) {
+    if (urlWords.includes("women")) setAttr(attrs, "genre", "femme", "url");
+    else if (urlWords.includes("men")) setAttr(attrs, "genre", "homme", "url");
+  }
+
   // Âge : mots du référentiel, ligne junior de la famille, « K » collé au nom (« Barricade K »).
   const kAfterName = alias !== null && new RegExp(`${escapeRegExp(alias)} k(?![a-z0-9])`).test(text);
   const junior =
@@ -98,6 +116,11 @@ export function extractShoeAttributes(
   if (surfaces.length > 0) {
     setAttr(attrs, "surface", surfaces[0].surface, "titre_description");
     if (surfaces.length > 1) alertes.push("surfaces_multiples");
+  }
+
+  if (!attrs.surface) {
+    if (urlWords.includes("clay")) setAttr(attrs, "surface", "terre_battue", "url");
+    else if (urlWords.includes("carpet")) setAttr(attrs, "surface", "gazon_synthetique", "url");
   }
 
   // Largeur.

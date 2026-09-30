@@ -118,9 +118,20 @@ const GARNITURE_METERS = { min: 11, max: 13 };
 function requiredAttributes(offer: ExtractedOffer): string[] {
   // Textile : un titre sans nom de gamme lisible ne prouve rien (modèle non identifié).
   if (offer.categorie === "textile") return ["modele"];
-  if (offer.categorie === "cordages") return ["jauge", "conditionnement"];
+  // Cordages : chez Tennispro.fr et sur le site Head, la jauge non écrite est un choix de la fiche (D-2026-09-30-09).
+  if (offer.categorie === "cordages") return gaugeIsOfferVariant(offer) ? ["conditionnement"] : ["jauge", "conditionnement"];
   if (offer.categorie === "accessoires" && offer.subcategory === "balles") return ["lot"];
   return [];
+}
+
+/**
+ * Cordages de Tennispro.fr et du site Head sans jauge dans le titre (alerte `jauge_variante_fiche` de
+ * l'extraction) : la jauge est une variante de l'offre, comme une pointure. Elle ne produit ni
+ * « indéterminé » ni « différent » face à l'autre offre (D-2026-09-30-09, choix de Mathieu ; conséquence
+ * acceptée : réunies même si la jauge écrite chez l'autre marchand n'est pas proposée sur la fiche).
+ */
+export function gaugeIsOfferVariant(offer: ExtractedOffer): boolean {
+  return offer.categorie === "cordages" && offer.alertes.includes("jauge_variante_fiche");
 }
 
 /** Noms des attributs discriminants d'une catégorie (pour les attributs canoniques d'un modèle). */
@@ -152,6 +163,26 @@ function token(offer: ExtractedOffer, name: string): string | null {
 /** Mots du nom de modèle textile, triés : forme comparée par `compare()` et `signature()`, et lue par la file de revue. */
 export function modelWords(modele: string | undefined): string[] {
   return modele ? modele.split(" ").filter(Boolean).sort() : [];
+}
+
+/**
+ * Famille à génération unique (`generationUnique`, R4.5-c) : la génération n'est pas comparée (Q5, D-2026-09-30-02),
+ * une année d'un seul côté (« SFX Evo 2025 » / « SFX Evo ») ne sépare pas. Ni sacs par défaut ni cordages :
+ * seulement les familles marquées.
+ */
+function ignoresGeneration(offer: ExtractedOffer): boolean {
+  return offer.familyKey !== null && FAMILY_BY_KEY.get(offer.familyKey)?.generationUnique === true;
+}
+
+/**
+ * Libellé de génération écrit (« V4 », « Gen 11 », « 4.0 »), sans l'année : un libellé qui n'est que l'année
+ * (« 2026 ») n'est pas un libellé du référentiel.
+ */
+function generationLabel(offer: ExtractedOffer): string | null {
+  const label = offer.attributes.generation?.value;
+  if (label === undefined) return null;
+  const text = String(label).toLowerCase();
+  return text === String(offer.attributes.annee?.value) ? null : text;
 }
 
 /** Génération : l'année (si connue) identifie mieux que le libellé (`a2023` ou `lgen 6`). */
@@ -206,8 +237,10 @@ function attributeDifferences(a: ExtractedOffer, b: ExtractedOffer): Difference[
   for (const [name, base] of Object.entries(discriminantRoles(category, a.subcategory))) {
     const ta = token(a, name);
     const tb = token(b, name);
+    // Jauge non écrite chez Tennispro.fr ou sur le site Head : variante de l'offre (D-2026-09-30-09).
+    if (name === "jauge" && (ta === null || tb === null) && (ta !== null || gaugeIsOfferVariant(a)) && (tb !== null || gaugeIsOfferVariant(b))) continue;
     if (ta === null && tb === null) {
-      if (requiredAttributes(a).includes(name)) out.push({ attribut: name, a: null, b: null, effet: "inconnu" });
+      if (requiredAttributes(a).includes(name) || requiredAttributes(b).includes(name)) out.push({ attribut: name, a: null, b: null, effet: "inconnu" });
       continue;
     }
 
@@ -262,6 +295,7 @@ function generationDifference(a: ExtractedOffer, b: ExtractedOffer): Difference 
   const asEffet = (level: MatchLevel): Difference["effet"] | null =>
     level === "identique" ? null : level === "indetermine" ? "inconnu" : level === "proche" ? "proche" : "different";
 
+  if (ignoresGeneration(a) && ignoresGeneration(b)) return null;
   if (ga === null && gb === null) {
     if (isSingleGeneration(a) && isSingleGeneration(b)) return null;
     const effet = asEffet(rule.nonEcriteDesDeuxCotes);
@@ -272,6 +306,16 @@ function generationDifference(a: ExtractedOffer, b: ExtractedOffer): Difference 
     return effet ? { attribut: "generation", a: ga, b: gb, effet } : null;
   }
   if (ga === gb) return null;
+  // Deux libellés écrits se comparent entre eux, même si un côté écrit aussi une année (« Ultra 100L V4.0 » /
+  // « Ultra 100L V5 Roland Garros 2026 » : V4 ≠ V5, D-2026-09-30-09). Textile : règle inchangée.
+  if (a.categorie !== "textile") {
+    const la = generationLabel(a);
+    const lb = generationLabel(b);
+    if (la !== null && lb !== null) {
+      const effet = la === lb ? null : asEffet(rule.verifieeDifferente);
+      return effet ? { attribut: "generation", a: ga, b: gb, effet } : null;
+    }
+  }
   // Une année face à un libellé du référentiel sans année : on ne peut pas dire que c'est différent.
   const inconclusive = ga[0] !== gb[0];
   const effet = inconclusive ? "inconnu" : asEffet(rule.verifieeDifferente);
@@ -322,7 +366,7 @@ export function signature(offer: ExtractedOffer, dealId: string): string | null 
     const overrides = CATEGORY_RULES[offer.categorie].attributeValueOverrides![name];
     parts.push(`${name}=${value !== null && overrides[value] ? value : "-"}`);
   }
-  const gen = generationToken(offer);
+  const gen = ignoresGeneration(offer) ? null : generationToken(offer);
   parts.push(`generation=${gen ?? "-"}`);
   const unverifiable = requiredAttributes(offer).some((name) => token(offer, name) === null);
   // Textile : génération non écrite = même modèle (D-2026-09-27-06) ; la règle ne bloque pas.

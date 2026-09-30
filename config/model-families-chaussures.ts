@@ -29,7 +29,8 @@ export const SHOE_SURFACE_MARKERS: Record<string, string[]> = {
   terre_battue: ["terre battue", "clay", "cly", "oc", "omni clay"],
   toutes_surfaces: ["toutes surfaces", "all court", "ac", "hc", "hard court"],
   gazon: ["gazon", "grass"],
-  gazon_synthetique: ["sand grass", "omni", "moquette"],
+  // Étape 7 : « carpet » (Head Sprint) et « tapis » = moquette.
+  gazon_synthetique: ["sand grass", "omni", "moquette", "carpet", "tapis"],
   padel: ["padel"],
 };
 
@@ -111,8 +112,14 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
     family: "Courtflash",
     aliases: ["courtflash"],
     excludes: ["courtflash speed"],
+    // Étape 7 (relecture des fusions) : « Courtflash Kid Velcro » (fermeture à scratch) n'est pas le « Courtflash K » à lacets.
+    versions: ["Velcro"],
+    generationUnique: true,
     statut: "observe",
-    notes: ["Surtout junior (« Courtflash K », « Courtflash Kid Velcro ») ; « CF » = Cloudfoam, à confirmer."],
+    notes: [
+      "Surtout junior (« Courtflash K », « Courtflash Kid Velcro ») ; « CF » = Cloudfoam, à confirmer.",
+      "R4.5-c (D-2026-09-30-02, reporté à l'étape 7, D-2026-09-30-09) : génération unique, modèle inchangé, nouveaux coloris chaque saison (SS25, AW26).",
+    ],
   },
   {
     brand: "adidas",
@@ -141,7 +148,15 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
     ],
   },
   { brand: "adidas", category: "chaussures", family: "Avaflash", aliases: ["avaflash"], generations: [{ label: "2", markers: ["2"], source: TITRES }], statut: "observe" },
-  { brand: "adidas", category: "chaussures", family: "Avaluxe", aliases: ["avaluxe"], statut: "observe" },
+  {
+    brand: "adidas",
+    category: "chaussures",
+    family: "Avaluxe",
+    aliases: ["avaluxe"],
+    generationUnique: true,
+    statut: "observe",
+    notes: ["R4.5-c (D-2026-09-30-02, reporté à l'étape 7, D-2026-09-30-09) : génération unique (ancien nom Stella Court, aucune « Avaluxe 2 » trouvée)."],
+  },
   { brand: "adidas", category: "chaussures", family: "Game Spec", aliases: ["game spec", "gamespec"], generations: [{ label: "2", markers: ["2"], source: TITRES }], statut: "observe" },
   { brand: "adidas", category: "chaussures", family: "Stella Court", aliases: ["stella court"], statut: "observe" },
   { brand: "adidas", category: "chaussures", family: "Netcourt", aliases: ["netcourt"], junior: true, statut: "observe" },
@@ -187,8 +202,9 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
     family: "Game FF",
     aliases: ["game ff"],
     excludes: ["gel game"],
+    generationUnique: true,
     statut: "observe",
-    notes: ["« Game FF Clay OC » : OC = Omni Clay, marqueur de surface."],
+    notes: ["« Game FF Clay OC » : OC = Omni Clay, marqueur de surface.", "R4.5-c (D-2026-09-30-02, reporté à l'étape 7, D-2026-09-30-09) : génération unique (pas de successeur numéroté)."],
   },
   { brand: "Asics", category: "chaussures", family: "Court FF", aliases: ["court ff"], generations: [{ label: "3", markers: ["3"], source: TITRES }], statut: "observe" },
   {
@@ -249,8 +265,12 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
     category: "chaussures",
     family: "SFX Evo",
     aliases: ["sfx evo"],
+    generationUnique: true,
     statut: "observe",
-    notes: ["Ligne à part de SFX (voir note ci-dessus, Q16/D-2026-09-28-03) : chausse plus large, orientée confort. Pas de numéro de génération vu dans les titres en base."],
+    notes: [
+      "Ligne à part de SFX (voir note ci-dessus, Q16/D-2026-09-28-03) : chausse plus large, orientée confort. Pas de numéro de génération vu dans les titres en base.",
+      "R4.5-c (D-2026-09-30-02, reporté à l'étape 7, D-2026-09-30-09) : génération unique (nouveau modèle 2025). La génération n'est pas comparée pour cette famille (Q5) : « SFX Evo 2025 » = « SFX Evo ».",
+    ],
   },
   {
     brand: "Babolat",
@@ -262,7 +282,19 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
     statut: "observe",
     notes: ["« Propulse » sans version : surtout junior (« Propulse AC Junior Boy »)."],
   },
-  { brand: "Babolat", category: "chaussures", family: "Pulsion", aliases: ["pulsion"], junior: true, statut: "observe", notes: ["« Pulsion All Court Kid » : junior."] },
+  {
+    brand: "Babolat",
+    category: "chaussures",
+    family: "Pulsion",
+    aliases: ["pulsion"],
+    junior: true,
+    generationUnique: true,
+    statut: "observe",
+    notes: [
+      "« Pulsion All Court Kid » : junior.",
+      "R4.5-c (D-2026-09-30-02, reporté à l'étape 7, D-2026-09-30-09) : génération unique, un coloris de saison n'est pas une génération (Q2). Conséquence connue : « Pulsion 2019 » serait réuni avec « Pulsion » ; aucun titre Pulsion en base n'écrit d'année.",
+    ],
+  },
   { brand: "Babolat", category: "chaussures", family: "Sensa", aliases: ["sensa"], statut: "observe" },
   { brand: "Babolat", category: "chaussures", family: "Movea", aliases: ["movea"], statut: "observe" },
 
@@ -331,15 +363,18 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
     category: "chaussures",
     family: "Sprint",
     aliases: ["sprint"],
-    versions: ["Pro", "Team", "Court", "Evo", "Velcro"],
+    versions: ["Pro", "Team", "Court", "Evo", "Velcro", "Strap"],
     generations: [
       { label: "3.0", markers: ["3 0", "3.0", "30"], source: TITRES },
+      // Étape 7 (D-2026-09-30-09) : « Sprint Evo 3.5 », « SPRINT 3.5 JUNIOR », « Sprint Pro 3.5 tapis ».
+      { label: "3.5", markers: ["3 5", "3.5"], source: "titres et URL du site Head (2026-09-30)" },
       { label: "4.0", markers: ["4 0", "4.0", "40"], source: TITRES },
     ],
     statut: "observe",
     notes: [
       "« Sprint Velcro » : junior probable (fermeture velcro).",
       "Étape 5 (A3) : Sport 2000 écrit « SPRINT COURT 40 » et « SPRINT TEAM 40 » pour la 4.0 (marqueurs « 30 » et « 40 »).",
+      "Étape 7 : génération 3.5 lue ; « Strap » (fermeture à scratch, modèle enfant) est une version.",
     ],
   },
   {
@@ -354,7 +389,16 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
     ],
     statut: "observe",
   },
-  { brand: "Head", category: "chaussures", family: "Endure Pro", aliases: ["endure pro"], versions: ["BOA"], statut: "observe", notes: ["« BOA » (système de laçage) classé en version : à confirmer."] },
+  {
+    brand: "Head",
+    category: "chaussures",
+    family: "Endure Pro",
+    aliases: ["endure pro"],
+    versions: ["BOA"],
+    generationUnique: true,
+    statut: "observe",
+    notes: ["« BOA » (système de laçage) classé en version : à confirmer.", "R4.5-c (D-2026-09-30-02, reporté à l'étape 7, D-2026-09-30-09) : génération unique (lancée en juillet 2025, lacets et BOA)."],
+  },
 
   // ───────────────────────────── K-Swiss ─────────────────────────────
   { brand: "K-Swiss", category: "chaussures", family: "Express Light", aliases: ["express light"], generations: [{ label: "3", markers: ["3"], source: TITRES }], statut: "observe" },
@@ -394,7 +438,17 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
   },
 
   // ───────────────────────────── Lacoste, Lotto, Mizuno ─────────────────────────────
-  { brand: "Lacoste", category: "chaussures", family: "AG-LT", aliases: ["ag lt"], versions: ["Lite", "Pro", "Ultra"], editions: ["Medvedev", "RG"], statut: "observe" },
+  {
+    brand: "Lacoste",
+    category: "chaussures",
+    family: "AG-LT",
+    aliases: ["ag lt"],
+    versions: ["Lite", "Pro"],
+    // R4.5-c (D-2026-09-30-02, reporté à l'étape 7, D-2026-09-30-09), Q3 : « Ultra » n'existe qu'en AG-LT23 ; c'est le marqueur de cette génération, plus une version.
+    generations: [{ label: "23", markers: ["ultra"], source: "R4_5_c_generation_unique.md §3 (AG-LT21 puis AG-LT23 Ultra)" }],
+    editions: ["Medvedev", "RG"],
+    statut: "observe",
+  },
   {
     brand: "Lotto",
     category: "chaussures",
@@ -524,7 +578,16 @@ export const SHOE_FAMILIES: FamilyEntry[] = [
     statut: "observe",
     notes: ["« Rush Pro Jr », « Rush Pro Ace Jr » : junior."],
   },
-  { brand: "Wilson", category: "chaussures", family: "Intrigue", aliases: ["intrigue"], versions: ["Pro", "Tour", "Lite"], statut: "observe" },
+  {
+    brand: "Wilson",
+    category: "chaussures",
+    family: "Intrigue",
+    aliases: ["intrigue"],
+    versions: ["Pro", "Tour", "Lite"],
+    generationUnique: true,
+    statut: "observe",
+    notes: ["R4.5-c (D-2026-09-30-02, reporté à l'étape 7, D-2026-09-30-09) : génération unique (Intrigue Pro et Intrigue Tour, aucune 2e génération trouvée)."],
+  },
   { brand: "Wilson", category: "chaussures", family: "Kaos", aliases: ["kaos"], versions: ["Comp", "Swift"], generations: [{ label: "2.0", markers: ["2 0", "2.0"], source: "titre « Kaos Comp 2.0 »" }], statut: "observe" },
   { brand: "Wilson", category: "chaussures", family: "Court Glide", aliases: ["court glide", "courtglide"], statut: "observe" },
   { brand: "Yonex", category: "chaussures", family: "Eclipsion", aliases: ["eclipsion"], generations: [{ label: "5", markers: ["5"], source: TITRES }], statut: "observe" },

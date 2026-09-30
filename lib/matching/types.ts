@@ -31,6 +31,10 @@ export interface OfferInput {
   gtin?: string | null;
   mpn?: string | null;
   merchant_sku?: string | null;
+  /** URL de l'offre : le site Head y écrit la surface et le genre des chaussures (étape 7). */
+  affiliate_url?: string | null;
+  /** Prix d'origine en euros : conditionnement des cordages quand le titre ne l'écrit pas (étape 7). */
+  original_price?: number | null;
   raw_attributes?: Record<string, unknown> | null;
 }
 
@@ -61,6 +65,9 @@ export interface ExtractedOffer {
   referencesFabricant: { value: string; source: AttributeSource }[];
   /** Renseigné seulement si la famille n'est pas reconnue. */
   nonReconnu: { reason: UnrecognizedReason; termes: string[] } | null;
-  /** Points douteux à relire (ex. `longueur_douteuse`), sans effet sur la comparaison. */
+  /**
+   * Points douteux à relire (ex. `longueur_douteuse`), sans effet sur la comparaison, sauf
+   * `jauge_variante_fiche` (étape 7, D-2026-09-30-09) : la jauge est un choix de la fiche.
+   */
   alertes: string[];
 }

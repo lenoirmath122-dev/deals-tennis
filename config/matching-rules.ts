@@ -136,6 +136,10 @@ export const ATTRIBUTE_SOURCES = [
   // Étape 5 (D-2026-09-30-07) : valeur lue sur un marqueur écrit du titre (« + » des raquettes, taille
   // d'une raquette junior). Ce n'est pas une caractéristique dérivée du modèle : C-Q3 ne la lève pas.
   "titre_marqueur",
+  // Étape 7 (D-2026-09-30-09) : valeur lue hors du titre, moins fiable que lui : URL du site Head
+  // (surface, genre des chaussures), prix d'origine (conditionnement des cordages).
+  "url",
+  "prix",
 ] as const;
 
 /** Attributs qui séparent toujours deux produits, toutes catégories. */
