@@ -15,32 +15,7 @@
 > Sessions du 2026-09-28 (R3.4, script Tecnifibre) au 2026-09-29 (R4.4, comparaison et script fantôme) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-28-R3-4_a_2026-09-29-R4-4.md` (même règle, condensation du 2026-09-30).
 > Sessions du 2026-09-29 (contrôle de R4.1 à R4.4) au 2026-09-29 (R4.5-a) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-29-controle-R4_a_R4-5-a.md` (même règle, condensation du 2026-09-30).
 > Consulter les archives uniquement si le détail ci-dessous ne suffit pas.
-
-## 2026-09-29 (session cloud, Sonnet) — R4.5-b : étape 3 en file de revue, passage à blanc textile
-
-- Modèle actuel Sonnet, recommandé Sonnet (exécution d'une spec validée, `R4_5_cadrage.md` §3.3 et §7).
-- Code : `lib/matching/approx.ts` (`scoreModelNames`, `reviewTextilePairs`) : paires de modèles de même marque, type, genre et âge, noms de gamme différents, au moins deux marchands ; score = mots communs / mots distincts, mot distinctif connu (`TEXTILE_REVIEW_DISTINCTIVE_WORDS` : pleat, pro, slam, ann) ×0,25, mots secondaires (`TEXTILE_REVIEW_SOFT_WORDS`, vide au départ) score ≥ 0,9, prix d'origine en indice (+0,1 si ≤ 5 %, −0,15 si > 15 %). Seuil de revue 0,4. Aucune fusion, liens à score 1 inchangés. `EngineOffer.prixOrigine`, `revue-textile.csv` et compteurs dans `report.ts`, script `shadow-run.ts` (lit `original_price`, `ENGINE_VERSION` « r4.5-b-textile »). Tests : `matching-approx.test.ts` (9).
-- Pas de `DATABASE_URL` dans cette session : les 2 829 offres textiles (`active` + `tracked`) ont été lues en lecture seule par le connecteur Neon, puis le moteur a tourné en local (script hors dépôt). Rien écrit en base, aucun `match:shadow`. `rapport-passage/revue-textile.csv` généré ainsi ; les autres fichiers du rapport (R4.4) ne sont pas régénérés.
-- Résultat : 70 modèles textiles multi-marchands (0 avant), 118 paires en revue (60 ≥ 0,6). Relecture des 70 : aucun faux regroupement certain ; à confirmer par Mathieu : Nike Flex Victory / Victory 7in, Flex Advantage / Advantage 7in (références partagées), Djokovic Dubai / RG (édition divergente). Les 3 paires à score 1,0 sont des ordres de mots (« Tie Break » / « Break Tie », « Freelift Pro » / « Pro Freelift ») : pas fusionnées par l'étape 2 (nom comparé dans l'ordre), en tête de la file.
-- Défaut corrigé : Tecnifibre « Pantalon de tennis … Legging » typé pantalon (`TEXTILE_REFINES` : pantalon → legging, collant, corsaire).
-- Lexique des mots neutres : non complété (les mots en plus de la file sont à trancher par Mathieu, cadrage §3.3).
-- 275 tests unitaires passent (`tracking.test.ts` échoue sans `DATABASE_URL`, comme avant), `tsc` et `eslint` propres.
-- Prochaine étape : Mathieu tranche `revue-textile.csv` et les 3 cas ; puis écriture du passage en prod (accord de Mathieu) ; puis R4.5-c (Opus).
-
-## 2026-09-29 (session cloud) — Consigne de séquence pour R4.5-b
-
-- Demande de Mathieu : les 3 points ouverts se tranchent **en Opus, à la prochaine session, avant la PR**. Lecture retenue : les 3 modèles Nike « à confirmer » relevés à la relecture des 70 modèles textiles multi-marchands de R4.5-b (Flex Victory / Victory 7in, Flex Advantage / Advantage 7in, Djokovic Dubai / RG : réunis par la référence de style, titres divergents). À corriger si Mathieu pensait à d'autres points.
-- État : PR #116 (R4.5-a) déjà fusionnée ; R4.5-b (commit `6e2b8fb`) est sur la branche `claude/cloud-credit-usage-bqgtxs`, **aucune PR ouverte pour l'instant, à ne pas ouvrir avant ces décisions**. Le point « millésime ou numéro écrit d'un seul côté » soulevé dans la PR #116 reste à confirmer aussi (règle Q6 de D-2026-09-28-02 non applicable au textile).
-- Prochaine étape : session Opus, trancher les 3 modèles Nike (puis la file `revue-textile.csv`), puis PR de R4.5-b.
-
-
-## 2026-09-29 (session cloud, Opus) — R4.5-b : les 3 cas « à confirmer » tranchés (D-2026-09-29-05)
-
-- Modèle actuel Opus, recommandé Opus (interprétation de données réelles, décision de Mathieu).
-- Relecture des données du passage à blanc (dump lu en lecture seule par la session précédente) : les cas Victory 7 et Advantage 7 réunissent deux générations Nike (Flex / Dri-FIT) aux références de style différentes ; même défaut sur **Victory 9**, non repéré. « Djokovic Dubai / RG » est du Lacoste avec une même référence GH5219, chez un seul marchand. Dans la file, la paire Head score 1,0 « TIE-BREAK » / « BREAK II TIE- » est en fait Tie Break II.
-- Décisions de Mathieu : références Nike différentes → proche ; même référence → identique malgré le nom de tournoi ; Tie Break II à refuser. Détail et consignes de code dans D-2026-09-29-05.
-- Aucun code modifié, aucune écriture en base.
-- Prochaine étape : session **Sonnet** pour coder D-2026-09-29-05, relancer le passage à blanc et relire ; puis PR de R4.5-b ; puis décisions de Mathieu sur `revue-textile.csv`. Le point « millésime écrit d'un seul côté » (PR #116) reste ouvert.
+> Sessions du 2026-09-29 (R4.5-b cloud, étape 3 en file de revue) au 2026-09-29 (les 3 cas « à confirmer » tranchés, D-2026-09-29-05) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-29-R4-5-b-etape-3-cloud_a_D-2026-09-29-05.md` (même règle, condensation du 2026-09-30).
 
 ## 2026-09-29 (session cloud, Opus) — Mesure : offres séparées faute d'information
 
@@ -148,3 +123,13 @@
 - Fait sur la branche `doc/report-pr117` : décisions D-2026-09-29-05 à 08 insérées telles quelles, note sur D-2026-09-30-01 (millésime déjà tranché par D-2026-09-29-07) ; `R4_5_mesure_separation.md`, §4 bis du cadrage du rapprochement, README, archives ETAT et GAPS, spec MVP dans `archive/mvp/` repris de #117 (fichiers non modifiés sur `master` depuis la base commune) ; GAPS pris de #117 + GAP-2026-09-30-01 ; INDEX, ETAT_ACTUEL, `R4_5_cadrage.md` §7 et `R4_5_c_generation_unique.md` §6 fusionnés à la main ; sessions cloud du 2026-09-29 soir importées dans ce journal, sessions du contrôle R4 à R4.5-a archivées (seuil 150).
 - Pas de code touché. Le code de D-2026-09-29-05 (commit `2798664` de #117, tests `matching-textile.test.ts`) reste la référence pour l'étape suivante.
 - Prochaine étape : **code de D-2026-09-29-05 sur l'implémentation de `master` (Sonnet)**, avec passage à blanc et relecture (grille D-2026-09-29-06).
+
+## 2026-09-30 (session desktop, Sonnet) — Code de D-2026-09-29-05 reporté sur `master`
+
+- Reprise de session : modèle actuel Sonnet, recommandé Sonnet (exécution d'une décision validée). Base : `origin/master` (`22323c3`, PR #120), branche `feat/r4.5-b-nike-style`.
+- Code (repris de `2798664`, PR #117, adapté à `textile-review.ts`) : `TEXTILE_STYLE_DISTINCT_BRANDS = ["nike"]` (`config/textile-lexicon.ts`) ; `compare.ts` : deux références de style Nike connues et différentes = « proche » (`reference_style`) ; `cluster.ts` : `guardedUnion` (jamais deux références de style Nike dans un modèle, transitivité comprise, aussi à l'étape 2 ter), offre sans référence correspondant à plusieurs groupes rattachée à aucun (`ambiguousWithoutReference`, compteur `textile_sans_reference_ambigues`) ; `textile-review.ts` : paire avec `numero` différent ou écrit d'un seul côté (Tie Break II) ou `reference_style` exclue de la file. `ENGINE_VERSION` = `r4.5-b-nike`. `shadow-run.ts` lit les offres par pages de 500 (la lecture en une réponse de 1,3 à 1,8 Mo était coupée par le réseau, 3 échecs de suite).
+- Tests : CV3048/FD5380, DD8329/FD5336, CV2545/FD5384 (proche), transitivité, offre sans référence (ambiguë ou rattachée), adidas inchangée, Lacoste GH5219 (identique), Tie Break II dans les deux ordres ; le test « garde en file un numéro de génération écrit d'un seul côté » de #118 remplacé (il disait le contraire de D-2026-09-29-05). 286 tests passent (`tracking.test.ts` échoue sans `DATABASE_URL`, comme avant), `tsc` et `eslint` propres.
+- Passage à blanc en prod (`--dry-run`, lecture seule, 5 035 offres), comparé à un passage de référence avec le code de `master` : modèles textiles multi-marchands **69 → 67** (seuls des modèles Nike disparaissent : Victory 7 Flex/Dri-FIT, Victory 9, Advantage 7 T-shirt), incohérents 4 → 2, divergents 11 (inchangé), lignes de `conflits.csv` −2, file de revue 250 → 215 paires. 3 offres Tennis Point FR ambiguës (2 Victory 7in shorts entre CV3048 et FD5380, 1 T-shirt Advantage entre FD5320 et FZ6910), rattachées à aucun groupe. Relecture des 11 modèles Nike multi-marchands : chacun ne porte qu'une référence de style, aucune génération mélangée.
+- **À signaler à Mathieu** : l'exclusion de la file par `numero` retire 36 paires, dont des cas qui ne sont pas des générations : adidas « Club 3 Bandes » lu comme numéro 3 (6 paires ; « 3 bandes » n'est pas dans `TEXTILE_SUBRANGE_WORDS`), Asics « Match 7 », Mizuno « Amplify 8 » (longueurs en pouces non reconnues hors Nike/adidas), Lotto « Tech I à VI » contre « D1/D2/D3 Tech ». Règle de #117 gardée telle quelle ; à trancher (limiter aux chiffres romains, ou corriger l'extraction à l'étape 5). Exclure aussi `reference_style` de la file est un ajout : sans lui, les paires Nike de références différentes arriveraient à 0,9.
+- Non fait : commit et PR (en attente de l'accord de Mathieu) ; écriture en prod (étape 3 de l'ordre).
+- Prochaine étape : PR de ce report, puis décisions de Mathieu sur `revue-textile.csv` (étape 2).

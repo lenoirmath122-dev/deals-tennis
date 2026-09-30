@@ -20,7 +20,7 @@ import type { AccessorySubcategory } from "../../config/accessory-subcategories.
 import type { DealCategory } from "../../types/database.ts";
 
 /** Version du moteur écrite dans `match_runs.engine_version`. */
-const ENGINE_VERSION = "r4.5-b-textile";
+const ENGINE_VERSION = "r4.5-b-nike";
 const BATCH = 500;
 
 if (!process.env.DATABASE_URL) {
@@ -49,14 +49,22 @@ interface DealRow {
   merchant: string;
 }
 
-const rows = (await sql`
-  SELECT d.id, d.title, d.brand, d.category, d.subcategory, d.status, d.gtin, d.mpn,
-         d.merchant_sku, d.original_price, d.raw_attributes, m.name AS merchant
-  FROM deals d
-  JOIN merchants m ON m.id = d.merchant_id
-  WHERE d.status IN ('active', 'tracked')
-  ORDER BY d.id
-`) as DealRow[];
+// Lecture par pages (clé d.id) : une réponse unique de plus d'un Mo est coupée par le réseau (« terminated »).
+const rows: DealRow[] = [];
+for (let last = "00000000-0000-0000-0000-000000000000"; ; ) {
+  const page = (await sql`
+    SELECT d.id, d.title, d.brand, d.category, d.subcategory, d.status, d.gtin, d.mpn,
+           d.merchant_sku, d.original_price, d.raw_attributes, m.name AS merchant
+    FROM deals d
+    JOIN merchants m ON m.id = d.merchant_id
+    WHERE d.status IN ('active', 'tracked') AND d.id > ${last}
+    ORDER BY d.id
+    LIMIT 500
+  `) as DealRow[];
+  if (page.length === 0) break;
+  rows.push(...page);
+  last = page[page.length - 1].id;
+}
 console.log(`${rows.length} offres lues (active + tracked).`);
 
 const brands = new Map<string, string>();

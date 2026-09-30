@@ -24,6 +24,7 @@ import {
   type AttributeRole,
   type MatchLevel,
 } from "../../config/matching-rules.ts";
+import { TEXTILE_STYLE_DISTINCT_BRANDS } from "../../config/textile-lexicon.ts";
 import { familyKey } from "./families.ts";
 import type { ExtractedOffer } from "./types.ts";
 
@@ -32,6 +33,30 @@ import type { ExtractedOffer } from "./types.ts";
  * soient les titres. Ces attributs sont lus dans le titre : leur écart ne contredit pas la référence.
  */
 const TEXTILE_TITLE_ONLY_ATTRIBUTES = new Set(["modele", "edition", "millesime", "numero", "longueur", "sous_gamme"]);
+
+/**
+ * Références de style d'une offre textile dont la marque en change à chaque génération
+ * (`TEXTILE_STYLE_DISTINCT_BRANDS`, D-2026-09-29-05) ; vide pour toute autre offre.
+ * La marque est celle de la clé de famille (`marque|type|textile`).
+ */
+export function distinctStyleReferences(offer: ExtractedOffer): string[] {
+  if (offer.categorie !== "textile" || offer.familyKey === null) return [];
+  if (!TEXTILE_STYLE_DISTINCT_BRANDS.includes(offer.familyKey.split("|")[0])) return [];
+  const out = new Set<string>();
+  for (const ref of offer.referencesFabricant) {
+    const normalized = normalizeReference(ref.value);
+    if (normalized) out.add(normalized);
+  }
+  return [...out].sort();
+}
+
+/** Deux offres d'une marque « à style distinct » aux références connues des deux côtés, sans référence commune. */
+function styleReferenceDifference(a: ExtractedOffer, b: ExtractedOffer): Difference | null {
+  const ra = distinctStyleReferences(a);
+  const rb = distinctStyleReferences(b);
+  if (ra.length === 0 || rb.length === 0 || ra.some((r) => rb.includes(r))) return null;
+  return { attribut: "reference_style", a: ra.join("+"), b: rb.join("+"), effet: "proche" };
+}
 
 export type CompareMethod = "gtin" | "reference" | "signature";
 
@@ -320,6 +345,8 @@ export function compare(a: ExtractedOffer, b: ExtractedOffer): CompareResult {
   const differences = attributeDifferences(a, b);
   const generation = generationDifference(a, b);
   if (generation) differences.push(generation);
+  const style = styleReferenceDifference(a, b);
+  if (style) differences.push(style);
   const niveau = worst(differences);
   return { ...base, niveau, methode: niveau === "identique" ? "signature" : null, differences };
 }

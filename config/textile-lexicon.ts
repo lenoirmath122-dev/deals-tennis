@@ -278,6 +278,16 @@ export const TEXTILE_ROMAN_NUMERALS: Record<string, number> = {
 export const TEXTILE_STYLE_REFERENCE_BRANDS = ["adidas", "babolat", "head", "lacoste", "nike"];
 
 /**
+ * Marques dont deux références de style différentes désignent deux articles différents
+ * (D-2026-09-29-05) : Nike change de référence à chaque génération (Flex CV3048 / Dri-FIT FD5380).
+ * Deux offres de ces marques aux références connues et différentes sont « proches », jamais
+ * « identiques », et un modèle ne contient jamais deux références de style. adidas est exclue :
+ * son code désigne un coloris (§3.1 de `R4_5_cadrage.md`). Une autre marque ne s'ajoute qu'après
+ * vérification sur les données.
+ */
+export const TEXTILE_STYLE_DISTINCT_BRANDS = ["nike"];
+
+/**
  * Marchands dont le SKU est la référence fabricant (Sport 2000 : code fabricant ; Head : numéro
  * d'article ; Babolat : référence Babolat). Ailleurs le SKU est interne (Tennis Point FR,
  * Tennispro.fr) ou d'une forme non établie (Tecnifibre).
