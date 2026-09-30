@@ -23,6 +23,7 @@ export const TEXTILE_TYPES = [
   "jupe",
   "jupe_short",
   "short",
+  "bermuda",
   "robe",
   "sweat",
   "sweat_capuche",
@@ -52,7 +53,9 @@ export const TEXTILE_TYPE_PHRASES: Record<TextileType, string[]> = {
   polo: ["polo shirt", "polo"],
   jupe: ["jupe", "skirt", "skrt"],
   jupe_short: ["jupe short", "jupe culotte", "skort", "skorts"],
-  short: ["short", "shorts", "shrt", "bermuda", "bermudas", "shorty"],
+  short: ["short", "shorts", "shrt", "shorty"],
+  // Article distinct du short chez Head (« CLUB Bermuda » et « CLUB Short » sont deux fiches, R4.5-b).
+  bermuda: ["bermuda", "bermudas"],
   robe: ["robe", "dress"],
   sweat: ["sweat shirt", "sweatshirt", "sweat", "sweater", "pull", "pullover", "fleece top"],
   sweat_capuche: ["sweat a capuche", "sweat capuche", "hood sweat", "hoodie", "hoody", "sweat hood"],
@@ -153,7 +156,6 @@ export const TEXTILE_NEUTRAL_PHRASES = [
   "avec soutien gorge integre",
   "avec shorty integre",
   "shorty integre",
-  "3 stripes",
   "heat rdy",
 ];
 
@@ -165,7 +167,7 @@ export const TEXTILE_NEUTRAL_WORDS = [
   // Généralités des titres marchands
   "tennis", "court", "vetement", "vetements", "accessoire", "accessoires",
   // Tissus et technologies (Nike, adidas)
-  "df", "nkct", "nikecourt", "mnk", "aeroready", "climacool", "climalite", "primeblue", "primegreen", "3stripes", "3s",
+  "df", "nkct", "nikecourt", "mnk", "aeroready", "climalite", "primeblue", "primegreen",
   // Écritures de rayon propres à certains marchands
   "sw",
   // « Pantalon survêtement » : le type est le pantalon, « survêtement » le précise (indice faible seulement seul)
@@ -175,6 +177,8 @@ export const TEXTILE_NEUTRAL_WORDS = [
 /** Suites retirées seulement avec la marque (SportSystem : « Tecnifibre Tech » est le tissu, pas la gamme). */
 export const TEXTILE_BRAND_NEUTRAL_PHRASES: Record<string, string[]> = {
   tecnifibre: ["tecnifibre tech"],
+  // Nike Victory : la jupe est un seul article, écrit avec ou sans « Flouncy » (validé par Mathieu, 2026-09-30).
+  nike: ["flouncy"],
 };
 
 /** Abréviations Nike de Sport 2000 (`M NKCT DF ADVTG POLO`), lues avant tout. */
@@ -187,6 +191,18 @@ export const TEXTILE_ABBREVIATIONS: Record<string, string> = {
 /** Suites à souder en un mot avant la lecture du type (« cap sleeve » n'est pas une casquette). */
 export const TEXTILE_GLUED_PHRASES: Record<string, string> = {
   "cap sleeve": "capsleeve",
+  "3 stripes": "3stripes",
+};
+
+/**
+ * Sous-gammes adidas (« Club 3-Stripes », « Club Climacool ») : écrites d'un seul côté, elles ne
+ * prouvent pas un autre article si le prix est proche (D-2026-09-30-01 : écart ≤ 10 %, voir
+ * `cluster.ts`) ; sinon les deux offres restent des modèles distincts. Clé = mot lu, valeur = forme retenue.
+ */
+export const TEXTILE_SUBRANGE_WORDS: Record<string, string> = {
+  "3stripes": "3stripes",
+  "3s": "3stripes",
+  climacool: "climacool",
 };
 
 // ── Marques ──────────────────────────────────────────────────────────────────

@@ -1240,3 +1240,15 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 **À reporter en R4.5-a (session Sonnet, spec = `R4_5_cadrage.md` + cette décision)** : paire 17 reclassée « identique » dans `R1_jeu-reference-candidat.csv`, dans le jeu R1 figé des tests et dans `R1_mesure.md` (33 identiques / 14 proches / 20 différents) ; compteurs attendus des tests ajustés.
 
 **Statut** : Actée (2026-09-29).
+
+### D-2026-09-30-01 — Relecture R4.5-b : sous-gamme adidas, « Flouncy » Nike, millésime
+
+**Contexte** : relecture des 69 modèles textiles multi-marchands du passage à blanc en prod (`JOURNAL_SESSIONS.md`, 2026-09-30).
+
+**Décision (Mathieu, 2026-09-30)** :
+- **Sous-gamme adidas** (« 3-Stripes », « 3S », « Climacool », écrite d'un seul côté) : si le prix d'origine est proche, ce sont des **mots neutres** (même article) ; sinon, **modèles distincts**. Seuil « proche » : **10 %** (proposition retenue), calculé sur la médiane de prix d'origine de chaque groupe d'offres ; prix inconnu d'un côté ou deux sous-gammes différentes → distincts. Exception voulue à T-Q5 (le prix n'est plus seulement un indice pour ce cas précis). Les paires non réunies vont en file de revue.
+- **Nike Victory** : la jupe avec ou sans « Flouncy » est **le même article** (mot neutre pour Nike).
+- **Millésime ou numéro de génération écrit d'un seul côté** (« Club 25 Tech », « Tie Break II ») : **Mathieu ne sait pas** ; la règle actuelle (« proche ») reste en vigueur, question toujours ouverte, à reprendre avec la relecture de `revue-textile.csv`.
+- Correction sans décision à prendre : « bermuda » n'est plus un synonyme de « short » (Head publie « CLUB Bermuda » et « CLUB Short » comme deux articles).
+
+**Statut** : Actée (2026-09-30), sauf le millésime (ouvert).

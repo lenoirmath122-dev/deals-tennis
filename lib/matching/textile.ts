@@ -25,6 +25,7 @@ import {
   TEXTILE_SEASON_WORDS,
   TEXTILE_SKU_IS_REFERENCE_MERCHANTS,
   TEXTILE_STYLE_REFERENCE_BRANDS,
+  TEXTILE_SUBRANGE_WORDS,
   TEXTILE_TYPE_LAST_MERCHANTS,
   TEXTILE_TYPE_PHRASES,
   TEXTILE_TYPES,
@@ -254,7 +255,9 @@ export function extractTextileAttributes(offer: OfferInput, attrs: Attributes, a
   }
   const seasons: string[] = [];
   const colors: string[] = [];
+  const subranges = new Set<string>();
   tokens = tokens.filter((token) => {
+    if (TEXTILE_SUBRANGE_WORDS[token]) return subranges.add(TEXTILE_SUBRANGE_WORDS[token]), false;
     if (TEXTILE_SEASON_WORDS.includes(token)) return seasons.push(token), false;
     if (TEXTILE_COLOR_WORDS.includes(token)) return colors.push(token), false;
     return !TEXTILE_NEUTRAL_WORDS.includes(token);
@@ -282,6 +285,7 @@ export function extractTextileAttributes(offer: OfferInput, attrs: Attributes, a
   if (millesime !== null) setAttr(attrs, "millesime", millesime, "titre_description");
   if (numero !== null) setAttr(attrs, "numero", numero, "titre_description");
   if (editions.length > 0) setAttr(attrs, "edition", [...editions].sort().join("+"), "titre_description");
+  if (subranges.size > 0) setAttr(attrs, "sous_gamme", [...subranges].sort().join("+"), "titre_description");
   if (colors.length > 0) setAttr(attrs, "coloris", colors.join(" "), "titre_description");
   if (seasons.length > 0) setAttr(attrs, "collection", seasons.join(" "), "titre_description");
   if (!modele) alertes.push("modele_vide");
