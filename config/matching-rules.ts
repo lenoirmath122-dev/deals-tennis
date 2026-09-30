@@ -176,7 +176,10 @@ export const CATEGORY_RULES: Record<DealCategory, CategoryRules> = {
   },
   cordages: {
     attributes: {
-      jauge: "proche", // D-2026-09-27-05
+      // D-2026-09-27-05. D-2026-09-30-05 : quand la référence est commune, la jauge est une variante
+      // (comme une taille) : « proche » ne bloque pas une référence partagée ; sans référence commune,
+      // elle reste « proche ». La jauge n'est pas dans la référence (SportSystem : `243110` en 1,25 et 1,35).
+      jauge: "proche",
       // C-Q1 (D-2026-09-29-03) : une version différente (Blast / Soft, Alu Power / Rough) = un autre
       // cordage ; écrite d'un seul côté → « proche » (règle générale « connu d'un seul côté »).
       version: "different",

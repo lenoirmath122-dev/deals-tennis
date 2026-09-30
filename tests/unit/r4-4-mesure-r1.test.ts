@@ -69,13 +69,13 @@ function measure(pairs: Pair[]) {
 }
 
 describe("moteur R4.4 sur le jeu R1", () => {
-  it("précision 20/20 et rappel 20/33 (R4.5-a ; R4.4-bis : 12/12 et 12/32, textile non pris en charge)", () => {
-    expect(measure(fixture.pairs)).toEqual({ vp: 20, fp: 0, identical: 33 });
+  it("précision 21/21 et rappel 21/33 (R4.5 étape 4 ; R4.5-a : 20/20 et 20/33 ; R4.4-bis : 12/12 et 12/32, textile non pris en charge)", () => {
+    expect(measure(fixture.pairs)).toEqual({ vp: 21, fp: 0, identical: 33 });
   });
 
-  it("inter-marchands : précision 19/19 et rappel 19/30 (R4.5-a ; R4.4-bis : 11/29 ; algorithme actuel : 2/30)", () => {
+  it("inter-marchands : précision 20/20 et rappel 20/30 (R4.5 étape 4 ; R4.5-a : 19/19 et 19/30 ; R4.4-bis : 11/29 ; algorithme actuel : 2/30)", () => {
     const inter = fixture.pairs.filter((p) => offersById.get(p.offre_a)!.marchand !== offersById.get(p.offre_b)!.marchand);
-    expect(measure(inter)).toEqual({ vp: 19, fp: 0, identical: 30 });
+    expect(measure(inter)).toEqual({ vp: 20, fp: 0, identical: 30 });
   });
 
   it("aucun faux positif (la paire 14, « S Logo Damp », est « proche » grâce à la version « S »)", () => {

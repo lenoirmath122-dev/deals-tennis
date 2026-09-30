@@ -1,6 +1,7 @@
 /** Briques communes à l'extraction raquettes et cordages (R4.2). */
 
 import type { FamilyEntry, Generation } from "../../config/model-families.ts";
+import { SKU_IS_REFERENCE_MERCHANTS } from "../../config/textile-lexicon.ts";
 import { extractAgeGroup } from "../product-matching.ts";
 import type { AttributeSource, AttributeValue, ExtractedAttribute, OfferInput } from "./types.ts";
 import { fullNormalize, lightNormalize, phraseRegExp, removePhrase } from "./text.ts";
@@ -30,6 +31,30 @@ export function cleanMpn(offer: OfferInput): string | null {
 }
 
 /**
+ * Hors textile (D-2026-09-30-05) : contexte de lecture « style » des références. Absent, les
+ * références sont lues en entier (textile : `styleReferences` de `textile.ts` fait sa propre découpe).
+ */
+export interface StyleReferenceContext {
+  brand: string | null;
+  subcategory: string | null;
+}
+
+/** Balles : le suffixe est le conditionnement ; Tecnifibre : pas de découpe stable, le GTIN suffit. */
+function isTennisballOrTecnifibre({ brand, subcategory }: StyleReferenceContext): boolean {
+  return subcategory === "balles" || (brand !== null && fullNormalize(brand) === "tecnifibre");
+}
+
+/** Références de style : chaque référence découpée sur « / », puis partie avant le premier tiret. */
+function styleParts(value: string): string[] {
+  const out: string[] = [];
+  for (const part of value.split("/")) {
+    const style = part.trim().split("-")[0].trim();
+    if (style) out.push(style);
+  }
+  return out;
+}
+
+/**
  * Toutes les références fabricant de l'offre, sans doublon.
  *
  * SportSystem : la `reference` de chaque variante est la référence fabricant
@@ -39,13 +64,21 @@ export function cleanMpn(offer: OfferInput): string | null {
  * varie avec la taille de manche), aucune écriture en base. `merchant_sku`
  * seulement sans variantes, et jamais s'il concatène plusieurs références.
  */
-export function manufacturerReferences(offer: OfferInput): { value: string; source: AttributeSource }[] {
+export function manufacturerReferences(
+  offer: OfferInput,
+  style?: StyleReferenceContext,
+): { value: string; source: AttributeSource }[] {
   const out: { value: string; source: AttributeSource }[] = [];
+  const styleOnly = style !== undefined && !isTennisballOrTecnifibre(style);
   const add = (value: string | null | undefined, source: AttributeSource) => {
-    const v = value?.trim();
-    if (v && !out.some((r) => r.value === v)) out.push({ value: v, source });
+    const trimmed = value?.trim();
+    if (!trimmed) return;
+    for (const v of styleOnly ? styleParts(trimmed) : [trimmed]) {
+      if (!out.some((r) => r.value === v)) out.push({ value: v, source });
+    }
   };
   add(cleanMpn(offer), "mpn");
+  if (styleOnly && SKU_IS_REFERENCE_MERCHANTS.includes(offer.marchand)) add(offer.merchant_sku, "fiche_marchand");
   if (offer.marchand === "SportSystem") {
     const variants = offer.raw_attributes?.variants;
     const refs = Array.isArray(variants)
