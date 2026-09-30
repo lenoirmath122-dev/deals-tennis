@@ -94,3 +94,10 @@
 - **Réponses de Mathieu (D-2026-09-30-05)**, toutes selon la recommandation : hors textile oui, sauf balles et Tecnifibre ; jauge = variante si référence commune ; ni Head ni Babolat comme Nike, Tecnifibre textile reportée ; GTIN textile de Tennis Point FR reporté à l'étape 7.
 - Écrit : `R4_5_references_style.md`, D-2026-09-30-05, ETAT_ACTUEL, INDEX, JOURNAL (sessions du 2026-09-29 archivées, seuil 150). Aucun code modifié, rien écrit en base ; scripts de simulation supprimés.
 - Prochaine étape : **report en code de l'étape 4** (§6 de `R4_5_references_style.md`, Sonnet), passage à blanc, PR.
+
+## 2026-09-30 (session desktop, Opus) — Générations et Radical Palm Tree (D-2026-09-30-06)
+
+- Modèle actuel Opus, recommandé Opus (question de conception). Mathieu, en lisant `rapport-etape4-references/`, signale « Radical MP » et « Radical MP Palm Tree » non réunies et demande s'il faut regrouper les générations.
+- Constat : le nom « Palm Tree » ne sépare rien (édition décorative, Q7) ; c'est l'année absente d'un côté (`generation: ? | a2025`, `proches.csv`) ; le Palm Tree du site Head et celui de Tennispro.fr sont déjà réunis par référence (modèle 960). Vérification web : la Palm Tree Crew est une Radical MP 2025 (mêmes caractéristiques, décor seul).
+- **Réponse de Mathieu (D-2026-09-30-06)**, selon la recommandation : générations séparées pour les prix et le verdict, regroupées par famille à l'affichage (GAP-2026-09-30-02, R5) ; « palm tree » = marqueur 2025 de la famille Radical, à coder à l'étape 5.
+- Écrit : D-2026-09-30-06, ETAT_ACTUEL (étape 5), GAPS, JOURNAL. Aucun code modifié, rien écrit en base.

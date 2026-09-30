@@ -1374,3 +1374,16 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 **À reporter en code (Sonnet)** : §6 de `R4_5_references_style.md` (`manufacturerReferences`, liste de marchands, `TEXTILE_STYLE_DISTINCT_BRANDS`, tests, passage à blanc, PR). Constats pour l'étape 5 : « Pure Drive + » non lu (faux regroupement actuel par l'étape 2 bis), « Pat Patrouille » lu adulte.
 
 **Statut** : Actée (2026-09-30).
+
+### D-2026-09-30-06 — Générations : séparées pour les prix, regroupées par famille à l'affichage ; Radical Palm Tree Crew = Radical 2025
+
+**Contexte** : Mathieu, en lisant le rapport de l'étape 4 (`rapport-etape4-references/proches.csv`), constate que « Radical MP » et « Radical MP Palm Tree » ne sont pas réunies, et demande s'il faut regrouper les générations (Pure Aero 2023 / 2026…) ou faire ce tri à l'affichage seulement. Constats de la session Opus : le nom « Palm Tree » ne sépare pas les offres (édition décorative = variante, Q7) ; la séparation vient de l'année absente d'un côté (« HEAD Radical MP Palm Tree », site Head : `generation: ? | a2025`), classée « proche » faute d'état « indéterminé ». Vérification web : la Radical MP Palm Tree Crew est vendue comme « 2025 » et a les caractéristiques de la Radical MP 2025 (98 in², 16x19, 300 g), seul le décor change ([Tennis Warehouse Europe](https://www.tenniswarehouse-europe.com/Head_Radical_MP_Palm_Tree_Crew_2025_Racket/descpage-HRMPPT.html), [Merchant of Tennis](https://www.merchantoftennis.com/products/head-radical-mp-palm-tree-crew-2025)).
+
+**Décision (Mathieu, 2026-09-30)** :
+1. **Générations séparées pour les prix** : l'article reste l'unité du prix, de l'historique et du verdict ; D-2026-09-26-01 et le principe R4 sont inchangés. Une ancienne génération en déstockage ne doit ni faire paraître la nouvelle trop chère, ni créer un faux « vrai bon plan ».
+2. **Regroupement par famille à l'affichage** : la fiche montre la génération courante avec ses prix comparés, puis les autres générations de la même famille dans une section à part, la différence écrite en clair (« Génération précédente : 2023, dès X € », principe R6). Pas de « meilleur prix » entre générations. À cadrer avec l'affichage des niveaux (R5).
+3. **« palm tree » = marqueur de la génération 2025** dans la famille Head Radical (raquettes seulement ; les sacs Palm Tree Crew ne sont pas concernés), comme « ultra » pour l'AG-LT23 (D-2026-09-30-02 Q3). À revoir si Head sort une Palm Tree sur une autre génération.
+
+**À reporter en code (Sonnet)** : point 3 avec les corrections d'extraction (étape 5), avec une paire piège (Radical MP Palm Tree / Radical MP 2023 → différent). Les offres « Radical MP » sans année ni référence commune restent à l'étape 6 (état « indéterminé ») et 7 (investigation). Point 2 : GAP ouvert pour R5.
+
+**Statut** : Actée (2026-09-30).

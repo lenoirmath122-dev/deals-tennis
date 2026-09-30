@@ -53,7 +53,7 @@ Ordre acté (D-2026-09-29-07, confirmé et précisé par D-2026-09-30-03) :
 2. ~~Décisions de Mathieu sur `revue-textile.csv`~~ **fait le 2026-09-30** (D-2026-09-30-04).
 3. ~~Écriture du passage en prod~~ **fait le 2026-09-30** (`253341ec…`).
 4. Références de style toutes catégories : cadrage **fait le 2026-09-30** (D-2026-09-30-05) ; **prochaine étape : report en code** (§6 de `R4_5_references_style.md`, Sonnet), passage à blanc, PR, puis écriture en prod après accord de Mathieu.
-5. Corrections d'extraction (§5.3 de `R4_5_mesure_separation.md`, §2 de `R4_5_c_generation_unique.md`, D-2026-09-30-04 points 1a à 1c et 4, t-shirts adidas junior non réunis par l'étape 2 ter, §7 de `R4_5_references_style.md` : « Pure Drive + », « Pat Patrouille »), chacune avec une paire piège.
+5. Corrections d'extraction (§5.3 de `R4_5_mesure_separation.md`, §2 de `R4_5_c_generation_unique.md`, D-2026-09-30-04 points 1a à 1c et 4, t-shirts adidas junior non réunis par l'étape 2 ter, §7 de `R4_5_references_style.md` : « Pure Drive + », « Pat Patrouille » ; « palm tree » = Radical 2025, D-2026-09-30-06 point 3), chacune avec une paire piège.
 6. État « indéterminé » dans `compare()`.
 7. Investigation des indéterminés, dont le report de R4.5-c (liste déjà validée).
 8. R4.6.
