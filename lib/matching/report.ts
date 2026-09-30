@@ -25,11 +25,12 @@ export interface ReportInput {
 export interface PassReport {
   counters: Record<string, unknown>;
   markdown: string;
-  csv: { nonReconnus: string; proches: string; conflits: string };
+  csv: { nonReconnus: string; proches: string; indetermines: string; conflits: string };
 }
 
 const PAIR_CAP_PER_FAMILY = 300;
 const PROCHES_CSV_LIMIT = 5000;
+const INDETERMINES_CSV_LIMIT = 5000;
 
 function count<T>(items: T[], key: (item: T) => string): Record<string, number> {
   const out: Record<string, number> = {};
@@ -88,7 +89,10 @@ export function buildReport(input: ReportInput): PassReport {
   // Blocages : paires inter-marchands d'une même famille, par cause (plafonné par famille).
   const pairLevels: Record<string, number> = {};
   const blockers: Record<string, number> = {};
-  const proches: unknown[][] = [["famille", "marchand_a", "titre_a", "marchand_b", "titre_b", "causes"]];
+  const pairHeader = ["famille", "marchand_a", "titre_a", "marchand_b", "titre_b", "causes"];
+  const proches: unknown[][] = [pairHeader];
+  // D-2026-09-30-08 : mêmes colonnes que `proches.csv`, plus les attributs absents d'un côté (ou des deux).
+  const indetermines: unknown[][] = [[...pairHeader, "manques"]];
   for (const [key, list] of multiFamilies) {
     let pairs = 0;
     outer: for (let i = 0; i < list.length; i++) {
@@ -102,15 +106,18 @@ export function buildReport(input: ReportInput): PassReport {
           const cause = `${d.effet} : ${d.attribut}`;
           blockers[cause] = (blockers[cause] ?? 0) + 1;
         }
-        if (r.niveau === "proche" && proches.length <= PROCHES_CSV_LIMIT) {
-          proches.push([
-            key,
-            list[i].marchand,
-            list[i].titre,
-            list[j].marchand,
-            list[j].titre,
-            r.differences.map((d) => `${d.attribut}: ${d.a ?? "?"} | ${d.b ?? "?"}`).join(" ; "),
-          ]);
+        const row = [
+          key,
+          list[i].marchand,
+          list[i].titre,
+          list[j].marchand,
+          list[j].titre,
+          r.differences.map((d) => `${d.attribut}: ${d.a ?? "?"} | ${d.b ?? "?"}`).join(" ; "),
+        ];
+        if (r.niveau === "proche" && proches.length <= PROCHES_CSV_LIMIT) proches.push(row);
+        if (r.niveau === "indetermine" && indetermines.length <= INDETERMINES_CSV_LIMIT) {
+          const manques = [...new Set(r.differences.filter((d) => d.effet === "inconnu").map((d) => d.attribut))].sort();
+          indetermines.push([...row, manques.join(" ")]);
         }
       }
     }
@@ -187,7 +194,7 @@ export function buildReport(input: ReportInput): PassReport {
       Object.entries(blockers).sort((a, b) => b[1] - a[1]).slice(0, 15),
     ),
     "",
-    "Liste des paires « proche » : `proches.csv`.",
+    "« indetermine » : aucune différence connue, seulement des informations manquantes (D-2026-09-30-08). Listes : `proches.csv` (paires « proche »), `indetermines.csv` (paires « indetermine », avec les attributs manquants).",
     "",
     "## 4. Non reconnus (GAP-2026-09-27-01)",
     "",
@@ -228,5 +235,5 @@ export function buildReport(input: ReportInput): PassReport {
     }),
   ]);
 
-  return { counters, markdown, csv: { nonReconnus, proches: csv(proches), conflits } };
+  return { counters, markdown, csv: { nonReconnus, proches: csv(proches), indetermines: csv(indetermines), conflits } };
 }

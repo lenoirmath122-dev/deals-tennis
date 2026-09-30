@@ -20,7 +20,7 @@ import type { AccessorySubcategory } from "../../config/accessory-subcategories.
 import type { DealCategory } from "../../types/database.ts";
 
 /** Version du moteur écrite dans `match_runs.engine_version`. */
-const ENGINE_VERSION = "r4.5-etape5";
+const ENGINE_VERSION = "r4.5-etape6";
 const BATCH = 500;
 
 if (!process.env.DATABASE_URL) {
@@ -109,6 +109,7 @@ mkdirSync(outDir, { recursive: true });
 writeFileSync(join(outDir, "rapport.md"), report.markdown);
 writeFileSync(join(outDir, "non-reconnus.csv"), report.csv.nonReconnus);
 writeFileSync(join(outDir, "proches.csv"), report.csv.proches);
+writeFileSync(join(outDir, "indetermines.csv"), report.csv.indetermines);
 writeFileSync(join(outDir, "conflits.csv"), report.csv.conflits);
 // Relecture des modèles réunissant au moins deux marchands (une ligne par offre).
 const byDealId = new Map(engineOffers.map((o) => [o.dealId, o]));
@@ -148,7 +149,7 @@ writeFileSync(
     ),
   ].join("\n"),
 );
-console.log(`Rapport écrit dans ${outDir}/ (rapport.md, non-reconnus.csv, proches.csv, conflits.csv, modeles-multi-marchands.csv, revue-textile.csv : ${review.length} paires).`);
+console.log(`Rapport écrit dans ${outDir}/ (rapport.md, non-reconnus.csv, proches.csv, indetermines.csv, conflits.csv, modeles-multi-marchands.csv, revue-textile.csv : ${review.length} paires).`);
 
 if (dryRun) {
   console.log("--dry-run : rien n'est écrit en base.");

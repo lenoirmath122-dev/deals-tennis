@@ -21,6 +21,7 @@ import {
   CATEGORY_RULES,
   COMMON_ATTRIBUTES,
   GENERATION_RULES,
+  MARKER_ATTRIBUTES,
   type AttributeRole,
   type MatchLevel,
 } from "../../config/matching-rules.ts";
@@ -64,7 +65,7 @@ export interface Difference {
   attribut: string;
   a: string | null;
   b: string | null;
-  /** `inconnu` : connu d'un seul côté (jamais « identique »). */
+  /** `inconnu` : information manquante (caractéristique descriptive d'un seul côté, ou requise et absente) : « indéterminé ». */
   effet: "inconnu" | "proche" | "different";
 }
 
@@ -79,7 +80,7 @@ export interface CompareResult {
   differences: Difference[];
 }
 
-const SEVERITY: Record<Difference["effet"], number> = { inconnu: 1, proche: 1, different: 2 };
+const SEVERITY: Record<Difference["effet"], number> = { inconnu: 1, proche: 2, different: 3 };
 
 const FAMILY_BY_KEY = new Map(
   [...MODEL_FAMILIES, ...SHOE_FAMILIES, ...ACCESSORY_FAMILIES].map((entry) => [familyKey(entry), entry]),
@@ -216,7 +217,10 @@ function attributeDifferences(a: ExtractedOffer, b: ExtractedOffer): Difference[
         continue;
       }
       if (relaxed && DERIVED_RACQUET_ATTRIBUTES.includes(name) && !writtenInTitle(a, b, name)) continue;
-      out.push({ attribut: name, a: ta, b: tb, effet: "inconnu" });
+      // D-2026-09-30-08 : un marqueur écrit d'un seul côté reste « proche » ; une caractéristique
+      // descriptive absente d'un côté est « indéterminé ».
+      const marker = MARKER_ATTRIBUTES.includes(name) || writtenInTitle(a, b, name);
+      out.push({ attribut: name, a: ta, b: tb, effet: marker ? "proche" : "inconnu" });
       continue;
     }
     if (ta === tb) continue;
@@ -256,7 +260,7 @@ function generationDifference(a: ExtractedOffer, b: ExtractedOffer): Difference 
   const ga = generationToken(a);
   const gb = generationToken(b);
   const asEffet = (level: MatchLevel): Difference["effet"] | null =>
-    level === "identique" ? null : level === "proche" ? "proche" : "different";
+    level === "identique" ? null : level === "indetermine" ? "inconnu" : level === "proche" ? "proche" : "different";
 
   if (ga === null && gb === null) {
     if (isSingleGeneration(a) && isSingleGeneration(b)) return null;
@@ -270,13 +274,13 @@ function generationDifference(a: ExtractedOffer, b: ExtractedOffer): Difference 
   if (ga === gb) return null;
   // Une année face à un libellé du référentiel sans année : on ne peut pas dire que c'est différent.
   const inconclusive = ga[0] !== gb[0];
-  const effet = inconclusive ? "proche" : asEffet(rule.verifieeDifferente);
+  const effet = inconclusive ? "inconnu" : asEffet(rule.verifieeDifferente);
   return effet ? { attribut: "generation", a: ga, b: gb, effet } : null;
 }
 
 function worst(differences: Difference[]): MatchLevel {
   const max = Math.max(0, ...differences.map((d) => SEVERITY[d.effet]));
-  return max === 2 ? "different" : max === 1 ? "proche" : "identique";
+  return max === 3 ? "different" : max === 2 ? "proche" : max === 1 ? "indetermine" : "identique";
 }
 
 /** Référence normalisée : majuscules et chiffres seulement ; trop courte ou sans chiffre = inutilisable. */
