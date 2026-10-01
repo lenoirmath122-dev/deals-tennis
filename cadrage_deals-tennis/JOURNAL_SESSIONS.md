@@ -19,6 +19,12 @@
 > Sessions du 2026-09-29 (mesure des offres séparées faute d'information) au 2026-09-29 (R4.5-b cloud, code de D-2026-09-29-05) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-29-mesure-separation_a_R4-5-b-code-cloud.md` (même règle, condensation du 2026-09-30, session de l'étape 4).
 > Sessions du 2026-09-30 (R4.5-b, étape 3 textile) au 2026-09-30 (code de D-2026-09-29-05 reporté sur `master`) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-30-R4-5-b-etape-3_a_code-D-2026-09-29-05.md` (même règle, condensation du 2026-09-30, étape 7).
 
+## 2026-10-01 (session Opus) — Rangement PR R4.6-b
+
+- Reprise du suivi après le passage R4.6-b en production (`5bc68805…`, 4 011 modèles).
+- Alignement de l'état courant : R4.6-c reste la prochaine étape ; le cadrage R4.6-d et les documents de travail R4.6-c/d sont traités séparément, hors de cette PR.
+- Référence R4.6 mise à jour dans `INDEX.md`. Aucun changement de code ni écriture en base dans cette PR.
+
 ## 2026-09-30 (session desktop, Opus) — Relecture de la file de revue textile (D-2026-09-30-04)
 
 - Reprise : `git fetch`, PR #121 (code de D-2026-09-29-05) fusionnée, aucune PR ouverte, `master` local remis à jour. Modèle actuel Opus, recommandé Opus (interprétation de données réelles, arbitrages à valider). Mathieu demande que la revue soit faite par Claude Code, avec les arbitrages proposés.
