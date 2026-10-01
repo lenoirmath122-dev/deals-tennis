@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import fixture from "../fixtures/r4-5-paires-textile.json";
 import { compare, signature } from "@/lib/matching/compare";
-import { buildModels, type EngineOffer } from "@/lib/matching/cluster";
+import { buildModels, splitByIdentifier, type EngineOffer } from "@/lib/matching/cluster";
+import { buildTextileReview } from "@/lib/matching/textile-review";
 import { extractOfferAttributes, type ExtractedOffer, type OfferInput } from "@/lib/matching";
 
 // Textile (R4.5-a) : extraction du titre, verdict de l'étape 2 et référence de style (étape 1).
@@ -237,9 +238,12 @@ describe("regroupement en modèles (textile)", () => {
   const result = buildModels(offers);
   const modelOf = (id: string) => result.links.get(id)?.modelIndex;
 
-  it("regroupe les couleurs d'un même marchand et les marchands entre eux", () => {
-    expect(modelOf("1")).toBe(modelOf("2"));
-    expect(modelOf("1")).toBe(modelOf("3"));
+  // D-2026-09-30-11 : sans GTIN ni référence commune, le nom commercial ne réunit rien en textile.
+  it("sans identifiant commun, aucune offre textile n'est réunie par la signature", () => {
+    expect(modelOf("1")).not.toBe(modelOf("2"));
+    expect(modelOf("1")).not.toBe(modelOf("3"));
+    expect(new Set(["1", "2", "3", "4", "5", "6"].map(modelOf)).size).toBe(6);
+    expect(compare(offers[0].extracted, offers[2].extracted).niveau).toBe("identique");
   });
 
   it("ne regroupe ni le sous-modèle ni la génération suivante", () => {
@@ -293,14 +297,15 @@ describe("références de style Nike (D-2026-09-29-05)", () => {
     expect(result.ambiguousWithoutReference[0].references).toEqual(["CV3048", "FD5380"]);
   });
 
-  it("une offre sans référence dont le titre ne correspond qu'à un groupe s'y rattache", () => {
+  it("une offre sans référence dont le titre ne correspond qu'à un groupe ne s'y rattache plus (signature)", () => {
     const result = buildModels(
       engine([
         ["1", "Sport 2000", "Vêtement de tennis NIKE Short Victory 7in Homme", "FD5380-010"],
         ["2", "Tennis Point FR", "Vêtement de tennis Nike Court Victory 7in Shorts Hommes-noir", null],
       ]),
     );
-    expect(result.links.get("1")?.modelIndex).toBe(result.links.get("2")?.modelIndex);
+    // Plus de rattachement par la signature (D-2026-09-30-11) : l'offre sans référence reste seule.
+    expect(result.links.get("1")?.modelIndex).not.toBe(result.links.get("2")?.modelIndex);
     expect(result.ambiguousWithoutReference).toEqual([]);
   });
 
@@ -316,5 +321,84 @@ describe("références de style Nike (D-2026-09-29-05)", () => {
     const result = compare(a, b);
     expect(result.niveau).toBe("identique");
     expect(result.methode).toBe("reference");
+  });
+});
+
+// D-2026-09-30-11 (R4.6-b) : textile réuni par GTIN / référence seulement ; paires pièges de l'échantillon R4.6-a.
+describe("textile réuni par identifiant seulement (D-2026-09-30-11)", () => {
+  const offer = (dealId: string, marchand: string, marque: string, titre: string, sku: string | null, statut = "active"): EngineOffer => ({
+    dealId,
+    marchand,
+    statut,
+    titre,
+    extracted: extract({ marchand, marque, categorie: "textile", titre, merchant_sku: sku } as FixtureOffer),
+  });
+  const model = (result: ReturnType<typeof buildModels>, id: string) => result.links.get(id)?.modelIndex;
+
+  it("n° 6 : deux jupes adidas Club de fiches différentes chez Tennis Point FR restent deux modèles", () => {
+    const result = buildModels([
+      offer("1", "Tennis Point FR", "adidas", "Vêtement de tennis adidas Club Jupe Femmes - blanc", null),
+      offer("2", "Tennis Point FR", "adidas", "Vêtement de tennis adidas Club Jupe Femmes - blanc", null),
+      offer("3", "Sport 2000", "adidas", "Vêtement de tennis ADIDAS Club Jupe Femme", "HS1456"),
+    ]);
+    expect(new Set(["1", "2", "3"].map((id) => model(result, id))).size).toBe(3);
+  });
+
+  it("n° 12 : JG0994 / GL5409 / GH7222 — seules les références réunissent", () => {
+    const titre = "Vêtement de tennis adidas Club Short Homme";
+    const result = buildModels([
+      offer("1", "Sport 2000", "adidas", titre, "JG0994"),
+      offer("2", "SportSystem", "adidas", titre, "GL5409"),
+      offer("3", "Tennispro.fr", "adidas", titre, "GH7222"),
+      offer("4", "Head", "adidas", titre, "GL5409"),
+    ]);
+    expect(model(result, "2")).toBe(model(result, "4"));
+    expect(model(result, "1")).not.toBe(model(result, "2"));
+    expect(model(result, "3")).not.toBe(model(result, "2"));
+    expect(result.incoherent).toEqual([]);
+  });
+
+  it("modèle 207 : Babolat Play Crew Neck Tee, seul 3MP2011 est réuni à SportSystem", () => {
+    const titre = "Babolat Play Crew Neck Tee Homme";
+    const result = buildModels([
+      offer("1", "Babolat", "Babolat", titre, "3MP2011"),
+      offer("2", "Babolat", "Babolat", titre, "3MTF011"),
+      offer("3", "Babolat", "Babolat", titre, "3MTG011"),
+      offer("4", "SportSystem", "Babolat", titre, "3MP2011"),
+    ]);
+    expect(model(result, "1")).toBe(model(result, "4"));
+    expect(model(result, "2")).not.toBe(model(result, "1"));
+    expect(model(result, "3")).not.toBe(model(result, "1"));
+    expect(model(result, "3")).not.toBe(model(result, "2"));
+  });
+
+  it("une paire sans identifiant commun est proposée en file de revue, motif « signature seule »", () => {
+    const offers = [
+      offer("1", "Sport 2000", "adidas", "Vêtement de tennis ADIDAS Club Jupe Femme", "HS1456"),
+      offer("2", "Tennis Point FR", "adidas", "Vêtement de tennis adidas Club Jupe Femmes - blanc", null),
+    ];
+    const rows = buildTextileReview(offers, buildModels(offers));
+    expect(rows).toHaveLength(1);
+    expect(rows[0].raison).toContain("signature seule");
+  });
+
+  it("le GTIN réunit toujours en textile", () => {
+    const titre = "Vêtement de tennis adidas Club Jupe Femme";
+    const a = offer("1", "Sport 2000", "adidas", titre, null);
+    const b = offer("2", "Tennispro.fr", "adidas", titre, null);
+    a.extracted.gtin = b.extracted.gtin = "4066757000011";
+    const result = buildModels([a, b]);
+    expect(model(result, "1")).toBe(model(result, "2"));
+    expect(result.links.get("1")?.method).toBe("gtin");
+  });
+
+  it("coupure d'un modèle : composantes par identifiant, les autres offres reprennent leur signature", () => {
+    const jupe = (id: string, sku: string | null) => offer(id, "Sport 2000", "adidas", "Vêtement de tennis ADIDAS Club Jupe Femme", sku);
+    const short = (id: string) => offer(id, "Head", "adidas", "Vêtement de tennis adidas Club Short Homme", null);
+    const members = [jupe("1", "HS1456"), jupe("2", "HS1456"), jupe("3", null), jupe("4", null), short("5")];
+    // 1 et 2 tenus par un identifiant ; 3, 4 et 5 ne l'étaient que par la signature.
+    const root = new Map([["1", "1"], ["2", "1"], ["3", "3"], ["4", "4"], ["5", "5"]]);
+    const parts = splitByIdentifier(members, root).map((p) => p.map((m) => m.dealId));
+    expect(parts).toEqual([["1", "2"], ["3", "4"], ["5"]]);
   });
 });

@@ -149,3 +149,7 @@ Le contrôle « divergent » signale surtout du bruit de libellé (11 sur 13) ; 
 5. Passage à blanc relu (textile multi-marchands attendu autour de 15, 7 en `active` ; aucune autre catégorie ne doit bouger sauf modèles coupés), nouvel engine `r4.6-b`, puis écriture en prod après accord de Mathieu.
 
 **Prochaine étape** : report en code de D-2026-09-30-11 (Sonnet), puis R4.6-c.
+
+### 6.7 Report en code (Sonnet, 2026-10-01)
+
+Fait selon §6.6, engine `r4.6-b`. Écart au texte : la coupure est une fonction exportée (`splitByIdentifier`, testée seule) car aucun cas réel ne la déclenche une fois la signature écartée du textile. Passage à blanc en prod (lecture seule, 5 035 offres) : modèles 3 181 → 4 011 ; multi-marchands textile 71 → 15 (7 en `active`), chaussures 72, raquettes 66, accessoires 19, cordages 24 (inchangés) ; incohérents 2 → 0 ; coupés 0 ; divergents 13 ; file de revue textile 602 paires dont 145 « signature seule ». Reste : relecture des 15 modèles textiles et accord de Mathieu avant l'écriture en prod.

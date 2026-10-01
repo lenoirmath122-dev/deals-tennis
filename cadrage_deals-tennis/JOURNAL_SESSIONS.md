@@ -146,3 +146,11 @@
 - **Réponses de Mathieu (D-2026-09-30-11)** : Q4 option B (textile par GTIN / référence seulement) ; Q5 couper les modèles incohérents.
 - Écrit : `R4_6_cadrage.md` §6, D-2026-09-30-11, ETAT_ACTUEL, JOURNAL. Aucun code modifié, rien écrit en base.
 - Prochaine étape : report en code (Sonnet, `R4_6_cadrage.md` §6.6), puis R4.6-c.
+
+## 2026-10-01 (session desktop, Sonnet) — R4.6-b : report en code de D-2026-09-30-11
+
+- `git fetch` : PR #137 fusionnée ; branche `feat/r4.6-b-textile-code` partie d'`origin/master` (`d2586c3`). Modèle actuel Sonnet, recommandé Sonnet (exécution d'une spec validée, `R4_6_cadrage.md` §6.6).
+- Code : `lib/matching/cluster.ts` (textile : plus d'union par signature ni étape 2 ter, supprimée ; coupure des modèles incohérents selon les liens GTIN / référence, une seule coupure, liste `cuts`), `lib/matching/textile-review.ts` (paires « identiques » sans identifiant commun en file de revue, raison « signature seule », références différentes signalées), `lib/matching/report.ts` (compteur et lignes `coupe`), engine `r4.6-b`. Tests : paires pièges n° 6, n° 12, modèle 207, GTIN, coupure ; 4 tests de l'ancien comportement adaptés (sous-gamme par le prix, regroupement textile, rattachement Nike sans référence, jeu R1 textile).
+- Passage à blanc en prod (`--dry-run`, 5 035 offres, lecture seule) : modèles 3 181 → 4 011 (chaque offre textile sans identifiant a son modèle) ; **textile multi-marchands 71 → 15, en `active` 57 → 7** ; chaussures 72, raquettes 66, accessoires 19, cordages 24 : inchangés ; incohérents 2 → 0, coupés 0 (aucun modèle concerné), divergents 13, conflits 13 ; file de revue textile 220 → 602 paires (145 « signature seule »). Rapport local `rapport-passage-r4.6-b/` non versionné.
+- Non fait : relecture des 15 modèles textiles restants et de la file de revue, écriture en prod (accord de Mathieu).
+- Prochaine étape : relecture du passage à blanc, accord de Mathieu, écriture en prod ; puis R4.6-c.

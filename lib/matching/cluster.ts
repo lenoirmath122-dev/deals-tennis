@@ -2,8 +2,10 @@
  * Regroupement des offres en modèles (R4.4), fonction pure.
  *
  * Cascade : étape 1 (même GTIN, puis même référence fabricant, sauf conflit), étape 2
- * (même signature famille + attributs discriminants). Les composantes connexes de ces
- * liens forment les modèles. Déterministe : offres triées par identifiant, deux passages
+ * (même signature famille + attributs discriminants, hors textile). Les composantes connexes
+ * de ces liens forment les modèles. Textile : seul l'identifiant réunit (D-2026-09-30-11) ; les
+ * paires de même signature vont en file de revue. Un modèle incohérent est coupé selon les
+ * liens d'identifiant (R4.6-b). Déterministe : offres triées par identifiant, deux passages
  * sur les mêmes données donnent les mêmes modèles.
  */
 
@@ -27,7 +29,7 @@ export interface EngineOffer {
   /** Statut en base (`active`, `tracked`) : sert à la couverture publiée deux fois (R4-Q3). */
   statut: string;
   titre: string;
-  /** Prix d'origine : indice de l'étape 3 textile seulement (R4.5-b). */
+  /** Prix d'origine : indice de la file de revue textile seulement (R4.5-b). */
   prixOrigine?: number | null;
   extracted: ExtractedOffer;
 }
@@ -62,6 +64,11 @@ export interface ClusterResult {
   conflicts: ClusterConflict[];
   /** Modèles dont deux membres se contredisent (fusion par identifiant + signature en désaccord). */
   incoherent: { model: number; a: string; b: string; detail: string }[];
+  /**
+   * Modèles coupés en composantes tenues par identifiant (D-2026-09-30-11) : deux membres « différents »
+   * n'étaient réunis que par la signature. `a` et `b` : la paire contradictoire ; `parts` : modèles obtenus.
+   */
+  cuts: { members: string[]; parts: number; a: string; b: string; detail: string }[];
   /** Modèles dont les membres n'ont pas la même valeur extraite pour un attribut discriminant (D5). */
   divergences: { model: number; attribut: string; valeurs: string[] }[];
   /**
@@ -73,16 +80,6 @@ export interface ClusterResult {
 
 const METHOD_RANK: Record<CompareMethod, number> = { gtin: 3, reference: 2, signature: 1 };
 const INCOHERENCE_PAIR_LIMIT = 40;
-/** Textile, étape 2 ter : écart de prix d'origine maximal pour réunir deux groupes à sous-gamme différente. */
-const SUBRANGE_PRICE_TOLERANCE = 0.1;
-
-function medianPrice(group: EngineOffer[]): number | null {
-  const prices = group.map((o) => o.prixOrigine).filter((p): p is number => typeof p === "number" && p > 0).sort((a, b) => a - b);
-  if (prices.length === 0) return null;
-  const mid = Math.floor(prices.length / 2);
-  return prices.length % 2 ? prices[mid] : (prices[mid - 1] + prices[mid]) / 2;
-}
-
 class UnionFind {
   private parent = new Map<string, string>();
   find(x: string): string {
@@ -198,6 +195,9 @@ export function buildModels(input: EngineOffer[]): ClusterResult {
     }
   }
 
+  // Composantes tenues par identifiant : tout ce qui est réuni après ne l'est que par la signature (coupure, R4.6-b).
+  const identifierRoot = new Map(offers.map((o) => [o.dealId, uf.find(o.dealId)]));
+
   // Étape 2 : même signature.
   const bySignature = new Map<string, EngineOffer[]>();
   for (const offer of offers) {
@@ -208,6 +208,17 @@ export function buildModels(input: EngineOffer[]): ClusterResult {
     bySignature.set(sig, list);
   }
   for (const members of bySignature.values()) {
+    // Textile (D-2026-09-30-11) : le nom commercial ne prouve pas le même article, la signature ne réunit pas.
+    // Chaque offre garde son modèle ; les paires de même signature vont en file de revue.
+    if (members[0].extracted.categorie === "textile") {
+      const styled = new Set(members.filter((m) => refsOf(m.dealId)).map((m) => uf.find(m.dealId)));
+      if (styled.size > 1) {
+        const references = [...new Set([...styled].flatMap((root) => [...(styleRefs.get(root) ?? [])]))].sort();
+        for (const member of members.filter((m) => !refsOf(m.dealId))) ambiguousWithoutReference.push({ dealId: member.dealId, references });
+      }
+      for (const member of members) linked.add(member.dealId);
+      continue;
+    }
     // Signature partagée par plusieurs groupes de références de style : chaque groupe reste à part,
     // les offres sans référence ne se rattachent à aucun (elles se regroupent entre elles).
     const styled = new Set(members.filter((m) => refsOf(m.dealId)).map((m) => uf.find(m.dealId)));
@@ -248,40 +259,8 @@ export function buildModels(input: EngineOffer[]): ClusterResult {
     }
   }
 
-  // Étape 2 ter (D-2026-09-30-01, textile) : une sous-gamme écrite d'un seul côté (« Club » / « Club 3-Stripes »)
-  // ne prouve pas un autre article si le prix d'origine est proche (≤ 10 %, médiane de chaque groupe) ;
-  // sinon les deux groupes restent distincts. Réunis seulement si toutes les paires des deux groupes ne
-  // diffèrent que par cette sous-gamme absente d'un côté.
-  const textileByFamily = new Map<string, EngineOffer[]>();
-  for (const offer of offers) {
-    if (offer.extracted.categorie !== "textile" || offer.extracted.familyKey === null) continue;
-    const list = textileByFamily.get(offer.extracted.familyKey) ?? [];
-    list.push(offer);
-    textileByFamily.set(offer.extracted.familyKey, list);
-  }
-  const onlySubrangeMissing = (x: EngineOffer, y: EngineOffer) => {
-    const diffs = compare(x.extracted, y.extracted).differences;
-    return diffs.length === 1 && diffs[0].attribut === "sous_gamme" && (diffs[0].a === null || diffs[0].b === null);
-  };
-  for (const members of textileByFamily.values()) {
-    if (!members.some((m) => m.extracted.attributes.sous_gamme)) continue;
-    for (let i = 0; i < members.length; i++) {
-      for (let j = i + 1; j < members.length; j++) {
-        const [x, y] = [members[i], members[j]];
-        if (uf.find(x.dealId) === uf.find(y.dealId) || !onlySubrangeMissing(x, y)) continue;
-        const groupX = members.filter((m) => uf.find(m.dealId) === uf.find(x.dealId));
-        const groupY = members.filter((m) => uf.find(m.dealId) === uf.find(y.dealId));
-        if (!groupX.every((p) => groupY.every((q) => onlySubrangeMissing(p, q)))) continue;
-        const priceX = medianPrice(groupX);
-        const priceY = medianPrice(groupY);
-        if (priceX === null || priceY === null) continue;
-        if (Math.abs(priceX - priceY) / Math.max(priceX, priceY) <= SUBRANGE_PRICE_TOLERANCE) guardedUnion(x.dealId, y.dealId);
-      }
-    }
-  }
-
-  // Étape 2 quater (D-2026-09-30-09, cordages) : chez Tennispro.fr et sur le site Head, une jauge non écrite est
-  // une variante de l'offre. Les signatures diffèrent (`jauge=-` / `jauge=1.25`) mais `compare()` dit « identique ».
+  // Étape 2 quater (D-2026-09-30-09, cordages ; l'étape 2 ter textile a disparu, D-2026-09-30-11) : chez
+  // Tennispro.fr et sur le site Head, une jauge non écrite est une variante de l'offre. Les signatures diffèrent (`jauge=-` / `jauge=1.25`) mais `compare()` dit « identique ».
   // Réunies seulement si un seul groupe à jauge écrite est « identique » à l'offre (sinon la jauge ferait un pont
   // entre 1,25 et 1,30) et si toutes les paires des deux groupes le disent.
   const stringsByFamily = new Map<string, EngineOffer[]>();
@@ -308,7 +287,7 @@ export function buildModels(input: EngineOffer[]): ClusterResult {
     }
   }
 
-  // Composantes → modèles.
+  // Composantes → groupes d'offres (ordre des identifiants, donc déterministe).
   const components = new Map<string, EngineOffer[]>();
   for (const offer of offers) {
     if (!linked.has(offer.dealId)) continue;
@@ -317,14 +296,33 @@ export function buildModels(input: EngineOffer[]): ClusterResult {
     list.push(offer);
     components.set(root, list);
   }
-  // Une offre non reconnue liée à personne (identifiant unique) n'a pas de modèle.
+
+  // Cohérence : un modèle ne doit pas contenir deux offres « différentes ». S'il en contient, il est coupé
+  // en composantes tenues par identifiant (D-2026-09-30-11) : les offres qui n'étaient réunies que par la
+  // signature reprennent leur groupe de signature propre. Une seule coupure, sans récursion.
+  const cuts: ClusterResult["cuts"] = [];
+  const finalGroups: EngineOffer[][] = [];
+  for (const members of components.values()) {
+    const found = contradiction(members);
+    if (found === null) {
+      finalGroups.push(members);
+      continue;
+    }
+    const parts = splitByIdentifier(members, identifierRoot);
+    if (parts.length > 1) {
+      cuts.push({ members: members.map((m) => m.dealId), parts: parts.length, a: found.a.dealId, b: found.b.dealId, detail: found.detail });
+    }
+    finalGroups.push(...parts);
+  }
+
+  // Groupes → modèles. Une offre non reconnue liée à personne (identifiant unique) n'a pas de modèle.
   const models: EngineModel[] = [];
   const links = new Map<string, OfferLink>();
   const usedSignatures = new Set<string>();
   const incoherent: ClusterResult["incoherent"] = [];
   const divergences: ClusterResult["divergences"] = [];
 
-  for (const members of [...components.values()].sort((a, b) => (a[0].dealId < b[0].dealId ? -1 : 1))) {
+  for (const members of finalGroups.sort((a, b) => (a[0].dealId < b[0].dealId ? -1 : 1))) {
     const recognized = members.filter((m) => m.extracted.familyKey !== null);
     if (members.length === 1 && recognized.length === 0) continue;
     // Représentant : l'offre la plus documentée (plus d'attributs), puis identifiant.
@@ -351,29 +349,67 @@ export function buildModels(input: EngineOffer[]): ClusterResult {
 
     if (recognized.length > 1) divergences.push(...findDivergences(recognized, index));
 
-    // Cohérence : un modèle fusionné par identifiant ne doit pas contenir deux offres « différentes ».
-    if (members.length > 1 && recognized.length > 1) {
-      const pairs: [EngineOffer, EngineOffer][] = [];
-      if (recognized.length <= INCOHERENCE_PAIR_LIMIT) {
-        for (let i = 0; i < recognized.length; i++) for (let j = i + 1; j < recognized.length; j++) pairs.push([recognized[i], recognized[j]]);
-      } else {
-        for (const other of recognized) if (other !== representative) pairs.push([representative, other]);
-      }
-      for (const [x, y] of pairs) {
-        const result = compare(x.extracted, y.extracted);
-        if (result.niveau === "different" && result.comparable) {
-          incoherent.push({
-            model: index,
-            a: x.dealId,
-            b: y.dealId,
-            detail: result.differences.map((d) => `${d.attribut} (${d.a} | ${d.b})`).join(", "),
-          });
-          break;
-        }
-      }
+    // Encore incohérent après la coupure (deux membres liés par identifiant) : signalé, pas recoupé.
+    const still = contradiction(members);
+    if (still !== null) incoherent.push({ model: index, a: still.a.dealId, b: still.b.dealId, detail: still.detail });
+  }
+  return { models, links, conflicts, incoherent, cuts, divergences, ambiguousWithoutReference };
+}
+
+/** Première paire de membres reconnus « différents » (comparables), ou null. */
+export function contradiction(members: EngineOffer[]): { a: EngineOffer; b: EngineOffer; detail: string } | null {
+  const recognized = members.filter((m) => m.extracted.familyKey !== null);
+  if (members.length < 2 || recognized.length < 2) return null;
+  // Représentant : l'offre la plus documentée, comme pour le modèle (au-delà de la limite, comparaison à lui seul).
+  const representative = [...recognized].sort(
+    (a, b) => Object.keys(b.extracted.attributes).length - Object.keys(a.extracted.attributes).length || (a.dealId < b.dealId ? -1 : 1),
+  )[0];
+  const pairs: [EngineOffer, EngineOffer][] = [];
+  if (recognized.length <= INCOHERENCE_PAIR_LIMIT) {
+    for (let i = 0; i < recognized.length; i++) for (let j = i + 1; j < recognized.length; j++) pairs.push([recognized[i], recognized[j]]);
+  } else {
+    for (const other of recognized) if (other !== representative) pairs.push([representative, other]);
+  }
+  for (const [x, y] of pairs) {
+    const result = compare(x.extracted, y.extracted);
+    if (result.niveau === "different" && result.comparable) {
+      return { a: x, b: y, detail: result.differences.map((d) => `${d.attribut} (${d.a} | ${d.b})`).join(", ") };
     }
   }
-  return { models, links, conflicts, incoherent, divergences, ambiguousWithoutReference };
+  return null;
+}
+
+/**
+ * Coupe un modèle selon les liens GTIN / référence : les offres reliées entre elles par un identifiant
+ * restent ensemble ; celles qui ne l'étaient que par la signature se regroupent par signature, une offre
+ * sans signature commune forme son propre groupe. Les parties sont rendues dans l'ordre des identifiants.
+ */
+export function splitByIdentifier(members: EngineOffer[], identifierRoot: Map<string, string>): EngineOffer[][] {
+  const byIdentifier = new Map<string, EngineOffer[]>();
+  for (const member of members) {
+    const root = identifierRoot.get(member.dealId)!;
+    const list = byIdentifier.get(root) ?? [];
+    list.push(member);
+    byIdentifier.set(root, list);
+  }
+  const parts: EngineOffer[][] = [];
+  const bySignature = new Map<string, EngineOffer[]>();
+  for (const group of byIdentifier.values()) {
+    if (group.length > 1) {
+      parts.push(group);
+      continue;
+    }
+    const sig = signature(group[0].extracted, group[0].dealId);
+    if (sig === null) {
+      parts.push(group);
+      continue;
+    }
+    const list = bySignature.get(sig) ?? [];
+    list.push(group[0]);
+    bySignature.set(sig, list);
+  }
+  parts.push(...bySignature.values());
+  return parts.map((p) => p.sort((a, b) => (a.dealId < b.dealId ? -1 : 1))).sort((a, b) => (a[0].dealId < b[0].dealId ? -1 : 1));
 }
 
 /**

@@ -1,7 +1,7 @@
 /**
  * Textile, étape 3 (R4.5-b, T-Q4 de D-2026-09-29-04) : correspondance approchée en file de revue.
  *
- * Aucune fusion : le score classe des paires de modèles que l'étape 2 n'a pas réunis (même marque,
+ * Aucune fusion : le score classe des paires de modèles que l'identifiant n'a pas réunis (même marque,
  * même type précis, même genre et même âge, marchands différents) pour que Mathieu les valide ou
  * les refuse. Chaque décision enrichit ensuite le lexique (`config/textile-lexicon.ts`). Fonction pure.
  */
@@ -94,7 +94,9 @@ export function buildTextileReview(offers: EngineOffer[], result: ClusterResult)
         if (motsA.length === 0 || motsB.length === 0) continue;
 
         const result = compare(x.extracted, y.extracted);
-        if (result.niveau === "identique") continue;
+        // « Identique » sans identifiant commun : la signature seule ne réunit plus en textile
+        // (D-2026-09-30-11), la paire est à valider ici.
+        const signatureOnly = result.niveau === "identique";
         // Génération différente déjà connue, pas à valider : numéro écrit d'un seul côté ou différent
         // (« Tie Break II », D-2026-09-29-05), références de style Nike différentes (Flex / Dri-FIT).
         if (result.differences.some((d) => d.attribut === "numero" || d.attribut === "reference_style")) continue;
@@ -112,6 +114,12 @@ export function buildTextileReview(offers: EngineOffer[], result: ClusterResult)
         const setB = new Set(motsB);
         const setA = new Set(motsA);
         const notes = result.differences.filter((d) => d.attribut !== "modele").map((d) => `${d.attribut}: ${d.a ?? "?"} | ${d.b ?? "?"}`);
+        if (signatureOnly) {
+          notes.unshift("signature seule");
+          const refsA = x.extracted.referencesFabricant.map((r) => r.value);
+          const refsB = y.extracted.referencesFabricant.map((r) => r.value);
+          if (refsA.length > 0 && refsB.length > 0) notes.push(`références différentes: ${refsA.join(", ")} | ${refsB.join(", ")}`);
+        }
         if (gap > 0.15) notes.push(`prix d'origine ${Math.round(gap * 100)} % d'écart`);
         rows.push({
           score,
