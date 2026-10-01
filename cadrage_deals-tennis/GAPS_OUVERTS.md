@@ -41,7 +41,7 @@ Issu du repérage cowork (D-2026-09-26-02, vérifications dans `REPERAGE_marchan
 
 ---
 
-## GAP-2026-09-29-01 — Raquettes : aucun rapprochement entre le fabricant (Babolat, Head), Tennis Point FR et les revendeurs (OUVERT)
+## GAP-2026-09-29-01 — Raquettes : aucun rapprochement entre le fabricant (Babolat, Head), Tennis Point FR et les revendeurs (OUVERT, non bloquant pour l'arrêt R4.6-d)
 
 Constat du contrôle R4.4 (`R4_4_controle.md` §5, mesure en prod du
 2026-09-29) : les 21 modèles de raquettes multi-marchands sont tous
