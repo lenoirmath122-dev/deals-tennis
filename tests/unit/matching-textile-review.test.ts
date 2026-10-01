@@ -97,7 +97,7 @@ describe("Bermuda n'est pas un short (relecture R4.5-b)", () => {
   });
 });
 
-describe("sous-gamme adidas (3-Stripes, Climacool) : prix proche → même article, sinon distincts (D-2026-09-30-01)", () => {
+describe("sous-gamme adidas (3-Stripes, Climacool) : jamais réunie, en file de revue (D-2026-09-30-01, D-2026-09-30-11)", () => {
   const models = (rows: Row[]) => {
     const { result } = review(rows);
     return (id: string) => result.links.get(id)!.modelIndex;
@@ -105,9 +105,11 @@ describe("sous-gamme adidas (3-Stripes, Climacool) : prix proche → même artic
   const plain = (id: string, prix: number): Row => [id, "Tennis Point FR", "adidas", "Vêtement de tennis adidas Club T-shirt Hommes - bleu foncé", prix];
   const stripes = (id: string, prix: number): Row => [id, "Sport 2000", "ADIDAS", "Vêtement de tennis ADIDAS Tee-Shirt Tennis Homme Club 3Stripes Homme", prix];
 
-  it("écart de prix ≤ 10 % : réunis", () => {
-    const model = models([plain("1", 35), stripes("2", 37)]);
-    expect(model("1")).toBe(model("2"));
+  it("écart de prix ≤ 10 % : plus réunis par le prix (la signature ne réunit plus en textile), proposés en file de revue", () => {
+    const { result, rows } = review([plain("1", 35), stripes("2", 37)]);
+    expect(result.links.get("1")!.modelIndex).not.toBe(result.links.get("2")!.modelIndex);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].raison).toContain("sous_gamme");
   });
 
   it("écart de prix > 10 % (35 € / 40 €) : modèles distincts, proposés en file de revue", () => {

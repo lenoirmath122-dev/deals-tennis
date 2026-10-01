@@ -142,7 +142,8 @@ describe("regroupement et rapport sur le jeu R1", () => {
     for (const pair of fixture.pairs) {
       if (!extracted.has(pair.offre_a) || !extracted.has(pair.offre_b)) continue;
       const together = modelOf(pair.offre_a) !== undefined && modelOf(pair.offre_a) === modelOf(pair.offre_b);
-      if (predictedLevel(pair) === "identique") expect(together).toBe(true);
+      // Textile : la signature ne réunit plus (D-2026-09-30-11) ; seul un identifiant commun le fait.
+      if (predictedLevel(pair) === "identique" && extracted.get(pair.offre_a)!.categorie !== "textile") expect(together).toBe(true);
       if (pair.attendu === "différent") expect(together, `paire ${pair.id}`).toBe(false);
     }
   });
