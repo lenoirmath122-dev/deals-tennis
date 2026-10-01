@@ -154,3 +154,10 @@
 - Passage à blanc en prod (`--dry-run`, 5 035 offres, lecture seule) : modèles 3 181 → 4 011 (chaque offre textile sans identifiant a son modèle) ; **textile multi-marchands 71 → 15, en `active` 57 → 7** ; chaussures 72, raquettes 66, accessoires 19, cordages 24 : inchangés ; incohérents 2 → 0, coupés 0 (aucun modèle concerné), divergents 13, conflits 13 ; file de revue textile 220 → 602 paires (145 « signature seule »). Rapport local `rapport-passage-r4.6-b/` non versionné.
 - Non fait : relecture des 15 modèles textiles restants et de la file de revue, écriture en prod (accord de Mathieu).
 - Prochaine étape : relecture du passage à blanc, accord de Mathieu, écriture en prod ; puis R4.6-c.
+
+## 2026-10-01 (session desktop, Sonnet) — R4.6-b : écriture du passage en prod
+
+- Modèle actuel Sonnet, recommandé Sonnet (exécution d'une étape validée). Code sur `master` (PR #138 fusionnée). Accord de Mathieu : « On écrit la suite en prod ».
+- `npm run match:shadow -- --out rapport-passage-r4.6-b-prod`. Passage `5bc68805-0d71-4895-b2bd-87a56a17f234`, engine `r4.6-b`, **4 011 modèles, 4 732 liens**, 602 paires en revue textile : mêmes chiffres que le passage à blanc. Vérifié en base : 1 seul passage, `deals` inchangé (4 241 `active`, 794 `tracked`). Tables `match_*` seulement, site non touché.
+- Non fait : relecture détaillée des 15 modèles textiles restants et de la file de revue.
+- Prochaine étape : R4.6-c (règles de repérage des non-reconnus).
