@@ -4,13 +4,16 @@ Point d'entrée et protocole de reprise du projet. À lire dans cet ordre en dé
 
 0. Appliquer la section « Choix du modèle » de [CLAUDE.md](../CLAUDE.md) au début de la session et avant chaque nouvelle tâche : si le modèle actuel correspond à la recommandation, l'indiquer en une ligne ; sinon, poser directement une question interactive (pas de texte + arrêt séparés) avant toute action.
 1. [ETAT_ACTUEL.md](./ETAT_ACTUEL.md) — où en est le projet.
-2. [GAPS_OUVERTS.md](./GAPS_OUVERTS.md) — points ouverts non résolus.
-3. Dernière entrée de [JOURNAL_SESSIONS.md](./JOURNAL_SESSIONS.md) — ce qui s'est passé la dernière fois.
+2. [RISQUES_OUVERTS.md](./RISQUES_OUVERTS.md) — risques et points ouverts non résolus.
+3. [ROADMAP.md](./ROADMAP.md) — vue synthétique du chantier en cours et des prochaines étapes.
+4. Dernière entrée de [JOURNAL_SESSIONS.md](./JOURNAL_SESSIONS.md) — ce qui s'est passé la dernière fois.
 4. **Tant que le chantier « vrais bons plans » / rapprochement multi-niveaux est en cours** (voir GAP-2026-09-25-19) : le §10 « Phasage et impact sur le cadrage principal » de [CADRAGE_rapprochement-multi-niveaux.md](./CADRAGE_rapprochement-multi-niveaux.md) et la section 6 « Amendements post Phase 0 » de [CADRAGE_vrais-bons-plans.md](./CADRAGE_vrais-bons-plans.md) — c'est ce phasage (ordre global révisé, étapes R0-R5) qui détermine la prochaine étape légitime, pas une proposition de pistes ouvertes. Ne jamais proposer une étape hors de cet ordre (ex. R3 avant R0-R2) comme piste valide.
 
 ## Documents
 
-- [DECISIONS_FONCTIONNELLES.md](./DECISIONS_FONCTIONNELLES.md) — décisions structurantes numérotées (D-AAAA-MM-JJ-NN).
+- [ROADMAP.md](./ROADMAP.md) — vue synthétique du chantier R0-R5 et des étapes.
+- [decisions/](./decisions/) — décisions structurantes numérotées (D-AAAA-MM-JJ-NN), fichiers individuels.
+- [DECISIONS_FONCTIONNELLES.md](./DECISIONS_FONCTIONNELLES.md) — versions consolidées des décisions (archive progressive).
 - [CADRAGE_vrais-bons-plans.md](./CADRAGE_vrais-bons-plans.md) / [CADRAGE_rapprochement-multi-niveaux.md](./CADRAGE_rapprochement-multi-niveaux.md) — cadrages du chantier en cours (historique de prix, verdict, rapprochement produit multi-niveaux R0-R5).
 - [R0_diagnostic-rapprochement.md](./R0_diagnostic-rapprochement.md) — résultats de l'étape R0 (diagnostic, aucune modification).
 - [R1_jeu-reference-candidat.csv](./R1_jeu-reference-candidat.csv) / [R1_mesure.md](./R1_mesure.md) — jeu de référence R1 (67 paires, toutes validées, D-2026-09-27-03 et D-2026-09-27-07) et mesure réelle de l'algorithme actuel.

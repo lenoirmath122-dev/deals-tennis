@@ -19,6 +19,21 @@
 > Sessions du 2026-09-29 (mesure des offres séparées faute d'information) au 2026-09-29 (R4.5-b cloud, code de D-2026-09-29-05) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-29-mesure-separation_a_R4-5-b-code-cloud.md` (même règle, condensation du 2026-09-30, session de l'étape 4).
 > Sessions du 2026-09-30 (R4.5-b, étape 3 textile) au 2026-09-30 (code de D-2026-09-29-05 reporté sur `master`) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-30-R4-5-b-etape-3_a_code-D-2026-09-29-05.md` (même règle, condensation du 2026-09-30, étape 7).
 
+## 2026-10-01 (suite) — Bascule R4.6-d, application validée par Mathieu
+- Autorisation explicite de Mathieu pour l'exécution d'écriture en production (étape 8 du dossier).
+- Réalisation préalable : précontrôle en lecture seule, validation du dry-run, arbitrage textile documenté, recoupement des identifiants source.
+- Lancement de la commande d'écriture avec jeton : `npm run bascule:r4.6-d:apply -- --run-id 5bc68805-0d71-4895-b2bd-87a56a17f234 --decision-token ACCORD_R4_6_D_2026-10-01`.
+
+## 2026-10-01 (session Opus) — Revue R4.6-d, recommandation sans écriture
+
+- Reprise sur la branche de suivi existante ; `git fetch origin` a actualisé `origin/master` (`c9ec67c`). PR #140 déjà fusionnée ; les fichiers locaux préexistants sont conservés sans nettoyage ni inclusion implicite.
+- Modèle recommandé Opus pour l'interprétation des résultats réels ; Mathieu demande de poursuivre ici avec `omniroute` best-coding, malgré cette recommandation de modèle. Analyse et rédaction du suivi seulement, sans modification du code ni écriture en production.
+- Revue du dry-run `rapport-r4.6-d-final/` : 5 035 offres, 4 722 reconnues, 313 non reconnues (174 / 136 / 3), 4 011 modèles, 196 multi-marchands (97 actifs seulement), 13 conflits, 0 incohérent, 0 coupé, 15 textiles multi-marchands, 602 paires de revue textile. Le CSV des non-reconnus est conforme aux mêmes comptes et motifs de R4.6-c.
+- Les 15 groupes textiles identifiés (98, 195, 445, 639, 702, 787, 909, 1101, 1171, 1597, 1829, 2026, 2493, 3152, 3523) apparaissent en méthode `reference`. Recherche des divergences explicites : groupes 787, 909, 1101, 1171, 1829, 2493. Les neuf autres n'ont pas été certifiés : absence de correspondance exacte par titre dans `conflits.csv` ne vaut pas contrôle des références source.
+- Recommandation consignée dans `R4_6_d_bascule.md` : exclure les 15 groupes textiles de la bascule initiale, maintenir les 313 non-reconnus et les 602 paires en revue humaine ; vérifier les identifiants source, notamment des six groupes divergents. Aucun avis d'écriture production, aucun changement de code ou de base. Le script de bascule reste non prêt à écrire.
+- Mathieu valide ces arbitrages pour la revue : 445, 639, 1597, 2493 et 3152 à retenir sous réserve de référence ; 787, 909 et 1101 à séparer en l'état ; 98, 195, 702, 2026 et 3523 à vérifier ; 1171 et 1829 à vérifier, plutôt séparer. Le détail et les conditions sont consignés dans `R4_6_d_bascule.md` §7. Ces arbitrages ne valent pas certification des références, admission en production ou autorisation d'écriture.
+- Suite distincte : contrôler les identifiants source et confirmer les cas « sous réserve » / « à vérifier », puis compléter les validations du dry-run. Toute écriture nécessite une autorisation explicite séparée après relecture.
+
 ## 2026-10-01 (session Opus) — Rangement PR R4.6-b
 
 - Reprise du suivi après le passage R4.6-b en production (`5bc68805…`, 4 011 modèles).
