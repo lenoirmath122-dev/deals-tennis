@@ -1,14 +1,18 @@
 @AGENTS.md
 
-## Choix du modèle Omniroute
+## Choix du modèle
 
-Utilise Omniroute pour choisir un modèle adapté à la tâche, sans supposer qu'une session doit utiliser Opus ou Sonnet, et sans demander de changer de modèle avant de commencer.
+Au début de chaque session, et avant de commencer chaque nouvelle tâche, détermine le modèle recommandé (grille ci-dessous) et compare-le au modèle actuel.
 
-- Pour le cadrage, le diagnostic complexe, la conception, l'interprétation de données réelles, les décisions métier à valider ou une revue approfondie, privilégie un modèle Omniroute de raisonnement/codage haut de gamme (par exemple `omniroute/auto/pro-reasoning` ou `omniroute/auto/best-reasoning`).
-- Pour l'exécution d'une spécification validée, les scripts, migrations, tests, mises à jour de documentation de suivi et corrections ciblées, privilégie un modèle Omniroute efficace pour le codage (par exemple `omniroute/auto/best-coding` ou `omniroute/auto/coding`).
-- En cas de doute, choisis le modèle Omniroute le plus capable disponible pour la tâche. Respecte les modèles et capacités réellement proposés dans l'environnement ; les exemples ci-dessus sont des choix indicatifs, pas une exigence de fournisseur ou de famille.
+Grille :
+- Opus : cadrage, diagnostic, conception (modèle de données, règles de rapprochement, étapes R0-R2), interprétation de données réelles (fiches marchands, références fabricant, prod), revue de PR, débogage non trivial, toute décision que Mathieu devra valider.
+- Sonnet : exécution d'une spec déjà validée (écriture ou réécriture de scripts, migrations prévues, tests), mises à jour de la doc de suivi (ETAT_ACTUEL, JOURNAL, GAPS), corrections ciblées.
+- En cas de doute : Opus.
 
-Ne demande une confirmation que si le choix du modèle implique un coût ou un changement de fournisseur inhabituel qui n'est pas déjà autorisé par la configuration Omniroute. Une tâche mêlant cadrage et exécution peut rester dans la même session ; adapte simplement le modèle si l'environnement permet de le faire sans interrompre le travail.
+**Si le modèle actuel correspond à la recommandation** : écris une ligne « Modèle actuel : X. Modèle recommandé pour cette tâche : X. » et continue.
+
+**Si le modèle actuel ne correspond pas** : ne pas écrire cette ligne séparément — poser directement une question interactive (AskUserQuestion) intégrant le raisonnement, par exemple « Modèle actuel Sonnet, cette tâche relève plutôt d'Opus parce que [raison] — je change et je continue / je continue quand même sur Sonnet ? ». Ne jamais calculer la recommandation puis la reformuler deux fois (texte + question) : le raisonnement n'apparaît qu'une fois, dans la question. Si je continue quand même sur l'autre modèle, le noter dans le JOURNAL.
+Une session qui mélange les deux types de tâches se découpe : le cadrage avec Opus, puis l'exécution avec Sonnet dans une nouvelle session.
 
 ## Git : commit, push et PR automatiques
 
