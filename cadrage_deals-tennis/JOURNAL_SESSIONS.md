@@ -24,6 +24,10 @@
 - Réalisation préalable : précontrôle en lecture seule, validation du dry-run, arbitrage textile documenté, recoupement des identifiants source.
 - Lancement de la commande d'écriture avec jeton : `npm run bascule:r4.6-d:apply -- --run-id 5bc68805-0d71-4895-b2bd-87a56a17f234 --decision-token ACCORD_R4_6_D_2026-10-01`.
 
+## 2026-10-02 — Clôture R4.6-d : arbitrages de bascule validés
+- Validation par le contributeur de 4 propositions : (1) clore R4.6-c en consignant le traitement des 313 non-reconnues (exclues du rapprochement, aucune auto-création), (2) exclure en bascule initiale les 15 groupes textiles multi-marchands (rendez-vous revue humaine), (3) ne pas activer de fusion automatique par score pour le seuil textile (garder la file de revue), (4) ne pas introduire l’option IA tant que les références source ne sont pas re-contrôlées.
+- Aucun changement de code ou d’écriture en production effectué dans cette entrée : suivi documentaire uniquement.
+
 ## 2026-10-01 (session Opus) — Revue R4.6-d, recommandation sans écriture
 
 - Reprise sur la branche de suivi existante ; `git fetch origin` a actualisé `origin/master` (`c9ec67c`). PR #140 déjà fusionnée ; les fichiers locaux préexistants sont conservés sans nettoyage ni inclusion implicite.
