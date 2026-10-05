@@ -396,7 +396,12 @@ export type IngestOutcome =
   | { inserted: true; status: "active" | "tracked" }
   | { inserted: false; reason: ExclusionReason };
 
-/** Prépare puis écrit une offre. Un script appelle cette fonction une fois par article vu. */
+/**
+ * Prépare puis écrit une offre. Un script appelle cette fonction une fois par article vu.
+ * @param sql Connexion à la base de données.
+ * @param offer Offre brute à ingérer.
+ * @returns Résultat d'ingestion (insertion avec statut, ou exclusion avec raison).
+ */
 export async function ingestOffer(sql: Sql, offer: RawOffer): Promise<IngestOutcome> {
   const prepared = prepareOffer(offer);
   if (!prepared.insert) {
