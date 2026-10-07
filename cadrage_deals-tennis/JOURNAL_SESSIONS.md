@@ -19,6 +19,15 @@
 > Sessions du 2026-09-29 (mesure des offres séparées faute d'information) au 2026-09-29 (R4.5-b cloud, code de D-2026-09-29-05) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-29-mesure-separation_a_R4-5-b-code-cloud.md` (même règle, condensation du 2026-09-30, session de l'étape 4).
 > Sessions du 2026-09-30 (R4.5-b, étape 3 textile) au 2026-09-30 (code de D-2026-09-29-05 reporté sur `master`) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-30-R4-5-b-etape-3_a_code-D-2026-09-29-05.md` (même règle, condensation du 2026-09-30, étape 7).
 
+## 2026-10-07 (session Sonnet, suite) — État des lieux du regroupement et conventions de valeur absente
+
+- Mathieu demande un état des lieux poussé du regroupement (accessoires, chaussures, cordages, raquettes ; textile sorti du périmètre) et délègue l'arbitrage à Claude Code. Rapport du moteur relu (4 011 modèles, 196 multi-marchands dont 181 hors textile, 313 non reconnues) ; script de bascule `bascule-r4.6-d.ts` : il n'inventorie que les 313 non reconnues, ne valide pas les autres métriques, `--apply` reste bloqué.
+- Mesures hors des paires : le plafond de 300 paires par famille ne touche que le rapport (`report.ts:31`), 20 familles sur 180 le dépassent, 8 766 paires théoriques non comparées dans le rapport ; 10 121 paires sans plafond hors textile.
+- Lots tirés (graine 20261007) : 90 modèles actifs, 49 modèles sur 91, 159 paires, 100 offres isolées sur 1 575. Arbitrage par deux agents `architect` : 0 modèle faux avéré sur 139 (17 douteux, 11 éditions limitées) ; 29 paires à réunir, 106 à séparer, 24 douteuses ; 32 jumelles sur 100 offres isolées. Ordres de grandeur, non certifiés. Document : `R4_6_etat_des_lieux_regroupement.md` (PR #148).
+- Diagnostic des non-liens : pas de bug. Signature privée (`#dealId`) quand la génération n'est pas écrite ou qu'un attribut requis manque ; fusion refusée par la règle « toutes les paires identiques » (étapes 2 bis et 2 quater). 1 255 paires « indéterminé » entre modèles distincts. Document : `R4_6_diagnostic_non_liens.md` (PR #149).
+- Conventions de valeur absente testées (distribution, vérité terrain sur 580 paires, simulation, liens perdus) ; critique `architect` intégrée (C1 défait 5 modèles, C3 Amazon écarté). Document : `R4_6_conventions_valeur_absente.md` (PR #150).
+- Mathieu valide C2 (genre, Tennispro.fr) et C3b (jauge, Babolat seul) et demande de s'arrêter et de documenter seulement : D-2026-10-07-02. Aucun code, aucune écriture en base, aucune bascule. Scripts et sorties dans `rapport-etat-des-lieux/` (ignoré par git).
+
 ## 2026-10-07 (session Sonnet) — Contrôle des références source des 15 groupes textiles R4.6-d
 
 - Modèle recommandé Opus (interprétation de données réelles) ; Mathieu demande de poursuivre sur Sonnet et retire la règle de choix du modèle de `CLAUDE.md` (déjà fait par #145).

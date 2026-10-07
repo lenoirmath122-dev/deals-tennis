@@ -1477,3 +1477,20 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 **Réserve** : groupe 639, GTIN différents pour la même référence CV2545-100, non expliqué.
 
 **Statut** : Actée (2026-10-07).
+
+### D-2026-10-07-02 — R4.6 : conventions de valeur absente retenues (genre Tennispro.fr, jauge Babolat)
+
+**Contexte** : état des lieux du regroupement hors textile (précision sur 139 modèles, rappel sur 159 paires sans plafond, 100 offres isolées), puis diagnostic des non-liens : pas de bug, une valeur inconnue empêche la fusion (D-2026-09-30-08, D-2026-09-30-09). Cadrage des conventions de valeur absente par marchand, testées sur le passage `87987663…` (distribution, vérité terrain par GTIN ou référence, simulation, liens perdus), relu par un agent `architect` et un `reviewer`. Détail et chiffres : `R4_6_conventions_valeur_absente.md` ; amont : `R4_6_etat_des_lieux_regroupement.md`, `R4_6_diagnostic_non_liens.md` (PR #148, #149, #150).
+
+**Décision de Mathieu (« Oui je valide, arrête toi là, documente seulement »)** :
+1. **C2** : genre absent = « homme » pour les chaussures de Tennispro.fr, hors enfants (51 offres ; Tennispro.fr n'écrit jamais « homme » ; vérité terrain 8 sur 8).
+2. **C3b** : jauge non écrite = variante de la fiche pour les cordages de **Babolat seul** (22 offres ; vérité terrain 7 sur 7), même mécanisme que D-2026-09-30-09.
+3. Effet mesuré à blanc : modèles multi-marchands hors textile 181 → 190, 0 incohérent, 0 coupé, 0 lien perdu, 13 conflits et 13 divergences inchangés.
+
+**Recommandations du cadrage, non tranchées une à une par Mathieu (restent des propositions)** : C1 (surface absente chez Sport 2000 et SportSystem) à reporter (non prouvée, 5 modèles séparés, 28 paires perdues) ; C3 pour Amazon à écarter (jauges en nombre seul, aucune vérité terrain) ; C4 (genre ignoré chez les enfants) à abandonner (aucun effet) ; C5 (année lue dans l'URL Head) à reporter jusqu'à l'extraction de l'édition (fusionne des éditions « Alternate »).
+
+**À faire avant ou pendant le code** (réserves de la critique) : paires pièges pour les titres Tennispro.fr à marqueur « W » ou « M » d'une seule lettre et pour la détection d'âge ; vérifier sur les fiches Babolat qu'aucune offre sans jauge lue ne réunit deux jauges fixes (l'étape 2 quater ne la garde pas) ; la convention s'applique après toute l'extraction et n'écrase jamais une valeur écrite, couverte par un test ; source dédiée « convention » dans `ATTRIBUTE_SOURCES` ; trancher le canonique d'un modèle qui publierait une valeur supposée.
+
+**Report en code** : non fait, à confier à Sonnet dans une session suivante (`lib/matching`, tests), puis passage à blanc en prod (lecture seule), relecture de tous les modèles nouveaux ou modifiés, écriture en prod **seulement après accord explicite de Mathieu**. Aucune bascule du site n'est décidée.
+
+**Statut** : Actée (2026-10-07) pour C2 et C3b ; le reste est proposé.
