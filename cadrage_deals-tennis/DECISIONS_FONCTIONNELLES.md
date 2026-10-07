@@ -1467,3 +1467,13 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 **Report en code** : Sonnet, session suivante, avec passage à blanc relu puis écriture en prod après accord de Mathieu.
 
 **Statut** : Actée (2026-09-30).
+
+### D-2026-10-07-01 — R4.6-d : les 15 groupes textiles multi-marchands sont retenus après contrôle des références source
+
+**Contexte** : l'arbitrage du 2026-10-01 séparait six groupes (787, 909, 1101, 1171, 1829, 2026) sur des écarts de libellé. Le contrôle en lecture seule des références fabricant (GTIN, `merchant_sku`, variantes) montre une référence de base commune pour les 15 groupes.
+
+**Décision de Mathieu** : « Si les références indiquent que c'est le même article alors c'est bon. On retient. » Les 15 groupes sont admissibles ; détail dans `R4_6_d_bascule.md` §7.
+
+**Réserve** : groupe 639, GTIN différents pour la même référence CV2545-100, non expliqué.
+
+**Statut** : Actée (2026-10-07).

@@ -19,6 +19,12 @@
 > Sessions du 2026-09-29 (mesure des offres séparées faute d'information) au 2026-09-29 (R4.5-b cloud, code de D-2026-09-29-05) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-29-mesure-separation_a_R4-5-b-code-cloud.md` (même règle, condensation du 2026-09-30, session de l'étape 4).
 > Sessions du 2026-09-30 (R4.5-b, étape 3 textile) au 2026-09-30 (code de D-2026-09-29-05 reporté sur `master`) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-30-R4-5-b-etape-3_a_code-D-2026-09-29-05.md` (même règle, condensation du 2026-09-30, étape 7).
 
+## 2026-10-07 (session Sonnet) — Contrôle des références source des 15 groupes textiles R4.6-d
+
+- Modèle recommandé Opus (interprétation de données réelles) ; Mathieu demande de poursuivre sur Sonnet et retire la règle de choix du modèle de `CLAUDE.md` (déjà fait par #145).
+- Lecture seule en base (run `87987663-56cc-4fe7-adc3-2955405a716a`) : les 15 groupes partagent une référence de base commune ; les six « Séparer » (787, 909, 1101, 1171, 1829, 2026) ne divergeaient que par le libellé. `mpn` vide ; 639 : GTIN différents pour une même référence (non expliqué).
+- Mathieu retient les 15 groupes (D-2026-10-07-01). Aucune écriture en base, aucune bascule déclenchée.
+
 ## 2026-10-01 (suite) — Bascule R4.6-d, application validée par Mathieu
 - Autorisation explicite de Mathieu pour l'exécution d'écriture en production (étape 8 du dossier).
 - Réalisation préalable : précontrôle en lecture seule, validation du dry-run, arbitrage textile documenté, recoupement des identifiants source.

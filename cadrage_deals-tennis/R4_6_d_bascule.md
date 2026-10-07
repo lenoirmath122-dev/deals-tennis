@@ -76,18 +76,24 @@ Ces jugements reposent désormais sur la vérification des références sources 
 | 445 | Retenir | Références concordantes. |
 | 639 | Retenir | Références concordantes. |
 | 702 | Retenir | Références concordantes. |
-| 787 | Séparer | Divergences de modèle (Advantage Slam / DFADV). |
-| 909 | Séparer | Divergences de gamme (Core Performance / Ultra Dry). |
-| 1101 | Séparer | Divergences de modèle (Club / Stretch Woven). |
-| 1171 | Séparer | Divergences de modèle (Advantage / Advantage Flex). |
+| 787 | Retenir | Contrôle des références du 2026-10-07 : référence de base commune ; la divergence ne porte que sur le libellé (Advantage Slam / DFADV). |
+| 909 | Retenir | Contrôle des références du 2026-10-07 : référence de base commune ; la divergence ne porte que sur le libellé (Core Performance / Ultra Dry). |
+| 1101 | Retenir | Contrôle des références du 2026-10-07 : référence de base commune ; la divergence ne porte que sur le libellé (Club / Stretch Woven). |
+| 1171 | Retenir | Contrôle des références du 2026-10-07 : référence de base commune ; la divergence ne porte que sur le libellé (Advantage / Advantage Flex). |
 | 1597 | Retenir | Références concordantes. |
-| 1829 | Séparer | Divergences de modèle (Exercise Club / Exercise Club 1875). |
-| 2026 | Séparer | Divergences de modèle (Club / Club 22). |
+| 1829 | Retenir | Contrôle des références du 2026-10-07 : référence de base commune ; la divergence ne porte que sur le libellé (Exercise Club / Exercise Club 1875). |
+| 2026 | Retenir | Contrôle des références du 2026-10-07 : référence de base commune ; la divergence ne porte que sur le libellé (Club / Club 22). |
 | 2493 | Retenir | Références proches, formulation cohérente. |
-| 3152 | Retenir | Références concordantes. |
+| 3152 | Retenir | Références concordantes (3MP2061). |
 | 3523 | Retenir | Références concordantes. |
 
 Conséquence pour la revue : les six groupes 787, 909, 1101, 1171, 1829, 2493 sont concernés par une divergence explicite ; l'arbitrage de Mathieu distingue ceux à séparer (787, 909, 1101) de ceux qui restent à vérifier (1171, 1829) ou à retenir sous réserve (2493). Les autres arbitrages sont listés ci-dessus. Tous restent bloqués de l'admission finale jusqu'au contrôle des références sources.
+
+### Contrôle des références source et révision de l'arbitrage (2026-10-07)
+
+Lecture seule en base (run `87987663-56cc-4fe7-adc3-2955405a716a`, 4 011 modèles) des GTIN, `merchant_sku` et références de variantes des offres des 15 groupes (`mpn` vide partout). Les 15 groupes partagent une référence fabricant de base commune entre marchands (aux suffixes de coloris près) : 98 → 4WP2041, 195 → DH9552, 445 → 811725, 639 → CV2545-100, 702 → CV7575, 787 → DV2881-100, 909 → TH8917, 1101 → JG0994, 1171 → FD5336, 1597 → 4MP2441, 1829 → 4US26446, 2026 → 811379, 2493 → 3MP2011, 3152 → 3MP2061, 3523 → 3BP2021. Les « références différentes » vues dans `revue-textile.csv` pour 2026 (811379 | 911379) et 3152 (3MTF061 | 3MP2061) opposaient une autre offre à celle du groupe.
+
+**Décision de Mathieu (2026-10-07, D-2026-10-07-01) : les 15 groupes sont retenus.** Les six groupes arbitrés « Séparer » (787, 909, 1101, 1171, 1829, 2026) passent à « Retenir » : leurs références désignent le même article. Réserve : sur 639, les deux offres ont la même référence CV2545-100 mais des GTIN différents (0194502691474 / 0194502691542), non expliqué.
 
 ## 8. Arrêt et suites requises
 
