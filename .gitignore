@@ -57,3 +57,6 @@ next-env.d.ts
 
 # rapport de passage du moteur fantôme (R4.4)
 /rapport-passage/
+
+# rapports locaux de passage (ne pas versionner)
+/rapport-*/
