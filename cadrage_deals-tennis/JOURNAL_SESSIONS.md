@@ -182,3 +182,12 @@
 - `npm run match:shadow -- --out rapport-passage-r4.6-b-prod`. Passage `5bc68805-0d71-4895-b2bd-87a56a17f234`, engine `r4.6-b`, **4 011 modèles, 4 732 liens**, 602 paires en revue textile : mêmes chiffres que le passage à blanc. Vérifié en base : 1 seul passage, `deals` inchangé (4 241 `active`, 794 `tracked`). Tables `match_*` seulement, site non touché.
 - Non fait : relecture détaillée des 15 modèles textiles restants et de la file de revue.
 - Prochaine étape : R4.6-c (règles de repérage des non-reconnus).
+
+## 2026-10-07 (session desktop, Sonnet) — ménage du suivi après état des lieux
+
+- Constat : `ETAT_ACTUEL.md` empilait deux lignes « Dernière mise à jour » contradictoires (R4.6-c « prochaine » alors que R4.6-d était relu). Réécrit en une seule ligne.
+- Vérifié en base (lecture seule) : un seul passage dans `match_runs`, `87987663-56cc-4fe7-adc3-2955405a716a` (engine `r4.6-b`, 2026-10-01 20:24, mêmes compteurs que `5bc68805…`). Son écriture (PR #141, `npm run match:shadow -- --out rapport-r4.6-d-prod-write`) n'avait pas été consignée au JOURNAL ; `5bc68805…` n'existe plus.
+- R4.6-c marquée faite (`R4_6_c_rapport.md`) ; R4.6-d : reste le contrôle des références source, la validation des métriques du script et la décision de bascule de Mathieu.
+- Les deux notes de la PR #141 rangées dans `cadrage_deals-tennis/` (`R4_6_d_etat_ecriture.md`, `R4_6_d_textile_analysis.md`) ; dossier `files/` supprimé.
+- Retrait de la section « Choix du modèle » de `CLAUDE.md` (demande de Mathieu : le routage se fait par les sous-agents du `CLAUDE.md` global).
+- Non traité (décision de Mathieu) : `scripts/matching/bascule-r4.6-d.ts` et ses données de test restent non versionnés ; copies `deals-tennis-pr141/142*` et dossiers `rapport-*` locaux à nettoyer.
