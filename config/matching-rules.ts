@@ -140,7 +140,35 @@ export const ATTRIBUTE_SOURCES = [
   // (surface, genre des chaussures), prix d'origine (conditionnement des cordages).
   "url",
   "prix",
+  // R4.6-d (D-2026-10-07-02) : valeur supposée par une convention de valeur absente
+  // (`ABSENT_VALUE_CONVENTIONS`), jamais lue. Sert au rapprochement, jamais aux attributs canoniques.
+  "convention",
 ] as const;
+
+/**
+ * Conventions de valeur absente (D-2026-10-07-02, cadrage `R4_6_conventions_valeur_absente.md` §6) :
+ * un marchand qui n'écrit jamais une valeur la laisse implicite. Appliquées après toute l'extraction,
+ * seulement si l'attribut reste absent ; jamais d'écrasement d'une valeur écrite.
+ */
+export interface AbsentValueConvention {
+  marchand: string;
+  categorie: string;
+  attribut: string;
+  valeur: string;
+  /** Preuves et décision. */
+  decision: string;
+}
+
+export const ABSENT_VALUE_CONVENTIONS: AbsentValueConvention[] = [
+  {
+    // C2 : Tennispro.fr écrit « Femme » mais jamais « Homme » ; enfants exclus (voir `applyAbsentValueConventions`).
+    marchand: "Tennispro.fr",
+    categorie: "chaussures",
+    attribut: "genre",
+    valeur: "homme",
+    decision: "D-2026-10-07-02 (C2) : 63 femme, 0 homme, 62 absents ; vérité terrain 8 sur 8",
+  },
+];
 
 /** Attributs qui séparent toujours deux produits, toutes catégories. */
 export const COMMON_ATTRIBUTES: Record<string, AttributeRole> = {

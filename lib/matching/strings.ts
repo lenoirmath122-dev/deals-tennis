@@ -30,10 +30,10 @@ const REEL_MIN_PRICE = 90;
 
 /**
  * Marchands dont la fiche propose la jauge comme un choix de taille (Tennispro.fr, vérifié le 2026-09-30 ;
- * site Head, même règle sans vérification, choix de Mathieu, D-2026-09-30-09) : sans jauge dans le titre,
- * la jauge est une variante de l'offre.
+ * site Head, même règle sans vérification, choix de Mathieu, D-2026-09-30-09 ; site Babolat, convention
+ * C3b, vérité terrain 7 sur 7, D-2026-10-07-02) : sans jauge dans le titre, la jauge est une variante de l'offre.
  */
-const GAUGE_IS_VARIANT_MERCHANTS = ["Tennispro.fr", "Head"];
+const GAUGE_IS_VARIANT_MERCHANTS = ["Tennispro.fr", "Head", "Babolat"];
 
 const MATERIALS: [string, RegExp][] = [
   ["boyau naturel", /\b(?:boyau naturel|natural gut)\b/],

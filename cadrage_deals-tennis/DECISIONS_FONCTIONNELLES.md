@@ -1494,3 +1494,5 @@ Appliquée au CSV R1 le 2026-09-26 (voir `R1_mesure.md`). Valeur `conditionnemen
 **Report en code** : non fait, à confier à Sonnet dans une session suivante (`lib/matching`, tests), puis passage à blanc en prod (lecture seule), relecture de tous les modèles nouveaux ou modifiés, écriture en prod **seulement après accord explicite de Mathieu**. Aucune bascule du site n'est décidée.
 
 **Statut** : Actée (2026-10-07) pour C2 et C3b ; le reste est proposé.
+
+**Complément (2026-10-13, choix de Mathieu)** : une valeur supposée par convention (source `convention`) sert au rapprochement mais n'est **jamais publiée** dans les attributs canoniques d'un modèle. Code : engine `r4.6-d` ; garde « lettre seule W, M, K ou C dans le titre = pas de genre supposé ».
