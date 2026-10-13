@@ -68,9 +68,43 @@ export async function getModelOffers(
   return rows as DealCardData[];
 }
 
+type Attributes = Record<string, { value?: unknown } | undefined>;
+
+/** Attributs qui distinguent deux générations ; tous les autres doivent être identiques. */
+const GENERATION_KEYS = ["generation", "annee", "millesime", "edition"];
+
+const attrValue = (a: Attributes, key: string) => String(a[key]?.value ?? "-");
+
 /**
- * Autres modèles de la même famille (autres générations), avec leurs offres actives.
- * Aucun tri ni « meilleur prix » entre modèles (GAP-2026-09-30-02).
+ * Même famille, mêmes genre / public / modèle / surface / version… et une génération
+ * (génération, année, millésime, édition) différente. Écarte les autres genres, juniors
+ * et modèles textiles de la même famille, qui ne sont pas des générations.
+ */
+export function isOtherGeneration(own: Attributes, other: Attributes): boolean {
+  const keys = new Set([...Object.keys(own), ...Object.keys(other)]);
+  let differs = false;
+  for (const key of keys) {
+    const same = attrValue(own, key) === attrValue(other, key);
+    if (GENERATION_KEYS.includes(key)) differs ||= !same;
+    else if (!same) return false;
+  }
+  return differs;
+}
+
+/** Libellé de génération en clair (« Gen 9 », « 2023 »), ou null si aucun repère. */
+export function generationLabel(attributes: Record<string, unknown>): string | null {
+  const a = attributes as Attributes;
+  for (const key of GENERATION_KEYS) {
+    const v = a[key]?.value;
+    if (v !== undefined && v !== null && v !== "") return String(v);
+  }
+  return null;
+}
+
+/**
+ * Autres générations de la même famille (même variante, génération différente), avec
+ * leurs offres actives. Aucun tri par prix ni « meilleur prix » entre modèles
+ * (GAP-2026-09-30-02).
  */
 export async function getFamilyOtherModels(
   runId: string,
@@ -78,7 +112,8 @@ export async function getFamilyOtherModels(
 ): Promise<FamilyModel[]> {
   const rows = (await sql.query(
     `
-      SELECT mm.id AS model_id, mm.canonical_attributes, ${DEAL_CARD_FIELDS}
+      SELECT mm.id AS model_id, mm.canonical_attributes,
+             own_m.canonical_attributes AS own_attributes, ${DEAL_CARD_FIELDS}
       FROM match_offer_links own
       JOIN match_models own_m ON own_m.id = own.model_id
       JOIN match_models mm
@@ -98,10 +133,14 @@ export async function getFamilyOtherModels(
   )) as (DealCardData & {
     model_id: string;
     canonical_attributes: Record<string, unknown>;
+    own_attributes: Record<string, unknown>;
   })[];
 
   const byModel = new Map<string, FamilyModel>();
-  for (const { model_id, canonical_attributes, ...offer } of rows) {
+  for (const { model_id, canonical_attributes, own_attributes, ...offer } of rows) {
+    if (!isOtherGeneration(own_attributes as Attributes, canonical_attributes as Attributes)) {
+      continue;
+    }
     let model = byModel.get(model_id);
     if (!model) {
       model = { modelId: model_id, canonicalAttributes: canonical_attributes, offers: [] };
