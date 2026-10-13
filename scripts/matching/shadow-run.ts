@@ -19,8 +19,8 @@ import { buildTextileReview } from "../../lib/matching/textile-review.ts";
 import type { AccessorySubcategory } from "../../config/accessory-subcategories.ts";
 import type { DealCategory } from "../../types/database.ts";
 
-/** Version du moteur écrite dans `match_runs.engine_version`. */
-const ENGINE_VERSION = "r4.6-b";
+/** Version du moteur écrite dans `match_runs.engine_version` (r4.6-d : conventions C2 et C3b, D-2026-10-07-02). */
+const ENGINE_VERSION = "r4.6-d";
 const BATCH = 500;
 
 if (!process.env.DATABASE_URL) {

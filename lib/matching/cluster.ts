@@ -100,7 +100,10 @@ function sourceRank(source: string): number {
   return rank === -1 ? ATTRIBUTE_SOURCES.length : rank;
 }
 
-/** Valeur canonique de chaque attribut : celle de la source la plus fiable, à égalité la première offre. */
+/**
+ * Valeur canonique de chaque attribut : celle de la source la plus fiable, à égalité la première offre.
+ * Une valeur de source `convention` n'est jamais publiée (D-2026-10-07-02, choix de Mathieu le 2026-10-13).
+ */
 function canonicalAttributes(members: EngineOffer[]): Record<string, ExtractedAttribute> {
   const category = members[0].extracted.categorie;
   const names = [...discriminantAttributeNames(category), "generation", "annee", "version"];
@@ -109,7 +112,7 @@ function canonicalAttributes(members: EngineOffer[]): Record<string, ExtractedAt
     let best: ExtractedAttribute | null = null;
     for (const member of members) {
       const attr = member.extracted.attributes[name];
-      if (attr && (best === null || sourceRank(attr.source) < sourceRank(best.source))) best = attr;
+      if (attr && attr.source !== "convention" && (best === null || sourceRank(attr.source) < sourceRank(best.source))) best = attr;
     }
     if (best) out[name] = best;
   }

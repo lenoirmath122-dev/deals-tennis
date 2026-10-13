@@ -5,6 +5,7 @@
  * écrit les tables `match_*` viendra en R4.4.
  */
 
+import { ABSENT_VALUE_CONVENTIONS } from "../../config/matching-rules.ts";
 import { extractAccessoryAttributes, accessorySubcategory, SUBCATEGORIES_WITH_FAMILIES } from "./accessories.ts";
 import type { AccessoryFamilyEntry } from "../../config/model-families-accessoires.ts";
 import { familyKey, recognizeFamily } from "./families.ts";
@@ -57,6 +58,8 @@ export function extractOfferAttributes(offer: OfferInput): ExtractedOffer {
   const marque = entry?.brand ?? offer.marque;
   const referencesFabricant = manufacturerReferences(offer, { brand: marque, subcategory });
   if (offer.categorie === "cordages") setAttr(attrs, "age_group", "adulte", "titre_description");
+  // En dernier : une convention ne remplit qu'un attribut resté absent après toute l'extraction.
+  applyAbsentValueConventions(offer, attrs);
 
   let nonReconnu: ExtractedOffer["nonReconnu"] = null;
   if (!entry) {
@@ -82,6 +85,24 @@ export function extractOfferAttributes(offer: OfferInput): ExtractedOffer {
     nonReconnu,
     alertes,
   };
+}
+
+/**
+ * Lettre seule de genre ou d'âge (« W », « M », « K », « C ») : ignorée par l'extraction car ambiguë
+ * (`shoes.ts`), mais assez pour ne pas supposer un genre adulte homme (réserve de D-2026-10-07-02).
+ */
+const SINGLE_LETTER_GENDER_OR_AGE = /(?<![a-z0-9])[wmkc](?![a-z0-9])/;
+
+/** Conventions de valeur absente (D-2026-10-07-02) : source `convention`, jamais d'écrasement. */
+function applyAbsentValueConventions(offer: OfferInput, attrs: Attributes) {
+  for (const c of ABSENT_VALUE_CONVENTIONS) {
+    if (c.marchand !== offer.marchand || c.categorie !== offer.categorie || attrs[c.attribut]) continue;
+    if (c.attribut === "genre") {
+      if (attrs.age_group?.value !== "adulte") continue;
+      if (SINGLE_LETTER_GENDER_OR_AGE.test(fullNormalize(offer.titre))) continue;
+    }
+    setAttr(attrs, c.attribut, c.valeur, "convention");
+  }
 }
 
 /**
