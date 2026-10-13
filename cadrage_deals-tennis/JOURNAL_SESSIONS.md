@@ -230,3 +230,4 @@
 2026-10-13 · R5 session 3 : section « Autres générations » sur la fiche (flag), filtre isOtherGeneration (même variante, génération/année/millésime/édition différente), « dès X € » par génération sans comparaison. Prochaine : session 4 recette preview.
 2026-10-13 · R5 session 4 : recette preview (variables Preview créées, 400 fiches relues). Défauts : libellés « Génération » faux en textile (athlète/ville/édition), doublons, faux positifs. Prochaine : R5.5 correctifs, décision « RG » avant.
 2026-10-13 · R5.5 : génération = generation/annee seulement (edition/millesime = variantes, RG non), génération requise des deux côtés, libellé marque+famille, dédoublonnage. 15 paires prod OK. PR #162. Prochaine : recette preview.
+2026-10-13 · Recette R5.5 après fusion #162 : 572 familles lues, 4 familles chaussures avec autres générations (libellés OK), textile et raquettes sans section. Activation prod = décision Mathieu.
