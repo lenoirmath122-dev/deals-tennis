@@ -12,7 +12,7 @@ import type { CatalogResponse, DealCardData, DealDetail } from "@/types/database
 
 const PER_PAGE = 24;
 
-const DEAL_CARD_FIELDS = `
+export const DEAL_CARD_FIELDS = `
   d.id,
   d.title,
   d.brand,
