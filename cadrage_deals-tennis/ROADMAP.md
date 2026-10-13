@@ -32,7 +32,8 @@ Source des phases : `CADRAGE_vrais-bons-plans.md` §3 ; ordre global : `CADRAGE_
   - Fait : passage prod `87987663…`, 15 groupes textiles retenus (D-2026-10-07-01), conventions de valeur absente C2 et C3b retenues (D-2026-10-07-02).
   - Fait (PR #153) : code de C2 / C3b, engine `r4.6-d`.
   - Fait (2026-10-13) : passage à blanc conforme (190 hors textile, 3 995 modèles, 0 incohérent, 13 conflits) ; écriture en prod `f07bcbab-8f53-4820-ad4d-1aec9eed6759` (engine `r4.6-d`, 3 995 modèles, 4 732 liens, accord de Mathieu).
-  - Reste : relecture des 16 modèles nouveaux ou modifiés (non faite), décision de bascule de l'affichage (R5).
+  - Fait (2026-10-13) : relecture des 16 modèles modifiés, conforme (50 offres déplacées, aucune perdue).
+  - Reste : décision de bascule de l'affichage (R5).
 - R5 affichage site (modèles multi-marchands, autres générations de la famille) : ⏳ bloqué sur R4.6-d.
 
 ## Hors chemin critique

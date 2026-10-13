@@ -217,3 +217,6 @@
 
 ## 2026-10-13 (session desktop, Sonnet) — R4.6-d : passage à blanc et écriture en prod
 - PR #153 fusionnée ; passage à blanc conforme ; écriture `f07bcbab…` (r4.6-d, 3 995 modèles, 4 732 liens, `--keep-runs`, `87987663…` conservé). Relecture des 16 modèles non faite.
+
+## 2026-10-13 (session desktop, Sonnet) — R4.6-d : relecture des 16 modèles
+- Comparatif `87987663…` / `f07bcbab…` : 50 offres déplacées, aucune perdue ; 24 Babolat (jauge unique) et 26 adidas (genre absent → homme) conformes. Reste : bascule R5, sort de l'ancien passage.
