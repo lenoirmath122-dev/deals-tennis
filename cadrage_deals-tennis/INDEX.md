@@ -2,16 +2,17 @@
 
 Point d'entrée et protocole de reprise du projet. À lire dans cet ordre en début de session :
 
-0. Appliquer la section « Choix du modèle » de [CLAUDE.md](../CLAUDE.md) au début de la session et avant chaque nouvelle tâche : si le modèle actuel correspond à la recommandation, l'indiquer en une ligne ; sinon, poser directement une question interactive (pas de texte + arrêt séparés) avant toute action.
+0. [REPRISE.md](./REPRISE.md) — passation courante (20 lignes) : où on en est et la prochaine étape. Lire en premier.
 1. [ETAT_ACTUEL.md](./ETAT_ACTUEL.md) — où en est le projet.
 2. [RISQUES_OUVERTS.md](./RISQUES_OUVERTS.md) — risques et points ouverts non résolus.
 3. [ROADMAP.md](./ROADMAP.md) — vue synthétique du chantier en cours et des prochaines étapes.
 4. Dernière entrée de [JOURNAL_SESSIONS.md](./JOURNAL_SESSIONS.md) — ce qui s'est passé la dernière fois.
-4. **Tant que le chantier « vrais bons plans » / rapprochement multi-niveaux est en cours** (voir GAP-2026-09-25-19) : le §10 « Phasage et impact sur le cadrage principal » de [CADRAGE_rapprochement-multi-niveaux.md](./CADRAGE_rapprochement-multi-niveaux.md) et la section 6 « Amendements post Phase 0 » de [CADRAGE_vrais-bons-plans.md](./CADRAGE_vrais-bons-plans.md) — c'est ce phasage (ordre global révisé, étapes R0-R5) qui détermine la prochaine étape légitime, pas une proposition de pistes ouvertes. Ne jamais proposer une étape hors de cet ordre (ex. R3 avant R0-R2) comme piste valide.
+5. **Tant que le chantier « vrais bons plans » / rapprochement multi-niveaux est en cours** (voir GAP-2026-09-25-19) : le §10 « Phasage et impact sur le cadrage principal » de [CADRAGE_rapprochement-multi-niveaux.md](./CADRAGE_rapprochement-multi-niveaux.md) et la section 6 « Amendements post Phase 0 » de [CADRAGE_vrais-bons-plans.md](./CADRAGE_vrais-bons-plans.md) — c'est ce phasage (ordre global révisé, étapes R0-R5) qui détermine la prochaine étape légitime, pas une proposition de pistes ouvertes. Ne jamais proposer une étape hors de cet ordre (ex. R3 avant R0-R2) comme piste valide.
 
 ## Documents
 
-- [ROADMAP.md](./ROADMAP.md) — vue synthétique du chantier R0-R5 et des étapes.
+- [ROADMAP.md](./ROADMAP.md) — vue globale du projet (phases 0 à 6) et du chantier R0-R5.
+- [REPRISE.md](./REPRISE.md) — passation courante.
 - [decisions/](./decisions/) — décisions structurantes numérotées (D-AAAA-MM-JJ-NN), fichiers individuels.
 - [DECISIONS_FONCTIONNELLES.md](./DECISIONS_FONCTIONNELLES.md) — versions consolidées des décisions (archive progressive).
 - [CADRAGE_vrais-bons-plans.md](./CADRAGE_vrais-bons-plans.md) / [CADRAGE_rapprochement-multi-niveaux.md](./CADRAGE_rapprochement-multi-niveaux.md) — cadrages du chantier en cours (historique de prix, verdict, rapprochement produit multi-niveaux R0-R5).
@@ -50,5 +51,5 @@ Point d'entrée et protocole de reprise du projet. À lire dans cet ordre en dé
 
 - `ETAT_ACTUEL.md` : seuil 150 lignes. Au-delà, condenser chaque phase/chantier **terminé** en une ligne et déplacer son détail intégral dans `archive/` ; seul le chantier **en cours** garde son détail complet ici.
 - `JOURNAL_SESSIONS.md` : seuil 150 lignes. Au-delà, garder les sessions récentes en clair et déplacer les plus anciennes, telles quelles, dans `archive/`.
-- `GAPS_OUVERTS.md` : pas de seuil de taille — un gap tranché est retiré du fichier ; le texte retiré va tel quel dans `archive/GAPS_OUVERTS_retires_*.md` (la décision `D-xxx` qui le clôt fait foi).
+- `RISQUES_OUVERTS.md` (points ouverts ; ancien `GAPS_OUVERTS.md`) : pas de seuil de taille — un gap tranché est retiré du fichier ; le texte retiré va tel quel dans `archive/GAPS_OUVERTS_retires_*.md` (la décision `D-xxx` qui le clôt fait foi).
 - `DECISIONS_FONCTIONNELLES.md` : **jamais archivé** (registre consulté par référence d'ID, pas relu intégralement à chaque reprise).

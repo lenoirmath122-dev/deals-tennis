@@ -4,7 +4,7 @@
 
 > Détail antérieur de cette page (R0 à R4.5, chantiers du 2026-09-21 au 2026-09-29) archivé tel quel dans `archive/ETAT_ACTUEL_detail_2026-09-29-R0_a_R4-5.md`. Détails plus anciens : `archive/ETAT_ACTUEL_detail_2026-09-22.md` et `archive/ETAT_ACTUEL_detail_2026-09-23-recherche_a_retour-accueil.md`.
 
-## Chantier en cours : rapprochement multi-niveaux, R4.5
+## Chantier en cours : rapprochement multi-niveaux (R4.5 détaillé ci-dessous, R4.6 en fin de page)
 
 - **R4.5-a** (extraction textile, référence de style, signature) : fait, PR #116 fusionnée.
 - **R4.5-b** (étape 3 en file de revue) : fait, PR #118 fusionnée (`lib/matching/textile-review.ts`, D-2026-09-30-01 : sous-gamme adidas, « Flouncy » Nike, bermuda). Passage écrit en prod le 2026-09-30 (`f196b689…`, engine `r4.5-b-textile`, 3 368 modèles, 69 modèles textiles multi-marchands, 250 paires en file de revue). **Ce passage ne contient pas encore D-2026-09-29-05** : les modèles Nike Victory 7, Advantage 7 et Victory 9 y réunissent deux générations (Flex et Dri-FIT) à tort (tables `match_*` seulement, site non touché).
