@@ -14,6 +14,8 @@ D-2026-09-30-06 point 2 : les générations restent des articles séparés pour 
 
 **À cadrer** : ordre et libellé des générations, choix de la « génération courante » (la plus récente en vente ?), place de cette section par rapport aux modèles « proches » ; en même temps que l'affichage des niveaux famille / article (R5).
 
+**Recette R5 s4 (2026-10-13)** : libellé « Génération X » faux en textile (attribut athlète/ville/édition), doublons, faux positifs (même modèle, titre ou couleur différents), libellé sans nom de modèle. Correctifs en R5.5 ; décision Mathieu à prendre : « RG » (Roland-Garros) = autre génération ou non.
+
 **Bloquant sur** : R5.
 
 **Statut** : ouvert au 2026-09-30.

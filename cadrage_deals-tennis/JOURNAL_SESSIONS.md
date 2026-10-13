@@ -228,3 +228,4 @@
 2026-10-13 · R5 session 2 : fiche article derrière flag (offres du même modèle via getLinkedModelOffers, repli product_id si flag off ou offre hors modèle), test contrat ok. Prochaine : session 3 autres générations.
 
 2026-10-13 · R5 session 3 : section « Autres générations » sur la fiche (flag), filtre isOtherGeneration (même variante, génération/année/millésime/édition différente), « dès X € » par génération sans comparaison. Prochaine : session 4 recette preview.
+2026-10-13 · R5 session 4 : recette preview (variables Preview créées, 400 fiches relues). Défauts : libellés « Génération » faux en textile (athlète/ville/édition), doublons, faux positifs. Prochaine : R5.5 correctifs, décision « RG » avant.
