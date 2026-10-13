@@ -1,5 +1,13 @@
 # Points ouverts
 
+## Passage `87987663…` (engine `r4.6-b`) conservé comme retour arrière (OUVERT, ouvert le 2026-10-13)
+
+Ancien passage prod, gardé tant que R5 n'est pas validée en production. Suppression (cascade `match_*`) seulement sur accord explicite de Mathieu, après vérification qu'aucun code ni flag ne le référence.
+
+**Bloquant sur** : R5 validée en prod.
+
+---
+
 ## GAP-2026-09-30-02 — Affichage : autres générations de la même famille sur la fiche article (OUVERT, R5)
 
 D-2026-09-30-06 point 2 : les générations restent des articles séparés pour le prix, l'historique et le verdict, mais la fiche doit montrer, après la génération courante et ses prix comparés, les autres générations de la même famille dans une section à part, avec la différence écrite en clair (« Génération précédente : 2023, dès X € »), sans « meilleur prix » entre générations (principe R6).
