@@ -1,40 +1,48 @@
 ---
-titre: Roadmap simplifiée
+titre: Roadmap
 statut: actuel
-dernière mise à jour: 2026-10-01
+dernière mise à jour: 2026-10-13
 ---
 
 # Roadmap
 
-## Chantier actif : Rapprochement multi-niveaux (R0-R5)
+Source des phases : `CADRAGE_vrais-bons-plans.md` §3 ; ordre global : `CADRAGE_rapprochement-multi-niveaux.md` §10. Détail de l'état : `ETAT_ACTUEL.md`.
 
-Le projet tennis-deals met en place un système de rapprochement multi-niveaux pour regrouper les offres de plusieurs marchands correspondant au même produit.
+## Vue globale
 
-### Étapes actuelles
+| Bloc | État | Détail |
+|---|---|---|
+| Socle MVP (site, base Neon, Vercel, CI) | ✅ | Prod : `deals-tennis.vercel.app`. Recherche, filtres, pages réglementaires, SEO blocs 1 à 3. |
+| Phase 0 — Alignement | ✅ | Validée le 2026-09-25. ProTennis retiré du périmètre. |
+| Phase 1 — Historique de prix | ✅ | Trigger `price_observations` en prod, 8 scrapers sur `lib/ingest.ts`, statut `tracked`. |
+| **Rapprochement multi-niveaux R0 → R5** | 🔶 **en cours** | Voir ci-dessous. |
+| Phase 2 — Cadence automatique (n8n) | ⏳ | Scraping aujourd'hui manuel et local. VM Oracle vierge, rien installé ni testé. Peut démarrer en parallèle de R4.6 / R5. |
+| Phase 3 — Qualité des données | ⏳ | |
+| Phase 4 — Verdict « vrai bon plan » | ⏳ | ≥ 30 jours d'historique requis ; affichage derrière feature flag. |
+| Phase 4-bis — Prix de référence au lancement | ⏳ | Conception seulement, après phase 2 et R5. |
+| Phase 5 — Supervision | ⏳ | Inclut l'agrégation de `click_events`. |
+| Phase 6 — Sélection / vitrine | ⏳ | « Plus tard ». |
 
-- **R4.6** : Analyse des erreurs et bascule progressive (en cours)
-  - R4.6-a : Validation d'échantillon (30 modèles, précision 28/30) — ✅ Fait
-  - R4.6-b : Textile réuni par identifiant — ✅ Fait (prod)
-  - R4.6-c : TODO (prochaine étape)
-  - R4.6-d : Bascule finale et contrôle textiles — en cours (dry-run validé)
+## Chantier actif : rapprochement multi-niveaux (R0-R5)
 
-- **R5** : Affichage site (modèles multi-marchands)
-  - Bloqué sur R4.6-d
-
-### Étapes complétées
-
-- R0 : Diagnostic rapprochement (✅)
-- R1 : Jeu de référence (✅)
-- R2 : Référentiel v1 (✅)
-- R3 : Capture à l'ingestion (✅)
-- R4.1-4.5 : Moteur en mode fantôme (✅)
+- R0 diagnostic, R1 jeu de référence, R2 référentiel, R3 capture à l'ingestion : ✅
+- R4.1 à R4.5 moteur en mode fantôme : ✅
+- R4.6-a échantillon (28 / 30), R4.6-b textile par identifiant, R4.6-c non reconnues : ✅
+- **R4.6-d bascule** : 🔶
+  - Fait : passage prod `87987663…`, 15 groupes textiles retenus (D-2026-10-07-01), conventions de valeur absente C2 et C3b retenues (D-2026-10-07-02).
+  - Reste : code de C2 / C3b (181 → 190 modèles multi-marchands hors textile à blanc), passage à blanc, relecture, écriture en prod (accord explicite de Mathieu), décision de bascule.
+- R5 affichage site (modèles multi-marchands, autres générations de la famille) : ⏳ bloqué sur R4.6-d.
 
 ## Hors chemin critique
 
-- GAP-2026-09-29-02 : Détection junior restante (après R4.6)
-- GAP-2026-09-29-03 : Nouveaux marchands : Sports Raquettes, Tennis Compagnie, etc. (après R4.6)
-- GAP-2026-09-29-01 : Raquettes : aucun rapprochement fabricant/revendeurs (non bloquant)
+- GAP-2026-09-29-02 : détection junior restante
+- GAP-2026-09-29-03 : nouveaux marchands (Sports Raquettes, Tennis Compagnie, Extreme Tennis, Tennis Achat, Intersport), après R4.6
+- GAP-2026-09-29-01 : raquettes sans rapprochement fabricant / revendeurs
+- GAP-2026-09-25-10 : renommage « Bonplantennis » (bloque les candidatures d'affiliation)
+- GAP-2026-09-25-07 : SEO blocs 4 à 7
+- GAP-2026-09-24-01 : Sport Outlet FR (Awin)
+- Charte graphique : spacing / layout et nav
 
 ## Risques ouverts
 
-Voir [RISQUES_OUVERTS.md](./RISQUES_OUVERTS.md) pour la liste complète.
+Voir [RISQUES_OUVERTS.md](./RISQUES_OUVERTS.md) (les points ouverts y sont tenus ; il n'existe pas de `GAPS_OUVERTS.md`).
