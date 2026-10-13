@@ -3,7 +3,12 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getDealDetail } from "@/lib/deals";
 import { formatDiscountBadge, formatFreshnessLabel, formatPrice } from "@/lib/format";
-import { getLinkedModelOffers, getMatchRunId } from "@/lib/match-read";
+import {
+  generationLabel,
+  getFamilyOtherModels,
+  getLinkedModelOffers,
+  getMatchRunId,
+} from "@/lib/match-read";
 import { DealImage } from "@/components/deal-image";
 import { CATEGORY_LABELS } from "@/lib/filters";
 import { SITE_URL } from "@/lib/site";
@@ -83,6 +88,9 @@ export default async function DealDetailPage({
   const runId = getMatchRunId();
   const modelOffers = runId ? await getLinkedModelOffers(runId, deal.id) : null;
   const otherOffers = modelOffers ?? legacyOffers;
+  // Autres générations : seulement si l'offre est rattachée à un modèle du passage.
+  const otherGenerations =
+    runId && modelOffers ? await getFamilyOtherModels(runId, deal.id) : [];
   const jsonLd = buildProductJsonLd(deal);
 
   return (
@@ -164,6 +172,44 @@ export default async function DealDetailPage({
                 </div>
               </li>
             ))}
+          </ul>
+        </section>
+      )}
+
+      {otherGenerations.length > 0 && (
+        <section className="mt-10">
+          <h2 className="mb-1 text-lg font-semibold text-zinc-900">Autres générations</h2>
+          <p className="mb-4 text-sm text-zinc-500">
+            Modèles de la même famille, vendus séparément : prix non comparables.
+          </p>
+          <ul className="flex flex-col divide-y divide-card-border rounded-md border border-card-border">
+            {otherGenerations.map((model) => {
+              const first = model.offers[0];
+              const from = Math.min(...model.offers.map((o) => o.discounted_price));
+              const label = generationLabel(model.canonicalAttributes);
+              return (
+                <li
+                  key={model.modelId}
+                  className="flex items-center justify-between gap-3 px-4 py-3"
+                >
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium text-zinc-900">
+                      {label ? `Génération ${label}` : first.title}
+                    </span>
+                    <span className="text-xs text-zinc-500">
+                      {model.offers.length} offre{model.offers.length > 1 ? "s" : ""} · dès{" "}
+                      {formatPrice(from)}
+                    </span>
+                  </div>
+                  <Link
+                    href={`/deal/${first.id}`}
+                    className="rounded-md border border-card-border px-3 py-1.5 text-xs font-medium text-zinc-900 hover:bg-zinc-50"
+                  >
+                    Voir la fiche
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </section>
       )}
