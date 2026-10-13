@@ -19,6 +19,10 @@
 > Sessions du 2026-09-29 (mesure des offres séparées faute d'information) au 2026-09-29 (R4.5-b cloud, code de D-2026-09-29-05) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-29-mesure-separation_a_R4-5-b-code-cloud.md` (même règle, condensation du 2026-09-30, session de l'étape 4).
 > Sessions du 2026-09-30 (R4.5-b, étape 3 textile) au 2026-09-30 (code de D-2026-09-29-05 reporté sur `master`) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-30-R4-5-b-etape-3_a_code-D-2026-09-29-05.md` (même règle, condensation du 2026-09-30, étape 7).
 
+## 2026-10-13 (session Sonnet) — Passation et roadmap globale
+
+- Concordance du suivi vérifiée ; `ROADMAP.md` réécrite (vue globale phases 0 à 6 + R0-R5), `REPRISE.md` créé, `INDEX.md` et `ETAT_ACTUEL.md` corrigés. Aucun code touché.
+
 ## 2026-10-07 (session Sonnet, suite) — État des lieux du regroupement et conventions de valeur absente
 
 - Mathieu demande un état des lieux poussé du regroupement (accessoires, chaussures, cordages, raquettes ; textile sorti du périmètre) et délègue l'arbitrage à Claude Code. Rapport du moteur relu (4 011 modèles, 196 multi-marchands dont 181 hors textile, 313 non reconnues) ; script de bascule `bascule-r4.6-d.ts` : il n'inventorie que les 313 non reconnues, ne valide pas les autres métriques, `--apply` reste bloqué.
