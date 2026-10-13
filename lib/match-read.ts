@@ -23,6 +23,22 @@ export function getMatchRunId(env: NodeJS.ProcessEnv = process.env): string | nu
   return id && UUID_RE.test(id) ? id : null;
 }
 
+/**
+ * Offres du même modèle si l'offre est rattachée à un modèle du passage, sinon null
+ * (offre hors modèle : l'appelant garde l'ancien affichage).
+ */
+export async function getLinkedModelOffers(
+  runId: string,
+  dealId: string
+): Promise<DealCardData[] | null> {
+  const linked = await sql.query(
+    `SELECT 1 FROM match_offer_links WHERE run_id = $1 AND deal_id = $2 LIMIT 1`,
+    [runId, dealId]
+  );
+  if (linked.length === 0) return null;
+  return getModelOffers(runId, dealId);
+}
+
 export interface FamilyModel {
   modelId: string;
   canonicalAttributes: Record<string, unknown>;

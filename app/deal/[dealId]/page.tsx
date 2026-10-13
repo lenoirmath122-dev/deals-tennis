@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getDealDetail } from "@/lib/deals";
 import { formatDiscountBadge, formatFreshnessLabel, formatPrice } from "@/lib/format";
+import { getLinkedModelOffers, getMatchRunId } from "@/lib/match-read";
 import { DealImage } from "@/components/deal-image";
 import { CATEGORY_LABELS } from "@/lib/filters";
 import { SITE_URL } from "@/lib/site";
@@ -77,7 +78,11 @@ export default async function DealDetailPage({
   params: Promise<{ dealId: string }>;
 }) {
   const { dealId } = await params;
-  const { deal, otherOffers } = await loadDeal(dealId);
+  const { deal, otherOffers: legacyOffers } = await loadDeal(dealId);
+  // R5 : flag off (défaut) ou offre hors modèle => ancien affichage (product_id).
+  const runId = getMatchRunId();
+  const modelOffers = runId ? await getLinkedModelOffers(runId, deal.id) : null;
+  const otherOffers = modelOffers ?? legacyOffers;
   const jsonLd = buildProductJsonLd(deal);
 
   return (
