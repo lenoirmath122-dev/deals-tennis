@@ -19,14 +19,15 @@ function accessory(titre: string, marque: string) {
 }
 
 describe("extraction chaussures", () => {
-  it("sépare le genre (paires R1 16 et 24) et laisse le genre absent quand il n'est pas écrit (49)", () => {
+  it("sépare le genre (paires R1 16 et 24) ; genre non écrit chez Tennispro.fr : homme par convention C2 (49)", () => {
     for (const id of [16, 24]) {
       const [a, b] = pair(id);
       expect([value(a, "genre"), value(b, "genre")].sort()).toEqual(["femme", "homme"]);
       expect(a.famille).toBe(b.famille);
     }
     const [a, b] = pair(49);
-    expect(value(a, "genre") === undefined || value(b, "genre") === undefined).toBe(true);
+    expect(a.attributes.genre).toEqual({ value: "homme", source: "convention" });
+    expect(value(b, "genre")).toBe("homme");
   });
 
   it("lit la surface (paires 51 et 53) et « CL » comme terre battue", () => {

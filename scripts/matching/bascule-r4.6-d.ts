@@ -130,8 +130,8 @@ async function main() {
   } else {
     if (!sql) throw new Error("DATABASE_URL is not set");
     targetRunId = runId ?? (await (async () => {
-      const res = await sql`SELECT id FROM match_runs WHERE engine_version = 'r4.6-b' AND finished_at IS NOT NULL ORDER BY finished_at DESC, started_at DESC LIMIT 1`;
-      if (!res[0]?.id) throw new Error("No completed match_run found for engine_version r4.6-b");
+      const res = await sql`SELECT id FROM match_runs WHERE engine_version IN ('r4.6-b', 'r4.6-d') AND finished_at IS NOT NULL ORDER BY finished_at DESC, started_at DESC LIMIT 1`;
+      if (!res[0]?.id) throw new Error("No completed match_run found for engine_version r4.6-b or r4.6-d");
       return res[0].id as string;
     })());
     offers = (await sql`
@@ -166,7 +166,7 @@ async function main() {
     source,
     portee_validation: inputCsv
       ? "Inventaire des non-reconnus uniquement; ne valide pas les métriques complètes, conflits, textile, deals actuels ni une décision de bascule."
-      : "Inventaire des non-reconnus du match_run r4.6-b; ne valide pas à lui seul une décision de bascule.",
+      : "Inventaire des non-reconnus du dernier match_run r4.6-b ou r4.6-d; ne valide pas à lui seul une décision de bascule.",
     offers_non_reconnues: offers.length,
     count_by_motif: {
       famille_inconnue: offers.filter((o) => o.motif === "famille_inconnue").length,

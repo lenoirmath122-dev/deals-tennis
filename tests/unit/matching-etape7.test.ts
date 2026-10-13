@@ -98,7 +98,7 @@ describe("§8.3 : URL du site Head (chaussures)", () => {
   it("l'URL d'un autre marchand n'est pas lue", () => {
     const other = shoe("Head", "HEAD Sprint Pro 4.0 Chaussures de tennis", "Tennispro.fr", { affiliate_url: headUrl });
     expect(other.attributes.surface).toBeUndefined();
-    expect(other.attributes.genre).toBeUndefined();
+    expect(other.attributes.genre?.source).not.toBe("url"); // genre supposé par la convention C2 (D-2026-10-07-02)
   });
 });
 
