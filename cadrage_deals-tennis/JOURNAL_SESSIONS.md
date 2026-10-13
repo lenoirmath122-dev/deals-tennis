@@ -222,4 +222,4 @@
 - Comparatif `87987663…` / `f07bcbab…` : 50 offres déplacées, aucune perdue ; 24 Babolat (jauge unique) et 26 adidas (genre absent → homme) conformes. Reste : bascule R5, sort de l'ancien passage.
 
 ## 2026-10-13 (session desktop, Sonnet) — R5 : cadrage
-- C2 adidas vérifiée (51 offres, 0 marqueur femme). Dossier `R5_dossier_decision.md` écrit (flag recommandé) ; ancien passage conservé, noté aux risques. Reste : décision de Mathieu.
+- C2 adidas vérifiée (51 offres, 0 marqueur femme). Dossier `R5_dossier_decision.md` écrit (flag recommandé) ; ancien passage conservé, noté aux risques. Décision de Mathieu : go R5, par feature flag.

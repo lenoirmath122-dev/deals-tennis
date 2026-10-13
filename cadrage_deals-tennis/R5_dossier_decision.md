@@ -1,6 +1,6 @@
 # R5 — dossier de décision de bascule de l'affichage
 
-**Date : 2026-10-13.** Statut : proposition, **aucune décision prise**. Base : passage prod `f07bcbab-8f53-4820-ad4d-1aec9eed6759` (engine `r4.6-d`).
+**Date : 2026-10-13.** Statut : **go R5 par feature flag décidé par Mathieu le 2026-10-13** ; périmètre minimal et découpage ci-dessous retenus. Base : passage prod `f07bcbab-8f53-4820-ad4d-1aec9eed6759` (engine `r4.6-d`).
 
 ## 1. Constat
 - Le site ne lit aucune table `match_*` (seul `lib/matching/report.ts` y touche) : R5 est du développement, pas un simple interrupteur.
