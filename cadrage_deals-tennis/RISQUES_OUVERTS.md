@@ -4,21 +4,7 @@
 
 Ancien passage prod, gardé tant que R5 n'est pas validée en production. Suppression (cascade `match_*`) seulement sur accord explicite de Mathieu, après vérification qu'aucun code ni flag ne le référence.
 
-**Bloquant sur** : R5 validée en prod.
-
----
-
-## GAP-2026-09-30-02 — Affichage : autres générations de la même famille sur la fiche article (OUVERT, R5)
-
-D-2026-09-30-06 point 2 : les générations restent des articles séparés pour le prix, l'historique et le verdict, mais la fiche doit montrer, après la génération courante et ses prix comparés, les autres générations de la même famille dans une section à part, avec la différence écrite en clair (« Génération précédente : 2023, dès X € »), sans « meilleur prix » entre générations (principe R6).
-
-**À cadrer** : ordre et libellé des générations, choix de la « génération courante » (la plus récente en vente ?), place de cette section par rapport aux modèles « proches » ; en même temps que l'affichage des niveaux famille / article (R5).
-
-**Recette R5.5 (2026-10-13)** : libellés, doublons et faux positifs corrigés (#162, fusionnée) ; 572 familles du passage prod relues, 4 familles de chaussures avec autres générations, textile et raquettes sans section. Décision RG : variante, pas une génération. Reste : activation prod (Mathieu).
-
-**Bloquant sur** : R5.
-
-**Statut** : ouvert au 2026-09-30.
+**Bloquant sur** : quelques jours de R5 stable en prod (activée le 2026-10-13) et accord de Mathieu.
 
 ---
 
