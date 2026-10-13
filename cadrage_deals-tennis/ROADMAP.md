@@ -33,9 +33,8 @@ Source des phases : `CADRAGE_vrais-bons-plans.md` §3 ; ordre global : `CADRAGE_
   - Fait (PR #153) : code de C2 / C3b, engine `r4.6-d`.
   - Fait (2026-10-13) : passage à blanc conforme (190 hors textile, 3 995 modèles, 0 incohérent, 13 conflits) ; écriture en prod `f07bcbab-8f53-4820-ad4d-1aec9eed6759` (engine `r4.6-d`, 3 995 modèles, 4 732 liens, accord de Mathieu).
   - Fait (2026-10-13) : relecture des 16 modèles modifiés, conforme (50 offres déplacées, aucune perdue).
-  - Reste : décision de bascule de l'affichage (R5), dossier `R5_dossier_decision.md`.
-  - R5 s1-4 fusionnées, R5.5 en PR #162 (2026-10-13) ; reste nouvelle recette preview, puis activation prod.
-- R5 affichage site (modèles multi-marchands, autres générations de la famille) : ⏳ bloqué sur R4.6-d.
+  - Fait (2026-10-13) : R5 s1-4 et R5.5 fusionnées (#158 à #162), recette preview conforme, activation en prod (`MATCH_DISPLAY_ENABLED=true`, `MATCH_RUN_ID` = `f07bcbab…`), contrôle prod conforme.
+- R5 affichage site (modèles multi-marchands, autres générations de la famille) : ✅ actif en prod depuis 2026-10-13.
 
 ## Hors chemin critique
 
