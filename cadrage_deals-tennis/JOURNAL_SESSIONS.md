@@ -223,3 +223,4 @@
 
 ## 2026-10-13 (session desktop, Sonnet) — R5 : cadrage
 - C2 adidas vérifiée (51 offres, 0 marqueur femme). Dossier `R5_dossier_decision.md` écrit (flag recommandé) ; ancien passage conservé, noté aux risques. Reste : décision de Mathieu.
+2026-10-13 | R5 session 1 : couche de lecture match_* (lib/match-read.ts) + tests unit/contrat, flag off, sans UI. Prochaine : session 2 fiche article derrière flag.
