@@ -214,3 +214,6 @@
 - Les deux notes de la PR #141 rangées dans `cadrage_deals-tennis/` (`R4_6_d_etat_ecriture.md`, `R4_6_d_textile_analysis.md`) ; dossier `files/` supprimé.
 - Retrait de la section « Choix du modèle » de `CLAUDE.md` (demande de Mathieu : le routage se fait par les sous-agents du `CLAUDE.md` global).
 - Non traité (décision de Mathieu) : `scripts/matching/bascule-r4.6-d.ts` et ses données de test restent non versionnés ; copies `deals-tennis-pr141/142*` et dossiers `rapport-*` locaux à nettoyer.
+
+## 2026-10-13 (session desktop, Sonnet) — R4.6-d : passage à blanc et écriture en prod
+- PR #153 fusionnée ; passage à blanc conforme ; écriture `f07bcbab…` (r4.6-d, 3 995 modèles, 4 732 liens, `--keep-runs`, `87987663…` conservé). Relecture des 16 modèles non faite.
