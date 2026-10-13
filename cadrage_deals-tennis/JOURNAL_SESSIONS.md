@@ -19,6 +19,10 @@
 > Sessions du 2026-09-29 (mesure des offres séparées faute d'information) au 2026-09-29 (R4.5-b cloud, code de D-2026-09-29-05) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-29-mesure-separation_a_R4-5-b-code-cloud.md` (même règle, condensation du 2026-09-30, session de l'étape 4).
 > Sessions du 2026-09-30 (R4.5-b, étape 3 textile) au 2026-09-30 (code de D-2026-09-29-05 reporté sur `master`) déplacées telles quelles dans `archive/JOURNAL_SESSIONS_2026-09-30-R4-5-b-etape-3_a_code-D-2026-09-29-05.md` (même règle, condensation du 2026-09-30, étape 7).
 
+## 2026-10-13 (session Opus) — R4.6-d étape 1 : code de C2 et C3b
+
+- C2 et C3b codées (engine `r4.6-d`, source `convention` jamais publiée au canonique, choix de Mathieu ; garde lettre seule W/M/K/C), tests, R1 rappel 24 → 25 sans faux positif. PR #153. Prochain : passage à blanc en prod.
+
 ## 2026-10-13 (session Sonnet) — Passation et roadmap globale
 
 - Concordance du suivi vérifiée ; `ROADMAP.md` réécrite (vue globale phases 0 à 6 + R0-R5), `REPRISE.md` créé, `INDEX.md` et `ETAT_ACTUEL.md` corrigés. Aucun code touché.

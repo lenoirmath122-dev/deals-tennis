@@ -30,7 +30,8 @@ Source des phases : `CADRAGE_vrais-bons-plans.md` §3 ; ordre global : `CADRAGE_
 - R4.6-a échantillon (28 / 30), R4.6-b textile par identifiant, R4.6-c non reconnues : ✅
 - **R4.6-d bascule** : 🔶
   - Fait : passage prod `87987663…`, 15 groupes textiles retenus (D-2026-10-07-01), conventions de valeur absente C2 et C3b retenues (D-2026-10-07-02).
-  - Reste : code de C2 / C3b (181 → 190 modèles multi-marchands hors textile à blanc), passage à blanc, relecture, écriture en prod (accord explicite de Mathieu), décision de bascule.
+  - Fait (PR #153) : code de C2 / C3b, engine `r4.6-d`.
+  - Reste : passage à blanc (181 → 190 modèles multi-marchands hors textile attendus), relecture, écriture en prod (accord explicite de Mathieu), décision de bascule.
 - R5 affichage site (modèles multi-marchands, autres générations de la famille) : ⏳ bloqué sur R4.6-d.
 
 ## Hors chemin critique
