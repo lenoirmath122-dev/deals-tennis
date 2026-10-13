@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import { getDealDetail } from "@/lib/deals";
 import { formatDiscountBadge, formatFreshnessLabel, formatPrice } from "@/lib/format";
 import {
-  generationLabel,
   getFamilyOtherModels,
   getLinkedModelOffers,
   getMatchRunId,
@@ -186,7 +185,6 @@ export default async function DealDetailPage({
             {otherGenerations.map((model) => {
               const first = model.offers[0];
               const from = Math.min(...model.offers.map((o) => o.discounted_price));
-              const label = generationLabel(model.canonicalAttributes);
               return (
                 <li
                   key={model.modelId}
@@ -194,7 +192,7 @@ export default async function DealDetailPage({
                 >
                   <div className="flex flex-col">
                     <span className="text-sm font-medium text-zinc-900">
-                      {label ? `Génération ${label}` : first.title}
+                      {model.label}
                     </span>
                     <span className="text-xs text-zinc-500">
                       {model.offers.length} offre{model.offers.length > 1 ? "s" : ""} · dès{" "}

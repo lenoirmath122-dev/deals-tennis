@@ -42,6 +42,8 @@ export async function getLinkedModelOffers(
 export interface FamilyModel {
   modelId: string;
   canonicalAttributes: Record<string, unknown>;
+  /** Nom en clair : marque, famille et génération (« Wilson Rush, génération 5 »). */
+  label: string;
   offers: DealCardData[];
 }
 
@@ -70,35 +72,58 @@ export async function getModelOffers(
 
 type Attributes = Record<string, { value?: unknown } | undefined>;
 
-/** Attributs qui distinguent deux générations ; tous les autres doivent être identiques. */
-const GENERATION_KEYS = ["generation", "annee", "millesime", "edition"];
+/**
+ * Seuls `generation` et `annee` désignent une génération. `edition` et `millesime`
+ * (athlète, ville, tournoi, saison textile) sont des variantes : elles doivent être identiques.
+ */
+const GENERATION_KEYS = ["generation", "annee"];
 
 const attrValue = (a: Attributes, key: string) => String(a[key]?.value ?? "-");
 
-/**
- * Même famille, mêmes genre / public / modèle / surface / version… et une génération
- * (génération, année, millésime, édition) différente. Écarte les autres genres, juniors
- * et modèles textiles de la même famille, qui ne sont pas des générations.
- */
-export function isOtherGeneration(own: Attributes, other: Attributes): boolean {
-  const keys = new Set([...Object.keys(own), ...Object.keys(other)]);
-  let differs = false;
-  for (const key of keys) {
-    const same = attrValue(own, key) === attrValue(other, key);
-    if (GENERATION_KEYS.includes(key)) differs ||= !same;
-    else if (!same) return false;
-  }
-  return differs;
-}
+const YEAR_RE = /^(?:19|20)\d{2}\b/;
 
-/** Libellé de génération en clair (« Gen 9 », « 2023 »), ou null si aucun repère. */
+/** Génération en clair (« 5 », « 2023 »), ou null si aucun repère. */
 export function generationLabel(attributes: Record<string, unknown>): string | null {
   const a = attributes as Attributes;
   for (const key of GENERATION_KEYS) {
     const v = a[key]?.value;
-    if (v !== undefined && v !== null && v !== "") return String(v);
+    if (v !== undefined && v !== null && String(v).trim() !== "") return String(v).trim();
   }
   return null;
+}
+
+/** Clé de comparaison : année seule si le libellé en commence par une (« 2021 (Graphene) »). */
+function generationKey(label: string): { kind: "annee" | "rang"; key: string } {
+  const year = label.match(YEAR_RE);
+  return year
+    ? { kind: "annee", key: year[0] }
+    : { kind: "rang", key: label.toLowerCase().replace(/^gen(?:eration)?\s*/, "") };
+}
+
+/**
+ * Même famille, mêmes genre / public / modèle / surface / version / édition… et une
+ * génération différente connue des deux côtés, de même nature (année contre année,
+ * numéro contre numéro). Une génération absente d'un côté n'est pas une preuve.
+ */
+export function isOtherGeneration(own: Attributes, other: Attributes): boolean {
+  const keys = new Set([...Object.keys(own), ...Object.keys(other)]);
+  for (const key of keys) {
+    if (GENERATION_KEYS.includes(key)) continue;
+    if (attrValue(own, key) !== attrValue(other, key)) return false;
+  }
+  const a = generationLabel(own);
+  const b = generationLabel(other);
+  if (!a || !b) return false;
+  const ka = generationKey(a);
+  const kb = generationKey(b);
+  return ka.kind === kb.kind && ka.key !== kb.key;
+}
+
+function modelLabel(familyKey: string | null, generation: string): string {
+  const [brand, family] = (familyKey ?? "").split("|");
+  const name = [brand, family].filter(Boolean).join(" ").replace(/^./, (c) => c.toUpperCase());
+  const kind = YEAR_RE.test(generation) ? "modèle" : "génération";
+  return name ? `${name}, ${kind} ${generation}` : `${kind[0].toUpperCase()}${kind.slice(1)} ${generation}`;
 }
 
 /**
@@ -112,7 +137,7 @@ export async function getFamilyOtherModels(
 ): Promise<FamilyModel[]> {
   const rows = (await sql.query(
     `
-      SELECT mm.id AS model_id, mm.canonical_attributes,
+      SELECT mm.id AS model_id, mm.family_key, mm.canonical_attributes,
              own_m.canonical_attributes AS own_attributes, ${DEAL_CARD_FIELDS}
       FROM match_offer_links own
       JOIN match_models own_m ON own_m.id = own.model_id
@@ -132,21 +157,37 @@ export async function getFamilyOtherModels(
     [runId, dealId]
   )) as (DealCardData & {
     model_id: string;
+    family_key: string | null;
     canonical_attributes: Record<string, unknown>;
     own_attributes: Record<string, unknown>;
   })[];
 
-  const byModel = new Map<string, FamilyModel>();
-  for (const { model_id, canonical_attributes, own_attributes, ...offer } of rows) {
+  // Un seul groupe par génération : des modèles distincts du passage (attributs annee et
+  // generation renseignés différemment) peuvent désigner la même génération.
+  const byGeneration = new Map<string, FamilyModel>();
+  const seen = new Set<string>();
+  for (const { model_id, family_key, canonical_attributes, own_attributes, ...offer } of rows) {
     if (!isOtherGeneration(own_attributes as Attributes, canonical_attributes as Attributes)) {
       continue;
     }
-    let model = byModel.get(model_id);
+    const generation = generationLabel(canonical_attributes)!;
+    const groupKey = generationKey(generation).key;
+    let model = byGeneration.get(groupKey);
     if (!model) {
-      model = { modelId: model_id, canonicalAttributes: canonical_attributes, offers: [] };
-      byModel.set(model_id, model);
+      model = {
+        modelId: model_id,
+        canonicalAttributes: canonical_attributes,
+        label: modelLabel(family_key, generation),
+        offers: [],
+      };
+      byGeneration.set(groupKey, model);
     }
+    if (seen.has(offer.id)) continue;
+    seen.add(offer.id);
     model.offers.push(offer as DealCardData);
   }
-  return [...byModel.values()];
+  for (const m of byGeneration.values()) {
+    m.offers.sort((x, y) => x.discounted_price - y.discounted_price);
+  }
+  return [...byGeneration.values()];
 }
